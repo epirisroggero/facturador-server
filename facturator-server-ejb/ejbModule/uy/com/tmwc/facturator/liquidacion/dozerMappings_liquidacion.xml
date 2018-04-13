@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+  <mapping> 
+    <class-a>uy.com.tmwc.facturator.entity.ParticipacionVendedor</class-a>
+    <class-b>uy.com.tmwc.facturator.liquidacion.ParticipacionVendedor</class-b>   
+  </mapping>
+
+  <mapping> 
+    <class-a>uy.com.tmwc.facturator.entity.Documento</class-a>   
+    <class-b>uy.com.tmwc.facturator.liquidacion.Factura</class-b>
+  </mapping>
+
+  <mapping> 
+    <class-a>uy.com.tmwc.facturator.entity.Comprobante</class-a>   
+    <class-b>uy.com.tmwc.facturator.liquidacion.Comprobante</class-b>
+  </mapping>
+
+</mappings>
+        
+      

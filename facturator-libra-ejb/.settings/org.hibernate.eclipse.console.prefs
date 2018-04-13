@@ -1,0 +1,4 @@
+#Sat Jul 09 18:42:50 GMT-03:00 2011
+default.configuration=facturator-server-ejb
+eclipse.preferences.version=1
+hibernate3.enabled=true

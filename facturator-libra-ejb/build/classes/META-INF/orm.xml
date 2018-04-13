@@ -1,0 +1,1156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="1.0"
+	xmlns="http://java.sun.com/xml/ns/persistence/orm" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd">
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.Auditoria">
+		<named-query name="Auditoria.nextAudId">
+			<query>
+				select 
+					max(e.id.audId) + 1
+				from
+					Auditoria e
+				where 
+					e.id.empId = :empId
+			</query>
+		</named-query>
+
+		<named-query name="Auditoria.auditoriaDocumento">
+			<query>
+				select 
+					aud
+				from 
+					Auditoria aud
+				where aud.id.empId = :empId
+					  and aud.docId = :docId
+				order by
+					aud.audFechaHora ASC
+					
+			</query>
+		</named-query>
+
+	</entity>
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.Entrega">
+		<named-query name="Entrega.nextEntregaId">
+			<query>
+				select 
+					max(e.id.entId) + 1
+				from
+					Entrega e
+				where 
+					e.id.empId = :empId
+			</query>
+		</named-query>
+	</entity>
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.Agendatarea">
+		<named-query name="Agendatarea.nextAgeId">
+			<query>
+				select 
+					max(e.id.ageId) + 1
+				from
+					Agendatarea e
+				where 
+					e.id.empId = :empId
+			</query>
+		</named-query>
+
+		<named-query name="Agendatarea.tareasUsuario">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.dto.AgendaTareaDTO(
+						e.id.ageId,
+						e.fechaHora,
+						e.estado,
+						e.fechaInicio,
+						e.fechaHoraFin,
+						e.descripcion,
+						e.prioridad,
+						e.tipo,
+						cto.id.ctoId,
+						cto.nombre,
+						cto.ctoDireccion,
+						cto.ctoTelefono,
+						tarea.nombre,
+						e.usuarioSolicitante.nombre,
+						e.usuarioAsignado.id.usuId,
+						e.nroOrden,
+						e.orden
+					)
+				from
+					Agendatarea e join e.contacto cto  join e.tarea tarea 
+				where 
+					e.id.empId = :empId
+					and e.usuarioAsignado = :usuario
+					and e.estado = 'P'
+				order by
+					e.fechaHora ASC,
+					e.fechaInicio ASC
+			</query>
+		</named-query>
+
+		<named-query name="Agendatarea.tareasSupervisadas">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.dto.AgendaTareaDTO(
+						e.id.ageId,
+						e.fechaHora,
+						e.estado,
+						e.fechaInicio,
+						e.fechaHoraFin,
+						e.descripcion,
+						e.prioridad,
+						e.tipo,
+						cto.id.ctoId,
+						cto.nombre,
+						cto.ctoDireccion,
+						cto.ctoTelefono,
+						tarea.nombre,
+						e.usuarioSolicitante.nombre,
+						e.usuarioAsignado.id.usuId,
+						e.nroOrden,
+						e.orden
+					)
+					
+				from
+					Agendatarea e join e.contacto cto  join e.tarea tarea 
+				where 
+					e.id.empId = :empId
+					and (e.ctoIdAge = :contacto or :contacto is null)
+					and (:fechaDesde is null or e.fechaHora >= :fechaDesde)
+					and (:fechaHasta is null or e.fechaHora &lt;= :fechaHasta)
+					and (e.estado = 'P')
+					and ((e.supervisor1 = :supervisor and :supervisor is not null)
+						or (e.supervisor2 = :supervisor and :supervisor is not null)
+						or (e.supervisor3 = :supervisor and :supervisor is not null))
+					and ((:usuario1 is null and :usuario2 is null and :usuario3 is null and :usuario4 is null and :usuario5 is null and :usuario6 is null)
+						or (e.usuarioAsignado.id.usuId = :usuario1 and :usuario1 is not null) 
+						or (e.usuarioAsignado.id.usuId = :usuario2 and :usuario2 is not null) 
+						or (e.usuarioAsignado.id.usuId = :usuario3 and :usuario3 is not null)
+						or (e.usuarioAsignado.id.usuId = :usuario4 and :usuario4 is not null)
+						or (e.usuarioAsignado.id.usuId = :usuario5 and :usuario5 is not null) 
+						or (e.usuarioAsignado.id.usuId = :usuario6 and :usuario6 is not null))
+					and ((:tarea1 is null and :tarea2 is null and :tarea3 is null and :tarea4 is null and :tarea5 is null and :tarea6 is null and :capituloId is null)
+						or (e.tareaId = :tarea1 and :tarea1 is not null) 
+						or (e.tareaId = :tarea2 and :tarea2 is not null) 
+						or (e.tareaId = :tarea3 and :tarea3 is not null)
+						or (e.tareaId = :tarea4 and :tarea4 is not null)
+						or (e.tareaId = :tarea5 and :tarea5 is not null) 
+						or (e.tareaId = :tarea6 and :tarea6 is not null)
+						or (e.tarea.capituloId = :capituloId and :capituloId is not null)
+					)
+				order by
+					e.fechaHora ASC,
+					e.fechaInicio ASC
+			</query>
+		</named-query>
+
+		<named-query name="Agendatarea.tareasFecha">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.dto.AgendaTareaDTO(
+						e.id.ageId,
+						e.fechaHora,
+						e.estado,
+						e.fechaInicio,
+						e.fechaHoraFin,
+						e.descripcion,
+						e.prioridad,
+						e.tipo,
+						cto.id.ctoId,
+						cto.nombre,
+						cto.ctoDireccion,
+						cto.ctoTelefono,
+						tarea.nombre,
+						e.usuarioSolicitante.nombre,
+						e.usuarioAsignado.id.usuId,
+						e.nroOrden,
+						e.orden
+					)
+				from
+					Agendatarea e join e.contacto cto join e.tarea tarea 
+				where 
+					e.id.empId = :empId
+					and (:fechaDesde is null or e.fechaHora >= :fechaDesde)
+					and (:fechaHasta is null or e.fechaHora &lt;= :fechaHasta)
+					and (e.estado = :estado or :estado is null)
+					and (e.ctoIdAge = :contacto or :contacto is null)
+					and (:tieneContactos &lt;> 'S' or e.ctoIdAge in (:contactos)) 
+					and (e.usuIdAge2 = :asignado or :asignado is null)										
+					and ((:usuario1 is null and :usuario2 is null and :usuario3 is null and :usuario4 is null and :usuario5 is null and :usuario6 is null)
+						or (e.usuarioAsignado.id.usuId = :usuario1 and :usuario1 is not null) 
+						or (e.usuarioAsignado.id.usuId = :usuario2 and :usuario2 is not null) 
+						or (e.usuarioAsignado.id.usuId = :usuario3 and :usuario3 is not null)
+						or (e.usuarioAsignado.id.usuId = :usuario4 and :usuario4 is not null)
+						or (e.usuarioAsignado.id.usuId = :usuario5 and :usuario5 is not null) 
+						or (e.usuarioAsignado.id.usuId = :usuario6 and :usuario6 is not null))
+					and ((:tarea1 is null and :tarea2 is null and :tarea3 is null and :tarea4 is null and :tarea5 is null and :tarea6 is null and :capituloId is null)
+						or (e.tareaId = :tarea1 and :tarea1 is not null)
+						or (e.tareaId = :tarea2 and :tarea2 is not null)
+						or (e.tareaId = :tarea3 and :tarea3 is not null)
+						or (e.tareaId = :tarea4 and :tarea4 is not null)
+						or (e.tareaId = :tarea5 and :tarea5 is not null) 
+						or (e.tareaId = :tarea6 and :tarea6 is not null)
+						or (e.tarea.capituloId = :capituloId and :capituloId is not null)
+					)
+				order by
+					e.fechaHora ASC,
+					e.fechaInicio ASC
+			</query>
+		</named-query>
+
+		<named-query name="Agendatarea.reagendarTareasFecha">
+			<query>
+				select 
+					e
+				from
+					Agendatarea e
+				where 
+					e.id.empId = :empId
+					and (:fechaDesde is null or e.fechaHora >= :fechaDesde)
+					and (:fechaHasta is null or e.fechaHora &lt;= :fechaHasta)
+					and (e.estado = :estado or :estado is null)
+					and (e.ctoIdAge = :contacto or :contacto is null)
+					and (e.usuIdAge2 = :asignado or :asignado is null)
+					and ((:usuario1 is null and :usuario2 is null and :usuario3 is null and :usuario4 is null and :usuario5 is null and :usuario6 is null)
+						or (e.usuarioAsignado.id.usuId = :usuario1 and :usuario1 is not null) 
+						or (e.usuarioAsignado.id.usuId = :usuario2 and :usuario2 is not null) 
+						or (e.usuarioAsignado.id.usuId = :usuario3 and :usuario3 is not null)
+						or (e.usuarioAsignado.id.usuId = :usuario4 and :usuario4 is not null)
+						or (e.usuarioAsignado.id.usuId = :usuario5 and :usuario5 is not null) 
+						or (e.usuarioAsignado.id.usuId = :usuario6 and :usuario6 is not null))
+					and ((:tarea1 is null and :tarea2 is null and :tarea3 is null and :tarea4 is null and :tarea5 is null and :tarea6 is null and :capituloId is null)
+						or (e.tareaId = :tarea1 and :tarea1 is not null) 
+						or (e.tareaId = :tarea2 and :tarea2 is not null) 
+						or (e.tareaId = :tarea3 and :tarea3 is not null)
+						or (e.tareaId = :tarea4 and :tarea4 is not null)
+						or (e.tareaId = :tarea5 and :tarea5 is not null) 
+						or (e.tareaId = :tarea6 and :tarea6 is not null)
+						or (e.tarea.capituloId = :capituloId and :capituloId is not null)
+					)
+				order by
+					e.fechaHora ASC,
+					e.fechaInicio ASC
+			</query>
+		</named-query>
+
+
+	</entity>
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.Articulo">
+		<named-query name="Articulo.query">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.libra.entity.Articulo(e.id.artId, e.nombre, e.familiaId, e.codigoOrigen, e.prvIdArt, e.activo)
+				from
+					Articulo e
+				where 
+					e.nombre like :query
+					and e.id.empId = :empId
+				order by
+					e.nombre
+			</query>
+		</named-query>
+	</entity>
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.ArticuloPrecio">
+		<named-query name="ArticuloPrecio.precioArticuloParaPrecioVenta">
+			<query>
+				select 
+					a, pv 
+				from 
+					ArticuloPrecio a, 
+					Preciosventa pv
+				where 
+					a.id.artId = :articulo
+					and a.id.empId = :empId
+					and a.id.precioBaseId = pv.precioBase.id.precioBaseId
+					and pv.precioBase.id.empId = :empId
+					and pv.id.precioVentaId = :preciosVenta
+					and pv.id.empId = :empId
+			</query>
+		</named-query> 
+	</entity>
+	
+	<entity class="uy.com.tmwc.facturator.libra.entity.ArticuloPartida">
+		<named-query name="ArticuloPartida.queryArticuloPartida">
+			<query>
+				select ap
+				from 
+					ArticuloPartida ap 
+				where 
+					ap.id.artId = :articuloId 
+					and ap.id.empId = :empId 
+					and ap.id.partidaId = :partidaId
+			</query>
+		</named-query>
+	</entity>
+	
+	<entity class="uy.com.tmwc.facturator.libra.entity.Asiento" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Asientos1" />
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.Cliente">
+		<named-query name="Cliente.query">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.libra.entity.Cliente(e, cto)
+				from
+					Cliente e join e.contacto cto 
+				where 
+					e.nombre like :query
+					and e.id.empId = :empId
+					and cto.ctoActivo = 'S'
+				order by
+					e.nombre
+			</query>
+		</named-query>
+
+		<named-query name="Clientes.nextId">
+			<query>
+				select 
+					MAX(cast(e.id.cliId, int)) + 1
+				from
+					Cliente e
+				where 
+					e.id.empId = :empId
+			</query>
+		</named-query>
+	</entity>
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.Proveedor">
+		<named-query name="Proveedor.query">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.libra.entity.Proveedor(p.codigo, p.nombre, cto.ctoTelefono, cto.ctoDireccion, cto.ctoRSocial, cto.paisIdCto, cto.ctoRUT)
+				from
+					Proveedor p join p.contacto cto
+				where 
+					p.nombre like :query
+					and p.id.empId = :empId
+					and cto.ctoActivo = 'S'
+				order by
+					p.nombre
+			</query>
+		</named-query>
+	</entity>
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.Contacto">
+		<named-query name="Contacto.query">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.libra.entity.Contacto(e.id.ctoId, e.nombre, e.ctoRUT, e.ctoTelefono, e.ctoDireccion, e.ctoRSocial, e.ctoLocalidad, e.ctoProveedor, e.ctoActivo)
+				from
+					Contacto e
+				where 
+					e.nombre like :query
+					and e.id.empId = :empId
+				order by
+					e.nombre
+			</query>
+
+		</named-query>
+		<named-query name="Contactos.nextId">
+			<query>
+				select 
+					MAX(cast(e.id.ctoId, int)) + 1
+				from
+					Contacto e
+				where 
+					e.id.empId = :empId
+			</query>
+		</named-query>
+
+	</entity>
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.Lista">
+		<named-query name="Lista.query">
+			<query>
+				select 
+					a
+				from
+					Lista a
+				where
+					a.listaTitulo like :query
+					and a.id.empId = :empId
+				order by
+					a.listaTitulo
+			</query>
+		</named-query>
+	</entity>
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.IdTablaGen">
+		<named-query name="IdTablaGen.curValue">
+			<query>
+				select 
+					i
+				from
+					IdTablaGen i
+				where
+					i.id.empId = :empId
+					and i.id.tabla = :tabla
+			</query>
+		</named-query>
+	</entity>
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas">
+		<named-query name="Cotizaciones.cotizacionesMonedasQuery">
+			<query>
+				select 
+					cm
+				from 
+					CotizacionesMonedas cm
+				where
+					cm.id.empId = :empId
+					and (
+						:fromDate is null
+						or id.dia &lt;= :fromDate
+					) 
+				order by id.dia DESC
+			</query>
+		</named-query>
+	</entity>
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.TipoCambio">
+		<named-query name="TipoCambio.tipoCambioFiscalFechaDia">
+			<query>
+				select 
+					fiscal 
+				from 
+					TipoCambio t
+				where 
+					moneda.id.mndId = :moneda
+					and moneda.id.empId = :empId
+					and id.dia = :fecha
+				
+			</query>
+		</named-query>
+		<named-query name="TipoCambio.tipoCambioFiscalFecha">
+			<query>
+				select 
+					fiscal 
+				from 
+					TipoCambio t
+				where 
+					moneda.id.mndId = :moneda
+					and moneda.id.empId = :empId
+					and (
+						:fecha is null
+						or id.dia &lt;= :fecha
+					) 
+				order by id.dia DESC limit 1
+			</query>
+		</named-query>
+		<named-query name="TipoCambio.tipoCambioComercialFecha">
+			<query>
+				select 
+					comercial 
+				from 
+					TipoCambio t
+				where 
+					moneda.id.mndId = :moneda
+					and moneda.id.empId = :empId
+					and (
+						:fecha is null
+						or id.dia &lt;= :fecha
+					) 
+				order by id.dia DESC limit 1
+			</query>
+		</named-query>
+		<named-query name="TipoCambio.ultimosTC">
+			<query>
+				select 
+					tc 
+				from 
+					TipoCambio tc 
+				where 
+					not exists (
+						select 
+							tc2.id.dia 
+						from 
+							TipoCambio tc2 
+						where 
+							tc.id.mndId = tc2.id.mndId 
+							and tc2.id.empId = tc.id.empId 
+							and tc.id.dia &lt; tc2.id.dia
+					)
+					and empId=:empId
+			</query>
+		</named-query>
+	</entity>
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.Caja" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Centroscosto" >
+			<named-query name="Centroscosto.query">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.libra.entity.Centroscosto(e.id.cenId, e.nombre)
+				from
+					Centroscosto e
+				where 
+					e.nombre like :query
+					and e.id.empId = :empId
+				order by
+					e.nombre
+			</query>
+		</named-query>
+	</entity>
+	<entity class="uy.com.tmwc.facturator.libra.entity.ComisionJefatura" />
+	<entity
+		class="uy.com.tmwc.facturator.libra.entity.DescuentoPrometidoComprobante">
+		<named-query name="DescuentosPrometidos.nextId">
+			<query>
+				select 
+					max(d.id.dpcId) + 1
+				from
+					DescuentoPrometidoComprobante d
+				where 
+					d.id.empId = :empId
+			</query>
+		</named-query>
+		<named-query name="DescuentosPrometidos.obtenerDescuentosPrometidos">
+			<query>
+				select
+					distinct d
+				from
+					DescuentoPrometidoComprobante d
+				where
+					d.id.empId = :empId
+					and d.cmpid = :cmpId
+					and d.categoriaCliente = :categoriaCliente
+				order by
+					d.retraso
+      		</query>
+		</named-query>
+	</entity>
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.Comprobante">
+		<named-query name="Comprobante.query"> <!-- Rancio -->
+			<query>
+				select
+					distinct c
+				from
+					Comprobante c left join fetch c.descuentosPrometidos
+				where
+					c.id.empId = :empId
+					and c.tipo in (1,2,3,4,5,31,32,21,23)
+					and c.cmpNom like :query
+				order by
+					c.cmpNom
+      		</query>
+		</named-query>
+	</entity>
+	<entity class="uy.com.tmwc.facturator.libra.entity.Deposito" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Doccuota" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Docfp" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Docruc" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Documento">
+		<named-query name="Documento.lineasCompraCliente">
+			<query>
+				select
+					l
+				from
+					Linea l join l.documento d
+				where
+					d.cliente.id.empId = :empId
+					and (l.articuloId is not null and l.articuloId != '')
+					and d.comprobante.tipo in (1,3)
+					and (:fechaDesde is null or d.fecha >= :fechaDesde)
+					and (:fechaHasta is null or d.fecha &lt;= :fechaHasta)
+					and d.emitido = 'S'
+					and d.cliente.id.cliId = :cliente
+				order by 
+					d.fecha desc,
+					d.serie,
+					d.numero
+      		</query>
+		</named-query>
+		<named-query name="Documento.lineasCotizadas">
+			<query>
+				select
+					l
+				from
+					Linea l join l.documento d
+				where
+					d.cliente.id.empId = :empId
+					and d.comprobante.id.cmpid in (1)
+					and (l.articuloId is not null and l.articuloId != '')
+					and (:cliente is null or d.cliente.id.cliId = :cliente) 
+					and (:articuloId is null or l.articuloId = :articuloId)					
+					and (:fechaDesde is null or d.fecha >= :fechaDesde)
+					and (:fechaHasta is null or d.fecha &lt;= :fechaHasta)
+				order by 
+					d.fecha desc,
+					d.serie,
+					d.numero
+      		</query>
+		</named-query>
+
+		<named-query name="Documento.antecedentesArticulo">
+			<query>
+				select l
+				from Linea l join fetch l.documento d
+				where
+					d.cliente.id.empId = :empId
+					and (l.articuloId is not null and l.articuloId != '')
+					and d.cliente.id.cliId = :cliente
+					and l.articuloId = :articulo
+				order by 
+					d.fecha desc,
+					d.serie,
+					d.numero
+      		</query>
+		</named-query>
+		<named-query name="Documento.antecedentesArticuloCompra">
+			<query>
+				select l
+				from Linea l join fetch l.documento d
+				where
+					d.comprobante.tipo in (21,23) 
+					and d.comprobante.id.cmpid not in (1,17,991)
+					and d.id.empId = :empId
+					and l.articuloId = :articulo
+				order by 
+					d.fecha desc,
+					d.serie,
+					d.numero
+      		</query>
+		</named-query>
+		<named-query name="Documento.antecedentesArticuloVenta">
+			<query>
+				select l
+				from Linea l join fetch l.documento d
+				where
+					(d.comprobante.tipo in (1,3,4) or d.comprobante.id.cmpid = '98')
+					and d.comprobante.id.cmpid not in (1,17,991)
+					and d.id.empId = :empId
+					and l.articuloId = :articulo
+				order by 
+					d.fecha desc,
+					d.serie,
+					d.numero
+      		</query>
+		</named-query>
+
+		<named-query name="Documento.resumenEntregas">
+			<query>
+				select
+					e, count(e.codigo)
+				from
+					Documento d join d.entrega e
+				where
+					d.comprobante.tipo in (1,2,3,4)
+					and d.id.empId = :empId
+					and d.fecha between :fechaDesde and :fechaHasta
+				group by 
+					e.codigo
+				order by
+					e.codigo
+      		</query>
+		</named-query>
+		<named-query name="Documento.participacionesIntervaloFechas">
+			<query>
+     	      	<!-- SINCRONIZAR CON CAMBIOS EN Documento.participacionesIntervaloFechas.aux -->
+      			<!-- Esta escrito de forma de que traiga en una unica consulta las participaciones y el documento -->
+	      		select 
+	      			p
+	      			<!-- distinct p, r -->
+	      		from 
+	      			ParticipacionVendedor p join fetch p.documento 
+	      			<!-- f join f.recibosVinculados rv join rv.recibo r -->
+	      		where
+					(p.documento.comprobante.tipo in (1,2,3,4) or p.documento.comprobante.id.cmpid = '98')
+					and (p.documento.id.empId = :empId)
+					and (p.documento.comprobante.id.cmpid in (:compsIncluidos) or true = :incluirTodos)
+					and (p.documento.comprobante.id.cmpid not in (:compsExcluidos) or true = :noExcluirNinguno)
+					and (p.documento.fecha between :fechaDesde and :fechaHasta)
+					and (p.documento.estado is null or p.documento.estado &lt;> 'A')
+					and ((p.documento.emitido = 'S') or (p.documento.comprobante.id.cmpid = '98' and p.documento.pendiente = 'N'))
+					<!-- 
+					and (r.id.empId = :empId)
+	      			and (
+		      				( 
+		      					r.fecha between :fechaDesde and :fechaHasta
+		      					and f.fecha &lt;= :fechaHasta
+		      				) 
+	      				or
+	      					( 
+	      						r.fecha &lt; :fechaDesde 
+	      					   	and f.fecha between :fechaDesde and :fechaHasta
+	      					)
+	      			) 
+	      			and (r.comprobante.tipo = 5) 
+	      			-->
+	      		order by
+	      			p.vendedor.id.venId, p.documento.fecha, p.documento.comprobante.id.cmpid, p.documento.numero
+	      	</query>
+		</named-query>
+
+		<named-query name="Documento.comprasMercPlaza">
+			<query>
+	      		select 
+	      			d
+	      		from 
+	      			Documento d 
+	      		where
+					d.comprobante.tipo in (21,23) 
+					and d.id.empId = :empId
+					and (d.comprobante.id.cmpid in (:compsIncluidos))
+					and (d.fecha between :fechaDesde and :fechaHasta)
+				order by
+					d.fecha
+	      	</query>
+		</named-query>
+
+		<named-query name="Documento.participacionesIntervaloFechas.aux">
+			<query>
+      		<!-- SINCRONIZAR CON CAMBIOS EN Documento.participacionesIntervaloFechas -->
+      		<!-- Auxiliar para obtener todas las lineas relevantes en una sola consulta -->
+	      		select 
+	      			d
+	      		from 
+	      			Documento d left join fetch d.lineas
+	      		where
+					(d.comprobante.tipo in (1,2,3,4) or d.comprobante.id.cmpid = '98')
+					and d.id.empId = :empId
+					and (d.comprobante.id.cmpid in (:compsIncluidos) or true = :incluirTodos)
+					and (d.comprobante.id.cmpid not in (:compsExcluidos) or true = :noExcluirNinguno)
+					and (d.fecha between :fechaDesde and :fechaHasta)
+					and (d.estado is null or d.estado &lt;> 'A')
+					and ((d.emitido = 'S') or (d.comprobante.id.cmpid = '98' and d.pendiente = 'N'))
+	      	</query>
+		</named-query>
+
+
+
+		<named-query name="Documento.participacionesEnCobranzasIntervaloFechas">
+			<!-- SINCRONIZAR CON CAMBIOS EN Documento.participacionesEnCobranzasIntervaloFechas.aux -->
+			<query>
+	      		select 
+	      			distinct rv, f, r <!-- f y r estan para que haga el fetch en la misma consulta, a pesar de que potencialmente van a aparecer varias veces en el resultset -->
+	      		from 
+	      			Documento f 
+	      			join f.recibosVinculados rv 
+	      			join rv.recibo r
+	      		where
+	      			r.id.empId = :empId
+	      			and (
+		      				( <!-- Recibos cobrados en el periodo. Me aseguro que no referencien liquidaciones futuras.
+		      				       Solo tiene gracia por si sacan una liquidacion en el pasado.
+		      				   -->
+		      					r.fecha between :fechaDesde and :fechaHasta
+		      					and f.fecha &lt;= :fechaHasta
+		      				) 
+	      				or
+	      					( <!-- Recibos creados antes de este periodo liquidado, pero que referencian facturas de este periodo. 
+	      					       Son pagos a cuenta, y su renta se liquida en este periodo. -->
+	      					   r.fecha &lt; :fechaDesde 
+	      					   and f.fecha between :fechaDesde and :fechaHasta
+	      					)
+	      			) 
+	      			and r.comprobante.tipo = 5
+	      			and f.emitido = 'S'
+	      			and f.fecha > '2016-12-31 00:00:00'
+	      	</query>
+		</named-query>
+
+		<named-query name="Documento.participacionesEnCobranzasIntervaloFechas.aux">
+			<!-- SINCRONIZAR CON CAMBIOS EN Documento.participacionesEnCobranzasIntervaloFechas -->
+			<!-- Auxiliar para obtener todas las lineas relevantes en una sola consulta 
+				(las lineas se necesitan para procesar las jefaturas) -->
+			<query>
+	      		select 
+	      			d
+	      		from 
+	      			Documento d
+	      			join fetch d.lineas
+	      		where
+	      			exists (
+	      					select 
+	      						f.id.docId
+				      		from 
+				      			ParticipacionVendedor p 
+				      			join p.documento f 
+				      			join f.recibosVinculados rv 
+				      			join rv.recibo r
+				      		where
+				      			f.id.empId = d.id.empId and
+				      			f.id.docId = d.id.docId and
+				      			(
+					      			r.id.empId = :empId
+					      			and (
+						      				( <!-- Recibos cobrados en el periodo. Me aseguro que no referencien liquidaciones futuras.
+						      				       Solo tiene gracia por si sacan una liquidacion en el pasado.
+						      				   -->
+						      					r.fecha between :fechaDesde and :fechaHasta
+						      					and f.fecha &lt;= :fechaHasta
+						      				) 
+					      				or
+					      					( <!-- Recibos creados antes de este periodo liquidado, pero que referencian facturas de este periodo. 
+					      					       Son pagos a cuenta, y su renta se liquida en este periodo. -->
+					      					   r.fecha &lt; :fechaDesde 
+					      					   and f.fecha between :fechaDesde and :fechaHasta
+					      					)
+					      			) 
+					      			and r.comprobante.tipo = 5
+					      			and f.emitido = 'S'
+					      			and f.fecha > '2016-12-31 00:00:00'
+					      		)
+				      	)
+	      	</query>
+		</named-query>
+		<named-query
+			name="Documento.participacionesEnCobranzasIntervaloFechas.auxParticipaciones">
+			<!-- SINCRONIZAR CON CAMBIOS EN Documento.participacionesEnCobranzasIntervaloFechas -->
+			<!-- Auxiliar para obtener todas las participaciones en una sola consulta -->
+			<query>
+	      		select 
+	      			d
+	      		from 
+	      			Documento d
+	      			left join fetch d.participaciones
+	      		where
+	      			exists (
+	      					select 
+	      						f.id.docId
+				      		from 
+				      			ParticipacionVendedor p 
+				      			join p.documento f 
+				      			join f.recibosVinculados rv 
+				      			join rv.recibo r
+				      		where
+				      			f.id.empId = d.id.empId and
+				      			f.id.docId = d.id.docId and
+				      			(
+					      			r.id.empId = :empId
+					      			and (
+						      				( <!-- Recibos cobrados en el periodo. Me aseguro que no referencien liquidaciones futuras.
+						      				       Solo tiene gracia por si sacan una liquidacion en el pasado.
+						      				   -->
+						      					r.fecha between :fechaDesde and :fechaHasta
+						      					and f.fecha &lt;= :fechaHasta
+						      				) 
+					      				or
+					      					( <!-- Recibos creados antes de este periodo liquidado, pero que referencian facturas de este periodo. 
+					      					       Son pagos a cuenta, y su renta se liquida en este periodo. -->
+					      					   r.fecha &lt; :fechaDesde 
+					      					   and f.fecha between :fechaDesde and :fechaHasta
+					      					)
+					      			) 
+					      			and r.comprobante.tipo = 5
+					      			and f.emitido = 'S'
+					      		)
+				      	)
+	      	</query>
+		</named-query>
+
+		<named-query name="Documento.participacionesEnContadosIntervaloFechas">
+			<!-- SINCRONIZAR CON CAMBIOS EN Documento.participacionesEnContadosIntervaloFechas.aux -->
+			<query>
+      			<!-- Esta escrito de forma de que traiga en una unica consulta las participaciones y el documento. 
+      			     Como siempre, los manyToOne se resuelven aparte y, por ejemplo, en el caso de los articulos podria ser un problema
+      			     pero no es facil de solucionar (podria levantar todos los articulos en memoria, en una consulta previa)
+      			 -->
+	      		select 
+	      			distinct d
+	      		from 
+	      			Documento d
+	      			join fetch d.participaciones
+	      		where
+					(d.comprobante.tipo in (3,4) or d.comprobante.id.cmpid = '98')
+					and d.id.empId = :empId
+					and d.fecha between :fechaDesde and :fechaHasta
+					and ((d.emitido = 'S') or (d.comprobante.id.cmpid = '98' and d.pendiente = 'N'))
+					and d.fecha > '2016-12-31 00:00:00'
+      		</query>
+		</named-query>
+
+		<named-query name="Documento.participacionesEnContadosIntervaloFechas.aux">
+			<!-- SINCRONIZAR CON CAMBIOS EN Documento.participacionesEnContadosIntervaloFechas -->
+			<query>
+	      		select 
+	      			d1
+	      		from 
+	      			Documento d1 join fetch d1.lineas  
+	      		where
+	      			exists (
+			      		select 
+			      			d.id.docId
+			      		from 
+			      			ParticipacionVendedor p 
+			      			join p.documento d
+			      		where
+			      			d1.id.empId = d.id.empId
+			      			and d1.id.docId = d.id.docId
+			      			and
+			      			(
+								d.comprobante.tipo in (3,4)
+								and d.id.empId = :empId
+								and d.fecha between :fechaDesde and :fechaHasta
+								and d.emitido = 'S'
+								and d.fecha > '2016-12-31 00:00:00'
+							)
+	      			)
+      		</query>
+		</named-query>
+		
+		<named-query name="Documento.obtenerDocumentoClienteNumero">
+			<query>
+				select
+					d
+				from
+					Documento d join d.cliente c join d.comprobante cmp
+				where
+					d.comprobante.tipo in (1,2,3,4)
+					and d.id.empId = :empId
+					and d.numero = :docNro
+					and c.id.cliId = :clienteId
+				order by
+					d.registroFecha desc
+					d.registroHora desc
+      		</query>
+		</named-query>		
+
+		<named-query name="Documento.pendientesCliente">
+			<query>
+				select
+					new uy.com.tmwc.facturator.dto.DocumentoDTO(
+						d.id.docId,
+						d.serie,
+						d.numero,
+						d.fecha,
+						d.CAEnom,
+						c.id.cliId,
+						c.nombre,
+						m.id.mndId,
+						m.nombre,
+						cmp.id.cmpid,
+						cmp.cmpNom,
+						d.subTotal,
+						d.iva,
+						d.total,
+						d.saldo,
+						d.emitido,
+						d.pendiente,
+						d.comprobante.tipo,
+						d.registroHora,
+						d.registroFecha
+						
+					) 
+				from
+					Documento d join d.moneda m join d.cliente c join d.comprobante cmp
+				where
+					d.comprobante.tipo in (1,2,3,4,32)
+					and d.id.empId = :empId
+					and c.id.cliId = :cliId
+					and d.emitido &lt;&gt; 'S'
+					and d.pendiente &lt;&gt; 'N'
+				order by
+					d.registroFecha desc
+					d.registroHora desc
+      		</query>
+		</named-query>
+
+		<named-query name="Documento.trazabilidadDocumento">
+			<query>
+				select
+					new uy.com.tmwc.facturator.dto.DocumentoDTO(
+						d.id.docId,
+						d.serie,
+						d.numero,
+						cmp.id.cmpid,
+						cmp.cmpNom, 
+						d.registroHora,
+						d.registroFecha,
+						d.usuarioId,
+						d.usuIdAut,
+						d.emitidoPor
+					) 
+				from
+					Documento d join d.comprobante cmp
+				where
+					(d.id.empId = :empId)
+					and (d.id.docId = :docId or d.prevDocId = :prevDocId) 
+				order by
+					d.registroFecha asc
+					d.registroHora asc
+      		</query>
+		</named-query>
+
+		<named-query name="Documento.solicitudImportacion">
+			<query>
+				select
+					new uy.com.tmwc.facturator.dto.DocumentoDTO(
+						d.id.docId,
+						d.serie,
+						d.numero,
+						cmp.id.cmpid,
+						cmp.cmpNom, 
+						d.registroHora,
+						d.registroFecha,
+						d.usuarioId,
+						d.usuIdAut,
+						d.emitidoPor
+					) 
+				from
+					Documento d join d.comprobante cmp
+				where
+					(d.id.empId = :empId)
+					and (cmp.id.cmpid = '124')
+					and (d.prevDocId = :prevDocId) 
+				order by
+					d.registroFecha asc
+					d.registroHora asc
+      		</query>
+		</named-query>
+
+
+		<named-query name="Documento.controlLineasVenta">
+			<query>
+				select 
+					distinct d
+				from  
+					Documento d join d.comprobante cmp join fetch d.lineas
+				where
+					d.comprobante.tipo in (1,2,3,4)
+					and d.id.empId = :empId
+					and d.emitido = 'S'
+					and (:moneda is null or d.moneda.codigo = :moneda)
+					and (:fechaDesde is null or d.fecha >= :fechaDesde)
+					and (:fechaHasta is null or d.fecha &lt;= :fechaHasta)
+				order by
+					d.serie,
+					d.numero
+      		</query>
+      		
+		</named-query>
+
+		<named-native-query name="Documento.unique"
+			result-class="uy.com.tmwc.facturator.libra.entity.DummyDocumento">
+			<query>
+				select
+					d.empId,
+					d.docId
+				from 
+					Documentos d
+				where
+					d.empId = :empId
+					and d.docTipo in (1,2,3,4)
+					and d.docSerie = :serie
+					and d.docNumero = :numero
+				LOCK IN SHARE MODE
+			</query>
+
+		</named-native-query>
+
+		<named-native-query name="Documento.unique.recibo"
+			result-class="uy.com.tmwc.facturator.libra.entity.DummyDocumento">
+			<query>
+				select
+					d.empId,
+					d.docId
+				from 
+					Documentos d
+				where
+					d.empId = :empId
+					and d.docTipo = 5
+					and d.docSerie = :serie
+					and d.docNumero = :numero
+				LOCK IN SHARE MODE
+			</query>
+
+		</named-native-query>
+
+		<named-native-query name="Documento.unique.movimientoStock"
+			result-class="uy.com.tmwc.facturator.libra.entity.DummyDocumento">
+			<query>
+				select
+					d.empId,
+					d.docId
+				from 
+					Documentos d
+				where
+					d.empId = :empId
+					and d.docTipo in (31, 32)
+					and d.docSerie = :serie
+					and d.docNumero = :numero
+				LOCK IN SHARE MODE
+			</query>
+
+		</named-native-query>
+
+	</entity>
+	<entity class="uy.com.tmwc.facturator.libra.entity.DummyDocumento" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Familia" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Formaspago" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Iva" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Jefatura">
+		<named-query name="Jefatura.all">
+			<query>
+      			select 
+      				distinct j
+      			from 
+      				Jefatura j left join fetch j.comisiones 
+      		</query>
+		</named-query>
+	</entity>
+	<entity class="uy.com.tmwc.facturator.libra.entity.JefaturaArticulo" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.JefaturaFamiliaArticulos" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.JefaturaProveedor" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Linea" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Moneda" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Numerador" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Fanfold" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.ParticipacionVendedor" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Planpago" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Planpagoscuota" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Preciosbase" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Preciosventa" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Rubro">
+		<named-query name="Rubro.query">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.libra.entity.Rubro(e.id.rubId, e.nombre)
+				from
+					Rubro e
+				where 
+					e.nombre like :query
+					and e.id.empId = :empId
+				order by
+					e.nombre
+			</query>
+		</named-query>
+	</entity>
+	<entity class="uy.com.tmwc.facturator.libra.entity.Tiposasiento" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Usuario" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Vendedore" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Vinculosdoc" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Vinculosfp" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Stockactual" >
+		<named-query name="Stockactual.depositos">
+			<query>
+				select
+					sa
+				from
+					Stockactual sa 
+				where
+					sa.id.empId = :empId
+					and sa.articulo.id.artId = :articuloId
+      		</query>
+		</named-query>
+	</entity>
+	<entity class="uy.com.tmwc.facturator.libra.entity.Localescomerciale" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Parametrosadministracion">
+		<named-query name="PatametrosAdministracion.fechatrabado">
+			<query>
+				select
+					l
+				from
+					Parametrosadministracion l 
+				where
+					l.id.empId = :empId
+					and l.id.parAdmId = :codigo
+      		</query>
+		</named-query>
+	</entity>
+</entity-mappings>

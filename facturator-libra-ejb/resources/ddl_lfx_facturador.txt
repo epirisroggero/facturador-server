@@ -1,0 +1,223 @@
+create table lfx_documentos (cantidadBultos integer, EmpId varchar(255) not null, DocId integer not null, primary key (EmpId, DocId)) ENGINE=InnoDB;
+create table lfx_entrega (EmpId varchar(10) not null, codigo varchar(10) not null unique, EntNombre varchar(50) not null, costo numeric(10,2), relevancia numeric(10,2), primary key (EmpId, codigo)) ENGINE=InnoDB;
+create table lfx_participacionVendedor (id bigint not null auto_increment, EmpId varchar(10), DocId integer, VenId varchar(3), porcentaje numeric(10,4), primary key (id), unique (EmpId, DocId, VenId)) ENGINE=InnoDB;
+
+alter table lfx_documentos add constraint lfx_lfxdocumentos_documentos foreign key (EmpId, DocId) references documentos (EmpId, DocId);
+alter table lfx_participacionVendedor add index lfx_participacionVendedor_vendedores (empId, venId), add constraint lfx_participacionVendedor_vendedores foreign key (empId, venId) references vendedores (EmpId, VenId);
+alter table lfx_participacionVendedor add index lfx_participacionVendedor_documentos (empId, docId), add constraint lfx_participacionVendedor_documentos foreign key (empId, docId) references documentos (EmpId, DocId);
+
+alter table lfx_documentos add column entrega_id BIGINT;
+
+    alter table lfx_documentos 
+        add index lfx_documentos_entregas (entrega_id), 
+        add constraint lfx_documentos_entregas 
+        foreign key (entrega_id) 
+        references lfx_entrega (id);
+
+
+    create table lfx_DescuentoPrometidoComprobante (
+        id bigint not null auto_increment,
+        cmpid decimal(3,0) not null,
+        descuento decimal(10,4) not null,
+        EmpId char(10) not null,
+        retraso integer not null,
+        primary key (id),
+        unique (cmpid, EmpId, retraso)
+    );
+
+/*
+    alter table lfx_DescuentoPrometidoComprobante 
+        add index lfx_DescuentoPrometidoComprobante_comprobante (cmpid, EmpId), 
+        add constraint lfx_DescuentoPrometidoComprobante_comprobante 
+        foreign key (cmpid, EmpId) 
+        references comprobantes (CMPID, EMPID);
+
+EL ANTERIOR NO FUNCIONO, Y ESTE GENERADO POR MYSQL WORKBENCH TAMPOCO:
+ALTER TABLE lfx_descuentoprometidocomprobante 
+  ADD CONSTRAINT `lfx_DescuentoPrometidoComprobante_comprobante`
+  FOREIGN KEY (`cmpid` , `EmpId` )
+  REFERENCES comprobantes (`CMPID` , `EMPID` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION
+, ADD INDEX `lfx_DescuentoPrometidoComprobante_comprobante` (`cmpid` ASC, `EmpId` ASC) ;
+*/
+        
+INSERT INTO lfx_entrega (`EmpId`, `codigo`, `EntNombre`, `costo`, `relevancia`) VALUES ('FULLTIME2', '0', 'Sin Entrega', '2.5', '1');
+INSERT INTO lfx_entrega (`EmpId`, `codigo`, `EntNombre`, `costo`, `relevancia`) VALUES ('FULLTIME2', '1', 'Mostrador', '2.5', '1');
+INSERT INTO lfx_entrega (`EmpId`, `codigo`, `EntNombre`, `costo`, `relevancia`) VALUES ('FULLTIME2', '2', 'Llevo Yo', '2.5', '1');
+INSERT INTO lfx_entrega (`EmpId`, `codigo`, `EntNombre`, `costo`, `relevancia`) VALUES ('FULLTIME2', '3', 'Cliente de gira', '2.5', '1');
+INSERT INTO lfx_entrega (`EmpId`, `codigo`, `EntNombre`, `costo`, `relevancia`) VALUES ('FULLTIME2', '4', 'Comun', '2.5', '1');
+        
+        
+/*------------------*/
+
+/*0.1.2*/
+
+drop table lfx_participacionvendedor;
+create table lfx_participacionvendedor (EmpId varchar(10) not null, DocId integer not null, VenId varchar(3) not null, porcentaje numeric(10,4), primary key (EmpId, DocId, VenId)) ENGINE=InnoDB;
+alter table lfx_participacionvendedor add index lfx_participacionVendedor_vendedores (EmpId, VenId), add constraint lfx_participacionVendedor_vendedores foreign key (EmpId, VenId) references vendedores (EmpId, VenId);
+alter table lfx_participacionvendedor add index lfx_participacionVendedor_documentos (EmpId, DocId), add constraint lfx_participacionVendedor_documentos foreign key (EmpId, DocId) references documentos (EmpId, DocId);
+        
+alter table lfx_documentos add column costoOperativo numeric(10,2);
+alter table lfx_documentos add column costo numeric(10,2);
+
+
+/* 0.1.3 */
+ALTER TABLE `lfx_documentos` ADD `chofer` varchar(50) default NULL
+ALTER TABLE `lfx_documentos` ADD `nroOrden` varchar(50) default NULL
+ALTER TABLE `lfx_documentos` ADD `localidad` varchar(50) default NULL
+ALTER TABLE `lfx_documentos` ADD `departamento` varchar(50) default NULL
+ALTER TABLE `lfx_documentos` ADD `dirEntrega` varchar(255) default NULL
+
+/* 0.5.8 */
+ALTER TABLE `libra`.`lfx_descuentoprometidocomprobante` ADD COLUMN `categoriaCliente` VARCHAR(3) NULL  AFTER `retraso` ;
+ALTER TABLE `libra`.`lfx_descuentoprometidocomprobante` DROP INDEX `cmpid`, ADD UNIQUE INDEX `cmpid` (`cmpid` ASC, `EmpId` ASC, `retraso` ASC, `categoriaCliente` ASC) ;
+
+CREATE TABLE `libra`.`lfx_auditoria` (
+ `id` INT NOT NULL ,
+ `fechahora` DATETIME NULL ,
+ `EmpId` VARCHAR(10) NULL ,
+ `UsuId` SMALLINT(6) NULL ,
+ `UsuNom` VARCHAR(40) NULL ,
+ `docId` INT(11) NULL ,
+ `problemas` TEXT NULL ,
+ PRIMARY KEY (`id`) );
+
+/* 1.0.0 */
+
+ALTER TABLE `libra`.`lfx_documentos` CHANGE COLUMN `entrega_id` `entrega_id` VARCHAR(10) NULL , ADD COLUMN `lfx_documentoscol` VARCHAR(45) NULL AFTER `dirEntrega` , 
+ ADD CONSTRAINT `lfx_documentos_entregas`
+ FOREIGN KEY (`EmpId` , `entrega_id` )
+ REFERENCES `libra`.`lfx_entrega` (`EmpId` , `codigo` )
+ ON DELETE NO ACTION
+ ON UPDATE NO ACTION
+, DROP PRIMARY KEY 
+, ADD PRIMARY KEY (`EmpId`, `entrega_id`);
+
+ALTER TABLE `libra`.`lfx_entrega` CHANGE COLUMN `nombre` `EntNom` VARCHAR(50) NOT NULL;
+
+ALTER TABLE `libra`.`lfx_entrega` CHANGE COLUMN `id` `id` BIGINT(11) NULL 
+, DROP PRIMARY KEY 
+, ADD PRIMARY KEY (`EmpId`, `codigo`);
+
+
+/* 0.9 */
+create table lfx_agendatareas (
+	EmpId varchar(10) not null,	
+	AgeId integer not null,
+	fechaInicio date,
+	nroOrden varchar(20),
+	orden integer,
+	textoAdjunto longtext,
+	supervisor1 integer, 
+	supervisor2 integer,
+	supervisor3 integer,
+    primary key (EmpId, AgeId)
+);
+
+      
+/* 1.2.0 */
+      
+CREATE  TABLE `libra`.`lfx_tareas` (
+	`EmpId` VARCHAR(11) NOT NULL ,
+	`TareaId` CHAR(3) NOT NULL ,
+	`CapituloId` CHAR(3) NULL DEFAULT NULL ,
+	PRIMARY KEY (`EmpId`, `TareaId`) );
+  
+CREATE  TABLE `libra`.`lfx_tareacapitulo` (
+    `EmpId` CHAR(11) NOT NULL ,
+    `CapituloId` CHAR(3) NOT NULL ,
+    `Nombre` VARCHAR(45) NULL ,
+    `Descripcion` TEXT NULL ,
+	PRIMARY KEY (`EmpId`, `CapituloId`) );
+
+INSERT INTO `libra`.`lfx_tareacapitulo` (`EmpId`, `CapituloId`, `Nombre`, `Descripcion`) VALUES ('FULLTIME2', '001', 'VENTAS', 'VENTAS');
+INSERT INTO `libra`.`lfx_tareacapitulo` (`EmpId`, `CapituloId`, `Nombre`, `Descripcion`) VALUES ('FULLTIME2', '002', 'EXPEDICION', 'EXPEDICIONES');
+INSERT INTO `libra`.`lfx_tareacapitulo` (`EmpId`, `CapituloId`, `Nombre`, `Descripcion`) VALUES ('FULLTIME2', '003', 'ADMINISTRACIÓN', 'ADMINISTRACION');
+INSERT INTO `libra`.`lfx_tareacapitulo` (`EmpId`, `CapituloId`, `Nombre`, `Descripcion`) VALUES ('FULLTIME2', '004', 'IMPORTACIONES', 'IMPORTACIONES');
+INSERT INTO `libra`.`lfx_tareacapitulo` (`EmpId`, `CapituloId`, `Nombre`, `Descripcion`) VALUES ('FULLTIME2', '005', 'SERVICIOS', 'SERVICIOS');
+     
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '001', 'ENVIAR MAIL');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '002', 'LLAMAR AL CLIENTE');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '003', 'VISITAR AL CLIENTE');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '004', 'LLEVAR MUESTRAS');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '005', 'PROPONER NEGOCIO');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '006', 'HACER SEGUIMIENTO');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '007', 'SEGUIMIENTOS POST VENTA');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '008', 'ATENDER RECLAMO');
+
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '020', 'ENTREGAR');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '021', 'ENTREGAR Y COBRAR');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '022', 'RETIRAR');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '023', 'COMPRAR');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '024', 'DEVOLVER');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '025', 'COBRAR');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '026', 'DEPOSITAR');
+
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '030', 'HACER');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '031', 'CONTROLAR');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '032', 'SACAR PAGO');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '033', 'GIRAR AL EXTERIOR');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '034', 'ENVIAR INFORME');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '035', 'CONCILIAR CTA CTE.');
+
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '040', 'HACER ORDEN DE COMPRA');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '041', 'ASIGNAR FLETE');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '042', 'RECLAMAR A FABRICA');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '043', 'PASAR REFORMA');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '044', 'CONTROLAR IMPORTACION');
+
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '050', 'ATENDER RECLAMO');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '051', 'AGENDAR VISITA CON CARGO');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '052', 'AGENDAR INSTALACION MAQUINA');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '053', 'COTIZAR SERVICIO');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '054', 'MANTENIMIENTO DE CASA');
+INSERT INTO `libra`.`tareas` (`EmpId`, `TareaId`, `TareaNom`) VALUES ('FULLTIME2', '055', 'MANTENIMIENTO DE VEHICULO');
+
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '001', '001');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '002', '001');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '003', '001');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '004', '001');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '005', '001');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '006', '001');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '007', '001');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '008', '001');
+
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '020', '002');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '021', '002');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '022', '002');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '023', '002');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '024', '002');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '025', '002');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '026', '002');
+      
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '030', '003');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '031', '003');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '032', '003');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '033', '003');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '034', '003');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '035', '003');
+      
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '040', '004');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '041', '004');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '042', '004');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '043', '004');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '044', '004');
+
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '050', '005');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '051', '005');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '052', '005');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '053', '005');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '054', '005');
+INSERT INTO `libra`.`lfx_tareas` (`EmpId`, `TareaId`, `CapituloId`) VALUES ('FULLTIME2', '055', '005');
+
+ALTER TABLE `libra`.`lfx_documentos` ADD COLUMN `condicionId` CHAR(3) NULL DEFAULT NULL  AFTER `dirEntrega` ;
+
+ALTER TABLE `libra`.`lfx_agendatareas` ADD COLUMN `notify` CHAR(1) NOT NULL DEFAULT 'N'  AFTER `supervisor3` ;
+
+UPDATE `libra`.`comprobantes` SET `NUMCMPID`='81' WHERE `EMPID`='FULLTIME2' and`CMPID`='81';
+UPDATE `libra`.`comprobantes` SET `NUMCMPID`='82' WHERE `EMPID`='FULLTIME2' and`CMPID`='82';
+
+
+
+  

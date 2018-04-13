@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+<wb-module deploy-name="facturator-server-ear">
+        <wb-resource deploy-path="/" source-path="/EarContent"/>
+<dependent-module deploy-path="/" handle="module:/resource/facturator-server-ejb/facturator-server-ejb">
+<dependency-type>uses</dependency-type>
+</dependent-module>
+<dependent-module deploy-path="/" handle="module:/resource/facturator-server/facturator-server">
+<dependency-type>uses</dependency-type>
+</dependent-module>
+        <dependent-module archiveName="facturator-remote-api.jar" deploy-path="/" handle="module:/resource/facturator-remote-api/facturator-remote-api">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="facturator-libra-ejb.jar" deploy-path="/" handle="module:/resource/facturator-libra-ejb/facturator-libra-ejb">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="facturator-spi.jar" deploy-path="/" handle="module:/resource/facturator-spi/facturator-spi">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="twmc-utils.jar" deploy-path="/" handle="module:/resource/twmc-utils/twmc-utils">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <!-- dependent-module archiveName="facturator-figaro-ejb.jar" deploy-path="/" handle="module:/resource/facturator-figaro-ejb/facturator-figaro-ejb">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>  -->
+</wb-module>
+</project-modules>

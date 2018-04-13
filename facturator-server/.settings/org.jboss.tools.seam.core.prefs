@@ -1,0 +1,18 @@
+#Sun Jun 20 19:17:13 UYT 2010
+action.package=uy.com.tmwc.facturator.session
+action.sources=/facturator-server-ejb/ejbModule
+eclipse.preferences.version=1
+model.package=uy.com.tmwc.facturator.entity
+model.sources=/facturator-server-ejb/ejbModule
+seam.ear.project=facturator-server-ear
+seam.ejb.project=facturator-server-ejb
+seam.project.connection.profile=MySQL-facturator
+seam.project.deployment.type=ear
+seam.project.settings.version=1.1
+seam.project.web.root.folder=/facturator-server/WebContent
+seam.runtime.name=jboss-seam-2.2.1.CR1
+seam.settings.changed.by.user=true
+seam.test.creating=true
+seam.test.project=facturator-server-test
+test.package=uy.com.tmwc.facturator.server.test
+test.sources=/facturator-server-test/test-src

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service id="remoting-service" class="flex.messaging.services.RemotingService">
+
+	<adapters>
+		<adapter-definition id="java-object"
+			class="flex.messaging.services.remoting.adapters.JavaAdapter"
+			default="true" />
+	</adapters>
+
+	<default-channels>
+		<channel ref="my-amf" />
+		<channel ref="my-secure-amf" />
+	</default-channels>
+
+	<destination id="CreatingRpc">
+	    <security>
+            <security-constraint ref="authenticatedUsers"/>
+        </security>
+		<properties>
+			<source>poc.RemoteServiceHandler</source>
+		</properties>
+		<adapter ref="java-object" />
+	</destination>
+	
+	<destination id="UsuariosRpc">
+		<properties>
+			<source>poc.MyServiceHandler</source>
+		</properties>
+		<adapter ref="java-object" />
+	</destination>
+	
+
+</service>

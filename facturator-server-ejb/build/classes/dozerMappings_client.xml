@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net
+          http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<mapping>
+		<class-a>uy.com.tmwc.facturator.entity.Documento</class-a>
+		<class-b>uy.com.tmwc.facturator.entity.Documento</class-b>
+
+		<field-exclude> <!-- cuotas es un alias a cuotasDocumento.cuotas. Si dozer llega por dos 
+				lugares a la lista de cuotas, duplica los elementos. -->
+			<a>cuotas</a>
+			<b>cuotas</b>
+
+		</field-exclude>
+
+		<field-exclude>
+			<a>recibosVinculados</a> <!-- excluido porque tiene varios campos readonly y dozer no se maneja -->
+			<b>recibosVinculados</b>
+		</field-exclude>
+	</mapping>
+
+</mappings>
+        
+      
