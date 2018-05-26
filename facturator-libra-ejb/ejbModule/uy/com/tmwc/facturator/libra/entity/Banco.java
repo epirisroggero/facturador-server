@@ -3,6 +3,8 @@ package uy.com.tmwc.facturator.libra.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import uy.com.tmwc.utils.orm.CatalogEntity;
+
 
 /**
  * The persistent class for the bancos database table.
@@ -10,7 +12,8 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="bancos")
-public class Banco implements Serializable {
+@CatalogEntity
+public class Banco extends PersistentEntity<BancoPK> implements Serializable, HasId<BancoPK>  {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
@@ -20,16 +23,13 @@ public class Banco implements Serializable {
 	private String bancoAbrevia;
 
 	@Column(name="BancoNom")
-	private String bancoNom;
+	private String nombre;
 
 	@Column(name="BancoNotas")
 	private String bancoNotas;
 
 	@Column(name="BancoTipo")
 	private String bancoTipo;
-
-    public Banco() {
-    }
 
 	public BancoPK getId() {
 		return this.id;
@@ -47,14 +47,6 @@ public class Banco implements Serializable {
 		this.bancoAbrevia = bancoAbrevia;
 	}
 
-	public String getBancoNom() {
-		return this.bancoNom;
-	}
-
-	public void setBancoNom(String bancoNom) {
-		this.bancoNom = bancoNom;
-	}
-
 	public String getBancoNotas() {
 		return this.bancoNotas;
 	}
@@ -69,6 +61,14 @@ public class Banco implements Serializable {
 
 	public void setBancoTipo(String bancoTipo) {
 		this.bancoTipo = bancoTipo;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 
 }

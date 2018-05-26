@@ -120,6 +120,16 @@
       <b>codigo</b>
     </field>
   </mapping>
+  
+  <mapping>
+  	<class-a>uy.com.tmwc.facturator.libra.entity.Banco</class-a>
+  	<class-b>uy.com.tmwc.facturator.entity.Banco</class-b>
+  	<field>
+  		<a>id.bancoId</a>
+  		<b>codigo</b>
+  	</field>
+  </mapping>
+  
     
   <mapping> 
     <class-a>uy.com.tmwc.facturator.libra.entity.Iva</class-a>   
@@ -358,14 +368,6 @@
   	</field>
   </mapping>
 
-  <mapping>
-  	<class-a>uy.com.tmwc.facturator.libra.entity.Banco</class-a>
-  	<class-b>uy.com.tmwc.facturator.entity.Banco</class-b>
-  	<field>
-  		<a>id.bancoId</a>
-  		<b>codigo</b>
-  	</field>
-  </mapping>
 
   <mapping>
   	<class-a>uy.com.tmwc.facturator.libra.entity.Pais</class-a>

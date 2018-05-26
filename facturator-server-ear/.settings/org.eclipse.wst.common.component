@@ -22,9 +22,5 @@
         <dependent-module archiveName="twmc-utils.jar" deploy-path="/" handle="module:/resource/twmc-utils/twmc-utils">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <!-- dependent-module archiveName="facturator-figaro-ejb.jar" deploy-path="/" handle="module:/resource/facturator-figaro-ejb/facturator-figaro-ejb">
-            <dependent-object/>
-            <dependency-type>uses</dependency-type>
-        </dependent-module>  -->
 </wb-module>
 </project-modules>

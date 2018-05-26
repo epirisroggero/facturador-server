@@ -58,6 +58,7 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 		classMapping.put(uy.com.tmwc.facturator.entity.Deposito.class, uy.com.tmwc.facturator.libra.entity.Deposito.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Entrega.class, uy.com.tmwc.facturator.libra.entity.Entrega.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.FormaPago.class, uy.com.tmwc.facturator.libra.entity.Formaspago.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Banco.class, uy.com.tmwc.facturator.libra.entity.Banco.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.GrupoContacto.class, uy.com.tmwc.facturator.libra.entity.Gruposcontacto.class);		
 		classMapping.put(uy.com.tmwc.facturator.entity.Iva.class, uy.com.tmwc.facturator.libra.entity.Iva.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Moneda.class, uy.com.tmwc.facturator.libra.entity.Moneda.class);
@@ -71,7 +72,6 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 
 		classMapping.put(uy.com.tmwc.facturator.entity.Zona.class, uy.com.tmwc.facturator.libra.entity.Zona.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Iva.class, uy.com.tmwc.facturator.libra.entity.Iva.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.FormaPago.class, uy.com.tmwc.facturator.libra.entity.Formaspago.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Pais.class, uy.com.tmwc.facturator.libra.entity.Pais.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Caja.class, uy.com.tmwc.facturator.libra.entity.Caja.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Fanfold.class, uy.com.tmwc.facturator.libra.entity.Fanfold.class);

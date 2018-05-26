@@ -9,26 +9,27 @@ import javax.persistence.*;
  */
 @Embeddable
 public class BancoPK implements Serializable {
-	//default serial version id, required for serializable classes.
+	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="EmpId")
+	@Column(name = "EmpId")
 	private String empId;
 
-	@Column(name="BancoId")
+	@Column(name = "BancoId")
 	private String bancoId;
 
-    public BancoPK() {
-    }
 	public String getEmpId() {
 		return this.empId;
 	}
+
 	public void setEmpId(String empId) {
 		this.empId = empId;
 	}
+
 	public String getBancoId() {
 		return this.bancoId;
 	}
+
 	public void setBancoId(String bancoId) {
 		this.bancoId = bancoId;
 	}
@@ -40,19 +41,17 @@ public class BancoPK implements Serializable {
 		if (!(other instanceof BancoPK)) {
 			return false;
 		}
-		BancoPK castOther = (BancoPK)other;
-		return 
-			this.empId.equals(castOther.empId)
-			&& this.bancoId.equals(castOther.bancoId);
+		BancoPK castOther = (BancoPK) other;
+		return this.empId.equals(castOther.empId) && this.bancoId.equals(castOther.bancoId);
 
-    }
-    
+	}
+
 	public int hashCode() {
 		final int prime = 31;
 		int hash = 17;
 		hash = hash * prime + this.empId.hashCode();
 		hash = hash * prime + this.bancoId.hashCode();
-		
+
 		return hash;
-    }
+	}
 }

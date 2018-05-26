@@ -13,7 +13,7 @@ import org.hibernate.annotations.NotFoundAction;
  */
 @Entity
 @Table(name="lfx_vendedores_usuario")
-public class VendedoresUsuario implements Serializable {
+public class VendedoresUsuario extends PersistentEntity<VendedoresUsuarioPK>  implements Serializable, HasId<VendedoresUsuarioPK>  {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
@@ -24,12 +24,14 @@ public class VendedoresUsuario implements Serializable {
     
     @NotFound(action=NotFoundAction.IGNORE)
     @OneToOne
-    @JoinColumns({@javax.persistence.JoinColumn(name="vendedorId", referencedColumnName="VenId", insertable=false, updatable=false), @javax.persistence.JoinColumn(name="empId", referencedColumnName="EmpId", insertable=false, updatable=false)})
+    @JoinColumns({@javax.persistence.JoinColumn(name="vendedorId", referencedColumnName="VenId", insertable=false, updatable=false), 
+    	@javax.persistence.JoinColumn(name="empId", referencedColumnName="EmpId", insertable=false, updatable=false)})
     private Vendedore vendedor;
     
     @NotFound(action=NotFoundAction.IGNORE)
     @ManyToOne(optional=false)
-    @JoinColumns({@javax.persistence.JoinColumn(name="usuarioId", referencedColumnName="UsuId", insertable=false, updatable=false), @javax.persistence.JoinColumn(name="empId", referencedColumnName="EmpId", insertable=false, updatable=false)})
+    @JoinColumns({@javax.persistence.JoinColumn(name="usuarioId", referencedColumnName="UsuId", insertable=false, updatable=false), 
+    	@javax.persistence.JoinColumn(name="empId", referencedColumnName="EmpId", insertable=false, updatable=false)})
     private Usuario usuario;
 
 	public VendedoresUsuarioPK getId() {
@@ -55,5 +57,6 @@ public class VendedoresUsuario implements Serializable {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
+
 	
 }

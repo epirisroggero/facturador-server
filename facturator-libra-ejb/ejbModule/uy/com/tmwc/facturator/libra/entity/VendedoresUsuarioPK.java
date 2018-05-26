@@ -14,14 +14,15 @@ public class VendedoresUsuarioPK implements Serializable {
 	// default serial version id, required for serializable classes.
 	private static final long serialVersionUID = 1L;
 
-	@Column(name="EmpId")
-	private String empId;
-
 	@Column(name="vendedorId")
 	private String vendedorId;
 
 	@Column(name="usuarioId")
 	private short usuarioId;
+	
+	@Column(name = "EmpId")
+	private String empId;
+
 
 	public VendedoresUsuarioPK() {
 	}
@@ -40,14 +41,6 @@ public class VendedoresUsuarioPK implements Serializable {
 
 	public void setUsuarioId(short usuarioId) {
 		this.usuarioId = usuarioId;
-	}
-
-	public String getEmpId() {
-		return empId;
-	}
-
-	public void setEmpId(String empId) {
-		this.empId = empId;
 	}
 
 	public boolean equals(Object other) {
@@ -69,5 +62,13 @@ public class VendedoresUsuarioPK implements Serializable {
 		hash = hash * prime + ((int) this.usuarioId);
 
 		return hash;
+	}
+
+	public String getEmpId() {
+		return empId;
+	}
+
+	public void setEmpId(String empId) {
+		this.empId = empId;
 	}
 }

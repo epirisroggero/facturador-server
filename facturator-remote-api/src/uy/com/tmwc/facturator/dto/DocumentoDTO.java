@@ -39,6 +39,11 @@ public class DocumentoDTO implements Serializable {
 
 	private BigDecimal tipoComprobante;
 
+	private String titular;
+	private String bancoIdDoc;
+	private String concepto;
+
+	
 	public DocumentoDTO() {
 	}
 
@@ -275,6 +280,30 @@ public class DocumentoDTO implements Serializable {
 
 	public void setSaldo(BigDecimal saldo) {
 		this.saldo = saldo;
+	}
+
+	public String getTitular() {
+		return titular;
+	}
+
+	public void setTitular(String titular) {
+		this.titular = titular;
+	}
+
+	public String getBancoIdDoc() {
+		return bancoIdDoc;
+	}
+
+	public void setBancoIdDoc(String bancoIdDoc) {
+		this.bancoIdDoc = bancoIdDoc;
+	}
+
+	public String getConcepto() {
+		return concepto;
+	}
+
+	public void setConcepto(String concepto) {
+		this.concepto = concepto;
 	}
 
 }

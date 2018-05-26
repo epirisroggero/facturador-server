@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.6.500</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.6.500.air</url>
+	<versionNumber>1.6.516</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.6.516.air</url>
 	<description>
 	    <![CDATA[
-* Recibos: Permitir el ingreso del total cancelado.
-* Recibos: Detalles menores en el ingreso del recibo.
-* Permisos: Aliados comerciales.
-
+* Recibos: Ajustes en el cálculo de la renta financiera. 
 	    ]]>
 	</description>
 </update>

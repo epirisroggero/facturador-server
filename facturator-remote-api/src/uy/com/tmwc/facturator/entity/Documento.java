@@ -107,6 +107,11 @@ public class Documento extends DocumentoBase implements Serializable {
 	private Moneda docRecMda;
 	private BigDecimal docRecNeto;
 	private BigDecimal docRenFin;
+	
+	private String titular;
+	private String bancoIdDoc;
+	private String concepto;
+
 
 
 	public Documento() {
@@ -1032,6 +1037,30 @@ public class Documento extends DocumentoBase implements Serializable {
 
 	public void setDocRenFin(BigDecimal docRenFin) {
 		this.docRenFin = docRenFin;
+	}
+
+	public String getTitular() {
+		return titular;
+	}
+
+	public void setDocTitular(String docTitular) {
+		this.titular = docTitular;
+	}
+
+	public String getBancoIdDoc() {
+		return bancoIdDoc;
+	}
+
+	public void setBancoIdDoc(String bancoIdDoc) {
+		this.bancoIdDoc = bancoIdDoc;
+	}
+
+	public String getConcepto() {
+		return concepto;
+	}
+
+	public void setConcepto(String docConcepto) {
+		this.concepto = docConcepto;
 	}
 
 }

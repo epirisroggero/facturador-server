@@ -393,7 +393,7 @@ public class RemoteServiceHandler {
 			auditoria.setDocId(documento.getDocId());
 			auditoria.setNotas("Documento creado por un total de " + moneda + " " + total);
 			auditoria.setProblemas("Ninguno");
-		}		
+		}
 
 		String tcFiscal = getTipoCambioFiscal(Moneda.CODIGO_MONEDA_DOLAR, documento.getFecha());
 		if (tcFiscal.length() > 0) {

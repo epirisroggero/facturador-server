@@ -363,12 +363,25 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			BigDecimal totalRentaFinanciera = BigDecimal.ZERO;
 			
 			for (VinculoDocumentos vinculoDocumentos : participCobranzas) {
-				if (vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_PESOS) ||vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
-					totalRentaFinanciera = totalRentaFinanciera.add(convertMoneda(tipoCambio, vinculoDocumentos.getRentaFinanciera(), vinculoDocumentos.getFactura().getMoneda().getCodigo(), Moneda.CODIGO_MONEDA_DOLAR));
-				} else if (vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_EUROS) ||vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_EUROS_ASTER)) {
-					totalRentaFinanciera = totalRentaFinanciera.add(convertMoneda(tipoCambio, vinculoDocumentos.getRentaFinanciera(), vinculoDocumentos.getFactura().getMoneda().getCodigo(), Moneda.CODIGO_MONEDA_DOLAR));
+				BigDecimal  rentaFinanciera = null;
+				if (vinculoDocumentos.getRecibo().getComprobante().isAster()) {
+					rentaFinanciera = vinculoDocumentos.getRentaFinanciera() != null ? vinculoDocumentos.getRentaFinanciera() : BigDecimal.ZERO;
 				} else {
-					totalRentaFinanciera = totalRentaFinanciera.add(vinculoDocumentos.getRentaFinanciera());
+					rentaFinanciera = vinculoDocumentos.getVinRtaFin() != null ? vinculoDocumentos.getVinRtaFin() : BigDecimal.ZERO;
+				}				
+				if (vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_PESOS) ||vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
+					totalRentaFinanciera = totalRentaFinanciera.add(convertMoneda(tipoCambio, rentaFinanciera, vinculoDocumentos.getFactura().getMoneda().getCodigo(), Moneda.CODIGO_MONEDA_DOLAR));
+				} else if (vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_EUROS) ||vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_EUROS_ASTER)) {
+					totalRentaFinanciera = totalRentaFinanciera.add(convertMoneda(tipoCambio, rentaFinanciera, vinculoDocumentos.getFactura().getMoneda().getCodigo(), Moneda.CODIGO_MONEDA_DOLAR));
+				} else {
+					totalRentaFinanciera = totalRentaFinanciera.add(rentaFinanciera);
+				}
+				
+				BigDecimal dtoPorc = null;
+				if (vinculoDocumentos.getRecibo().getComprobante().isAster()) {
+					dtoPorc = vinculoDocumentos.getRecibo().getDescuentosPorc();
+				} else {
+					dtoPorc = vinculoDocumentos.getDescuentoPorc();
 				}
 								
 				w.write(vinculoDocumentos.getRecibo().getSerieNumero().toString());
@@ -378,9 +391,9 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				w.write(vinculoDocumentos.getFactura().getMoneda().toString());
 				w.write(formatter.format(vinculoDocumentos.getFactura().getTotal().doubleValue()));
 				w.write(formatter.format(vinculoDocumentos.getMonto() != null ? vinculoDocumentos.getMonto().doubleValue() : 0.0));
-				w.write(formatter.format(vinculoDocumentos.getRecibo().getDescuentosPorc() != null ? vinculoDocumentos.getRecibo().getDescuentosPorc().doubleValue() : 0.0));
+				w.write(formatter.format(dtoPorc != null ? dtoPorc.doubleValue() : 0.0));
 				w.write(formatter.format(vinculoDocumentos.getFactura().getComprobante().getDescuentoPrometido().floatValue()));
-				w.write(formatter.format(vinculoDocumentos.getRentaFinanciera() != null ? vinculoDocumentos.getRentaFinanciera().doubleValue() : 0.0));
+				w.write(formatter.format(rentaFinanciera));
 				w.endRecord();
 			}
 
@@ -523,14 +536,24 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			
 			for (ParticipacionEnCobranza participacionEnCobranza : participCobranzas) {
 				Boolean esContado = participacionEnCobranza.getVinculo() == null;
+				
 
 				uy.com.tmwc.facturator.entity.Documento recibo = !esContado ? participacionEnCobranza.getRecibo() : null;
 				uy.com.tmwc.facturator.entity.Documento factura = esContado ? participacionEnCobranza.getParticipacionVendedor().getDocumento() : participacionEnCobranza.getFactura();
 				
+				BigDecimal rentaComprobante = factura.getRentaNetaComercial();
+//				if (!factura.getComprobante().isAster()) {
+//					if (participacionEnCobranza.getVinculo() !=  null ) {
+//						rentaComprobante = participacionEnCobranza.getVinculo().getVinRtaFin();	
+//					}
+//				} else {
+//					rentaComprobante = factura.getRentaNetaComercial();
+//				}
 				
 				ParticipacionVendedor participacionVendedor = participacionEnCobranza.getParticipacionVendedor();
 				
-				BigDecimal rentaComprobante = factura.getRentaNetaComercial();
+				
+				
 				BigDecimal participacion = participacionVendedor.getPorcentaje();
 				BigDecimal rentaVendedor = rentaComprobante.multiply(participacion).divide(new BigDecimal("100"), 2);
 			

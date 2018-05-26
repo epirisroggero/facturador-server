@@ -78,10 +78,10 @@
       <class>uy.com.tmwc.facturator.libra.entity.CapituloPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Capitulo</class>
       <class>uy.com.tmwc.facturator.libra.entity.CajaPK</class>
-      <class>uy.com.tmwc.facturator.libra.entity.CaePK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Cae</class>
-      <class>uy.com.tmwc.facturator.libra.entity.BancoPK</class>
+      <class>uy.com.tmwc.facturator.libra.entity.CaePK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Banco</class>
+      <class>uy.com.tmwc.facturator.libra.entity.BancoPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.AuditoriaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Asientos1PK</class>
       <class>uy.com.tmwc.facturator.libra.entity.AsientoPK</class>

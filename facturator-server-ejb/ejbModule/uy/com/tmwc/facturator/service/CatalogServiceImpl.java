@@ -12,8 +12,9 @@ import javax.ejb.Stateless;
 import org.jboss.seam.annotations.Name;
 
 import uy.com.tmwc.facturator.entity.Articulo;
-import uy.com.tmwc.facturator.entity.ArticuloPrecio;
 import uy.com.tmwc.facturator.entity.ArticuloPartida;
+import uy.com.tmwc.facturator.entity.ArticuloPrecio;
+import uy.com.tmwc.facturator.entity.Banco;
 import uy.com.tmwc.facturator.entity.Caja;
 import uy.com.tmwc.facturator.entity.Capitulo;
 import uy.com.tmwc.facturator.entity.CategoriasClientes;
@@ -45,7 +46,6 @@ import uy.com.tmwc.facturator.entity.Tarea;
 import uy.com.tmwc.facturator.entity.Usuario;
 import uy.com.tmwc.facturator.entity.Vendedor;
 import uy.com.tmwc.facturator.entity.Zona;
-import uy.com.tmwc.facturator.entity.Banco;
 import uy.com.tmwc.facturator.rapi.CatalogService;
 import uy.com.tmwc.facturator.spi.CatalogDAOService;
 
@@ -87,8 +87,8 @@ public class CatalogServiceImpl implements CatalogService {
 		add(Numerador.class);
 		add(Rubro.class);
 		add(CentrosCosto.class);
-		add(Banco.class);
 		add(FormaPago.class);
+		add(Banco.class);
 	}
 
 	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog) {
@@ -97,15 +97,13 @@ public class CatalogServiceImpl implements CatalogService {
 		return this.catalogService.getCatalog(clazz);
 	}
 
-	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog,
-			String query) {
+	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog, String query) {
 		Class clazz = getCatalogClass(catalog);
 
 		return this.catalogService.getCatalog(clazz, query);
 	}
 
-	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog,
-			String query, int limit) {
+	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog, String query, int limit) {
 		Class clazz = getCatalogClass(catalog);
 
 		return this.catalogService.getCatalog(clazz, query, limit);
@@ -126,7 +124,7 @@ public class CatalogServiceImpl implements CatalogService {
 	public ArticuloPrecio getPrecioArticulo(String preciosVenta, String articulo) {
 		return this.catalogService.getPrecioArticulo(preciosVenta, articulo);
 	}
-	
+
 	public ArticuloPartida getArticuloPartida(String artId, String partidaId) {
 		return this.catalogService.getArticuloPartida(artId, partidaId);
 	}
@@ -134,13 +132,12 @@ public class CatalogServiceImpl implements CatalogService {
 	public Collection<Jefatura> getJefaturas() {
 		return this.catalogService.getJefaturas();
 	}
-	
+
 	public ParametrosAdministracion getParametrosAdministracion() {
 		return this.catalogService.getParametrosAdministracion();
 	}
 
-	public <T extends CodigoNombreEntity> List<T> queryCatalog(T example,
-			int firstResult, int limit) {
+	public <T extends CodigoNombreEntity> List<T> queryCatalog(T example, int firstResult, int limit) {
 		return this.catalogService.queryCatalog(example, firstResult, limit);
 	}
 
@@ -149,8 +146,7 @@ public class CatalogServiceImpl implements CatalogService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <D extends CodigoNombreEntity> D findCatalogEntity(String catalog,
-			String codigo) {
+	public <D extends CodigoNombreEntity> D findCatalogEntity(String catalog, String codigo) {
 		Class<D> clazz = (Class<D>) getCatalogClass(catalog);
 		return catalogService.findCatalogEntity(clazz, codigo);
 	}

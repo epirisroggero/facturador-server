@@ -19,7 +19,4 @@
   <module>
     <ejb>facturator-spi.jar</ejb>
   </module>
-  <!-- module>
-    <ejb>facturator-figaro-ejb.jar</ejb>
-  </module> -->
 </application>

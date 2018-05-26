@@ -1083,6 +1083,7 @@
 	<entity class="uy.com.tmwc.facturator.libra.entity.DummyDocumento" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Familia" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Formaspago" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Banco" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Iva" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Jefatura">
 		<named-query name="Jefatura.all">
