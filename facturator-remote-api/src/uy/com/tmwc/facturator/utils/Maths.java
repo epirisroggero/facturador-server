@@ -14,8 +14,9 @@ public class Maths {
 	}
 
 	public static BigDecimal calcularMontoDescuento(BigDecimal monto, BigDecimal descuento) {
-		if (monto == null || descuento == null)
+		if (monto == null || descuento == null) {
 			return BigDecimal.ZERO;
+		}
 		return monto.multiply(descuento).divide(ONE_HUNDRED);
 	}
 

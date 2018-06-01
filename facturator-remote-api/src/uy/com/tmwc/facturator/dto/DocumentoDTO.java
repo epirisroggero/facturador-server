@@ -43,7 +43,6 @@ public class DocumentoDTO implements Serializable {
 	private String bancoIdDoc;
 	private String concepto;
 
-	
 	public DocumentoDTO() {
 	}
 

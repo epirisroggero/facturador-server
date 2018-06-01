@@ -520,7 +520,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			w.write("RTA. AL VEND.");
 			w.write("FECHA RECIBO");
 			w.write("S/N RECIBO");
-			w.write("IMPORTE COBRADO");
+			w.write("IMPORTE VINULADO"); // TODO: Revisar
 			w.write("% COBRADO");
 			w.write("RENTA AL VENDEDOR");
 			w.write("DOLARIZADA");
@@ -555,7 +555,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				
 				
 				BigDecimal participacion = participacionVendedor.getPorcentaje();
-				BigDecimal rentaVendedor = rentaComprobante.multiply(participacion).divide(new BigDecimal("100"), 2);
+				BigDecimal rentaVendedor = rentaComprobante.multiply(participacion).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
 			
 				w.write(dt1.format(factura.getFecha()));								// FECHA REIBO
 				w.write(factura.getCliente().getCliIdNom());							// CLIENTE
@@ -570,11 +570,23 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				w.write(esContado ? "" : dt1.format(recibo.getFecha())); 				// FECHA RECIBO
 				w.write(esContado ? "" : recibo.getSerieNumero());						// S/N RECIBO
 				
-			
-				BigDecimal monto = esContado ? factura.getVentaNeta() : participacionEnCobranza.getVinculo().getMontoCobrado();
-				BigDecimal porcentajeCancelacion = esContado ? new BigDecimal("100") : participacionEnCobranza.getVinculo().getPorcentajeCancelacion();
+
+				BigDecimal montoVinculado = esContado ? factura.getVentaNeta() : participacionEnCobranza.getVinculo().getMontoVinculadoSinIva();
+				
+				BigDecimal porcentajeCancelacion = BigDecimal.ZERO;
+				if (esContado) {
+					porcentajeCancelacion = Maths.ONE_HUNDRED;
+				} else {
+					if (factura.getComprobante().isAster()) {
+						porcentajeCancelacion = participacionEnCobranza.getVinculo().getPorcentajeCancelacion();
+					} else {
+						if (factura != null && factura.getVentaNeta() != null) {
+							porcentajeCancelacion = montoVinculado.divide(factura.getVentaNeta(), 4, RoundingMode.HALF_UP).multiply(Maths.ONE_HUNDRED).setScale(2, RoundingMode.HALF_EVEN);
+						}
+					}
+				}
 								
-				w.write(formatter.format(monto));										// IMPORTE COBRADO
+				w.write(formatter.format(montoVinculado));										// IMPORTE VINCULADO
 				w.write(formatter.format(porcentajeCancelacion) + "%");					// % COBRADO
 				
 				String codigoMoneda = factura.getMoneda().getCodigo();

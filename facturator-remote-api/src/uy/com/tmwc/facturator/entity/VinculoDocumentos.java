@@ -2,6 +2,8 @@ package uy.com.tmwc.facturator.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import uy.com.tmwc.facturator.utils.Maths;
 
 public class VinculoDocumentos implements Serializable {
@@ -41,6 +43,19 @@ public class VinculoDocumentos implements Serializable {
 			porcDto = BigDecimal.ZERO;
 		}
 		return Maths.descontar(monto, porcDto);
+	}
+	
+	public BigDecimal getMontoVinculadoSinIva() {
+		BigDecimal porcDto = this.recibo.getDescuentosPorc();
+		if (porcDto == null) {
+			porcDto = BigDecimal.ZERO;
+		}
+	
+		BigDecimal montoVinculadoSinIva = Maths.descontar(monto, porcDto);
+		if (factura != null && (factura.comprobanteComputaIva() && !factura.getComprobante().isAster())) {
+			montoVinculadoSinIva = montoVinculadoSinIva.divide(new BigDecimal(1.22), 2, RoundingMode.HALF_EVEN);	
+		}		
+		return montoVinculadoSinIva;
 	}
 
 	public BigDecimal getRentaFinanciera() {

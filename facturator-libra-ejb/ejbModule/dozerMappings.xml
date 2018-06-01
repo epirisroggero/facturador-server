@@ -129,7 +129,6 @@
   		<b>codigo</b>
   	</field>
   </mapping>
-  
     
   <mapping> 
     <class-a>uy.com.tmwc.facturator.libra.entity.Iva</class-a>   

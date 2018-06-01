@@ -113,7 +113,6 @@ public class Documento extends DocumentoBase implements Serializable {
 	private String concepto;
 
 
-
 	public Documento() {
 		this.comisiones = new ComisionesDocumento(this);
 		this.lineas = new LineasDocumento(this);
