@@ -56,9 +56,9 @@ public interface DocumentoService {
 
 	BigDecimal getStock(String articulo, String deposito);
 	
-	void guardar(Documento paramDocumento) throws ValidationException, PermisosException;
+	Documento guardar(Documento paramDocumento) throws ValidationException, PermisosException;
 	
-	void guardar(Documento paramDocumento, Auditoria auditoria) throws ValidationException, PermisosException;
+	Documento guardar(Documento paramDocumento, Auditoria auditoria) throws ValidationException, PermisosException;
 	
 	SerieNumero generarSerieNumero(String comprobanteId);
 	

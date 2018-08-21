@@ -111,49 +111,46 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 	}
 
 	public ArticuloPrecio getPrecioArticulo(String preciosVenta, String articulo) {
-		Query query = this.entityManager.createNamedQuery("ArticuloPrecio.precioArticuloParaPrecioVenta").setParameter("empId", getEmpId()).setParameter("preciosVenta", Short.valueOf(Short.parseShort(preciosVenta)))
-				.setParameter("articulo", articulo);
-		
-		Object []result = JPAUtils.getAtMostOne(query);
-		if (result == null) 
+		Query query = this.entityManager.createNamedQuery("ArticuloPrecio.precioArticuloParaPrecioVenta").setParameter("empId", getEmpId())
+				.setParameter("preciosVenta", Short.valueOf(Short.parseShort(preciosVenta))).setParameter("articulo", articulo);
+
+		Object[] result = JPAUtils.getAtMostOne(query);
+		if (result == null)
 			return null;
-		
+
 		uy.com.tmwc.facturator.libra.entity.ArticuloPrecio articuloPrecio = (uy.com.tmwc.facturator.libra.entity.ArticuloPrecio) result[0];
 		Preciosventa precioVenta = (Preciosventa) result[1];
-		
+
 		BigDecimal precioBase = articuloPrecio.getPrecio();
-		if (precioBase == null) 
+		if (precioBase == null)
 			return null;
-		
+
 		boolean sumarUtilidadArticulo = precioVenta.getSumarUtilidadArticulo();
 		BigDecimal costoUtilidad = articuloPrecio.getArticulo().getCostoUtilidad();
 		BigDecimal precioVentaPorcentaje = precioVenta.getPrecioVentaPorcentaje();
-		
+
 		BigDecimal precio = Preciosventa.calcularPrecio(precioBase, sumarUtilidadArticulo, costoUtilidad, precioVentaPorcentaje);
-		
-		//El modelo del facturador no tiene el doble concepto de preciobase/precioventa, asi que consolidamos todo en uno.
+
+		// El modelo del facturador no tiene el doble concepto de preciobase/precioventa, asi que consolidamos todo en uno.
 		ArticuloPrecio articuloPrecioModel = (ArticuloPrecio) map(articuloPrecio, ArticuloPrecio.class);
 		articuloPrecioModel.setPrecio(precio);
-		
+
 		return articuloPrecioModel;
 	}
-	
+
 	public ArticuloPartida getArticuloPartida(String partidaId, String articuloId) {
-		Query query = this.entityManager.createNamedQuery("ArticuloPartida.queryArticuloPartida")
-				.setParameter("empId", getEmpId())
-				.setParameter("partidaId", partidaId)
+		Query query = this.entityManager.createNamedQuery("ArticuloPartida.queryArticuloPartida").setParameter("empId", getEmpId()).setParameter("partidaId", partidaId)
 				.setParameter("articuloId", articuloId);
-		
+
 		Object[] result = JPAUtils.getAtMostOne(query);
-		if (result == null) 
+		if (result == null)
 			return null;
-		
+
 		uy.com.tmwc.facturator.libra.entity.ArticuloPartida articuloPartida = (uy.com.tmwc.facturator.libra.entity.ArticuloPartida) result[0];
-		
-		ArticuloPartida articuloPartidaModel = (ArticuloPartida) map(articuloPartida, ArticuloPartida.class);		
+
+		ArticuloPartida articuloPartidaModel = (ArticuloPartida) map(articuloPartida, ArticuloPartida.class);
 		return articuloPartidaModel;
 	}
-
 
 	public <D extends CodigoNombreEntity> D findCatalogEntity(Class<D> clazz, String codigo) {
 		Class<?> libraEntityClazz = getLibraEntity(clazz);
@@ -297,14 +294,13 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 		return MappingUtils.map(clazzB, list, mapper);
 	}
 
-	public ParametrosAdministracion getParametrosAdministracion() {		
-		List list = this.entityManager.createNamedQuery("PatametrosAdministracion.fechatrabado").setParameter("empId", getEmpId())
-			.setParameter("codigo", "1").getResultList();
+	public ParametrosAdministracion getParametrosAdministracion() {
+		List list = this.entityManager.createNamedQuery("PatametrosAdministracion.fechatrabado").setParameter("empId", getEmpId()).setParameter("codigo", "1").getResultList();
 
 		DozerBeanMapper mapper = this.mapServ.getDozerBeanMapper();
-		
+
 		List<ParametrosAdministracion> res = MappingUtils.map(ParametrosAdministracion.class, list, mapper);
-		
+
 		return res.get(0);
 
 	}

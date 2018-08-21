@@ -3,6 +3,9 @@ package uy.com.tmwc.facturator.libra.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 
 /**
  * The persistent class for the vinculosfp database table.
@@ -17,8 +20,21 @@ public class Vinculosfp implements Serializable {
 	private VinculosfpPK id;
 
 	@Column(name="VinIE")
-	private String vinIE;
+	private String vinIE;		
+	
+	@NotFound(action = NotFoundAction.IGNORE)
+	@ManyToOne(optional = false)
+	@JoinColumns({ @javax.persistence.JoinColumn(name = "docIdFP1", referencedColumnName = "DocId", insertable = false, updatable = false),
+			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
+	private Documento docFP1;
 
+	@NotFound(action = NotFoundAction.IGNORE)
+	@ManyToOne(optional = false)
+	@JoinColumns({ @javax.persistence.JoinColumn(name = "docIdFP2", referencedColumnName = "DocId", insertable = false, updatable = false),
+			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
+	private Documento docFP2;
+
+	
     public Vinculosfp() {
     }
 
@@ -36,6 +52,22 @@ public class Vinculosfp implements Serializable {
 
 	public void setVinIE(String vinIE) {
 		this.vinIE = vinIE;
+	}
+
+	public Documento getDocFP1() {
+		return docFP1;
+	}
+
+	public void setDocFP1(Documento docFP1) {
+		this.docFP1 = docFP1;
+	}
+
+	public Documento getDocFP2() {
+		return docFP2;
+	}
+
+	public void setDocFP2(Documento docFP2) {
+		this.docFP2 = docFP2;
 	}
 
 }

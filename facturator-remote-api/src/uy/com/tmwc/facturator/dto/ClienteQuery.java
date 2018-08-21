@@ -13,6 +13,7 @@ public class ClienteQuery implements Serializable {
 	private String encargadoCuenta;
 	private String razonSocial;
 	private String giro;
+	private String localidad;
 
 	private Boolean activo = Boolean.TRUE;
 
@@ -94,6 +95,14 @@ public class ClienteQuery implements Serializable {
 
 	public void setRazonSocial(String razonSocial) {
 		this.razonSocial = razonSocial;
+	}
+
+	public String getLocalidad() {
+		return localidad;
+	}
+
+	public void setLocalidad(String localidad) {
+		this.localidad = localidad;
 	}
 
 

@@ -28,12 +28,14 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.dozer.DozerBeanMapper;
 import org.hibernate.Hibernate;
 
 import uy.com.tmwc.facturator.dto.DocumentoDTO;
 import uy.com.tmwc.facturator.dto.DocumentoQuery;
 import uy.com.tmwc.facturator.dto.ParticipacionEnCobranza;
+
 import uy.com.tmwc.facturator.entity.ArticuloCompraVentaCosto;
 import uy.com.tmwc.facturator.entity.ArticuloPrecio;
 import uy.com.tmwc.facturator.entity.ArticuloPrecioFabricaCosto;
@@ -104,6 +106,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 	@EJB
 	MonedasCotizacionesService tipoCambioService;
+	
+	private Logger LOGGER = Logger.getLogger(DocumentoDAOServiceImpl.class);
 
 	private static final int SCALE = 2;
 
@@ -158,6 +162,14 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " 
 			+ "AND (m.codigo = :moneda OR :moneda IS NULL) " + "AND (d.estado is null or d.estado != 'A') ";
 
+
+	private static final String ULTIMOS_CHEQHES_SUBQUERY = "FROM " + "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r " + "WHERE " + "d.comprobante.tipo = 43 "
+			+ "AND (d.id.empId = :empId) " + "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
+			+ "AND (d.numero = :numero OR :numero IS NULL) " + "AND (d.serie = :serie OR :serie IS NULL) " 
+			+ "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
+			+ "AND (m.codigo = :moneda OR :moneda IS NULL) ";
+
+	
 	public String persist(uy.com.tmwc.facturator.entity.Documento doc) throws PermisosException {
 		int docId = generateDocId();
 		uy.com.tmwc.facturator.libra.entity.Documento libraDoc = toLibraDocumento(doc, docId, null);
@@ -388,7 +400,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 				}
 				
 				buffer.append("----------------------------------------------").append("\n");
-				System.out.println(buffer.toString());
+				
+				LOGGER.info(buffer.toString());
 				
 				for (uy.com.tmwc.facturator.libra.entity.Documento documento : facturasModificadas) {
 					this.em.merge(documento);
@@ -672,27 +685,35 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		final StringBuilder sb = new StringBuilder("");
 
-		if (query.getEsSolicitud() == null || !query.getEsSolicitud()) {
-			if (query.getArticulo() == null || query.getArticulo() == "") {
-				sb.append("SELECT new uy.com.tmwc.facturator.dto.DocumentoDTO( " + "d.id.docId, " + "d.serie, " + "d.numero, " + "d.fecha, " + "d.CAEnom, " + "d.clienteId, " + "c.nombre, "
-						+ "r.nombre, " + "m.id.mndId, " + "m.nombre, " + "cmp.id.cmpid, " + "cmp.cmpNom, ");
-			} else {
-				sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO( " + "d.id.docId, " + "d.serie, " + "d.numero, " + "d.fecha, " + "d.CAEnom, " + "d.clienteId, " + "c.nombre, "
-						+ "r.nombre, " + "m.id.mndId, " + "m.nombre, " + "cmp.id.cmpid, " + "cmp.cmpNom, ");
-			}
+		if (query.getEsCheque()) {
+			sb.append("SELECT new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, cmp.id.cmpid, cmp.cmpNom, d.serie, d.numero, d.bancoIdDoc, d.fecha, " +
+					"d.emitido, d.titular, m.id.mndId, m.nombre, d.total, d.clienteId, c.nombre, d.fecha2) ");
+			
 		} else {
-			sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO( " + "d.id.docId, " + "d.serie, " + "d.numero, " + "d.fecha, " + "d.CAEnom, " + "p.id.prvId, " + "p.nombre, "
-					+ "r.nombre, " + "m.id.mndId, " + "m.nombre, " + "cmp.id.cmpid, " + "cmp.cmpNom, ");
+			if (query.getEsSolicitud() == null || !query.getEsSolicitud()) {
+				if (query.getArticulo() == null || query.getArticulo() == "") {
+					sb.append("SELECT new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, d.serie, d.numero, d.fecha, d.CAEnom, d.clienteId, c.nombre, "
+							+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
+				} else {
+					sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, d.serie, d.numero, d.fecha, d.CAEnom, d.clienteId, c.nombre, "
+							+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
+				}
+			} else {
+				sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO( " + "d.id.docId, " + "d.serie, " + "d.numero, " + "d.fecha, " + "d.CAEnom, " + "p.id.prvId, " + "p.nombre, "
+						+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
+			}
+			if (Usuario.USUARIO_SUPERVISOR.equals(permisoId)) {
+				sb.append("d.costo, ");
+			}
+			sb.append("d.subTotal, d.iva, d.total, d.saldo, d.emitido, d.pendiente, d.comprobante.tipo) ");
 		}
-		if (Usuario.USUARIO_SUPERVISOR.equals(permisoId)) {
-			sb.append("d.costo, ");
-		}
-		sb.append("d.subTotal, " + "d.iva, " + "d.total, " + "d.saldo, " + "d.emitido, " + "d.pendiente, " + "d.comprobante.tipo) ");
 
 		if (query.getEsSolicitud()) {
 			sb.append(query.getLineaConcepto() == null ? ULTIMAS_SOLICITUDES_SUBQUERY : ULTIMAS_SOLICITUDES_SUBQUERY_CONCEPTO);
 		} else if (query.getEsRecibo()) {
 			sb.append(ULTIMOS_RECIBOS_SUBQUERY);
+		} else if (query.getEsCheque()) {
+			sb.append(ULTIMOS_CHEQHES_SUBQUERY);
 		} else {
 			if (query.getArticulo() == null || query.getArticulo() == "") {
 				sb.append(query.getLineaConcepto() == null ? ULTIMOS_FACTURADOS_SUBQUERY : ULTIMOS_FACTURADOS_SUBQUERY_CONCEPTO);
@@ -746,9 +767,17 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		}
 		if (query.getEsRecibo()) {
 			q.setParameter("empId", getEmpId()).setParameter("cliente", query.getCliente()).setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null)
-					.setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta())
-					.setParameter("emitido", reciboEmitido).setParameter("numero", numero).setParameter("serie", query.getSerie()).setParameter("tipoComprobante", query.getTipoComprobante())
-					.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null);
+				.setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta())
+				.setParameter("emitido", reciboEmitido).setParameter("numero", numero).setParameter("serie", query.getSerie()).setParameter("tipoComprobante", query.getTipoComprobante())
+				.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null);
+
+		} else if (query.getEsCheque()) {
+			q.setParameter("empId", getEmpId())
+				.setParameter("cliente", query.getCliente())
+				.setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null)
+				.setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta())
+				.setParameter("numero", numero)
+				.setParameter("serie", query.getSerie());
 
 		} else if (query.getEsSolicitud() == null || !query.getEsSolicitud()) {
 			if (query.getArticulo() == null || query.getArticulo() == "") {
@@ -764,13 +793,19 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 				q.setParameter("empId", getEmpId()).setParameter("articulo", query.getArticulo()).setParameter("cliente", query.getCliente())
 						.setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null).setParameter("fechaDesde", query.getFechaDesde())
 						.setParameter("fechaHasta", query.getFechaHasta()).setParameter("pendiente", pendiente).setParameter("emitido", emitido).setParameter("numero", numero)
-						.setParameter("serie", query.getSerie()).setParameter("concepto", query.getLineaConcepto()).setParameter("tipoComprobante", query.getTipoComprobante())
+						.setParameter("serie", query.getSerie()).setParameter("concepto", query.getLineaConcepto())
+						.setParameter("tipoComprobante", query.getTipoComprobante())
 						.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null);
 			}
 		} else {
-			q.setParameter("empId", getEmpId()).setParameter("proveedor", query.getProveedor()).setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta())
-					.setParameter("pendiente", pendiente).setParameter("emitido", emitido).setParameter("numero", numero).setParameter("serie", query.getSerie())
+			q.setParameter("empId", getEmpId()).setParameter("proveedor", query.getProveedor())
+				.setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta())
+					.setParameter("pendiente", pendiente).setParameter("emitido", emitido)
+					.setParameter("numero", numero)
+					.setParameter("serie", query.getSerie())
+					/*.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null)*/
 					.setParameter("tipoComprobante", query.getTipoComprobante());
+			
 			if (query.getLineaConcepto() != null) {
 				q.setParameter("concepto", concepto);
 			}
@@ -797,6 +832,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 				sb.append("SELECT COUNT(distinct(d.id.docId)) ");
 				sb.append(ULTIMOS_FACTURADOS_SUBQUERY_ARTICULO);
 			}
+			
 		} else {
 			sb.append("SELECT COUNT(d.id.docId) ");
 			if (query.getLineaConcepto() != null) {
@@ -963,46 +999,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		return new ArrayList(new Mapper().mapCollection(pv, uy.com.tmwc.facturator.entity.ParticipacionVendedor.class));
 	}
 
-	/*
-	 * @SuppressWarnings({ "rawtypes", "unchecked" }) public Map<String,
-	 * Object[]> getParticipaciones(Date fechaDesde, Date fechaHasta, String[]
-	 * compsIncluidos, String[] compsExcluidos) {
-	 * 
-	 * List<Object[]> list =
-	 * this.em.createNamedQuery("Documento.participacionesIntervaloFechas"
-	 * ).setParameter("empId", getEmpId()) .setParameter("fechaDesde",
-	 * fechaDesde).setParameter("fechaHasta", fechaHasta)
-	 * .setParameter("compsIncluidos", toLongList(compsIncluidos))
-	 * .setParameter("compsExcluidos", toLongList(compsExcluidos))
-	 * .setParameter("incluirTodos", compsIncluidos == null)
-	 * .setParameter("noExcluirNinguno", compsExcluidos == null)
-	 * .getResultList();
-	 * 
-	 * fetchEagerComprobantes();
-	 * 
-	 * Mapper mapper = new Mapper();
-	 * 
-	 * Map<String, Object[]> map = new HashMap<String, Object[]>();
-	 * 
-	 * for (Object[] objects : list) { Object[] data = new Object[2];
-	 * 
-	 * uy.com.tmwc.facturator.libra.entity.ParticipacionVendedor pv =
-	 * (uy.com.tmwc.facturator.libra.entity.ParticipacionVendedor) objects[0];
-	 * Hibernate.initialize(pv.getVendedor().getComisiones());
-	 * uy.com.tmwc.facturator.entity.ParticipacionVendedor e =
-	 * (uy.com.tmwc.facturator.entity.ParticipacionVendedor) mapper.map(pv,
-	 * uy.com.tmwc.facturator.entity.ParticipacionVendedor.class); data[0] = e;
-	 * 
-	 * uy.com.tmwc.facturator.libra.entity.Documento recibolibra =
-	 * (uy.com.tmwc.facturator.libra.entity.Documento) objects[1];
-	 * uy.com.tmwc.facturator.entity.Documento recibo =
-	 * (uy.com.tmwc.facturator.entity.Documento) mapper.map(recibolibra,
-	 * uy.com.tmwc.facturator.entity.Documento.class); data[1] = recibo;
-	 * 
-	 * map.put(String.valueOf(pv.getId().getDocId()), data); }
-	 * 
-	 * return map; }
-	 */
 
 	private void fetchComisionesVendedores(List<ParticipacionVendedor> pvs) {
 		for (ParticipacionVendedor pv : pvs) {
@@ -1038,14 +1034,11 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	private List<Object[]> getCobranzasAux(Date fechaDesde, Date fechaHasta) {
 		/*
 		 * List dummy = this.em.createNamedQuery(
-		 * "Documento.participacionesEnCobranzasIntervaloFechas.aux"
-		 * ).setParameter("empId", getEmpId()) .setParameter("fechaDesde",
+		 * "Documento.participacionesEnCobranzasIntervaloFechas.aux").setParameter("empId", getEmpId()) .setParameter("fechaDesde",
 		 * fechaDesde).setParameter("fechaHasta", fechaHasta).getResultList();
 		 * 
-		 * List dummy2 = this.em.createNamedQuery(
-		 * "Documento.participacionesEnCobranzasIntervaloFechas.auxParticipaciones"
-		 * ).setParameter("empId", getEmpId()) .setParameter("fechaDesde",
-		 * fechaDesde).setParameter("fechaHasta", fechaHasta).getResultList();
+		 * List dummy2 = this.em.createNamedQuery("Documento.participacionesEnCobranzasIntervaloFechas.auxParticipaciones"
+		 * ).setParameter("empId", getEmpId()) .setParameter("fechaDesde", fechaDesde).setParameter("fechaHasta", fechaHasta).getResultList();
 		 */
 
 		List<Object[]> list = this.em.createNamedQuery("Documento.participacionesEnCobranzasIntervaloFechas").setParameter("empId", getEmpId()).setParameter("fechaDesde", fechaDesde)
@@ -1226,8 +1219,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		// StockActual)
 
 		Stockactual stockActual = getStockActual(articulo, deposito);
-		// El registro de stock para el art/deposito puede no existir, las
-		// lineas que quedarian en 0 son borrados por libra.
+		// El registro de stock para el art/deposito puede no existir, las líneas que quedarian en 0 son borrados por libra.
 		if (stockActual == null) {
 			stockActual = new Stockactual();
 			StockactualPK pk = getStockActualPK();
@@ -1599,13 +1591,10 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 									cvcArticulo.setComprobanteVenta((docEntity.getSerie() != null ? docEntity.getSerie() : "") + String.valueOf(docEntity.getNumero().intValue()));
 									cvcArticulo.setVentaMonedaId(doc.getMoneda().getCodigo());
 									cvcArticulo.setCostoVenta(convertPrecio(l.getCosto().setScale(SCALE, RoundingMode.HALF_UP), docEntity.getMoneda().getCodigo(), doc.getMoneda().getCodigo()));
-
-//									costos.add(cvcArticulo);
 									break;
 								}
 							}
 						}
-
 					}
 
 				} catch (NumberFormatException e) {

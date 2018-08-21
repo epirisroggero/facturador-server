@@ -79,6 +79,9 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 	@EJB
 	MonedasCotizacionesService tipoCambioService;
 	
+	private static final int TEMP_DIR_ATTEMPTS = 10000;
+
+
 	
 	private void generarReporteResumenEntregas(Date fechaDesde, Date fechaHasta, BigDecimal gastosPeriodo, File dirBase) {
 		ResumenEntregas resumen = calcularCostosOperativos(fechaDesde, fechaHasta, gastosPeriodo);
@@ -342,13 +345,15 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			w.write("");
 			w.endRecord();
 
-			w.write("SERIE NUMERO RECIBO");
+			w.write("SERIE RECIBO");
+			w.write("NUMERO RECIBO");
 			w.write("FECHA RECIBO");
-			w.write("SERIE NUMERO FACTURA");
+			w.write("SERIE FACTURA");
+			w.write("NUMERO FACTURA");
 			w.write("CLIENTE");
 			w.write("MONEDA");
 			w.write("FACTURA TOTAL");
-			w.write("MONTO CANCELADO");
+			w.write("VALOR PAGO");
 			w.write("DTO OTORGADO");
 			w.write("DTO ESPERADO");
 			w.write("RENTA FINANCIERA");
@@ -362,6 +367,14 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			Collection<VinculoDocumentos> participCobranzas = documentoDAOService.getCobranzas(fechaDesde, fechaHasta);
 			BigDecimal totalRentaFinanciera = BigDecimal.ZERO;
 			
+			BigDecimal subTotalRentaFinancieraOficiales = BigDecimal.ZERO;
+			BigDecimal subTotalRentaFinancieraAster = BigDecimal.ZERO;
+			
+			BigDecimal totalRentaFinancieraDolares = BigDecimal.ZERO;
+			BigDecimal totalRentaFinancieraPesos = BigDecimal.ZERO;
+			BigDecimal totalRentaFinancieraDolaresAster = BigDecimal.ZERO;
+			BigDecimal totalRentaFinancieraPesosAster = BigDecimal.ZERO;
+			
 			for (VinculoDocumentos vinculoDocumentos : participCobranzas) {
 				BigDecimal  rentaFinanciera = null;
 				if (vinculoDocumentos.getRecibo().getComprobante().isAster()) {
@@ -371,10 +384,23 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				}				
 				if (vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_PESOS) ||vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
 					totalRentaFinanciera = totalRentaFinanciera.add(convertMoneda(tipoCambio, rentaFinanciera, vinculoDocumentos.getFactura().getMoneda().getCodigo(), Moneda.CODIGO_MONEDA_DOLAR));
+					
+					if (vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_PESOS)) {
+						totalRentaFinancieraPesos = totalRentaFinancieraPesos.add(rentaFinanciera);
+					} else if (vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
+						totalRentaFinancieraPesosAster = totalRentaFinancieraPesosAster.add(rentaFinanciera);
+					}
+				
 				} else if (vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_EUROS) ||vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_EUROS_ASTER)) {
 					totalRentaFinanciera = totalRentaFinanciera.add(convertMoneda(tipoCambio, rentaFinanciera, vinculoDocumentos.getFactura().getMoneda().getCodigo(), Moneda.CODIGO_MONEDA_DOLAR));
 				} else {
 					totalRentaFinanciera = totalRentaFinanciera.add(rentaFinanciera);
+
+					if (vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_DOLAR)) {
+						totalRentaFinancieraDolares = totalRentaFinancieraDolares.add(rentaFinanciera);
+					} else if (vinculoDocumentos.getFactura().getMoneda().getCodigo().equals(Moneda.CODIGO_MONEDA_DOLAR_ASTER)) {
+						totalRentaFinancieraDolaresAster = totalRentaFinancieraDolaresAster.add(rentaFinanciera);
+					}
 				}
 				
 				BigDecimal dtoPorc = null;
@@ -384,9 +410,11 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 					dtoPorc = vinculoDocumentos.getDescuentoPorc();
 				}
 								
-				w.write(vinculoDocumentos.getRecibo().getSerieNumero().toString());
+				w.write(vinculoDocumentos.getRecibo().getSerie());
+				w.write(vinculoDocumentos.getRecibo().getNumero() != null ? vinculoDocumentos.getRecibo().getNumero().toString() : "");
 				w.write(vinculoDocumentos.getRecibo().getFecha());
-				w.write(vinculoDocumentos.getFactura().getSerieNumero().toString());
+				w.write(vinculoDocumentos.getFactura().getSerie());
+				w.write(vinculoDocumentos.getFactura().getNumero() != null ? vinculoDocumentos.getFactura().getNumero().toString() : "");
 				w.write(vinculoDocumentos.getFactura().getCliente().toString());
 				w.write(vinculoDocumentos.getFactura().getMoneda().toString());
 				w.write(formatter.format(vinculoDocumentos.getFactura().getTotal().doubleValue()));
@@ -396,6 +424,23 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				w.write(formatter.format(rentaFinanciera));
 				w.endRecord();
 			}
+			
+			subTotalRentaFinancieraAster = totalRentaFinancieraDolaresAster.add(convertMoneda(tipoCambio, totalRentaFinancieraPesosAster, Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_DOLAR)); 
+			subTotalRentaFinancieraOficiales = totalRentaFinancieraDolares.add(convertMoneda(tipoCambio, totalRentaFinancieraPesos, Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_DOLAR)); 
+			
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("RF en $U");
+			w.write(formatter.format(totalRentaFinancieraPesos));
+			w.endRecord();
 
 			w.write("");
 			w.write("");
@@ -404,9 +449,81 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			w.write("");
 			w.write("");
 			w.write("");
-			w.write("Total:");
-			w.write("U$S");
-			w.write(formatter.format(totalRentaFinanciera));
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("RF en U$S");
+			w.write(formatter.format(totalRentaFinancieraDolares));
+			w.endRecord();
+
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("RF en $U *");
+			w.write(formatter.format(totalRentaFinancieraPesosAster));
+			w.endRecord();
+
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("RF en U$S *");
+			w.write(formatter.format(totalRentaFinancieraDolaresAster));
+			w.endRecord();
+			
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("SubTotal U$S*");
+			w.write(formatter.format(subTotalRentaFinancieraAster));
+			w.endRecord();
+			
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("SubTotal U$S");
+			w.write(formatter.format(subTotalRentaFinancieraOficiales.divide(new BigDecimal(1.22), 2, RoundingMode.HALF_UP)));
+			w.endRecord();
+			
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("");
+			w.write("Total U$S");
+			w.write(formatter.format(subTotalRentaFinancieraOficiales.divide(new BigDecimal(1.22), 2, RoundingMode.HALF_UP).add(subTotalRentaFinancieraAster)));
 			w.endRecord();
 
 		} finally {
@@ -509,18 +626,19 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			w.write("");
 			w.endRecord();
 			
+			w.write("FECHA RECIBO");
+			w.write("SERIE");
+			w.write("NUMERO");
 			w.write("FECHA VENTA");
 			w.write("CLIENTE");
 			w.write("COMPROBANTE DE VENTA");
-			w.write("S/N COMPROBANTE");
+			w.write("S/N");
 			w.write("MONEDA");
-			w.write("IMPORTE NETO VENDIDO");
-			w.write("RENTA DEL COMPROBANTE");
+			w.write("IMP. FACTURA CON IVA");
+			w.write("RENTA DE VENTA");
 			w.write("PARTICIPACIÓN");
 			w.write("RTA. AL VEND.");
-			w.write("FECHA RECIBO");
-			w.write("S/N RECIBO");
-			w.write("IMPORTE VINULADO"); // TODO: Revisar
+			w.write("MONTO CANCELADO"); // TODO: Revisar
 			w.write("% COBRADO");
 			w.write("RENTA AL VENDEDOR");
 			w.write("DOLARIZADA");
@@ -537,63 +655,58 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			for (ParticipacionEnCobranza participacionEnCobranza : participCobranzas) {
 				Boolean esContado = participacionEnCobranza.getVinculo() == null;
 				
-
 				uy.com.tmwc.facturator.entity.Documento recibo = !esContado ? participacionEnCobranza.getRecibo() : null;
 				uy.com.tmwc.facturator.entity.Documento factura = esContado ? participacionEnCobranza.getParticipacionVendedor().getDocumento() : participacionEnCobranza.getFactura();
 				
 				BigDecimal rentaComprobante = factura.getRentaNetaComercial();
-//				if (!factura.getComprobante().isAster()) {
-//					if (participacionEnCobranza.getVinculo() !=  null ) {
-//						rentaComprobante = participacionEnCobranza.getVinculo().getVinRtaFin();	
-//					}
-//				} else {
-//					rentaComprobante = factura.getRentaNetaComercial();
-//				}
 				
 				ParticipacionVendedor participacionVendedor = participacionEnCobranza.getParticipacionVendedor();
 				
-				
-				
 				BigDecimal participacion = participacionVendedor.getPorcentaje();
 				BigDecimal rentaVendedor = rentaComprobante.multiply(participacion).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-			
-				w.write(dt1.format(factura.getFecha()));								// FECHA REIBO
-				w.write(factura.getCliente().getCliIdNom());							// CLIENTE
-				w.write(factura.getComprobante().getNombre());							// COMPROBANTE DE VENTA
-				w.write(factura.getSerieNumero());										// S/N COMPROBANTE
-				w.write(factura.getMoneda().getSimbolo());								// MONEDA
-				w.write(formatter.format(factura.getVentaNeta()));						// IMPORTE NETO VENDIDO
-				w.write(formatter.format(rentaComprobante));							// RENTA DEL COMPROBANTE			
-				w.write(formatter.format(participacion) + "%");							// PARTICIPACION
-				w.write(formatter.format(rentaVendedor));								// RENTA AL VENDEDOR
-
-				w.write(esContado ? "" : dt1.format(recibo.getFecha())); 				// FECHA RECIBO
-				w.write(esContado ? "" : recibo.getSerieNumero());						// S/N RECIBO
 				
-
-				BigDecimal montoVinculado = esContado ? factura.getVentaNeta() : participacionEnCobranza.getVinculo().getMontoVinculadoSinIva();
+				w.write(esContado ? "" : dt1.format(recibo.getFecha())); 								// FECHA RECIBO
+				w.write(!esContado && recibo.getSerieNumero() != null ? recibo.getSerieNumero().getSerie() : ""); 	// S/N RECIBO
+				w.write(!esContado && recibo.getSerieNumero() != null ? String.valueOf(recibo.getSerieNumero().getNumero()) : ""); 	// S/N RECIBO
+				w.write(dt1.format(factura.getFecha()));												// FECHA VENTA
 				
+				w.write(factura.getCliente().getCliIdNom());											// CLIENTE
+				w.write(factura.getComprobante().getNombre());											// COMPROBANTE DE VENTA
+				w.write(factura.getSerieNumero());														// S/N FACTURA
+				w.write(factura.getMoneda().getSimbolo());												// MONEDA
+				
+				w.write(formatter.format(factura.getTotal()));											// IMPORTE NETO VENDIDO
+				w.write(formatter.format(rentaComprobante));											// RENTA DEL COMPROBANTE			
+				w.write(formatter.format(participacion) + "%");											// PARTICIPACION
+				w.write(formatter.format(rentaVendedor));												// RENTA AL VENDEDOR
+
+				BigDecimal montoCancelado = BigDecimal.ZERO; 
 				BigDecimal porcentajeCancelacion = BigDecimal.ZERO;
 				if (esContado) {
+					montoCancelado = factura.getVentaNeta();
 					porcentajeCancelacion = Maths.ONE_HUNDRED;
 				} else {
+					BigDecimal total = factura.getTotal() != null ? factura.getTotal() : BigDecimal.ZERO; 
 					if (factura.getComprobante().isAster()) {
 						porcentajeCancelacion = participacionEnCobranza.getVinculo().getPorcentajeCancelacion();
+						montoCancelado = total.multiply(porcentajeCancelacion).divide(Maths.ONE_HUNDRED, 2, RoundingMode.HALF_UP);
 					} else {
-						if (factura != null && factura.getVentaNeta() != null) {
-							porcentajeCancelacion = montoVinculado.divide(factura.getVentaNeta(), 4, RoundingMode.HALF_UP).multiply(Maths.ONE_HUNDRED).setScale(2, RoundingMode.HALF_EVEN);
-						}
+						BigDecimal monto = participacionEnCobranza.getVinculo().getNeto() != null ? participacionEnCobranza.getVinculo().getNeto() : BigDecimal.ZERO; 
+						BigDecimal descuentoPorc = participacionEnCobranza.getVinculo().getDescuentoPorc() != null ? participacionEnCobranza.getVinculo().getDescuentoPorc() : BigDecimal.ZERO;
+						
+						montoCancelado = Maths.calcularTotalCancelado(monto, descuentoPorc);
+						porcentajeCancelacion = Maths.calcularPorcentaje(total, montoCancelado); 
 					}
 				}
 								
-				w.write(formatter.format(montoVinculado));										// IMPORTE VINCULADO
+				w.write(formatter.format(montoCancelado));								// CANCELADOS
 				w.write(formatter.format(porcentajeCancelacion) + "%");					// % COBRADO
 				
 				String codigoMoneda = factura.getMoneda().getCodigo();
 				
 				BigDecimal rentaDolarizada = BigDecimal.ZERO;
 				
-				BigDecimal cotizacion = factura.getDocTCF(); // TODO: Revisar
+				BigDecimal cotizacion = factura.getDocTCC(); // TODO: Revisar
 				if (cotizacion == null) {
 					cotizacion = BigDecimal.ZERO;
 				}
@@ -637,7 +750,13 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 					}
 
 				} else {
-					BigDecimal rentaACobrar = participacionEnCobranza.getRentaACobrar();
+					BigDecimal rentaACobrar;
+					if (factura.getComprobante().isAster()) {
+						rentaACobrar = participacionEnCobranza.getRentaACobrar();
+					} else {
+						rentaACobrar = Maths.calcularMontoDescuento(rentaVendedor, porcentajeCancelacion);
+					}
+					
 					String rc = formatter.format(rentaACobrar != null ? rentaACobrar.doubleValue() : 0.0);
 					w.write(rc); // RENTA COBRADA AL VENDEDOR
 				
@@ -649,26 +768,22 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 						}
 					} else {
 						rentaDolarizada = rentaACobrar;
-					}
-					
+					}					
 					if (esDevolucion) {
 						w.write(formatter.format(BigDecimal.ZERO.subtract(rentaDolarizada)));
 					} else {
 						w.write(formatter.format(rentaDolarizada));
-					}
-					
+					}					
 					if (esDevolucion) {
 						rentaTotal = rentaTotal.subtract(rentaDolarizada.setScale(2, RoundingMode.HALF_DOWN));
 					} else {
 						rentaTotal = rentaTotal.add(rentaDolarizada.setScale(2, RoundingMode.HALF_DOWN));
 					}
-
 					if (codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS) || codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
 						w.write(formatter.format(cotizacion));
 					} else {
 						w.write("");
 					}
-
 				}				
 								
 				w.endRecord();
@@ -686,8 +801,9 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			w.write("");
 			w.write("");
 			w.write("");
-			w.write("TOTAL:");
-			w.write("U$S" + formatter.format(rentaTotal));
+			w.write("");
+			w.write("TOTAL U$S: ");
+			w.write(formatter.format(rentaTotal));
 			w.endRecord();
 
 
@@ -696,8 +812,6 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 		}
 
 	}
-
-	private static final int TEMP_DIR_ATTEMPTS = 10000;
 
 	public static File createTempDir() {
 		File baseDir = new File(System.getProperty("java.io.tmpdir"));
@@ -756,6 +870,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 		IdentityHashMap aux = new IdentityHashMap();
 		ArrayList full = new ArrayList();
 
+		
 		for (ParticipacionVendedor participacionVendedor : participContados) {
 			Documento contado = participacionVendedor.getDocumento();
 			if (!aux.containsKey(contado)) {

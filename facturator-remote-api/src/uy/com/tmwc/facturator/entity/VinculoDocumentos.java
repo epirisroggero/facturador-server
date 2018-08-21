@@ -19,11 +19,11 @@ public class VinculoDocumentos implements Serializable {
 	
 	private BigDecimal monto;
 	
-	private BigDecimal neto;
+	private BigDecimal neto = BigDecimal.ZERO;
 	
-	private BigDecimal descuentoPorc;
+	private BigDecimal descuentoPorc = BigDecimal.ZERO;
 	
-	private BigDecimal vinRtaFin;
+	private BigDecimal vinRtaFin = BigDecimal.ZERO;
 
 	public BigDecimal getMontoDescuentoEsperado() {
 		return this.factura.calcularMontoDescuentoEsperado(this.monto);
@@ -45,26 +45,23 @@ public class VinculoDocumentos implements Serializable {
 		return Maths.descontar(monto, porcDto);
 	}
 	
-	public BigDecimal getMontoVinculadoSinIva() {
-		BigDecimal porcDto = this.recibo.getDescuentosPorc();
-		if (porcDto == null) {
-			porcDto = BigDecimal.ZERO;
-		}
-	
-		BigDecimal montoVinculadoSinIva = Maths.descontar(monto, porcDto);
-		if (factura != null && (factura.comprobanteComputaIva() && !factura.getComprobante().isAster())) {
-			montoVinculadoSinIva = montoVinculadoSinIva.divide(new BigDecimal(1.22), 2, RoundingMode.HALF_EVEN);	
-		}		
-		return montoVinculadoSinIva;
-	}
 
 	public BigDecimal getRentaFinanciera() {
 		BigDecimal montoDtoReal = getMontoDescuentoReal();
-		return getMontoDescuentoEsperado().subtract(montoDtoReal);
+		BigDecimal rentaFinanciera = getMontoDescuentoEsperado().subtract(montoDtoReal);
+		if (recibo.getComprobante().isAster()) {
+			return rentaFinanciera.divide(new BigDecimal(.64), 2, RoundingMode.HALF_EVEN);
+		} else {
+			return rentaFinanciera;
+		}
 	}
 
 	public BigDecimal getPorcentajeCancelacion() {
 		return Maths.calcularPorcentaje(this.factura.getTotal(), this.monto);
+	}
+	
+	public BigDecimal getMontoCancelado() {
+		return this.monto.subtract(this.factura.getTotal().multiply(getPorcentajeCancelacion()).divide(Maths.ONE_HUNDRED, 2, RoundingMode.HALF_EVEN));
 	}
 
 	public BigDecimal getCuotaparteRentaComercial() {

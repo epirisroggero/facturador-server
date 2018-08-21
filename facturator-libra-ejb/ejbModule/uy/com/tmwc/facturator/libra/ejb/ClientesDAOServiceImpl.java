@@ -60,7 +60,8 @@ public class ClientesDAOServiceImpl extends ServiceBase implements ClientesDAOSe
 			+ "and (c.categCliId = :categoria or :categoria is null) " 
 			+ "and (c.vendedor.id.venId = :vendedor or :vendedor is null) " 
 			+ "and (c.contacto.girIdCto = :giro or :giro is null) "
-			+ "and (c.contacto.zonaIdCto = :zona or :zona is null) ";
+			+ "and (c.contacto.zonaIdCto = :zona or :zona is null) "
+			+ "and (LOWER(c.contacto.ctoLocalidad) LIKE :localidad or :localidad is null) ";
 
 	private static final String CONTACTOS_SUBQUERY = "from " + "Contacto cto left join cto.departamento d left join cto.zona z " + "where " + "cto.id.empId = :empId "
 			+ "and (cto.ctoActivo = :activo or :activo is null) " + "and (cto.ctoRSocial = :razonSocial or :razonSocial is null) " + "and (cto.girIdCto = :giro or :giro is null) "
@@ -337,7 +338,8 @@ public class ClientesDAOServiceImpl extends ServiceBase implements ClientesDAOSe
 			.setParameter("giro", query.getGiro())
 			.setParameter("activo", query.getActivo() == Boolean.TRUE ? "S" : null)
 			.setParameter("razonSocial", query.getRazonSocial())
-			.setParameter("zona", query.getZona());
+			.setParameter("zona", query.getZona())
+			.setParameter("localidad", query.getLocalidad() != null && query.getLocalidad().length() > 0 ? query.getLocalidad().toLowerCase() + "%" : null);
 
 		List<ClienteDTO> result = new ArrayList<ClienteDTO>();
 

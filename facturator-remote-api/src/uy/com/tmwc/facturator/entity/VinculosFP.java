@@ -12,6 +12,10 @@ public class VinculosFP implements Serializable {
 	private short vinFPTipo;
 	
 	private String vinIE;
+	
+	private Documento docFP1;
+	
+	private Documento docFP2;
 
 	public int getDocIdFP1() {
 		return docIdFP1;
@@ -43,6 +47,22 @@ public class VinculosFP implements Serializable {
 
 	public void setVinIE(String vinIE) {
 		this.vinIE = vinIE;
+	}
+
+	public Documento getDocFP1() {
+		return docFP1;
+	}
+
+	public void setDocFP1(Documento docFP1) {
+		this.docFP1 = docFP1;
+	}
+
+	public Documento getDocFP2() {
+		return docFP2;
+	}
+
+	public void setDocFP2(Documento docFP2) {
+		this.docFP2 = docFP2;
 	}
 	
 	

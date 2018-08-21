@@ -25,6 +25,18 @@ public class Maths {
 	}
 
 	public static BigDecimal calcularPorcentaje(BigDecimal total, BigDecimal monto) {
+		if (monto == null || total == null || BigDecimal.ZERO.compareTo(total) == 0) {
+			return BigDecimal.ZERO;
+		}
 		return monto.multiply(ONE_HUNDRED).divide(total, 2, RoundingMode.HALF_UP);
 	}
+	
+	public static BigDecimal calcularTotalCancelado(BigDecimal monto, BigDecimal descuento) {
+		if (monto == null || descuento == null || ONE_HUNDRED.compareTo(descuento) == 0) {
+			return monto;
+		}
+		
+		return monto.multiply(ONE_HUNDRED).divide(ONE_HUNDRED.subtract(descuento), 2, RoundingMode.HALF_UP);
+	}
+
 }

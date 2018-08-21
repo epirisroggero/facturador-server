@@ -65,7 +65,7 @@ public class Moneda extends CodigoNombreEntity {
 	}
 	
 	public String toString() {
-		return getCodigo() + "-" + getNombre();  
+		return getNombre();  
 	}
 
 }

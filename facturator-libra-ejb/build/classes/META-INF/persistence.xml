@@ -7,6 +7,7 @@
       <class>uy.com.tmwc.facturator.libra.entity.ZonaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Zona</class>
       <class>uy.com.tmwc.facturator.libra.entity.VinculosdocPK</class>
+      <class>uy.com.tmwc.facturator.libra.entity.VinculosfpPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.VendedorescomisionePK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Vendedorescomisione</class>
       <class>uy.com.tmwc.facturator.libra.entity.VendedoresUsuarioPK</class>
@@ -97,7 +98,7 @@
 	         <property name="hibernate.hbm2ddl.auto" value="update"/>
           -->
          <property name="hibernate.show_sql" value="false"/>
-         <property name="hibernate.format_sql" value="true"/>
+         <property name="hibernate.format_sql" value="false"/>
          <property name="jboss.entity.manager.factory.jndi.name" value="java:/libraEntityManagerFactory"/>
         </properties>
 	</persistence-unit>

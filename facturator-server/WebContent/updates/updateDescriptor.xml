@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.6.516</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.6.516.air</url>
+	<versionNumber>1.6.612</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.6.612.air</url>
 	<description>
 	    <![CDATA[
-* Recibos: Ajustes en el cálculo de la renta financiera. 
-	    ]]>
+* Error al leer artículos con familia NULA.
+* Corrige error al crear nuevo en cotizaciones.
+* Al emitir comprobante de venta oficial contado con monto superior a las 40000UI, mostrar advertencia y obligar a guardar el nombre y documento del titular en la adenda.
+* Mejora en el manejo de errores al enviar por e-factura.
+* Visualizar archivos con error, poder visualizar desde fullair los sobres guardados. (Etapa de prototipación)
+* En recibos con moneda pesos el tipo de cambio del recibo debe ser 1. (Falta revisar)
+* Prototipo: documentos de pago del recibo (Prototipación: falta se guarden los vinculosfp)
+* Participaciones en cobranzas: Quitar fecha límite.
+
+]]>
 	</description>
 </update>

@@ -34,7 +34,8 @@ public class LineaDocumento implements Serializable {
 	
 	private String contactoId;
 	private Integer docRefId;
-	
+		
+	private String rubIdlin;
 
 	public BigDecimal getTotal() {
 		return getSubTotal().add(getIva());
@@ -307,6 +308,14 @@ public class LineaDocumento implements Serializable {
 
 	public void setDocRefId(Integer docRefId) {
 		this.docRefId = docRefId;
+	}
+
+	public String getRubIdlin() {
+		return rubIdlin;
+	}
+
+	public void setRubIdlin(String rubIdlin) {
+		this.rubIdlin = rubIdlin;
 	}
 
 }

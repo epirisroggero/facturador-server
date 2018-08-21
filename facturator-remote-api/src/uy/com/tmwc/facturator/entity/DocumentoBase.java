@@ -13,8 +13,11 @@ public abstract class DocumentoBase implements Serializable {
 	protected Long numero;
 	
 	protected transient Date fecha;
-	protected Date fecha2;
+	protected transient Date fecha2;
 	protected String fechaStr;
+	protected String fechaEmisionStr;
+	protected String estado;
+	
 	protected BigDecimal docTCF = BigDecimal.ZERO;
 	protected BigDecimal docTCC = BigDecimal.ZERO;
 	protected BigDecimal coeficienteImp = BigDecimal.ONE;
@@ -97,8 +100,23 @@ public abstract class DocumentoBase implements Serializable {
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
 		
-		SimpleDateFormat dt1 = new SimpleDateFormat("dd-MM-yyyy");
-		fechaStr = dt1.format(fecha);
+		SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+		if (fecha != null) {
+			fechaStr = dt1.format(fecha);
+		}
+	}
+	
+	public Date getFecha2() {
+		return fecha2;
+	}
+
+	public void setFecha2(Date fecha2) {
+		this.fecha2 = fecha2;
+
+		SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+		if (fecha2 != null) {
+			fechaEmisionStr = dt1.format(fecha2);
+		} 
 	}
 
 	public Cliente getCliente() {
@@ -189,14 +207,6 @@ public abstract class DocumentoBase implements Serializable {
 		this.registroHora = registroHora;
 	}
 
-	public Date getFecha2() {
-		return fecha2;
-	}
-
-	public void setFecha2(Date fecha2) {
-		this.fecha2 = fecha2;
-	}
-
 	public Proveedor getProveedor() {
 		return proveedor;
 	}
@@ -220,9 +230,25 @@ public abstract class DocumentoBase implements Serializable {
 			SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
 			fecha = dt1.parse(fechaStr);			
 		} catch (Exception e) {
-			// TODO: handle exception
 		}
+	}
+	
+	public String getFechaEmisionStr() {
+		if (fecha2 != null) {
+			SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+			fechaEmisionStr = dt1.format(fecha2);
+		}
+		return fechaEmisionStr;
+	}
 
+	public void setFechaEmisionStr(String fechaEmisionStr) {
+		this.fechaEmisionStr = fechaEmisionStr;
+
+		try {
+			SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
+			fecha2 = dt1.parse(fechaEmisionStr);			
+		} catch (Exception e) {
+		}
 	}
 
 	public BigDecimal getCoeficienteImp() {
@@ -287,6 +313,14 @@ public abstract class DocumentoBase implements Serializable {
 	
 	public void setConciliado(String conciliado) {
 		this.conciliado = conciliado;
+	}
+	
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
 	}
 	
 	public abstract BigDecimal getTotal();

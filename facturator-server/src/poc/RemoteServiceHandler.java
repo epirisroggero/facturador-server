@@ -66,6 +66,7 @@ import uy.com.tmwc.facturator.entity.StockActual;
 import uy.com.tmwc.facturator.entity.Usuario;
 import uy.com.tmwc.facturator.entity.ValidationException;
 import uy.com.tmwc.facturator.entity.VinculoDocumentos;
+import uy.com.tmwc.facturator.entity.VinculosFP;
 import uy.com.tmwc.facturator.expediciones.AgendaTareaQuery;
 import uy.com.tmwc.facturator.javamail.EmailSenderService;
 import uy.com.tmwc.facturator.rapi.AgendaTareaService;
@@ -533,13 +534,12 @@ public class RemoteServiceHandler {
 	public List<Auditoria> getDepositos(String docId) {
 		return getAuditoriaService().getAuditoria(docId);
 	}
-
 	
-	public void modificar(Documento documento) throws ValidationException, PermisosException {
-		modificar(documento, null);
+	public Documento modificar(Documento documento) throws ValidationException, PermisosException {
+		return modificar(documento, null);
 	}
 
-	public void modificar(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
+	public Documento modificar(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
 		documento = ajustarDocumento(documento);
 		
 		if (auditoria == null) {
@@ -561,12 +561,23 @@ public class RemoteServiceHandler {
 				documento.setDocTCF(docTCF);
 			}
 		}
+		
+		// Para el caso de ser un recibo, se guarda el tipo de cambio del documento(DocTC) dependiendo de la moneda. 
 		if (documento.getComprobante().isRecibo()) {
-			// Realizar cosas para los recibos
-			documento.setDocTCF(documento.getDocTCC());
+			Moneda moneda = documento.getMoneda();			
+			//TODO: Revisar. En caso de ser pesos, el tipo de cambio es 1. Esto se usa para generar los reportes dependiento del tipo de cambio.
+			if (moneda.getCodigo().equals(Moneda.CODIGO_MONEDA_PESOS) || moneda.getCodigo().equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
+				documento.setDocTCF(BigDecimal.ONE);
+			} else {
+				documento.setDocTCF(documento.getDocTCC());
+			}
 		}
 		
 		getService().modificar(documento, auditoria);
+		
+		Documento result = getService().findDocumento(documento.getDocId());
+		
+		return result;
 	}
 	
 
@@ -890,7 +901,11 @@ public class RemoteServiceHandler {
 					throw new RuntimeException("No hay tipo de cambio fiscal definido para el día de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
 				}
 				documento.setDocTCF(tcFiscal);
-			}			
+			} 
+		} else if (documento.getComprobante().isRecibo()) {
+			if (monedaId.equals(Moneda.CODIGO_MONEDA_PESOS) || monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
+				documento.setDocTCF(BigDecimal.ONE);	
+			}
 		}
 				
 		SerieNumero serieNro = getService().emitir(documento, fanfoldId);
@@ -919,6 +934,17 @@ public class RemoteServiceHandler {
 		}
 		return true;
 	}
+	
+	public List<String> obtenerDuplicados(Date desde, Date hasta) {
+		if (desde == null) {
+			desde = new Date();
+		}
+		if (hasta == null) {
+			hasta = new Date();
+		}
+		
+		return getEFacturaService().obtenerDuplicados(desde, hasta);
+	}	
 	
 	public EFacturaResult generateCFE(Documento documento) throws PermisosException {
 		String monedaId = documento.getMoneda().getCodigo();
@@ -958,13 +984,19 @@ public class RemoteServiceHandler {
 		return false;
 	}
 
-
 	public Boolean guardar(Documento documento) throws ValidationException, PermisosException {
 		if (documento.getDocId() != null) {
 			getService().guardar(documento);
 			return true;
-		}
+		}		
 		return false;
+	}
+	
+	public Documento guardarDocumento(Documento documento) throws ValidationException, PermisosException {
+		if (documento.getDocId() == null) {
+			throw new RuntimeException("No fué posible grabar el documento.");	
+		}		
+		return getService().guardar(documento);
 	}
 
 	////////////////////////////////////////

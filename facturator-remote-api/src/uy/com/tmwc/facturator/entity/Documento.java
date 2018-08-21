@@ -28,6 +28,7 @@ public class Documento extends DocumentoBase implements Serializable {
 	private BigDecimal saldo;
 	private Set<VinculoDocumentos> recibosVinculados;
 	private Set<VinculoDocumentos> facturasVinculadas;
+	private Set<VinculosFP> vinculosfp;
 	private Set<DocumentoFormaPago> pagos;
 	private BigDecimal costoOperativo;
 
@@ -68,6 +69,7 @@ public class Documento extends DocumentoBase implements Serializable {
 	private String emitidoPor;
 
 	private String numCmpId;
+	private String docMensaje;
 
 	// FACTURA ELECTRÓNICA
 
@@ -86,14 +88,14 @@ public class Documento extends DocumentoBase implements Serializable {
 	private BigDecimal numCFERef;
 	private String razonCFERef;
 	private Date fechaCFERef;
-	
+
 	private String codSeguridadCFE;
-	
+
 	private byte[] docBlob;
 	private String docBlobExt;
-	
+
 	private byte[] codigoQR;
-	
+
 	private Date CAEemision;
 	private Integer CAEdesde;
 	private Integer CAEhasta;
@@ -101,17 +103,16 @@ public class Documento extends DocumentoBase implements Serializable {
 	private BigInteger CAEnro;
 	private String CAEserie;
 	private Short tipoCFEid;
-	
-	//private BigDecimal neto;
-	
+
+	// private BigDecimal neto;
+
 	private Moneda docRecMda;
 	private BigDecimal docRecNeto;
 	private BigDecimal docRenFin;
-	
+
 	private String titular;
 	private String bancoIdDoc;
 	private String concepto;
-
 
 	public Documento() {
 		this.comisiones = new ComisionesDocumento(this);
@@ -197,7 +198,6 @@ public class Documento extends DocumentoBase implements Serializable {
 		return !(comprobante.isExento() || comprobante.getAster());
 	}
 
-
 	public BigDecimal calcularIva() {
 		if (!comprobanteComputaIva()) {
 			return BigDecimal.ZERO;
@@ -211,21 +211,17 @@ public class Documento extends DocumentoBase implements Serializable {
 				sum = sum.add(lineaDocumento.getIva());
 			}
 			return sum;
-			
+
 		}
 	}
 
-	/*public BigDecimal getDescuentos() {
-		List<LineaDocumento> items = this.lineas.getLineas();
-		BigDecimal sum = BigDecimal.ZERO;
-		for (LineaDocumento lineaDocumento : items) {
-			if (lineaDocumento.getArticulo() == null) {
-				continue;
-			}
-			sum = sum.add(lineaDocumento.getImporteDescuentoTotal());
-		}
-		return sum;
-	}*/
+	/*
+	 * public BigDecimal getDescuentos() { List<LineaDocumento> items =
+	 * this.lineas.getLineas(); BigDecimal sum = BigDecimal.ZERO; for
+	 * (LineaDocumento lineaDocumento : items) { if
+	 * (lineaDocumento.getArticulo() == null) { continue; } sum =
+	 * sum.add(lineaDocumento.getImporteDescuentoTotal()); } return sum; }
+	 */
 
 	public BigDecimal getRedondeo() {
 		BigDecimal exacto = getTotalExacto();
@@ -984,12 +980,11 @@ public class Documento extends DocumentoBase implements Serializable {
 	public Set<VinculoDocumentos> getFacturasVinculadas() {
 		return facturasVinculadas;
 	}
-	
 
 	public void setFacturasVinculadas(Set<VinculoDocumentos> facturasVinculadas) {
 		this.facturasVinculadas = facturasVinculadas;
 	}
-	
+
 	public Set<VinculoDocumentos> getRecibosVinculados() {
 		return this.recibosVinculados;
 	}
@@ -998,13 +993,13 @@ public class Documento extends DocumentoBase implements Serializable {
 		this.recibosVinculados = recibosVinculados;
 	}
 
-//	public BigDecimal getNeto() {
-//		return neto;
-//	}
-//
-//	public void setNeto(BigDecimal neto) {
-//		this.neto = neto;
-//	}
+	// public BigDecimal getNeto() {
+	// return neto;
+	// }
+	//
+	// public void setNeto(BigDecimal neto) {
+	// this.neto = neto;
+	// }
 
 	public BigDecimal getDescuentos() {
 		return descuentos;
@@ -1060,6 +1055,22 @@ public class Documento extends DocumentoBase implements Serializable {
 
 	public void setConcepto(String docConcepto) {
 		this.concepto = docConcepto;
+	}
+
+	public Set<VinculosFP> getVinculosfp() {
+		return vinculosfp;
+	}
+
+	public void setVinculosfp(Set<VinculosFP> vinculosfp) {
+		this.vinculosfp = vinculosfp;
+	}
+
+	public String getDocMensaje() {
+		return docMensaje;
+	}
+
+	public void setDocMensaje(String docMensaje) {
+		this.docMensaje = docMensaje;
 	}
 
 }

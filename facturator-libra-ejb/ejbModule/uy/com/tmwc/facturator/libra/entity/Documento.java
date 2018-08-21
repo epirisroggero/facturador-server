@@ -370,6 +370,11 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	@Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	private Set<Docruc> docruc;
 	
+	@OneToMany(cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "docFP1")
+	@Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+	private Set<Vinculosfp> vinculosfp;
+
+	
 	@Column(name = "DocMensaje")
 	private String docMensaje = "";
 	
@@ -514,8 +519,6 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 
 	@Column(table = "lfx_documentos", name = "TipoCFEid")
 	private Short tipoCFEid;
-	
-
 
 	@Column(table = "lfx_documentos", name = "DocRecNeto")
 	private BigDecimal docRecNeto;
@@ -1671,6 +1674,14 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 		this.docRecMda = docRecMda;
 		this.docRecMdaId = (docRecMda == null ? null : Short.valueOf(docRecMda.getId().getMndId()));
 
+	}
+
+	public Set<Vinculosfp> getVinculosfp() {
+		return vinculosfp;
+	}
+
+	public void setVinculosfp(Set<Vinculosfp> vinculosfp) {
+		this.vinculosfp = vinculosfp;
 	}
 	
 

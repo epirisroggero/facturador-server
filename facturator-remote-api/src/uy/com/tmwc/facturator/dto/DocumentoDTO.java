@@ -16,6 +16,7 @@ public class DocumentoDTO implements Serializable {
 	private String autorizadoPor;
 	private String emitidoPor;
 	private String fecha;
+	private String emision;
 
 	private CodigoNombre cliente;
 	private CodigoNombre moneda;
@@ -102,7 +103,23 @@ public class DocumentoDTO implements Serializable {
 		this.registroFecha = registroFecha != null ? DateFormatUtils.format((Date) registroFecha, "dd-MM-yyyy") : null;
 		this.registroHora = registroHora != null ? registroHora.toString() : null;
 		this.fecha = fecha != null ? DateFormatUtils.format((Date) fecha, "dd-MM-yyyy") : null;
+	}
 
+	public DocumentoDTO(Object docId, Object comprobanteCodigo, String comprobanteNombre, String serie, Number numero, String banco, Date fecha, 
+			String emitido, String titular, Object monedaCodigo, String monedaNombre, BigDecimal total, String clienteId, String clienteNombre, Date fecha2) {
+
+		this.docId = docId.toString();
+		this.serie = serie;
+		this.numero = (numero != null ? Long.valueOf(numero.longValue()) : null);
+		this.moneda = (monedaCodigo != null ? new CodigoNombre(monedaCodigo.toString(), monedaNombre) : null);
+		this.comprobante = (comprobanteCodigo != null ? new CodigoNombre(comprobanteCodigo.toString(), comprobanteNombre) : null);
+		this.emitido = emitido.equals("S");
+		this.fecha = fecha != null ? DateFormatUtils.format((Date) fecha, "dd-MM-yyyy") : null;
+		this.emision = fecha2 != null ? DateFormatUtils.format((Date) fecha2, "dd-MM-yyyy") : null;
+		this.total = total;
+		this.bancoIdDoc = banco;
+		this.titular = titular;
+		this.cliente = new CodigoNombre(clienteId, clienteNombre);
 	}
 
 	public String getDocId() {
@@ -303,6 +320,14 @@ public class DocumentoDTO implements Serializable {
 
 	public void setConcepto(String concepto) {
 		this.concepto = concepto;
+	}
+
+	public String getEmision() {
+		return emision;
+	}
+
+	public void setEmision(String emision) {
+		this.emision = emision;
 	}
 
 }

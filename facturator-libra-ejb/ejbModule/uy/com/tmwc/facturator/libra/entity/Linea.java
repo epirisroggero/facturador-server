@@ -196,6 +196,10 @@ public class Linea extends PersistentEntity<LineaPK> implements Serializable, Ha
 
 	@Column(name = "ConceptoIdLin")
 	private String conceptoIdLin = "";
+	
+	@SuppressWarnings("unused")
+	@Column(name = "RubIdlin")
+	private String rubIdlin;
 
 	public Linea() {
 		this.vence = Constantes.DEFAULT_DATE;
@@ -505,6 +509,14 @@ public class Linea extends PersistentEntity<LineaPK> implements Serializable, Ha
 
 	public String getArticuloId() {
 		return articuloId;
+	}
+
+	public String getRubIdlin() {
+		return rubIdlin;
+	}
+
+	public void setRubIdlin(String rubIdLin) {
+		this.rubIdlin = rubIdLin;
 	}
 	
 	

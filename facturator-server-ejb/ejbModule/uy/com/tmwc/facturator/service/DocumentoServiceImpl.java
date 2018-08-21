@@ -112,12 +112,13 @@ public class DocumentoServiceImpl implements DocumentoService {
 		return true;
 	}
 	
-	public void guardar(Documento documento) throws ValidationException, PermisosException {
-		guardar(documento, null);
+	public Documento guardar(Documento documento) throws ValidationException, PermisosException {
+		return guardar(documento, null);
 	}
 	
-	public void guardar(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
-		Documento current = this.documentoDAOService.findDocumento(documento.getDocId());
+	public Documento guardar(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
+		String docId = documento.getDocId();
+		Documento current = this.documentoDAOService.findDocumento(docId);
 		verificarFecha(current, documento);
 
 		if (current.isEmitido()) { // Revisar si se cambiaron los importes de iva, total, sub-total post emisión.
@@ -172,7 +173,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 			try {
 				usuarioId = Short.parseShort(ppal.getName());
 			} catch (NumberFormatException nfe) {
-				throw new ValidationException("Codigo de usuario inesperado: " + ppal.getName());
+				throw new ValidationException("Código de usuario inesperado: " + ppal.getName());
 			}
 		} else {
 			throw new ValidationException("No se pudo determinar el usuario");
@@ -187,6 +188,9 @@ public class DocumentoServiceImpl implements DocumentoService {
 		}
 
 		this.documentoDAOService.merge(documento);
+	
+		Documento docGuardado = findDocumento(docId);
+		return docGuardado;
 	}
 
 	public void modificar(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
@@ -282,6 +286,10 @@ public class DocumentoServiceImpl implements DocumentoService {
 		Date newDate = modificado.getRegistroFecha();
 		Date newTime = modificado.getRegistroHora();
 
+		if (modificado.getComprobante().getCodigo().equals("122") || modificado.getComprobante().getCodigo().equals("124")) {
+			return Boolean.TRUE;
+		}
+		
 		if (!currentDate.equals(newDate) || !currentTime.equals(newTime)) {
 			String msg;
 			if (current.getSerie() != null || current.getNumero() != null) {
