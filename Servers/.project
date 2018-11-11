@@ -3,6 +3,13 @@
 	<name>Servers</name>
 	<comment></comment>
 	<projects>
+		<project>facturator-libra-ejb</project>
+		<project>facturator-remote-api</project>
+		<project>facturator-server</project>
+		<project>facturator-server-ear</project>
+		<project>facturator-server-ejb</project>
+		<project>facturator-spi</project>
+		<project>twmc-utils</project>
 	</projects>
 	<buildSpec>
 	</buildSpec>
