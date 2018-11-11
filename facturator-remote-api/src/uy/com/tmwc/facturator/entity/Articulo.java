@@ -15,11 +15,14 @@ public class Articulo extends CodigoNombreEntity {
 	private boolean activo;
 	private boolean lotes;
 	private boolean artGXPortal;
+	
 	private String familiaId; 
+	private String marcaId;
 
 	private Proveedor proveedor;
 	private Iva iva;
 	private FamiliaArticulos familia;
+	private Marca marca;
 	
 	private byte[] blob;
 	private String blobExt;
@@ -30,7 +33,6 @@ public class Articulo extends CodigoNombreEntity {
 	private String web;
 	private String categArtId;
 	private Short ivaIdArt;
-	private String marcaId;
 	
 	private String prvIdArt;
 	private String rubIdArtCompras;
@@ -397,6 +399,14 @@ public class Articulo extends CodigoNombreEntity {
 
 	public void setArtNotasInt(String artNotasInt) {
 		this.artNotasInt = artNotasInt;
+	}
+
+	public Marca getMarca() {
+		return marca;
+	}
+
+	public void setMarca(Marca marca) {
+		this.marca = marca;
 	}
 
 

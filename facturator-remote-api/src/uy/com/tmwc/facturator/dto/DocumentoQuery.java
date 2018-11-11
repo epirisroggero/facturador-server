@@ -31,6 +31,8 @@ public class DocumentoQuery implements Serializable {
 	
 	private Boolean esCheque = Boolean.FALSE;
 	
+	private Boolean esGasto = Boolean.FALSE;
+	
 	private String comprobantes;
 	
 	private String compsExcluidos;
@@ -211,6 +213,14 @@ public class DocumentoQuery implements Serializable {
 
 	public void setEsCheque(Boolean esCheque) {
 		this.esCheque = esCheque;
+	}
+
+	public Boolean getEsGasto() {
+		return esGasto;
+	}
+
+	public void setEsGasto(Boolean esGasto) {
+		this.esGasto = esGasto;
 	}
 
 

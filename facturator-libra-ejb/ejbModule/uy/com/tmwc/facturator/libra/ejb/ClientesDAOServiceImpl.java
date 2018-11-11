@@ -163,26 +163,32 @@ public class ClientesDAOServiceImpl extends ServiceBase implements ClientesDAOSe
 		contactoPK.setCtoId(e.getCodigo());
 		contactoPK.setEmpId(getEmpId());
 
-		libraCliente.getContacto().setId(contactoPK);
-
-		libraCliente.getContacto().setCtoActivo("S"); // siempre insertamos activos
-		libraCliente.getContacto().setCtoAlta(new Date()); // es necesaria la fecha de alta
-		libraCliente.getContacto().setCtoCliente("S"); // estamos insertando un cliente
-		libraCliente.getContacto().setCtoProveedor("N"); // estamos insertando un cliente, no un proveedor
-		
-		if (libraCliente.getContacto().getCtoRUT() != null && libraCliente.getContacto().getCtoRUT().trim().length() > 0) {
-			libraCliente.getContacto().setCtoDocumentoTipo("R"); // TODO: el tipo de documento es requerido, lo dejo vacio que parece que funciona.
-			libraCliente.getContacto().setCtoDocumentoSigla("RUT"); 
-		} else if (libraCliente.getContacto().getCtoDocumento() != null && libraCliente.getContacto().getCtoDocumento().trim().length() > 0) {
-			libraCliente.getContacto().setCtoDocumentoTipo("C"); 
-			libraCliente.getContacto().setCtoDocumentoSigla("C.I."); 
+		uy.com.tmwc.facturator.libra.entity.Contacto libraContacto = (uy.com.tmwc.facturator.libra.entity.Contacto) this.em.find(uy.com.tmwc.facturator.libra.entity.Contacto.class, contactoPK);
+		if (libraContacto != null) {
+			libraCliente.setContacto(libraContacto);
 		} else {
-			libraCliente.getContacto().setCtoDocumentoTipo(""); 
-			libraCliente.getContacto().setCtoDocumentoSigla(""); 
+			libraContacto = libraCliente.getContacto();
+			libraCliente.getContacto().setId(contactoPK);
+			libraContacto.setCtoAlta(new Date()); // es necesaria la fecha de alta
+			libraCliente.getContacto().setCtoProveedor("N"); // estamos insertando un cliente, no un proveedor
 		}
 		
-		libraCliente.getContacto().setCtoNom(libraCliente.getNombre()); // redundancia, es requerido.
-		libraCliente.getContacto().setCtoNombreCompleto(codigo + " - " + libraCliente.getNombre()); // redundancia, es requerido.
+		libraContacto.setCtoCliente("S"); // estamos insertando un cliente
+		libraContacto.setCtoActivo("S"); // siempre insertamos activos
+		
+		if (libraContacto.getCtoRUT() != null && libraContacto.getCtoRUT().trim().length() > 0) {
+			libraContacto.setCtoDocumentoTipo("R"); // TODO: el tipo de documento es requerido, lo dejo vacio que parece que funciona.
+			libraContacto.setCtoDocumentoSigla("RUT"); 
+		} else if (libraContacto.getCtoDocumento() != null && libraContacto.getCtoDocumento().trim().length() > 0) {
+			libraContacto.setCtoDocumentoTipo("C"); 
+			libraContacto.setCtoDocumentoSigla("C.I."); 
+		} else {
+			libraContacto.setCtoDocumentoTipo(""); 
+			libraContacto.setCtoDocumentoSigla(""); 
+		}
+		
+		libraContacto.setCtoNom(libraCliente.getNombre()); // redundancia, es requerido.
+		libraContacto.setCtoNombreCompleto(codigo + " - " + libraCliente.getNombre()); // redundancia, es requerido.
 
 		em.persist(libraCliente);
 		this.em.flush();
@@ -232,8 +238,8 @@ public class ClientesDAOServiceImpl extends ServiceBase implements ClientesDAOSe
 		
 		libraCliente.getContacto().setCtoNom(libraCliente.getNombre()); // redundancia, es requerido.
 		libraCliente.getContacto().setCtoNombreCompleto(codigo + " - " + libraCliente.getNombre()); // redundancia, es requerido.
-
 		libraCliente.getContacto().setAdicionales(adicionales);
+		libraCliente.getContacto().setCtoCliente("S");
 		
 		this.em.merge(libraCliente);
 		this.em.flush();
@@ -537,7 +543,6 @@ public class ClientesDAOServiceImpl extends ServiceBase implements ClientesDAOSe
 			if (proveedores.size() > 0) {
 				throw new IllegalArgumentException("Ya existe un proveedor con la misma razón social.");
 			}
-
 		}
 
 		DozerBeanMapper mapper = this.mapService.getDozerBeanMapper();
@@ -575,17 +580,23 @@ public class ClientesDAOServiceImpl extends ServiceBase implements ClientesDAOSe
 		ContactoPK contactoPK = new ContactoPK();
 		contactoPK.setCtoId(p.getCodigo());
 		contactoPK.setEmpId(getEmpId());
-
-		libraProveedor.getContacto().setId(contactoPK);
-
-		libraProveedor.getContacto().setCtoActivo("S"); // siempre insertamos activos
-		libraProveedor.getContacto().setCtoAlta(new Date()); // es necesaria la fecha de alta
-		libraProveedor.getContacto().setCtoCliente("N"); // estamos insertando un cliente
-		libraProveedor.getContacto().setCtoProveedor("S"); // estamos insertando un cliente, no un proveedor
-		libraProveedor.getContacto().setCtoDocumentoTipo(""); // TODO: el tipo de documento es requerido, lo dejo vacio que parece que funciona.
-		libraProveedor.getContacto().setCtoNom(libraProveedor.getNombre()); // redundancia, es requerido.
-		libraProveedor.getContacto().setCtoNombreCompleto(codigo + " - " + libraProveedor.getNombre()); // redundancia, es requerido.
-		libraProveedor.getContacto().setCtoDocumentoSigla("C.I.");
+		
+		uy.com.tmwc.facturator.libra.entity.Contacto libraContacto = (uy.com.tmwc.facturator.libra.entity.Contacto) this.em.find(uy.com.tmwc.facturator.libra.entity.Contacto.class, contactoPK);
+		if (libraContacto != null) {
+			libraProveedor.setContacto(libraContacto);
+		} else {
+			libraContacto = libraProveedor.getContacto();
+			libraContacto.setId(contactoPK);
+			libraContacto.setCtoAlta(new Date()); // es necesaria la fecha de alta
+			libraContacto.setCtoCliente("N"); // estamos insertando un cliente, no un proveedor
+			libraContacto.setCtoDocumentoTipo(""); // TODO: el tipo de documento es requerido, lo dejo vacio que parece que funciona.
+			libraContacto.setCtoDocumentoSigla("C.I.");
+			libraContacto.setCtoNombreCompleto(codigo + " - " + libraProveedor.getNombre()); // redundancia, es requerido.
+			libraContacto.setCtoNom(libraProveedor.getNombre()); // redundancia, es requerido.
+		}
+		
+		libraContacto.setCtoProveedor("S");
+		libraContacto.setCtoActivo("S"); // siempre insertamos activos
 		// libraProveedor.getContacto().setPaisIdCto("UY"); //TODO: el pais es
 		// requerido, pongo algo para poder grabar, pero deberia venir del
 		// cliente.
@@ -618,6 +629,7 @@ public class ClientesDAOServiceImpl extends ServiceBase implements ClientesDAOSe
 		libraProveedor.getContacto().setCtoNom(libraProveedor.getNombre()); // redundancia, es requerido.
 		libraProveedor.getContacto().setCtoNombreCompleto(codigo + " - " + libraProveedor.getNombre()); // redundancia, es requerido.
 		libraProveedor.getContacto().setAdicionales(adicionales);
+		libraProveedor.getContacto().setCtoProveedor("S");
 
 		this.em.merge(libraProveedor);
 		this.em.flush();

@@ -20,6 +20,10 @@ public class ParticipacionVendedor implements Serializable {
 		return calcularCuotaparte(this.documento.getRentaNetaComercial());
 	}
 
+	public BigDecimal getCuotaparteRentaDistComercial() {
+		return calcularCuotaparte(this.documento.getRentaNetaDistComercial());
+	}
+
 	private BigDecimal calcularCuotaparte(BigDecimal monto) {
 		return Maths.calcularMontoDescuento(monto, this.porcentaje);
 	}

@@ -22,17 +22,19 @@ public class VendedoresUsuario extends PersistentEntity<VendedoresUsuarioPK>  im
     public VendedoresUsuario() {
     }
     
-    @NotFound(action=NotFoundAction.IGNORE)
-    @OneToOne
-    @JoinColumns({@javax.persistence.JoinColumn(name="vendedorId", referencedColumnName="VenId", insertable=false, updatable=false), 
-    	@javax.persistence.JoinColumn(name="empId", referencedColumnName="EmpId", insertable=false, updatable=false)})
-    private Vendedore vendedor;
-    
-    @NotFound(action=NotFoundAction.IGNORE)
-    @ManyToOne(optional=false)
-    @JoinColumns({@javax.persistence.JoinColumn(name="usuarioId", referencedColumnName="UsuId", insertable=false, updatable=false), 
-    	@javax.persistence.JoinColumn(name="empId", referencedColumnName="EmpId", insertable=false, updatable=false)})
-    private Usuario usuario;
+	@NotFound(action = NotFoundAction.IGNORE)
+	@OneToOne
+	@JoinColumns({
+			@javax.persistence.JoinColumn(name = "vendedorId", referencedColumnName = "VenId", insertable = false, updatable = false),
+			@javax.persistence.JoinColumn(name = "empId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
+	private Vendedore vendedor;
+
+	@NotFound(action = NotFoundAction.IGNORE)
+	@ManyToOne(optional=false)
+	@JoinColumns({
+			@javax.persistence.JoinColumn(name = "usuarioId", referencedColumnName = "UsuId", insertable = false, updatable = false),
+			@javax.persistence.JoinColumn(name = "empId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
+	private Usuario usuario;
 
 	public VendedoresUsuarioPK getId() {
 		return this.id;

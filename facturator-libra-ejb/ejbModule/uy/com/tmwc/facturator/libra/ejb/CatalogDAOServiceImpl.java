@@ -85,6 +85,8 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 		classMapping.put(uy.com.tmwc.facturator.entity.ParametrosAdministracion.class, uy.com.tmwc.facturator.libra.entity.Parametrosadministracion.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Rubro.class, uy.com.tmwc.facturator.libra.entity.Rubro.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.CentrosCosto.class, uy.com.tmwc.facturator.libra.entity.Centroscosto.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Concepto.class, uy.com.tmwc.facturator.libra.entity.Concepto.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Marca.class, uy.com.tmwc.facturator.libra.entity.Marca.class);
 
 		jefaturasClassMapper = new SimpleClassMapper();
 		jefaturasClassMapper.add(uy.com.tmwc.facturator.libra.entity.JefaturaArticulo.class, uy.com.tmwc.facturator.entity.JefaturaArticulo.class);
@@ -122,8 +124,9 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 		Preciosventa precioVenta = (Preciosventa) result[1];
 
 		BigDecimal precioBase = articuloPrecio.getPrecio();
-		if (precioBase == null)
+		if (precioBase == null) {
 			return null;
+		}
 
 		boolean sumarUtilidadArticulo = precioVenta.getSumarUtilidadArticulo();
 		BigDecimal costoUtilidad = articuloPrecio.getArticulo().getCostoUtilidad();

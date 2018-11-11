@@ -7,13 +7,9 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 
-/**
- * The persistent class for the vinculosfp database table.
- * 
- */
 @Entity
 @Table(name="vinculosfp")
-public class Vinculosfp implements Serializable {
+public class Vinculosfp extends PersistentEntity<VinculosfpPK> implements Serializable, HasId<VinculosfpPK>  {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
@@ -24,13 +20,13 @@ public class Vinculosfp implements Serializable {
 	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(optional = false)
-	@JoinColumns({ @javax.persistence.JoinColumn(name = "docIdFP1", referencedColumnName = "DocId", insertable = false, updatable = false),
+	@JoinColumns({ @javax.persistence.JoinColumn(name = "DocIdFP1", referencedColumnName = "DocId", insertable = false, updatable = false),
 			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Documento docFP1;
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(optional = false)
-	@JoinColumns({ @javax.persistence.JoinColumn(name = "docIdFP2", referencedColumnName = "DocId", insertable = false, updatable = false),
+	@JoinColumns({ @javax.persistence.JoinColumn(name = "DocIdFP2", referencedColumnName = "DocId", insertable = false, updatable = false),
 			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Documento docFP2;
 

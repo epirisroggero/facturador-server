@@ -48,6 +48,10 @@ public class ParticipacionEnCobranza implements Serializable {
 		return Maths.calcularMontoDescuento(getVinculo().getCuotaparteRentaComercial(), this.participacionVendedor.getPorcentaje());
 	}
 	
+	public BigDecimal getRentaACobrarDist() {
+		return Maths.calcularMontoDescuento(getVinculo().getCuotaparteRentaDistComercial(), this.participacionVendedor.getPorcentaje());
+	}
+
 	public BigDecimal getCuotaparteOperativos() {
 		return Maths.calcularMontoDescuento(getVinculo().getCuotaparteOperativos(), this.participacionVendedor.getPorcentaje());
 	}

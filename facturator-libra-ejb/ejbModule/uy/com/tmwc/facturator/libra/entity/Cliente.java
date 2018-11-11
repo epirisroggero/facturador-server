@@ -28,26 +28,20 @@ public class Cliente extends PersistentEntity<ClientePK> implements Serializable
 	}
 	
 	public Cliente(Cliente e, Contacto cto) {
-		this(e.getCodigo(), e.getNombre(), cto.getCtoRUT(), cto.getCtoTelefono(), cto.getCtoDireccion(), cto.getCtoRSocial(), e.getCliTopeCredito(), cto.getCtoProveedor(), e.getCategCliId(), e.getVenIdCli(), cto.getNombre(), e.getEncargadoCuenta());
+		this(e.getCodigo(), e.getNombre(), cto.getCtoRUT(), cto.getCtoTelefono(), cto.getCtoDireccion(), cto.getCtoRSocial(), e.getCliTopeCredito(), cto.getCtoCliente(), cto.getCtoProveedor(), e.getCategCliId(), e.getVenIdCli(), cto.getNombre(), e.getEncargadoCuenta());
 	}
 
-	public Cliente(String codigo, String nombre, String rut, String telefono, String direccion, String razonSocial, BigDecimal topeCredito, String proveedor, String categCliId) {
-		this(codigo, nombre, rut, telefono, direccion, razonSocial, topeCredito, proveedor, categCliId, null, null, null);
+	public Cliente(String codigo, String nombre, String rut, String telefono, String direccion, String razonSocial, BigDecimal topeCredito, String ctoCliente, String ctoProveedor, String categCliId) {
+		this(codigo, nombre, rut, telefono, direccion, razonSocial, topeCredito, ctoCliente, ctoProveedor, categCliId, null, null, null);
 	}
 
-	public Cliente(String codigo, String nombre, String rut, String telefono, String direccion, String razonSocial, BigDecimal topeCredito, String proveedor, String categCliId, String venId, String ctoNombre, String encCuenta) {
+	public Cliente(String codigo, String nombre, String rut, String telefono, String direccion, String razonSocial, BigDecimal topeCredito, String ctoCliente, String ctoProveedor, String categCliId, String venId, String ctoNombre, String encCuenta) {
 		setCodigo(codigo);
 		setNombre(nombre);
 		setCliTopeCredito(topeCredito);
 		setCategCliId(categCliId);
 		setVenIdCli(venId);
 		setEncargadoCuenta(encCuenta);
-		
-//		System.out.println("----------------------------------------------------------");
-//		System.out.println("codigo :: " + codigo);
-//		System.out.println("nombre :: " + nombre);
-//		System.out.println("venId :: " + venId);
-//		System.out.println("encargado Cuenta :: " + encCuenta);
 		
 		contacto = new Contacto();
 		contacto.setCodigo(codigo);
@@ -56,7 +50,8 @@ public class Cliente extends PersistentEntity<ClientePK> implements Serializable
 		contacto.setCtoTelefono(telefono);
 		contacto.setCtoDireccion(direccion);
 		contacto.setCtoRSocial(razonSocial);
-		contacto.setCtoProveedor(proveedor);
+		contacto.setCtoCliente(ctoCliente);
+		contacto.setCtoProveedor(ctoProveedor);
 		
 		if (venId != null) {
 			VendedorePK key = new VendedorePK();

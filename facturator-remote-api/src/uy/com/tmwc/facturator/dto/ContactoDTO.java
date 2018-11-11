@@ -22,7 +22,6 @@ public class ContactoDTO implements Serializable {
 	
 	private Boolean activo;
 	
-	
 	public ContactoDTO() {
 	}
 

@@ -102,6 +102,10 @@ public class Usuario extends CodigoNombreEntity implements Serializable {
 		return USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId);
 	}
 
+	public boolean getUsuarioModoVendedorSenior() {
+		return USUARIO_VENDEDOR_SENIOR.equals(permisoId);
+	}
+
 	public void setUsuarioModoDistribuidor(boolean value) {
 	}
 

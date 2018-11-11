@@ -515,6 +515,19 @@ public class Documento extends DocumentoBase implements Serializable {
 		BigDecimal costoCSigno = this.comprobante.isDevolucion() ? costo.negate() : costo;
 		return ventaNeta.subtract(costoCSigno);
 	}
+	
+	public BigDecimal getRentaNetaDistComercial(){
+		BigDecimal ventaNeta = getVentaNeta();
+		BigDecimal precioDst = getCostoDistribuidor();
+		
+		// No tiene precio distribuidor.
+		if (precioDst.equals(BigDecimal.ZERO)) {
+			return BigDecimal.ZERO;
+		}		
+		BigDecimal precioDistCSigno = this.comprobante.isDevolucion() ? precioDst.negate() : precioDst;
+		return ventaNeta.subtract(precioDistCSigno);
+	}
+	
 
 	public BigDecimal getVentaNeta() {
 		BigDecimal subTotal = getSubTotal();
@@ -680,16 +693,13 @@ public class Documento extends DocumentoBase implements Serializable {
 	}
 
 	private BigDecimal getCostoDistribuidor() {
-		BigDecimal cd = BigDecimal.ZERO;
 		if (lineas == null || lineas.getLineas() == null) {
-			return cd;
+			return BigDecimal.ZERO;
 		}
 
+		BigDecimal cd = BigDecimal.ZERO;
 		for (LineaDocumento linea : lineas.getLineas()) {
 			BigDecimal lcd = linea.getCostoDistribuidor();
-			if (lcd == null) {
-				return null;
-			}
 			cd = cd.add(lcd);
 		}
 		return cd;

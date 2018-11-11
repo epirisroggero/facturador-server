@@ -35,14 +35,17 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 	public Articulo() {
 	}
 
-	public Articulo(String codigo, String nombre, String fId, String codigoOrigen, String prvId, String activo) {
+	public Articulo(String codigo, String nombre, String familiaId, String marcaId, String codigoOrigen, String prvId, String activo, Familia familia, Marca marca) {
 		setCodigo(codigo);
 		
 		this.nombre = nombre;
-		this.familiaId = fId;
+		this.familiaId = familiaId;
+		this.marcaId = marcaId;
 		this.codigoOrigen = codigoOrigen;
 		this.prvIdArt = prvId;
 		this.activo = activo != null ? activo : "N";
+		this.familia = familia;
+		this.marca = marca;
 	}	
 
 	@EmbeddedId
@@ -129,6 +132,13 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 			@javax.persistence.JoinColumn(name = "FamiliaId", referencedColumnName = "FamiliaId", insertable = false, updatable = false),
 			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Familia familia;
+ 
+	@NotFound(action = NotFoundAction.IGNORE)
+	@ManyToOne
+	@JoinColumns({
+			@javax.persistence.JoinColumn(name = "MarcaId", referencedColumnName = "MarcaId", insertable = false, updatable = false),
+			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
+	private Marca marca;
 
 	@Column(name = "FamiliaId")
 	private String familiaId;
@@ -620,6 +630,14 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 
 	public void setArtNotasInt(String artNotasInt) {
 		this.artNotasInt = artNotasInt;
+	}
+
+	public Marca getMarca() {
+		return marca;
+	}
+
+	public void setMarca(Marca marca) {
+		this.marca = marca;
 	}
 
 }

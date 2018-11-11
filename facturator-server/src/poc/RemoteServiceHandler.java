@@ -66,7 +66,6 @@ import uy.com.tmwc.facturator.entity.StockActual;
 import uy.com.tmwc.facturator.entity.Usuario;
 import uy.com.tmwc.facturator.entity.ValidationException;
 import uy.com.tmwc.facturator.entity.VinculoDocumentos;
-import uy.com.tmwc.facturator.entity.VinculosFP;
 import uy.com.tmwc.facturator.expediciones.AgendaTareaQuery;
 import uy.com.tmwc.facturator.javamail.EmailSenderService;
 import uy.com.tmwc.facturator.rapi.AgendaTareaService;
@@ -901,7 +900,7 @@ public class RemoteServiceHandler {
 					throw new RuntimeException("No hay tipo de cambio fiscal definido para el día de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
 				}
 				documento.setDocTCF(tcFiscal);
-			} 
+			}
 		} else if (documento.getComprobante().isRecibo()) {
 			if (monedaId.equals(Moneda.CODIGO_MONEDA_PESOS) || monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
 				documento.setDocTCF(BigDecimal.ONE);	
@@ -988,7 +987,7 @@ public class RemoteServiceHandler {
 		if (documento.getDocId() != null) {
 			getService().guardar(documento);
 			return true;
-		}		
+		}
 		return false;
 	}
 	
@@ -1441,15 +1440,23 @@ public class RemoteServiceHandler {
 	}
 
 	public byte[] getReporteLiquidacion(Date fechaDesde, Date fechaHasta, BigDecimal gastosPeriodo) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(0);
+		cal.set(2016, 12, 31, 0, 0, 0);
+		Date fechaCorte = cal.getTime();
+		
+		return getReporteLiquidacion(fechaDesde, fechaHasta, fechaCorte, gastosPeriodo);
+	}
+		
+	public byte[] getReporteLiquidacion(Date fechaDesde, Date fechaHasta, Date fechaCorte, BigDecimal gastosPeriodo) {
 		long start = new Date().getTime();
 		try {
-			return getLiquidacionService().generarLiquidacion(fechaDesde, fechaHasta, gastosPeriodo);
+			return getLiquidacionService().generarLiquidacion(fechaDesde, fechaHasta, fechaCorte, gastosPeriodo);
 		} catch (Exception exc) {
 			return null;
 		} finally {
 			System.out.println("Tiempo total reporte Control Plus: " + (new Date().getTime() - start));
 		}
-
 	}
 	
 	public byte[] getLiquidacionVendedores(Date fechaDesde, Date fechaHasta, String compsIncluidos, String compsExcluidos) {

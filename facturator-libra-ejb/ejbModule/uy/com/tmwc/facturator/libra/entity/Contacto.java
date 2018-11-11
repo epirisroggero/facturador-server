@@ -165,11 +165,11 @@ public class Contacto extends PersistentEntity<ContactoPK> implements Serializab
 	public Contacto() {
 	}
 	
-	public Contacto(String id, String nombre, String rut, String telefono, String direccion, String rsocial, String localidad, String proveedor) {
-		this(id, nombre, rut, telefono, direccion, rsocial, localidad, proveedor, null);
+	public Contacto(String id, String nombre, String rut, String telefono, String direccion, String rsocial, String localidad, String ctoCliente, String ctoProveedor) {
+		this(id, nombre, rut, telefono, direccion, rsocial, localidad, ctoCliente, ctoProveedor, null);
 	}
 
-	public Contacto(String id, String nombre, String rut, String telefono, String direccion, String rsocial, String localidad, String proveedor, String activo) {
+	public Contacto(String id, String nombre, String rut, String telefono, String direccion, String rsocial, String localidad, String ctoCliente, String ctoProveedor, String activo) {
 		setCodigo(id);
 
 		this.nombre = nombre;
@@ -178,7 +178,8 @@ public class Contacto extends PersistentEntity<ContactoPK> implements Serializab
 		this.ctoDireccion = direccion;
 		this.ctoRSocial = rsocial;
 		this.ctoLocalidad = localidad;
-		this.ctoProveedor = proveedor;
+		this.ctoCliente = ctoCliente;
+		this.ctoProveedor = ctoProveedor;
 		
 		if (activo != null) {
 			this.ctoActivo = activo;

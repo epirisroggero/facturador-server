@@ -67,7 +67,11 @@ public class VinculoDocumentos implements Serializable {
 	public BigDecimal getCuotaparteRentaComercial() {
 		return Maths.calcularMontoDescuento(this.factura.getRentaNetaComercial(), getPorcentajeCancelacion());
 	}
-	
+
+	public BigDecimal getCuotaparteRentaDistComercial() {
+		return Maths.calcularMontoDescuento(this.factura.getRentaNetaDistComercial(), getPorcentajeCancelacion());
+	}
+
 	public BigDecimal getCuotaparteOperativos() {
 		return Maths.calcularMontoDescuento(this.factura.getCostoOperativo(), getPorcentajeCancelacion());
 	}

@@ -17,7 +17,8 @@ public class JefaturaProveedor extends Jefatura
 
   @ForeignKey(name="lfx_jefaturas_proveedores")
   @OneToOne(optional=false)
-  @JoinColumns({@javax.persistence.JoinColumn(name="proveedor_id", referencedColumnName="PrvId", insertable=false, updatable=false), @javax.persistence.JoinColumn(name="EmpId", referencedColumnName="EmpId", insertable=false, updatable=false)})
+  @JoinColumns({@javax.persistence.JoinColumn(name="proveedor_id", referencedColumnName="PrvId", insertable=false, updatable=false), 
+	  @javax.persistence.JoinColumn(name="EmpId", referencedColumnName="EmpId", insertable=false, updatable=false)})
   private Proveedor proveedor;
 
   @Column(length=10, nullable=false)

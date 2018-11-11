@@ -197,7 +197,6 @@ public class Linea extends PersistentEntity<LineaPK> implements Serializable, Ha
 	@Column(name = "ConceptoIdLin")
 	private String conceptoIdLin = "";
 	
-	@SuppressWarnings("unused")
 	@Column(name = "RubIdlin")
 	private String rubIdlin;
 

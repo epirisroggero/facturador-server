@@ -9,6 +9,8 @@ public class Vendedor extends CodigoNombreEntity implements Serializable {
 
 	private List<VendedorComision> comisiones;
 	
+	private VendedoresUsuario vendedoresUsuario;
+	
 	public Vendedor() {
 	}
 
@@ -53,6 +55,14 @@ public class Vendedor extends CodigoNombreEntity implements Serializable {
 
 	public String toString() {
 		return getCodigo() + "-" + getNombre();  
+	}
+
+	public VendedoresUsuario getVendedoresUsuario() {
+		return vendedoresUsuario;
+	}
+
+	public void setVendedoresUsuario(VendedoresUsuario vendedoresUsuario) {
+		this.vendedoresUsuario = vendedoresUsuario;
 	}
 
 	

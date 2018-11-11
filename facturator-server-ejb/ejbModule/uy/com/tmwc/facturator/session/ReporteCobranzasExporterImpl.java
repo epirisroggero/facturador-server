@@ -1,6 +1,5 @@
 package uy.com.tmwc.facturator.session;
 
-import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,20 +13,21 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+
 import org.jboss.seam.annotations.Destroy;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Out;
+
 import uy.com.tmwc.facturator.dto.ParticipacionEnCobranza;
 import uy.com.tmwc.facturator.entity.CodigoNombreEntity;
-import uy.com.tmwc.facturator.entity.ComisionesDocumento;
 import uy.com.tmwc.facturator.entity.Documento;
 import uy.com.tmwc.facturator.entity.IAportaRenta;
 import uy.com.tmwc.facturator.entity.Jefatura;
-import uy.com.tmwc.facturator.entity.LineasDocumento;
 import uy.com.tmwc.facturator.entity.Moneda;
 import uy.com.tmwc.facturator.entity.ParticipacionVendedor;
 import uy.com.tmwc.facturator.entity.RedistribucionRentaLinea;
@@ -88,9 +88,8 @@ public class ReporteCobranzasExporterImpl
 
   public void ejecutar()
   {
-    List<ParticipacionVendedor> participContados = this.documentoDAOService.getParticipacionesEnContados(this.fechaDesde, this.fechaHasta);
-    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-    List<ParticipacionEnCobranza> participCobranzas = this.documentoDAOService.getParticipacionesEnCobranzas(this.fechaDesde, this.fechaHasta);
+    List<ParticipacionVendedor> participContados = this.documentoDAOService.getParticipacionesEnContados(this.fechaDesde, this.fechaHasta, null);
+    List<ParticipacionEnCobranza> participCobranzas = this.documentoDAOService.getParticipacionesEnCobranzas(this.fechaDesde, this.fechaHasta, null);
 
     AgruparVendedores2 agruparVendedores = new AgruparVendedores2();
     agruparVendedores.process(participContados);

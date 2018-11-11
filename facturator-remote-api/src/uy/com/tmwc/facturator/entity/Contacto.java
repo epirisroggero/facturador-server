@@ -26,8 +26,6 @@ public class Contacto extends CodigoNombreEntity implements Serializable {
 		
 	private String deptoIdCto;
 	
-	private String ctoCliente;
-	
 	private String ctoNombreCompleto;
 	
 	private String ctoNom;
@@ -35,7 +33,9 @@ public class Contacto extends CodigoNombreEntity implements Serializable {
 	private String ctoRSocial;
 	
 	private String ctoRUT;
-	
+
+	private String ctoCliente;
+
 	private String ctoProveedor;
 
 	private Date ctoAlta;

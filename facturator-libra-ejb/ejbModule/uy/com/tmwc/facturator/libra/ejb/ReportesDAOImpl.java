@@ -82,7 +82,7 @@ public class ReportesDAOImpl extends ServiceBase implements ReportesDAO {
 					", pv" + i + ".PrecioVentaPorcentaje");
 		}
 
-		if (Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId)) {
+		if (Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId)) {
 	    	sb.append(
 	    			", artpr.ArtPrecio" +
 					", artpr.mndIdPrecio");
@@ -94,7 +94,7 @@ public class ReportesDAOImpl extends ServiceBase implements ReportesDAO {
     			"LEFT JOIN StockActual sa on a.artId = sa.artIdSA and a.empId = sa.empId and sa.depIdSa = ").append(1); //XXX cable
     
     	
-		if (Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId)) {
+		if (Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId)) {
 			sb.append(" LEFT JOIN articulos4 artpr on artpr.precioBaseId = \"01\"").append(" and artpr.empId = a.empId and artpr.artId = a.artId"); //XXX cable precioBaseId==01
 		}
 
@@ -160,7 +160,7 @@ public class ReportesDAOImpl extends ServiceBase implements ReportesDAO {
 	    	
 	    	while (resultSet.next()) {
 	    		Object[] returnTupla;
-	    		if (Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId)) {
+	    		if (Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId)) {
 	    			returnTupla = new Object[8 + (listas.length + 1) * 3];
 	    		} else {
 					returnTupla = new Object[4 + (listas.length + 1) * 3];
@@ -175,7 +175,7 @@ public class ReportesDAOImpl extends ServiceBase implements ReportesDAO {
 				
 				Date fechaCosto = resultSet.getDate(7);
 				
-				if (Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId)) {
+				if (Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId)) {
 					returnTupla[i++] = resultSet.getBigDecimal(8);
 					returnTupla[i++] = resultSet.getString(9);
 					returnTupla[i++] = fechaCosto;
@@ -195,7 +195,7 @@ public class ReportesDAOImpl extends ServiceBase implements ReportesDAO {
 					returnTupla[i++] = fechaCosto;
 				}
 				
-	    		if (Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId)) {
+	    		if (Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId)) {
 					BigDecimal precioBase = resultSet.getBigDecimal(10 + listas.length * 4);				
 					returnTupla[i++] = precioBase;
 					returnTupla[i++] = resultSet.getString(10 + (listas.length * 4) + 1); 

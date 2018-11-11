@@ -219,6 +219,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 
 	@Column(name = "DocRegistroHora")
 	private String registroHora;
+	
 	private static final String REGISTRO_HORA_FORMAT = "HH:mm:ss";
 
 	/**
@@ -359,7 +360,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	private Set<Vinculosdoc> recibosVinculados;
 
 	@OneToMany(cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "recibo")
-	@Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+	/*@Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN })*/
 	private Set<Vinculosdoc> facturasVinculadas;
 
 	@OneToMany(cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "documento")
@@ -371,7 +372,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	private Set<Docruc> docruc;
 	
 	@OneToMany(cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "docFP1")
-	@Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+	/*@Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN })*/
 	private Set<Vinculosfp> vinculosfp;
 
 	

@@ -233,7 +233,7 @@ public class LineaDocumento implements Serializable {
 
 	public BigDecimal getCostoDistribuidor() {
 		if (precioDistribuidor == null) {
-			return null;
+			return BigDecimal.ZERO;
 		}
 		return precioDistribuidor.multiply(this.cantidad);
 	}

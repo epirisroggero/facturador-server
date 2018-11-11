@@ -65,15 +65,22 @@ public class ArticulosDAOServiceImpl extends ServiceBase implements ArticulosDAO
 		
 		articulolibra.setId(articuloPK);
 		
+		if (e.getAbrevia() != null) {
+			articulolibra.setAbrevia(e.getAbrevia().trim());
+		}
+		if (e.getNombre() != null) {
+			articulolibra.setNombre(e.getNombre().trim());
+		}
+		
 		HashMap<String, String> adicionales = new HashMap<String, String>();
 		if (e.getVideoYoutube() != null) {
-			adicionales.put("103", e.getVideoYoutube());
+			adicionales.put("103", e.getVideoYoutube().trim());
 		}
 		if (e.getVideoYoutube() != null) {
-			adicionales.put("113", e.getVideoYoutube2());
+			adicionales.put("113", e.getVideoYoutube2().trim());
 		}
 		if (e.getVideoYoutube() != null) {
-			adicionales.put("114", e.getVideoYoutube3());
+			adicionales.put("114", e.getVideoYoutube3().trim());
 		}
 
 		if (e.getPeso() != null) {
