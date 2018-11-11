@@ -242,9 +242,9 @@
 		<named-query name="Articulo.query">
 			<query>
 				select 
-					new uy.com.tmwc.facturator.libra.entity.Articulo(e.id.artId, e.nombre, e.familiaId, e.codigoOrigen, e.prvIdArt, e.activo)
+					new uy.com.tmwc.facturator.libra.entity.Articulo(e.id.artId, e.nombre, e.familiaId, e.marcaId, e.codigoOrigen, e.prvIdArt, e.activo, fam, marca)
 				from
-					Articulo e
+					Articulo e join e.familia fam left outer join e.marca marca
 				where 
 					e.nombre like :query
 					and e.id.empId = :empId
@@ -339,7 +339,7 @@
 		<named-query name="Contacto.query">
 			<query>
 				select 
-					new uy.com.tmwc.facturator.libra.entity.Contacto(e.id.ctoId, e.nombre, e.ctoRUT, e.ctoTelefono, e.ctoDireccion, e.ctoRSocial, e.ctoLocalidad, e.ctoProveedor, e.ctoActivo)
+					new uy.com.tmwc.facturator.libra.entity.Contacto(e.id.ctoId, e.nombre, e.ctoRUT, e.ctoTelefono, e.ctoDireccion, e.ctoRSocial, e.ctoLocalidad, e.ctoCliente, e.ctoProveedor, e.ctoActivo)
 				from
 					Contacto e
 				where 
@@ -729,7 +729,7 @@
 	      		select 
 	      			distinct rv, f, r <!-- f y r estan para que haga el fetch en la misma consulta, a pesar de que potencialmente van a aparecer varias veces en el resultset -->
 	      		from 
-	      			Documento f 
+	      			Documento f
 	      			join f.recibosVinculados rv 
 	      			join rv.recibo r
 	      		where
@@ -750,7 +750,8 @@
 	      			) 
 	      			and r.comprobante.tipo = 5
 	      			and f.emitido = 'S'
-	      			and f.fecha > '2016-12-31 00:00:00'
+	      			and f.fecha > :fechaCorte
+	      			<!--  and f.fecha > '2016-12-31 00:00:00' -->
 	      	</query>
 		</named-query>
 
@@ -794,7 +795,8 @@
 					      			) 
 					      			and r.comprobante.tipo = 5
 					      			and f.emitido = 'S'
-					      			and f.fecha > '2016-12-31 00:00:00'
+					      			and f.fecha > :fechaCorte
+					      			<!--  and f.fecha > '2016-12-31 00:00:00' -->
 					      		)
 				      	)
 	      	</query>
@@ -861,7 +863,7 @@
 					and d.id.empId = :empId
 					and d.fecha between :fechaDesde and :fechaHasta
 					and ((d.emitido = 'S') or (d.comprobante.id.cmpid = '98' and d.pendiente = 'N'))
-					and d.fecha > '2016-12-31 00:00:00'
+	      			and d.fecha > :fechaCorte
       		</query>
 		</named-query>
 
@@ -888,7 +890,8 @@
 								and d.id.empId = :empId
 								and d.fecha between :fechaDesde and :fechaHasta
 								and d.emitido = 'S'
-								and d.fecha > '2016-12-31 00:00:00'
+					      		and d.fecha > :fechaCorte
+					      		<!--  and f.fecha > '2016-12-31 00:00:00' -->
 							)
 	      			)
       		</query>
@@ -1122,6 +1125,8 @@
 			</query>
 		</named-query>
 	</entity>
+	<entity class="uy.com.tmwc.facturator.libra.entity.Concepto" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Marca" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Tiposasiento" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Usuario" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Vendedore" />
