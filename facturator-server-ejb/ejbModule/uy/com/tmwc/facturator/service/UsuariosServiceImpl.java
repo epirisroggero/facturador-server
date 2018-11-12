@@ -41,7 +41,7 @@ public class UsuariosServiceImpl implements UsuariosService {
 	static {
 		HashMap<String, Collection<Integer>> listasPorUsuario = new HashMap<String, Collection<Integer>>();
 		listasPorUsuario.put(Usuario.USUARIO_VENDEDOR_JUNIOR, Arrays.asList(new Integer[] {LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA}));
-		listasPorUsuario.put(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR, Arrays.asList(new Integer[] {LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA}));
+		listasPorUsuario.put(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR, Arrays.asList(new Integer[] {LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA, LISTA_PRECIO_DISTRIBUIDOR, LISTA_PRECIO_REVENTA}));
 		listasPorUsuario.put(Usuario.USUARIO_VENDEDOR_SENIOR, Arrays.asList(new Integer[] {LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA}));
 		listasPorUsuario.put(Usuario.USUARIO_ADMINISTRADOR, Arrays.asList(new Integer[] {LISTA_PRECIO_MINIMO_VENTA, LISTA_PRECIO_DISTRIBUIDOR, LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA})); //TODO: Revisar con Mauro
 		listasPorUsuario.put(Usuario.USUARIO_FACTURACION, Arrays.asList(new Integer[] {LISTA_PRECIO_MINIMO_VENTA, LISTA_PRECIO_DISTRIBUIDOR, LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA})); //TODO: Revisar con Mauro

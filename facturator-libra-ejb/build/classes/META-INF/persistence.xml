@@ -3,7 +3,6 @@
 	<persistence-unit name="facturator-libra-ejb">
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
       <jta-data-source>java:/libraDatasource</jta-data-source>
-      <class>uy.com.tmwc.facturator.libra.entity.Auditoria</class>
       <class>uy.com.tmwc.facturator.libra.entity.ZonaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Zona</class>
       <class>uy.com.tmwc.facturator.libra.entity.VinculosdocPK</class>
@@ -35,6 +34,7 @@
       <class>uy.com.tmwc.facturator.libra.entity.NumeradorPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Numerador</class>	  
       <class>uy.com.tmwc.facturator.libra.entity.FanfoldPK</class>
+      <class>uy.com.tmwc.facturator.libra.entity.MarcaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.MonedaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.LocalescomercialePK</class>
       <class>uy.com.tmwc.facturator.libra.entity.ListaPK</class>
@@ -90,6 +90,9 @@
       <class>uy.com.tmwc.facturator.libra.entity.ArticuloPartidaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.ArticuloPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.AgendatareaPK</class>
+      <class>uy.com.tmwc.facturator.libra.entity.ConceptoPK</class>
+      <class>uy.com.tmwc.facturator.libra.entity.Auditoria</class>
+      
 	  
       <exclude-unlisted-classes />
 		<properties>

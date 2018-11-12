@@ -582,6 +582,23 @@
     </field>
   </mapping>
   
+  <mapping>
+    <class-a>uy.com.tmwc.facturator.libra.entity.Concepto</class-a>   
+    <class-b>uy.com.tmwc.facturator.entity.Concepto</class-b>
+    <field>
+      <a>id.conceptoId</a>
+      <b>codigo</b>
+    </field>
+  </mapping>
+
+  <mapping> 
+    <class-a>uy.com.tmwc.facturator.libra.entity.Marca</class-a>   
+    <class-b>uy.com.tmwc.facturator.entity.Marca</class-b>
+    <field>
+      <a>id.marcaId</a>
+      <b>codigo</b>
+    </field>
+  </mapping>  
 
 </mappings>
         

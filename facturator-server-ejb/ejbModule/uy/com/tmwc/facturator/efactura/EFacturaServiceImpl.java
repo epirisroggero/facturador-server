@@ -341,7 +341,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 			}
 			LOGGER.info("Verificar existe el archivo '" + resultPath + "' por " + i + " vez.");
 			
-		} while((!f.exists() || !f.canRead()) && i < 30);
+		} while((!f.exists() || !f.canRead()) && i < 60);
 		
 		String result = f.exists() && f.canRead() ? readFile(resultPath) : null;
 		String[] rows = result != null ? result.split(System.getProperty("line.separator")) : null;
@@ -413,7 +413,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 					j++;
 					LOGGER.info("Código QR chequeado '" + codigoQR_path + "'");
 					
-				} while((!fileQR.exists() || !fileQR.canRead()) && j < 10); 
+				} while((!fileQR.exists() || !fileQR.canRead()) && j < 60); 
 				
 				codigoQR = fileQR.exists() || !fileQR.canRead() ? loadFile(codigoQR_path) : null;
 			} 

@@ -322,7 +322,13 @@ public class DocumentoServiceImpl implements DocumentoService {
 
 		if (!documento.getComprobante().isMueveCaja()) {
 			documento.setCajaId(null);
-		} 
+		}
+		if (documento.getComprobante().isRecibo()) {
+			documento.setCajaId(new Short("1"));
+		}		
+		if (documento.getEstado() == null) {
+			documento.setEstado("");
+		}
 		
 		documento.setUsuarioId(usuarioId);
 
@@ -373,7 +379,8 @@ public class DocumentoServiceImpl implements DocumentoService {
 		
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
-		Boolean hasPerm = Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_FACTURACION.equals(permisoId);
+		Boolean hasPerm = Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
+			|| Usuario.USUARIO_FACTURACION.equals(permisoId) || Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId);
 		
 		if (!hasPerm && permisoId.equals(Usuario.USUARIO_ALIADOS_COMERCIALES)) {
 			String regex = System.getProperty("facturator.aliadosComerciales.familias");

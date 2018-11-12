@@ -22,6 +22,7 @@ import uy.com.tmwc.facturator.entity.CentrosCosto;
 import uy.com.tmwc.facturator.entity.Cliente;
 import uy.com.tmwc.facturator.entity.CodigoNombreEntity;
 import uy.com.tmwc.facturator.entity.Comprobante;
+import uy.com.tmwc.facturator.entity.Concepto;
 import uy.com.tmwc.facturator.entity.Contacto;
 import uy.com.tmwc.facturator.entity.Departamento;
 import uy.com.tmwc.facturator.entity.Deposito;
@@ -34,6 +35,7 @@ import uy.com.tmwc.facturator.entity.GrupoContacto;
 import uy.com.tmwc.facturator.entity.Iva;
 import uy.com.tmwc.facturator.entity.Jefatura;
 import uy.com.tmwc.facturator.entity.Localescomerciale;
+import uy.com.tmwc.facturator.entity.Marca;
 import uy.com.tmwc.facturator.entity.Moneda;
 import uy.com.tmwc.facturator.entity.Numerador;
 import uy.com.tmwc.facturator.entity.Pais;
@@ -89,6 +91,8 @@ public class CatalogServiceImpl implements CatalogService {
 		add(CentrosCosto.class);
 		add(FormaPago.class);
 		add(Banco.class);
+		add(Concepto.class);
+		add(Marca.class);
 	}
 
 	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog) {
