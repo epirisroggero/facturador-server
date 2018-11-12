@@ -8,7 +8,6 @@
 </listAttribute>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="facturator-libra-ejb"/>
 <stringAttribute key="org.hibernate.eclipse.launch.CONFIGURATION_FACTORY" value="JPA"/>
-<stringAttribute key="org.hibernate.eclipse.launch.CONNECTION_PROFILE_NAME" value="Libra"/>
 <listAttribute key="org.hibernate.eclipse.launch.FILE_MAPPINGS"/>
 <stringAttribute key="org.hibernate.eclipse.launch.PERSISTENCE_UNIT_NAME" value="facturator-libra-ejb"/>
 <stringAttribute key="org.hibernate.eclipse.launch.PROPERTY_FILE" value="\facturator-server-ejb\hibernate-console.properties"/>

@@ -97,7 +97,7 @@ public class ClienteQuery implements Serializable {
 		this.razonSocial = razonSocial;
 	}
 
-	public String getLocalidad() {
+	public String getLocalidad() { 
 		return localidad;
 	}
 

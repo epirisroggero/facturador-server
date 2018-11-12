@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="d187c6c3-6e2f-4505-97b6-51f03a307685" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/DocumentoDAOServiceImpl$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/DocumentoDAOServiceImpl$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/RutinaModificarCostos$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/DocumentoServiceImpl$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/DocumentoServiceImpl$2.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/session/ReporteCobranzasExporterImpl$1.class" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/ArticulosDAOServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/ArticulosDAOServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/AuditoriaDAOServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/AuditoriaDAOServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/CatalogDAOServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/CatalogDAOServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/ClientesDAOServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/ClientesDAOServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/DescuentosPrometidosDAOServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/DescuentosPrometidosDAOServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/DocumentoDAOServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/DocumentoDAOServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/EFacturaDAOServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/EFacturaDAOServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/EntregaDAOServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/EntregaDAOServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/FanfoldDAOServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/FanfoldDAOServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/MonedasCotizacionesDAOServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/MonedasCotizacionesDAOServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/ReportesDAOImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/ReportesDAOImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/RutinaModificarCostos.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/RutinaModificarCostos.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/TareasDAOServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/TareasDAOServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/UsuariosDAOServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/ejb/UsuariosDAOServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Agendatarea.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Agendatarea.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/AgendatareaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/AgendatareaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Articulo.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Articulo.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ArticuloPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ArticuloPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ArticuloPartida.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ArticuloPartida.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ArticuloPartidaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ArticuloPartidaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ArticuloPrecio.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ArticuloPrecio.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ArticuloPrecioPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ArticuloPrecioPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Asiento.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Asiento.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/AsientoPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/AsientoPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Asientos1.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Asientos1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Asientos1PK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Asientos1PK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Auditoria.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Auditoria.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/AuditoriaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/AuditoriaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Banco.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Banco.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/BancoPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/BancoPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Cae.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Cae.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CaePK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CaePK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Caja.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Caja.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CajaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CajaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Capitulo.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Capitulo.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CapituloPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CapituloPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Categoriasclientes.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Categoriasclientes.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CategoriasclientesPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CategoriasclientesPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Centroscosto.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Centroscosto.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CentroscostoPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CentroscostoPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Cliente.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Cliente.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ClientePK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ClientePK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ComisionJefatura.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ComisionJefatura.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ComisionJefaturaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ComisionJefaturaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Comprobante.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Comprobante.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ComprobantePK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ComprobantePK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Contacto.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Contacto.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ContactoPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ContactoPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CotizacionesMonedas.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CotizacionesMonedas.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CotizacionesMonedasPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CotizacionesMonedasPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Cuentasbancaria.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Cuentasbancaria.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CuentasbancariaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/CuentasbancariaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Departamento.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Departamento.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DepartamentoPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DepartamentoPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Deposito.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Deposito.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DepositoPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DepositoPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DescuentoPrometidoComprobante.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DescuentoPrometidoComprobante.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DescuentoPrometidoComprobantePK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DescuentoPrometidoComprobantePK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Doccfe.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Doccfe.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DoccfePK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DoccfePK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Doccuota.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Doccuota.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DoccuotaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DoccuotaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Docfp.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Docfp.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DocfpPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DocfpPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Docruc.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Docruc.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DocrucPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DocrucPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Documento.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Documento.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DocumentoPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DocumentoPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DummyDocumento.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/DummyDocumento.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Entrega.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Entrega.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/EntregaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/EntregaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Familia.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Familia.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/FamiliaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/FamiliaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Fanfold.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Fanfold.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/FanfoldPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/FanfoldPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Formaspago.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Formaspago.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/FormaspagoPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/FormaspagoPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Giro.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Giro.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/GiroPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/GiroPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Gruposconcepto.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Gruposconcepto.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/GruposconceptoPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/GruposconceptoPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Gruposcontacto.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Gruposcontacto.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/GruposcontactoPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/GruposcontactoPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Gruposrubro.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Gruposrubro.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/GruposrubroPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/GruposrubroPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/IdTablaGen.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/IdTablaGen.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/IdTablaGenPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/IdTablaGenPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Iva.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Iva.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/IvaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/IvaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Jefatura.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Jefatura.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/JefaturaArticulo.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/JefaturaArticulo.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/JefaturaFamiliaArticulos.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/JefaturaFamiliaArticulos.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/JefaturaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/JefaturaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/JefaturaProveedor.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/JefaturaProveedor.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/JefaturaRangoArticulos.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/JefaturaRangoArticulos.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/LibraExtensionEntity.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/LibraExtensionEntity.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Linea.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Linea.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/LineaExts.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/LineaExts.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/LineaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/LineaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Lista.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Lista.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ListaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ListaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Localescomerciale.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Localescomerciale.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/LocalescomercialePK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/LocalescomercialePK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Moneda.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Moneda.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/MonedaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/MonedaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Numerador.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Numerador.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/NumeradorPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/NumeradorPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Pais.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Pais.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/PaisPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/PaisPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Parametrosadministracion.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Parametrosadministracion.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ParametrosadministracionPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ParametrosadministracionPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ParticipacionVendedor.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ParticipacionVendedor.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ParticipacionVendedorLPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ParticipacionVendedorLPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Persona.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Persona.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/PersonaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/PersonaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Planpago.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Planpago.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/PlanpagoPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/PlanpagoPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Planpagoscuota.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Planpagoscuota.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/PlanpagoscuotaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/PlanpagoscuotaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Preciosbase.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Preciosbase.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/PreciosbasePK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/PreciosbasePK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Preciosventa.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Preciosventa.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/PreciosventaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/PreciosventaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Proveedor.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Proveedor.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ProveedorPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ProveedorPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Rubro.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Rubro.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/RubroPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/RubroPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Stockactual.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Stockactual.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/StockactualPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/StockactualPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Tarea.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Tarea.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/TareaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/TareaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/TipoCambio.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/TipoCambio.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/TipoCambioPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/TipoCambioPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Tiposasiento.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Tiposasiento.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/TiposasientoPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/TiposasientoPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Usuario.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Usuario.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/UsuarioPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/UsuarioPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Vendedore.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Vendedore.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/VendedorePK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/VendedorePK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/VendedoresUsuario.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/VendedoresUsuario.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/VendedoresUsuarioPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/VendedoresUsuarioPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Vendedorescomisione.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Vendedorescomisione.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/VendedorescomisionePK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/VendedorescomisionePK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Vinculosdoc.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Vinculosdoc.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/VinculosdocPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/VinculosdocPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Vinculosfp.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Vinculosfp.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/VinculosfpPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/VinculosfpPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Zona.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/Zona.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ZonaPK.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/entity/ZonaPK.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/util/DozerMappingsServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/util/DozerMappingsServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/util/JPAUtils.class" afterPath="$PROJECT_DIR$/facturator-libra-ejb/build/classes/uy/com/tmwc/facturator/libra/util/JPAUtils.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/dto/ClienteQuery.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/dto/ClienteQuery.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/dto/DocumentoDTO.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/dto/DocumentoDTO.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/dto/DocumentoQuery.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/dto/DocumentoQuery.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/entity/Documento.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/entity/Documento.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/entity/DocumentoBase.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/entity/DocumentoBase.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/entity/LineaDocumento.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/entity/LineaDocumento.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/entity/Moneda.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/entity/Moneda.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/entity/VinculoDocumentos.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/entity/VinculoDocumentos.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/entity/VinculosFP.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/entity/VinculosFP.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/liquidacion/CuotaparteRecibo.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/liquidacion/CuotaparteRecibo.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/liquidacion/ReferenciaFactura.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/liquidacion/ReferenciaFactura.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/rapi/DocumentoService.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/rapi/DocumentoService.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/rapi/EFacturaService.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/rapi/EFacturaService.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/utils/Maths.class" afterPath="$PROJECT_DIR$/facturator-remote-api/build/classes/uy/com/tmwc/facturator/utils/Maths.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/efactura/EFacturaServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/efactura/EFacturaServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/liquidacion/LiquidacionServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/liquidacion/LiquidacionServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/server/util/DTO2ModelMappingServiceImpl$CatalogEntityConverterListener.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/server/util/DTO2ModelMappingServiceImpl$CatalogEntityConverterListener.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/server/util/DTO2ModelMappingServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/server/util/DTO2ModelMappingServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/server/util/ReplacePersistentBags.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/server/util/ReplacePersistentBags.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/AgendaTareaServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/AgendaTareaServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ArticulosServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ArticulosServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/AuditoriaServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/AuditoriaServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/CatalogServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/CatalogServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ClientesServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ClientesServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/DescuentosPrometidosServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/DescuentosPrometidosServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/DocumentoServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/DocumentoServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/EntregaServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/EntregaServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/FanfoldServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/FanfoldServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/MonedasCotizacionesServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/MonedasCotizacionesServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/PruebaServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/PruebaServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ReportesServiceImpl$LiquidacionDistribuidor.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ReportesServiceImpl$LiquidacionDistribuidor.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ReportesServiceImpl$LiquidacionJunior.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ReportesServiceImpl$LiquidacionJunior.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ReportesServiceImpl$LiquidacionSenior.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ReportesServiceImpl$LiquidacionSenior.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ReportesServiceImpl$LiquidacionVendedor.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ReportesServiceImpl$LiquidacionVendedor.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ReportesServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/ReportesServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/UsuariosServiceImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/service/UsuariosServiceImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/session/FacturaPrinterExporterImpl$RentaDisguiser.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/session/FacturaPrinterExporterImpl$RentaDisguiser.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/session/FacturaPrinterExporterImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/session/FacturaPrinterExporterImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/session/ReporteCobranzasExporterImpl$MontoPagoVendedorExtractor.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/session/ReporteCobranzasExporterImpl$MontoPagoVendedorExtractor.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/session/ReporteCobranzasExporterImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/session/ReporteCobranzasExporterImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/session/ReporteVentasExporterImpl.class" afterPath="$PROJECT_DIR$/facturator-server-ejb/build/classes/uy/com/tmwc/facturator/session/ReporteVentasExporterImpl.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server/build/classes/poc/RemoteServiceHandler$MyInvocationHandler.class" afterPath="$PROJECT_DIR$/facturator-server/build/classes/poc/RemoteServiceHandler$MyInvocationHandler.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server/build/classes/poc/RemoteServiceHandler.class" afterPath="$PROJECT_DIR$/facturator-server/build/classes/poc/RemoteServiceHandler.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server/build/classes/uy/com/tmwc/facturador/scheduler/QueueJob$MyInvocationHandler.class" afterPath="$PROJECT_DIR$/facturator-server/build/classes/uy/com/tmwc/facturador/scheduler/QueueJob$MyInvocationHandler.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server/build/classes/uy/com/tmwc/facturador/scheduler/QueueJob.class" afterPath="$PROJECT_DIR$/facturator-server/build/classes/uy/com/tmwc/facturador/scheduler/QueueJob.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server/build/classes/uy/com/tmwc/facturador/scheduler/StartupScheduler.class" afterPath="$PROJECT_DIR$/facturator-server/build/classes/uy/com/tmwc/facturador/scheduler/StartupScheduler.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-spi/build/classes/uy/com/tmwc/facturator/spi/ReportesDAO.class" afterPath="$PROJECT_DIR$/facturator-spi/build/classes/uy/com/tmwc/facturator/spi/ReportesDAO.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-spi/build/classes/uy/com/tmwc/facturator/spi/ReportesDAOService.class" afterPath="$PROJECT_DIR$/facturator-spi/build/classes/uy/com/tmwc/facturator/spi/ReportesDAOService.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twmc-utils/build/classes/uy/com/tmwc/facturator/mapper/Mapper$FieldMapping.class" afterPath="$PROJECT_DIR$/twmc-utils/build/classes/uy/com/tmwc/facturator/mapper/Mapper$FieldMapping.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twmc-utils/build/classes/uy/com/tmwc/facturator/mapper/Mapper$TruchoFieldMapping.class" afterPath="$PROJECT_DIR$/twmc-utils/build/classes/uy/com/tmwc/facturator/mapper/Mapper$TruchoFieldMapping.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/twmc-utils/build/classes/uy/com/tmwc/facturator/mapper/Mapper.class" afterPath="$PROJECT_DIR$/twmc-utils/build/classes/uy/com/tmwc/facturator/mapper/Mapper.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/facturator-server-ejb/facturator-server-ejb.launch" afterPath="$PROJECT_DIR$/facturator-server-ejb/facturator-server-ejb.launch" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GradleLocalSettings">
+    <option name="externalProjectsViewState">
+      <projects_view />
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="260" />
+    <option name="y" value="20" />
+    <option name="width" value="1400" />
+    <option name="height" value="990" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+      <manualOrder />
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="facturador-server" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="facturador-server" type="462c0819:PsiDirectoryNode" />
+              <item name="facturator-figaro-ejb" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="facturador-server" type="462c0819:PsiDirectoryNode" />
+              <item name="facturator-figaro-ejb" type="462c0819:PsiDirectoryNode" />
+              <item name="ejbModule" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="facturador-server" type="462c0819:PsiDirectoryNode" />
+              <item name="facturator-figaro-ejb" type="462c0819:PsiDirectoryNode" />
+              <item name="ejbModule" type="462c0819:PsiDirectoryNode" />
+              <item name="uy" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="facturador-server" type="462c0819:PsiDirectoryNode" />
+              <item name="facturator-figaro-ejb" type="462c0819:PsiDirectoryNode" />
+              <item name="ejbModule" type="462c0819:PsiDirectoryNode" />
+              <item name="uy" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="facturador-server" type="462c0819:PsiDirectoryNode" />
+              <item name="facturator-figaro-ejb" type="462c0819:PsiDirectoryNode" />
+              <item name="ejbModule" type="462c0819:PsiDirectoryNode" />
+              <item name="uy" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="tmwc" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="facturador-server" type="462c0819:PsiDirectoryNode" />
+              <item name="facturator-figaro-ejb" type="462c0819:PsiDirectoryNode" />
+              <item name="ejbModule" type="462c0819:PsiDirectoryNode" />
+              <item name="uy" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="tmwc" type="462c0819:PsiDirectoryNode" />
+              <item name="facturator" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="facturador-server" type="462c0819:PsiDirectoryNode" />
+              <item name="facturator-figaro-ejb" type="462c0819:PsiDirectoryNode" />
+              <item name="ejbModule" type="462c0819:PsiDirectoryNode" />
+              <item name="uy" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="tmwc" type="462c0819:PsiDirectoryNode" />
+              <item name="facturator" type="462c0819:PsiDirectoryNode" />
+              <item name="figaro" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="facturador-server" type="462c0819:PsiDirectoryNode" />
+              <item name="facturator-libra-ejb" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
+              <item name="facturador-server" type="462c0819:PsiDirectoryNode" />
+              <item name="facturator-libra-ejb" type="462c0819:PsiDirectoryNode" />
+              <item name="ejbModule" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+      <pane id="AndroidView" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <module />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+    </configuration>
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <predefined_log_file id="idea.log" enabled="true" />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+    </configuration>
+  </component>
+  <component name="SbtLocalSettings">
+    <option name="externalProjectsViewState">
+      <projects_view />
+    </option>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false">
+    <option name="remove_strategy" value="false" />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d187c6c3-6e2f-4505-97b6-51f03a307685" name="Default" comment="" />
+      <created>1541967623315</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1541967623315</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
+    <layout>
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Image Layers" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3289183" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+</project>
