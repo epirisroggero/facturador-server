@@ -1102,7 +1102,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		
 		List<uy.com.tmwc.facturator.entity.ParticipacionVendedor> result = new ArrayList();
 		
-		/*
 		for (Object object : pv) {		
 			ParticipacionVendedor partVendOrigen = (ParticipacionVendedor) object;
 			
@@ -1115,11 +1114,9 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			partVendDest.setPorcentaje(partVendOrigen.getPorcentaje());
 			
 			result.add(partVendDest);
-		}*/
-
-		List<uy.com.tmwc.facturator.entity.ParticipacionVendedor> result2 = new ArrayList(new Mapper().mapCollection(pv, uy.com.tmwc.facturator.entity.ParticipacionVendedor.class));
+		}
 		
-		return result2;
+		return result;
 	}
 
 	private void fetchComisionesVendedores(List<ParticipacionVendedor> pvs) {

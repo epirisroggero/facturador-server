@@ -36,6 +36,7 @@ import uy.com.tmwc.facturator.entity.Moneda;
 import uy.com.tmwc.facturator.entity.ParticipacionVendedor;
 import uy.com.tmwc.facturator.entity.TipoCambio;
 import uy.com.tmwc.facturator.entity.Usuario;
+import uy.com.tmwc.facturator.entity.VendedoresUsuario;
 import uy.com.tmwc.facturator.rapi.Cotizaciones;
 import uy.com.tmwc.facturator.rapi.ReportesService;
 import uy.com.tmwc.facturator.rapi.UsuariosService;
@@ -47,6 +48,7 @@ import uy.com.tmwc.facturator.utils.DateUtils;
 import uy.com.tmwc.facturator.utils.LogicaCotizacion;
 import uy.com.tmwc.facturator.utils.LogicaCotizacion.GetTipoCambio;
 import uy.com.tmwc.facturator.utils.Maths;
+import uy.com.tmwc.utils.orm.CatalogEntity;
 
 import com.csvreader.CsvWriter;
 
@@ -165,12 +167,17 @@ public class ReportesServiceImpl implements ReportesService {
 		List<TipoCambio> tipoCambios = reportesLibra.getTipoCambios();
 		GetTipoCambio getTipoCambioFunction = new LogicaCotizacion.InMemoryGetTipoCambio(tipoCambios);
 		
-		Boolean mostrarPrecios = Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId);
+		Boolean mostrarPrecios = Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId);
+		
+		if (Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId)) {
+			mostrarCosto = false;
+			mostrarPrecioFab = false;
+		}			
 		
 		Object[][] rowsWithData = new Object[dbData.size()][2 + listas.length + 2];
 		i = 0;
 		for (Object[] dbDatum : dbData) {
-			Object[] processed = new Object[3 + listas.length + (mostrarPrecios ? 2 : 0)];
+			Object[] processed = new Object[3 + listas.length + (mostrarPrecios ? ((Boolean)mostrarCosto ? 1 : 0) + ((Boolean)mostrarPrecioFab ? 1 : 0) : 0)];
 			int col = 0;
 			processed[col++] = dbDatum[4];
 			processed[col++] = new CodigoNombre((String)dbDatum[0], (String)dbDatum[1]);
@@ -181,13 +188,16 @@ public class ReportesServiceImpl implements ReportesService {
 				String mprecio = (String)dbDatum[attrIndex++];
 				Date fprecio = (Date)dbDatum[attrIndex++];
 				processed[col++] = new LogicaCotizacion(Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_DOLAR).getMontoMayorCotizacion(fprecio, mprecio, precio, (String)moneda, (Cotizaciones)cotizaciones, Boolean.FALSE, getTipoCambioFunction);
-			}			
+			}	
+			
+			attrIndex = 8;
 			for (int j = 0; j < listas.length; j++) {
 				BigDecimal precio = (BigDecimal) dbDatum[attrIndex++];
 				String mprecio = (String)dbDatum[attrIndex++];
 				Date fprecio = (Date)dbDatum[attrIndex++];
 				processed[col++] = new LogicaCotizacion(Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_DOLAR).getMontoMayorCotizacion(fprecio, mprecio, precio, (String)moneda, (Cotizaciones)cotizaciones, Boolean.FALSE, getTipoCambioFunction);
 			}
+			
 			if (mostrarPrecios && Boolean.TRUE.equals(mostrarPrecioFab)) {
 				BigDecimal precio = (BigDecimal) dbDatum[attrIndex++];
 				String mprecio = (String)dbDatum[attrIndex++];
@@ -396,6 +406,29 @@ public class ReportesServiceImpl implements ReportesService {
 		List<TipoCambio> tipoCambios2 = reportesLibra.getTipoCambios();
 		GetTipoCambio getTipoCambioFunction2 = new LogicaCotizacion.InMemoryGetTipoCambio(tipoCambios2);
 
+		List<Usuario> usuarios = catalogDAOService.getCatalog(Usuario.class);
+		ArrayList<String> vendedoresDist = new ArrayList<String>();
+		ArrayList<String> vendedoresJunior = new ArrayList<String>();
+		ArrayList<String> vendedoresSenior = new ArrayList<String>();
+		for (Usuario user : usuarios) {
+			//System.out.println("Usuario :: " + user.getCodigo() + " >> Vend: " + user.getVenId());
+			if (user.getVenId() != null && user.getVenId().trim().length() > 0) {
+				if (user.getUsuarioModoDistribuidor()) {
+					vendedoresDist.add(user.getVenId());
+					System.out.println("Usuario :: " + user.getCodigo() +  " > Vendedor distribuidor :: " + user.getVenId());
+				} else if (user.getUsuarioModoMostrador()) {
+					vendedoresJunior.add(user.getVenId());
+					System.out.println("Usuario :: " + user.getCodigo() +  " > Vendedor junior :: " + user.getVenId());
+				} else {
+					vendedoresSenior.add(user.getVenId());
+					System.out.println("Usuario :: " + user.getCodigo() +  " > Vendedor senior :: " + user.getVenId());
+				}
+			}
+		}
+
+		System.out.println("###############################" );
+
+		
 		for (ParticipacionVendedor participacionVendedor : participaciones) {
 			int codigoVen;
 			try {
@@ -427,9 +460,9 @@ public class ReportesServiceImpl implements ReportesService {
 				ventaNeta = ventaNeta.divide(coti, 2, RoundingMode.HALF_UP);
 			}
 			importeNetoVendido.put(codigoVen, ventaNeta);
-						
+			
 			BigDecimal renta = getRenta(doc, lc);
-			if (codigoVen >= 1 && codigoVen <= 29) {
+			if (vendedoresSenior.contains(codigoVen)) {
 				BigDecimal cuotaparte = participacionVendedor.getCuotaparte(renta) != null ? participacionVendedor.getCuotaparte(renta) : BigDecimal.ZERO;
 				if (creditoAlVendedor.containsKey(codigoVen)) {
 					cuotaparte = creditoAlVendedor.get(codigoVen).add(cuotaparte.divide(coti, 2, RoundingMode.HALF_UP));
@@ -446,7 +479,7 @@ public class ReportesServiceImpl implements ReportesService {
 				}
 				rentaBruta.put(codigoVen, aux);
 				
-			} else if (codigoVen >= 30 && codigoVen <= 49) {
+			} else if (vendedoresDist.contains(codigoVen)) {
 				BigDecimal porcentajeComision = participacionVendedor.getVendedor().getPorcentajeComision(doc.getPreciosVenta().getCodigo());
 				if (porcentajeComision == null) {
 					porcentajeComision = BigDecimal.ZERO;
@@ -480,7 +513,7 @@ public class ReportesServiceImpl implements ReportesService {
 					e.printStackTrace();
 					continue;
 				}
-				LiquidacionVendedor lv = ensureLiquidacion(codigoVendedor, liqByCodigo, lc);
+				LiquidacionVendedor lv = ensureLiquidacion(codigoVendedorStr, liqByCodigo, lc, vendedoresDist, vendedoresJunior, vendedoresSenior);
 				lv.addParticipacion(participacionVendedor);
 			}
 
@@ -545,30 +578,38 @@ public class ReportesServiceImpl implements ReportesService {
 		}
 	}
 	
-	private LiquidacionVendedor ensureLiquidacion(int codigoVendedor, HashMap<Integer, LiquidacionVendedor> liqByCodigo, LogicaCotizacion cotizacion) throws IOException {
+	private LiquidacionVendedor ensureLiquidacion(String codigoVendedorStr, HashMap<Integer, LiquidacionVendedor> liqByCodigo, LogicaCotizacion cotizacion,
+			ArrayList<String> dist, ArrayList<String> junior, ArrayList<String> senior) throws IOException {
+		
+		int codigoVendedor = 0;
+		try {
+			codigoVendedor = Integer.parseInt(codigoVendedorStr);
+		} catch (NumberFormatException e) {
+			System.err.println("Vendedor tiene un codigo no numerico: " + codigoVendedorStr);
+			e.printStackTrace();
+		}
+		
 		LiquidacionVendedor lv = liqByCodigo.get(codigoVendedor);
 		if (lv != null) {
 			return lv;
 		}
 		
-		
-
 		File file = new File(System.getProperty("jboss.home.url").substring(6)
 				+ "/server/default/deploy/facturator-server-ear.ear/facturator-server.war/liquidacion/output/liquidacion-" + codigoVendedor
 				+ ".csv"); //txt para que abra el asistente de importacion de excel
 		
 		CsvWriter writer = new CsvWriter(file.getAbsolutePath());
 		
-		if (codigoVendedor >= 1 && codigoVendedor <= 29) {
-			lv = new LiquidacionSenior(codigoVendedor, writer, cotizacion);
-		} else if (codigoVendedor >= 30 && codigoVendedor <= 49) {
+		if (dist.contains(codigoVendedorStr)) {
 			lv = new LiquidacionDistribuidor(codigoVendedor, writer);
-		} else if (codigoVendedor >= 50) {
+		} else if (junior.contains(codigoVendedorStr)) {
 			lv = new LiquidacionJunior(codigoVendedor, writer);
 		} else {
+			lv = new LiquidacionSenior(codigoVendedor, writer, cotizacion);
+		} /*else {
 			System.err.println("Codigo de vendedor no puede asignarse a un tipo: " + codigoVendedor);
 			return null;
-		}
+		}*/
 		lv.inicializar();
 		liqByCodigo.put(codigoVendedor, lv);
 		return lv;
@@ -624,7 +665,7 @@ public class ReportesServiceImpl implements ReportesService {
 			Documento documento = pv.getDocumento();
 			writer.write(documento.getFecha());
 			writer.write(documento.getComprobante().getNombre());
-			writer.write(documento.getNumero());
+			writer.write((documento.getSerie() != null ? documento.getSerie() : "") + documento.getNumero());
 			writer.write(documento.getCliente().getCodigo());
 			writer.write(documento.getCliente().getNombre());
 			writer.write(documento.getMoneda().getSimbolo());
@@ -747,11 +788,11 @@ public class ReportesServiceImpl implements ReportesService {
 		@Override
 		protected void subAddParticipacion(ParticipacionVendedor pv) throws IOException {
 			Documento documento = pv.getDocumento();
-			BigDecimal renta = documento.getRentaDistribuidor();
-			writer.write(formatter.format(renta != null ? renta : BigDecimal.ZERO));
+			BigDecimal rentaDistribuidor = documento.getRentaDistribuidor();
+			writer.write(formatter.format(rentaDistribuidor != null ? rentaDistribuidor : BigDecimal.ZERO));
 			writer.write(pv.getVendedor().getNombre());
 			writer.write(formatter.format(pv.getPorcentaje() != null ? pv.getPorcentaje().doubleValue() : 0));
-			writer.write(formatter.format(renta != null && pv.getCuotaparte(renta) != null ? pv.getCuotaparte(renta) : BigDecimal.ZERO));
+			writer.write(formatter.format(rentaDistribuidor != null && pv.getCuotaparte(rentaDistribuidor) != null ? pv.getCuotaparte(rentaDistribuidor) : BigDecimal.ZERO));
 		}
 		
 	}
