@@ -36,19 +36,16 @@ import uy.com.tmwc.facturator.entity.Moneda;
 import uy.com.tmwc.facturator.entity.ParticipacionVendedor;
 import uy.com.tmwc.facturator.entity.TipoCambio;
 import uy.com.tmwc.facturator.entity.Usuario;
-import uy.com.tmwc.facturator.entity.VendedoresUsuario;
 import uy.com.tmwc.facturator.rapi.Cotizaciones;
 import uy.com.tmwc.facturator.rapi.ReportesService;
 import uy.com.tmwc.facturator.rapi.UsuariosService;
 import uy.com.tmwc.facturator.spi.CatalogDAOService;
 import uy.com.tmwc.facturator.spi.DocumentoDAOService;
 import uy.com.tmwc.facturator.spi.ReportesDAO;
-//import uy.com.tmwc.facturator.spi.ReportesDAOService;
 import uy.com.tmwc.facturator.utils.DateUtils;
 import uy.com.tmwc.facturator.utils.LogicaCotizacion;
 import uy.com.tmwc.facturator.utils.LogicaCotizacion.GetTipoCambio;
 import uy.com.tmwc.facturator.utils.Maths;
-import uy.com.tmwc.utils.orm.CatalogEntity;
 
 import com.csvreader.CsvWriter;
 
@@ -72,6 +69,7 @@ public class ReportesServiceImpl implements ReportesService {
 		
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
+		boolean esSupervisor = usuarioLogin.isSupervisor();
 
 		HashMap<String, Object> table = parameters.getParameters();
 		
@@ -167,7 +165,7 @@ public class ReportesServiceImpl implements ReportesService {
 		List<TipoCambio> tipoCambios = reportesLibra.getTipoCambios();
 		GetTipoCambio getTipoCambioFunction = new LogicaCotizacion.InMemoryGetTipoCambio(tipoCambios);
 		
-		Boolean mostrarPrecios = Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId);
+		Boolean mostrarPrecios = esSupervisor || Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId);
 		
 		if (Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId)) {
 			mostrarCosto = false;
@@ -415,19 +413,16 @@ public class ReportesServiceImpl implements ReportesService {
 			if (user.getVenId() != null && user.getVenId().trim().length() > 0) {
 				if (user.getUsuarioModoDistribuidor()) {
 					vendedoresDist.add(user.getVenId());
-					System.out.println("Usuario :: " + user.getCodigo() +  " > Vendedor distribuidor :: " + user.getVenId());
+					//System.out.println("Usuario :: " + user.getCodigo() +  " > Vendedor distribuidor :: " + user.getVenId());
 				} else if (user.getUsuarioModoMostrador()) {
 					vendedoresJunior.add(user.getVenId());
-					System.out.println("Usuario :: " + user.getCodigo() +  " > Vendedor junior :: " + user.getVenId());
+					//System.out.println("Usuario :: " + user.getCodigo() +  " > Vendedor junior :: " + user.getVenId());
 				} else {
 					vendedoresSenior.add(user.getVenId());
-					System.out.println("Usuario :: " + user.getCodigo() +  " > Vendedor senior :: " + user.getVenId());
+					//System.out.println("Usuario :: " + user.getCodigo() +  " > Vendedor senior :: " + user.getVenId());
 				}
 			}
 		}
-
-		System.out.println("###############################" );
-
 		
 		for (ParticipacionVendedor participacionVendedor : participaciones) {
 			int codigoVen;

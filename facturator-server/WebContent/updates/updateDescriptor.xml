@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.6.615</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.6.615.air</url>
+	<versionNumber>1.6.625</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.6.625.air</url>
 	<description>
 	    <![CDATA[
-* Corrije Error al emitir comprobante de venta oficial contado con monto superior a las 40000UI, mostrar advertencia y obligar a guardar el nombre y documento del titular en la adenda.
-* Informes -> Liquidación/Cobranzas. Indicar fecha de corte.
+	    * Liquidacion vendedores distribuidor.
+	    * Mostrar utilidad distribuidor cuando esta involucrado en la venta un vendedor distribuidor.
+	    * Actualizar documento Fullair con los datos de EFactura, en caso de error en fullair al emitir. (Analizar y probar) 
+	    * Mostrar antecedentes de compra y venta del artículo para usuario permiso facturación.
+	    * Ajustar tiempos de espera y lógica, tratar de minimizar falta de resultados. Manejo de estados del comprobante.
+	    
 		]]>
 	</description>
 </update>

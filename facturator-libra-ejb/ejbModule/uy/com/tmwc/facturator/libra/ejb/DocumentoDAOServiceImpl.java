@@ -35,7 +35,6 @@ import org.hibernate.Hibernate;
 import uy.com.tmwc.facturator.dto.DocumentoDTO;
 import uy.com.tmwc.facturator.dto.DocumentoQuery;
 import uy.com.tmwc.facturator.dto.ParticipacionEnCobranza;
-
 import uy.com.tmwc.facturator.entity.ArticuloCompraVentaCosto;
 import uy.com.tmwc.facturator.entity.ArticuloPrecio;
 import uy.com.tmwc.facturator.entity.ArticuloPrecioFabricaCosto;
@@ -68,7 +67,6 @@ import uy.com.tmwc.facturator.libra.entity.ParticipacionVendedor;
 import uy.com.tmwc.facturator.libra.entity.ProveedorPK;
 import uy.com.tmwc.facturator.libra.entity.Stockactual;
 import uy.com.tmwc.facturator.libra.entity.StockactualPK;
-import uy.com.tmwc.facturator.libra.entity.Vendedore;
 import uy.com.tmwc.facturator.libra.entity.Vinculosdoc;
 import uy.com.tmwc.facturator.libra.util.DozerMappingsService;
 import uy.com.tmwc.facturator.libra.util.JPAUtils;
@@ -187,7 +185,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		
 		controlModificacionDocumento(libraDoc);		
 		
-		//Ajuste de stock
 		int signoStock = doc.getComprobante().isDevolucion() ? -1 : 1;
 		ajustarStockLineas(libraDoc, signoStock);
 		ajustarLineas(libraDoc);
@@ -201,7 +198,10 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	
 	public void merge(uy.com.tmwc.facturator.entity.Documento doc) throws PermisosException {
 		Short cfeStatus = doc.getDocCFEstatus();
-		if (cfeStatus.equals(new Short("1"))) {
+		
+		Boolean isRecibo = doc.getComprobante() != null && doc.getComprobante().isRecibo();
+		
+		if (cfeStatus.equals(new Short("1")) || isRecibo) {
 			merge(doc, Boolean.FALSE);
 		} else {
 			merge(doc, Boolean.TRUE);
@@ -231,24 +231,24 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("ES"));
 
 			if (doc.getComprobante().isRecibo()) {
-				StringBuffer buffer = new StringBuffer("\n");
-				buffer.append("Recibo guardado:").append("\n| ");
-				buffer.append(current.getId().getDocId()).append(" | ");
-				buffer.append(libraDoc.getTotal().toString()).append(" | ");
-				buffer.append(libraDoc.getDocRecNeto()).append(" | ");
-				buffer.append(libraDoc.getDescuentosPorc()).append("% | ");
-				buffer.append(libraDoc.getDescuentos()).append(" | ");
-				
+//				StringBuffer buffer = new StringBuffer("\n");
+//				buffer.append("Recibo guardado:").append("\n| ");
+//				buffer.append(current.getId().getDocId()).append(" | ");
+//				buffer.append(libraDoc.getTotal().toString()).append(" | ");
+//				buffer.append(libraDoc.getDocRecNeto()).append(" | ");
+//				buffer.append(libraDoc.getDescuentosPorc()).append("% | ");
+//				buffer.append(libraDoc.getDescuentos()).append(" | ");
+//				
 				BigDecimal saldoRecibo = ajustarSaldo(libraDoc.getMoneda().getCodigo(), libraDoc.getSaldo());
 
-				buffer.append(saldoRecibo.toString()).append(" | ");
-				buffer.append(aster ? "*" : "  ").append(" |\n");
+//				buffer.append(saldoRecibo.toString()).append(" | ");
+//				buffer.append(aster ? "*" : "  ").append(" |\n");
 				
 				if (libraDoc.getSaldo().doubleValue() < 0) {
 					throw new RuntimeException("Saldo menor que cero (" + libraDoc.getSaldo().toString() + " < 0.00)");
 				}
-				
-				buffer.append("\nFacturas vinculadas:").append("\n");
+//				
+//				buffer.append("\nFacturas vinculadas:").append("\n");
 
 				for (Vinculosdoc vinDoc : current.getFacturasVinculadas()) {
 					int docIdVinA = vinDoc.getId().getDocIdVin1(); //
@@ -287,10 +287,10 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 								factura.setSaldo(nuevoSaldo);
 								facturasModificadas.add(factura);
 
-								buffer.append("MODIFICADO").append("\t|\t");
-								buffer.append(factura.getDocId()).append(" | ");
-								buffer.append(viejoSaldo.toString()).append(" | ");
-								buffer.append(nuevoSaldo.toString()).append("\n");
+//								buffer.append("MODIFICADO").append("\t|\t");
+//								buffer.append(factura.getDocId()).append(" | ");
+//								buffer.append(viejoSaldo.toString()).append(" | ");
+//								buffer.append(nuevoSaldo.toString()).append("\n");
 								
 								String simbolo = factura.getMoneda().getSimbolo();
 								
@@ -329,10 +329,10 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						factura.setSaldo(nuevoSaldo);
 						facturasModificadas.add(factura);
 						
-						buffer.append("BORRADO").append("\t|\t");
-						buffer.append(vinDoc.getFactura().getId().getDocId()).append(" | ");
-						buffer.append(viejoSaldo.toString()).append(" | ");
-						buffer.append(nuevoSaldo.toString()).append("\n");
+//						buffer.append("BORRADO").append("\t|\t");
+//						buffer.append(vinDoc.getFactura().getId().getDocId()).append(" | ");
+//						buffer.append(viejoSaldo.toString()).append(" | ");
+//						buffer.append(nuevoSaldo.toString()).append("\n");
 						
 						String simbolo = factura.getMoneda().getSimbolo();
 						
@@ -383,11 +383,10 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						if (nuevoSaldo.compareTo(BigDecimal.ZERO) < 0) {
 							throw new RuntimeException("Monto incorrecto documento " + factura.getSerie() + factura.getNumero().toString() + " saldo < 0 (" + nuevoSaldo + " < " + monto + ")");
 						} else {
-							buffer.append("ADICIONADA").append("\t|\t");
-							buffer.append(vinDoc.getFactura().getDocId()).append("| ");
-							buffer.append(viejoSaldo.toString()).append(" | ");
-							buffer.append(nuevoSaldo.toString()).append("\n");
-							
+//							buffer.append("ADICIONADA").append("\t|\t");
+//							buffer.append(vinDoc.getFactura().getDocId()).append("| ");
+//							buffer.append(viejoSaldo.toString()).append(" | ");
+//							buffer.append(nuevoSaldo.toString()).append("\n");
 							factura.setSaldo(nuevoSaldo);
 							facturasModificadas.add(factura);
 							
@@ -408,9 +407,9 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 					}
 				}
 				
-				buffer.append("----------------------------------------------").append("\n");
+//				buffer.append("----------------------------------------------").append("\n");
 				
-				LOGGER.info(buffer.toString());
+				// LOGGER.info(buffer.toString());
 				
 				for (uy.com.tmwc.facturator.libra.entity.Documento documento : facturasModificadas) {
 					this.em.merge(documento);
@@ -661,10 +660,12 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
+		boolean esSupervisor = usuarioLogin.isSupervisor();
 
-		if (Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
-				|| Usuario.USUARIO_VENDEDOR_SENIOR.equals(permisoId) 
-				|| Usuario.USUARIO_SUPERVISOR.equals(permisoId) 
+		if (esSupervisor
+				//|| Usuario.USUARIO_SUPERVISOR.equals(permisoId) 
+				|| Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
+				|| Usuario.USUARIO_VENDEDOR_SENIOR.equals(permisoId) 				
 				|| Usuario.USUARIO_FACTURACION.equals(permisoId) 
 				|| (Usuario.USUARIO_ALIADOS_COMERCIALES.equals(permisoId)  && venta) 
 				|| (Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId) && venta)) {
@@ -752,7 +753,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
-
+		boolean esSupervisor = usuarioLogin.isSupervisor();
+		
 		final StringBuilder sb = new StringBuilder("");
 
 		if (query.getEsCheque()) {
@@ -763,7 +765,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO( " + "d.id.docId, " + "d.serie, " + "d.numero, " + "d.fecha, " + "d.CAEnom, " + "p.id.prvId, " + "p.nombre, "
 					+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
 	
-			if (Usuario.USUARIO_SUPERVISOR.equals(permisoId)) {
+			if (esSupervisor || Usuario.USUARIO_SUPERVISOR.equals(permisoId)) {
 				sb.append("d.costo, ");
 			}
 			sb.append("d.subTotal, d.iva, d.total, d.saldo, d.emitido, d.pendiente, d.comprobante.tipo) ");
@@ -781,7 +783,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 				sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO( " + "d.id.docId, " + "d.serie, " + "d.numero, " + "d.fecha, " + "d.CAEnom, " + "p.id.prvId, " + "p.nombre, "
 						+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
 			}
-			if (Usuario.USUARIO_SUPERVISOR.equals(permisoId)) {
+			
+			if (esSupervisor || Usuario.USUARIO_SUPERVISOR.equals(permisoId)) {
 				sb.append("d.costo, ");
 			}
 			sb.append("d.subTotal, d.iva, d.total, d.saldo, d.emitido, d.pendiente, d.comprobante.tipo) ");
@@ -815,8 +818,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		sb.append("ORDER BY d.fecha ").append(orden).append(", d.registroHora ").append(orden).append(", d.serie, d.numero");
 
-		System.out.println("Query :: " + sb.toString());
-		
 		Query q = this.em.createQuery(sb.toString());
 		setUltimosDocumentosSubqueryParameters(q, query);
 		List<DocumentoDTO> list = q.setFirstResult(query.getStart()).setMaxResults(query.getLimit()).getResultList();
@@ -827,7 +828,12 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	private String getFiltroUsuario() {
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
-		if (Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_FACTURACION.equals(permisoId) || Usuario.USUARIO_SUPERVISOR.equals(permisoId)) {
+		boolean esSupervisor = usuarioLogin.isSupervisor();
+		
+		if (esSupervisor 
+				|| Usuario.USUARIO_SUPERVISOR.equals(permisoId) 
+				|| Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
+				|| Usuario.USUARIO_FACTURACION.equals(permisoId)) {
 			return "";
 		} else {
 			String codigoUsuario = usuarioLogin.getCodigo();
@@ -1028,9 +1034,13 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		}
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		String usuarioPermisoId = usuarioLogin.getPermisoId();
-		pdu.setRentaReal(Arrays.asList(new String[] { Usuario.USUARIO_FACTURACION, Usuario.USUARIO_ADMINISTRADOR, Usuario.USUARIO_SUPERVISOR }).contains(usuarioPermisoId)
+		boolean esSupervisor = usuarioLogin.isSupervisor();
+		
+		pdu.setRentaReal(esSupervisor 
+				|| Arrays.asList(new String[] { Usuario.USUARIO_SUPERVISOR, Usuario.USUARIO_FACTURACION, Usuario.USUARIO_ADMINISTRADOR }).contains(usuarioPermisoId)
 				|| (usuarioPermisoId.equals(Usuario.USUARIO_VENDEDOR_SENIOR) && doc.usuarioInvolucrado(usuarioLogin.getCodigo())));
-		pdu.setRentaDistribuidor(Arrays.asList(new String[] { Usuario.USUARIO_FACTURACION, Usuario.USUARIO_ADMINISTRADOR, Usuario.USUARIO_SUPERVISOR }).contains(usuarioPermisoId)
+		pdu.setRentaDistribuidor(esSupervisor				
+				|| Arrays.asList(new String[] { Usuario.USUARIO_SUPERVISOR, Usuario.USUARIO_FACTURACION, Usuario.USUARIO_ADMINISTRADOR }).contains(usuarioPermisoId)
 				|| (usuarioPermisoId.equals(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR) && doc.usuarioInvolucrado(usuarioLogin.getCodigo())));
 		return mapped;
 	}

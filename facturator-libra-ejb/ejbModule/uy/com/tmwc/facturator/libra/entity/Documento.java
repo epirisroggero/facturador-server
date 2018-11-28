@@ -517,6 +517,9 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 
 	@Column(table = "lfx_documentos", name = "CAEserie")
 	private String CAEserie;
+	
+	@Column(table = "lfx_documentos", name = "DocCFEFileName")
+	private String docCFEFileName;
 
 	@Column(table = "lfx_documentos", name = "TipoCFEid")
 	private Short tipoCFEid;
@@ -1685,5 +1688,13 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 		this.vinculosfp = vinculosfp;
 	}
 	
+	public String getDocCFEFileName() {
+		return docCFEFileName;
+	}
 
+	public void setDocCFEFileName(String docCFEFileName) {
+		this.docCFEFileName = docCFEFileName;
+	}
+
+	
 }

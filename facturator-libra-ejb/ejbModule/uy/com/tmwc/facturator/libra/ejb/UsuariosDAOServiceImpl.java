@@ -52,8 +52,9 @@ public class UsuariosDAOServiceImpl extends ServiceBase implements UsuariosDAOSe
 		current.setNombre(usuario.getNombre());
 		current.setUsuEmail(usuario.getUsuEmail());
 		current.setUsuNotas(usuario.getUsuNotas());
+		current.setUsuTipo(usuario.getUsuTipo());
 		current.setPermisoId(usuario.getPermisoId());
-		current.setVenId(usuario.getVenId());
+		current.setVenId(usuario.getVenId());		
 
 		this.em.merge(current);
 		this.em.flush();

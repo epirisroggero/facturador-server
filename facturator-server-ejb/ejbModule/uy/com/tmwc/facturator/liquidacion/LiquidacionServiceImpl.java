@@ -47,7 +47,6 @@ import uy.com.tmwc.facturator.entity.RedistribucionRentasJefaturas;
 import uy.com.tmwc.facturator.entity.ResumenEntregas;
 import uy.com.tmwc.facturator.entity.Usuario;
 import uy.com.tmwc.facturator.entity.Vendedor;
-import uy.com.tmwc.facturator.entity.VendedoresUsuario;
 import uy.com.tmwc.facturator.entity.VinculoDocumentos;
 import uy.com.tmwc.facturator.rapi.CatalogService;
 import uy.com.tmwc.facturator.rapi.LiquidacionService;
@@ -57,7 +56,7 @@ import uy.com.tmwc.facturator.rapi.UsuariosService;
 import uy.com.tmwc.facturator.server.util.AgruparVendedores;
 import uy.com.tmwc.facturator.session.RentaCobranza;
 import uy.com.tmwc.facturator.session.RentaContado;
-import uy.com.tmwc.facturator.spi.ArticulosDAOService;
+import uy.com.tmwc.facturator.spi.CatalogDAOService;
 import uy.com.tmwc.facturator.spi.DocumentoDAOService;
 import uy.com.tmwc.facturator.utils.Maths;
 
@@ -72,6 +71,9 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 	@EJB
 	DocumentoDAOService documentoDAOService;
 	
+	@EJB 
+	CatalogDAOService catalogDAOService;
+
 	@EJB
 	CatalogService catalogService;
 
@@ -553,8 +555,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				return monto.setScale(4, RoundingMode.HALF_UP).multiply(euroVenta).setScale(4, RoundingMode.HALF_UP);
 			} else if (monedaDestino.equals(Moneda.CODIGO_MONEDA_DOLAR)) { 
 				return monto.setScale(4, RoundingMode.HALF_UP).multiply(euroVenta).divide(dolarVenta, 4, RoundingMode.HALF_UP).setScale(4, RoundingMode.HALF_UP);
-			}
-			
+			}			
 		}
 		
 		return monto;
@@ -562,25 +563,25 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 
 	
 	private void printCobranzas(Date fechaDesde, Date fechaHasta, File dirBase, List<ParticipacionEnCobranza> participCobranzas, List<ParticipacionVendedor> participContados) throws IOException {
-		Map<String, ArrayList<ParticipacionEnCobranza>> vendedores = new HashMap<String, ArrayList<ParticipacionEnCobranza>>();
+		Map<String, ArrayList<ParticipacionEnCobranza>> partVendedores = new HashMap<String, ArrayList<ParticipacionEnCobranza>>();
 
 		for (ParticipacionEnCobranza participacionEnCobranza : participCobranzas) {
 			String vendedorId = participacionEnCobranza.getParticipacionVendedor().getVendedor().getCodigo();
 			ArrayList<ParticipacionEnCobranza> participaciones;
-			if (vendedores.containsKey(vendedorId)) {
-				participaciones = vendedores.get(vendedorId);
+			if (partVendedores.containsKey(vendedorId)) {
+				participaciones = partVendedores.get(vendedorId);
 			} else {
 				participaciones = new ArrayList<ParticipacionEnCobranza>();
 			}
 			participaciones.add(participacionEnCobranza);
-			vendedores.put(vendedorId, participaciones);
+			partVendedores.put(vendedorId, participaciones);
 		}
 		
 		for (ParticipacionVendedor partVendedor : participContados) {
 			String vendedorId = partVendedor.getVendedor().getCodigo();
 			ArrayList<ParticipacionEnCobranza> participaciones;
-			if (vendedores.containsKey(vendedorId)) {
-				participaciones = vendedores.get(vendedorId);
+			if (partVendedores.containsKey(vendedorId)) {
+				participaciones = partVendedores.get(vendedorId);
 			} else {
 				participaciones = new ArrayList<ParticipacionEnCobranza>();
 			}
@@ -589,18 +590,26 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			participacionVendedor.setParticipacionVendedor(partVendedor);
 			participaciones.add(participacionVendedor);
 			
-			vendedores.put(vendedorId, participaciones);
+			partVendedores.put(vendedorId, participaciones);
 		}
 		
-		Iterator<String> iter = vendedores.keySet().iterator();
+		List<Usuario> usuarios = catalogDAOService.getCatalog(Usuario.class);
+		ArrayList<String> vendedoresDist = new ArrayList<String>();
+		for (Usuario user : usuarios) {
+			if (user.getVenId() != null && user.getVenId().trim().length() > 0 && user.getUsuarioModoDistribuidor()) {
+				vendedoresDist.add(user.getVenId());
+			}
+		}
+		
+		Iterator<String> iter = partVendedores.keySet().iterator();
 		while (iter.hasNext()) {
 			String vendId = iter.next();				
-			printCobranzaVendedor(dirBase, vendId, vendedores.get(vendId), fechaDesde, fechaHasta);
+			printCobranzaVendedor(dirBase, vendId, vendedoresDist.contains(vendId), partVendedores.get(vendId), fechaDesde, fechaHasta);
 		}
 		
 	}
 	
-	private void printCobranzaVendedor(File dirBase, String vendedorId, List<ParticipacionEnCobranza> participCobranzas, Date fechaDesde, Date fechaHasta) throws IOException {
+	private void printCobranzaVendedor(File dirBase, String vendedorId, boolean vendedorDist, List<ParticipacionEnCobranza> participCobranzas, Date fechaDesde, Date fechaHasta) throws IOException {
 		String fileName = new File(dirBase, "cobranzas_" + vendedorId + ".csv").getPath();
 		CsvWriter w = new CsvWriter(fileName);
 				
@@ -608,16 +617,8 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			SimpleDateFormat dt1 = new SimpleDateFormat("dd-MM-yyyy");
 			
 			Vendedor vendedor = catalogService.findCatalogEntity("Vendedor", vendedorId);
-			VendedoresUsuario venUsuario = vendedor.getVendedoresUsuario();
 			
-			Boolean usuarioDistribuidor = false;
-			if (venUsuario != null) {
-				Usuario usuario = catalogService.findCatalogEntity("Usuario", String.valueOf(venUsuario.getUsuarioId()));
-				String permisoId = usuario.getPermisoId();
-				usuarioDistribuidor = Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId);
-			}
-			
-			w.write(usuarioDistribuidor ? "VENDEDOR DISTRIBUIDOR" : "VENDEDOR");
+			w.write(vendedorDist ? "DISTRIBUIDOR:" : "VENDEDOR:");
 			w.write(vendedor.getNombre().toUpperCase());
 			w.endRecord();
 			w.write("PERIODO SOLICITADO:"); 
@@ -642,8 +643,10 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			w.write("MONEDA");
 			w.write("IMP. FACTURA CON IVA");
 			w.write("RENTA DE VENTA");
+			if (vendedorDist) 
+				w.write("RENTA DISTRIBUIDOR");
 			w.write("PARTICIPACIÓN");
-			w.write("RTA. AL VEND.");
+			w.write(vendedorDist ? "RTA. AL DIST." : "RTA. AL VEND.");
 			w.write("MONTO CANCELADO"); // TODO: Revisar
 			w.write("% COBRADO");
 			w.write("RTA. A COBRAR");
@@ -666,12 +669,14 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				
 				ParticipacionVendedor participacionVendedor = participacionEnCobranza.getParticipacionVendedor();
 				
-				if (usuarioDistribuidor) {
+				if (vendedorDist) {
 					try {
 						factura = documentoDAOService.findDocumento(factura.getDocId());
 						
 						// Actualizar la info en el vinculo del documento...
-						participacionEnCobranza.getVinculo().setFactura(factura);
+						if (participacionEnCobranza != null && participacionEnCobranza.getVinculo() != null) {
+							participacionEnCobranza.getVinculo().setFactura(factura);	
+						}						
  					} catch (Exception e) {
  						e.printStackTrace();
  					}
@@ -679,18 +684,21 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				
 				BigDecimal participacion = participacionVendedor.getPorcentaje();
 				BigDecimal rentaNetaComprobante = factura.getRentaNetaComercial();
-				BigDecimal rentaDistComprobante = factura.getRentaNetaDistComercial();
+				BigDecimal rentaDistComprobante = BigDecimal.ZERO;
 				
 				BigDecimal rentaVendedor;
-				if (usuarioDistribuidor) {
+				if (vendedorDist) {
+					rentaDistComprobante = factura.getRentaNetaDistComercial();
 					rentaVendedor = rentaDistComprobante.multiply(participacion).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
 				} else {
 					rentaVendedor = rentaNetaComprobante.multiply(participacion).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
 				}
 				
 				w.write(esContado ? "" : dt1.format(recibo.getFecha())); 								// FECHA RECIBO
-				w.write(!esContado && recibo.getSerieNumero() != null ? recibo.getSerieNumero().getSerie() : ""); 	// S/N RECIBO
-				w.write(!esContado && recibo.getSerieNumero() != null ? String.valueOf(recibo.getSerieNumero().getNumero()) : ""); 	// S/N RECIBO
+				w.write(!esContado && recibo.getSerieNumero() != null 
+						? recibo.getSerieNumero().getSerie() : ""); 									// S/N RECIBO
+				w.write(!esContado && recibo.getSerieNumero() != null 
+						? String.valueOf(recibo.getSerieNumero().getNumero()) : ""); 					// S/N RECIBO
 				w.write(dt1.format(factura.getFecha()));												// FECHA VENTA
 				
 				w.write(factura.getCliente().getCliIdNom());											// CLIENTE
@@ -699,7 +707,9 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				w.write(factura.getMoneda().getSimbolo());												// MONEDA
 				
 				w.write(formatter.format(factura.getTotal()));											// IMPORTE NETO VENDIDO
-				w.write(formatter.format(rentaNetaComprobante));											// RENTA DE VENTA
+				w.write(formatter.format(rentaNetaComprobante));										// RENTA DE VENTA
+				if (vendedorDist) 
+					w.write(formatter.format(rentaDistComprobante));									// RENTA DISTRIBUIDOR 
 				w.write(formatter.format(participacion) + "%");											// PARTICIPACION
 				w.write(formatter.format(rentaVendedor));												// RENTA AL VENDEDOR
 
@@ -739,7 +749,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				}
 
 				if (esContado) {
-					BigDecimal cuotaparteRentaComercial = usuarioDistribuidor 
+					BigDecimal cuotaparteRentaComercial = vendedorDist 
 							? participacionVendedor.getCuotaparteRentaDistComercial() 
 							: participacionVendedor.getCuotaparteRentaComercial();
 					String crc = formatter.format(cuotaparteRentaComercial != null ? cuotaparteRentaComercial.doubleValue() : 0.0);
@@ -776,7 +786,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				} else {
 					BigDecimal rentaACobrar;
 					if (factura.getComprobante().isAster()) {
-						rentaACobrar = usuarioDistribuidor ? participacionEnCobranza.getRentaACobrarDist() : participacionEnCobranza.getRentaACobrar();
+						rentaACobrar = vendedorDist ? participacionEnCobranza.getRentaACobrarDist() : participacionEnCobranza.getRentaACobrar();
 					} else {
 						rentaACobrar = Maths.calcularMontoDescuento(rentaVendedor, porcentajeCancelacion);
 					}

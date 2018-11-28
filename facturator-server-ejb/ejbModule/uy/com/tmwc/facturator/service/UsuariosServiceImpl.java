@@ -40,12 +40,12 @@ public class UsuariosServiceImpl implements UsuariosService {
 
 	static {
 		HashMap<String, Collection<Integer>> listasPorUsuario = new HashMap<String, Collection<Integer>>();
+		listasPorUsuario.put(Usuario.USUARIO_SUPERVISOR, Arrays.asList(new Integer[] {LISTA_PRECIO_MINIMO_VENTA, LISTA_PRECIO_DISTRIBUIDOR, LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA}));
 		listasPorUsuario.put(Usuario.USUARIO_VENDEDOR_JUNIOR, Arrays.asList(new Integer[] {LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA}));
 		listasPorUsuario.put(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR, Arrays.asList(new Integer[] {LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA, LISTA_PRECIO_DISTRIBUIDOR, LISTA_PRECIO_REVENTA}));
 		listasPorUsuario.put(Usuario.USUARIO_VENDEDOR_SENIOR, Arrays.asList(new Integer[] {LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA}));
 		listasPorUsuario.put(Usuario.USUARIO_ADMINISTRADOR, Arrays.asList(new Integer[] {LISTA_PRECIO_MINIMO_VENTA, LISTA_PRECIO_DISTRIBUIDOR, LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA})); //TODO: Revisar con Mauro
 		listasPorUsuario.put(Usuario.USUARIO_FACTURACION, Arrays.asList(new Integer[] {LISTA_PRECIO_MINIMO_VENTA, LISTA_PRECIO_DISTRIBUIDOR, LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA})); //TODO: Revisar con Mauro
-		listasPorUsuario.put(Usuario.USUARIO_SUPERVISOR, Arrays.asList(new Integer[] {LISTA_PRECIO_MINIMO_VENTA, LISTA_PRECIO_DISTRIBUIDOR, LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA}));
 		listasPorUsuario.put(Usuario.USUARIO_TITO, Arrays.asList(new Integer[] {LISTA_PRECIO_MINORISTA}));
 		listasPorUsuario.put(Usuario.USUARIO_ALIADOS_COMERCIALES, Arrays.asList(new Integer[] {LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA}));
 		permisoUsuario2ListasPrecio = listasPorUsuario;
@@ -55,13 +55,13 @@ public class UsuariosServiceImpl implements UsuariosService {
 		
 		List<Integer> comprobantesComerciales = Arrays.asList(new Integer[] {70, 80, 90, 1 /* cotizacion */, 10 /* orden de venta */, 11 /* solicitud nota de credito */, 100, 110, 120, 130});
 
+		map.put(Usuario.USUARIO_SUPERVISOR, Arrays.asList(new Integer[] {Integer.MAX_VALUE}));
 		map.put(Usuario.USUARIO_VENDEDOR_JUNIOR, comprobantesComerciales);
 		map.put(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR, comprobantesComerciales); 
 		map.put(Usuario.USUARIO_VENDEDOR_SENIOR, comprobantesComerciales); 
 		map.put(Usuario.USUARIO_ALIADOS_COMERCIALES, comprobantesComerciales); 
 		map.put(Usuario.USUARIO_ADMINISTRADOR, Arrays.asList(new Integer[] {Integer.MAX_VALUE})); 
 		map.put(Usuario.USUARIO_FACTURACION, Arrays.asList(new Integer[] {Integer.MAX_VALUE})); 
-		map.put(Usuario.USUARIO_SUPERVISOR, Arrays.asList(new Integer[] {Integer.MAX_VALUE}));
 		map.put(Usuario.USUARIO_ALIADOS_COMERCIALES, comprobantesComerciales); 
 		permisoUsuario2Comprobantes = map;
 	}
@@ -71,8 +71,11 @@ public class UsuariosServiceImpl implements UsuariosService {
 
 	public List<PreciosVenta> getPreciosVentaUsuario() {
 		List<PreciosVenta> todos = catalogService.getCatalog(PreciosVenta.class.getSimpleName());
-		String permisoId = getPermisoUsuarioLogin();
-		Collection<Integer> filterList = permisoUsuario2ListasPrecio.get(permisoId);
+		Usuario usuarioLogin = getUsuarioLogin();
+		String permisoId = usuarioLogin.getPermisoId();
+		boolean esSupervisor = usuarioLogin.isSupervisor();
+
+		Collection<Integer> filterList = permisoUsuario2ListasPrecio.get(esSupervisor ? Usuario.USUARIO_SUPERVISOR : permisoId);
 		ArrayList<PreciosVenta> filtered = new ArrayList<PreciosVenta>();
 		if (filterList == null) {
 			return filtered;
@@ -85,12 +88,7 @@ public class UsuariosServiceImpl implements UsuariosService {
 		}
 		return filtered;
 	}
-	
-	private String getPermisoUsuarioLogin() {
-		Usuario usuario = getUsuarioLogin();
-		return usuario != null ? usuario.getPermisoId() : null;
-	}
-	
+		
 	public Usuario getUsuarioLogin() {
 		Principal userPpal = UserPrincipalLocator.userPrincipalTL.get();	
 		if (userPpal == null) {
@@ -102,8 +100,11 @@ public class UsuariosServiceImpl implements UsuariosService {
 
 	public Collection<Comprobante> getComprobantesPermitidosUsuario() {
 		List<Comprobante> todos = catalogService.getCatalog(Comprobante.class.getSimpleName());
-		String permisoId = getPermisoUsuarioLogin();
-		Collection<Integer> filterList = permisoUsuario2Comprobantes.get(permisoId);
+		Usuario usuarioLogin = getUsuarioLogin();
+		String permisoId = usuarioLogin.getPermisoId();
+		boolean esSupervisor = usuarioLogin.isSupervisor();
+
+		Collection<Integer> filterList = permisoUsuario2Comprobantes.get(esSupervisor ? Usuario.USUARIO_SUPERVISOR : permisoId);
 		ArrayList<Comprobante> filtered = new ArrayList<Comprobante>();
 		if (filterList == null) {
 			return filtered;
@@ -121,15 +122,19 @@ public class UsuariosServiceImpl implements UsuariosService {
 	}
 	
 	public Collection<Integer> getCodigosComprobantesPermitidosUsuario() {
-		String permisoId = getPermisoUsuarioLogin();
-		return permisoUsuario2Comprobantes.get(permisoId);
+		Usuario usuarioLogin = getUsuarioLogin();
+		String permisoId = usuarioLogin.getPermisoId();
+		boolean esSupervisor = usuarioLogin.isSupervisor();
+
+		return permisoUsuario2Comprobantes.get(esSupervisor ? Usuario.USUARIO_SUPERVISOR : permisoId);
 	}
 	
 	public void updateClaveSup(String userId, String clave) throws PermisosException {
 		Usuario usuarioLogin = getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
+		boolean esSupervisor = usuarioLogin.isSupervisor();
 		
-		if (Usuario.USUARIO_SUPERVISOR.equals(permisoId)) {
+		if (esSupervisor || Usuario.USUARIO_SUPERVISOR.equals(permisoId)) {
 			this.usuariosDAOService.updateClaveSup(userId, clave);
 		} else {
 			throw new PermisosException("No tiene permisos.");
@@ -149,7 +154,7 @@ public class UsuariosServiceImpl implements UsuariosService {
 
 		ArrayList<Usuario> filtered = new ArrayList<Usuario>();
 		for (Usuario u : todos) {
-			if (u.getPermisoId().equals(Usuario.USUARIO_SUPERVISOR)) {
+			if (u.isSupervisor()/* || u.getPermisoId().equals(Usuario.USUARIO_SUPERVISOR)*/) {
 				filtered.add(u);
 			}
 		}

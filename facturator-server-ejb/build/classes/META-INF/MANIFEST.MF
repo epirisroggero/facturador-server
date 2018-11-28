@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Class-Path: jboss-seam.jar 
- facturator-remote-api.jar 
- facturator-spi.jar 
- twmc-utils.jar
-

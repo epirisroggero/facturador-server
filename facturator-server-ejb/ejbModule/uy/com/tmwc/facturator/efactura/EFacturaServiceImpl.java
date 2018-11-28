@@ -41,6 +41,7 @@ import uy.com.tmwc.facturator.entity.LineasDocumento;
 import uy.com.tmwc.facturator.entity.Moneda;
 import uy.com.tmwc.facturator.entity.Pais;
 import uy.com.tmwc.facturator.entity.SerieNumero;
+import uy.com.tmwc.facturator.entity.ValidationException;
 import uy.com.tmwc.facturator.rapi.AuditoriaService;
 import uy.com.tmwc.facturator.rapi.CatalogService;
 import uy.com.tmwc.facturator.rapi.EFacturaService;
@@ -72,6 +73,8 @@ public class EFacturaServiceImpl implements EFacturaService {
 	
 	private Logger LOGGER = Logger.getLogger(EFacturaServiceImpl.class);
 	
+	private static int MAX_CHECK_REPEAT = 120;
+	
 	
 	private Boolean modeDevelop = false;
 
@@ -87,154 +90,90 @@ public class EFacturaServiceImpl implements EFacturaService {
 	@EJB
 	CatalogService catalogService;
 	
-	public ArrayList<String> obtenerDuplicados(Date desde, Date hasta) {
-		File folder = new File("C:\\eFactura\\input\\");
 	
-		ArrayList<String> sobres = new ArrayList<String>();
-		ArrayList<String> duplicados = new ArrayList<String>();
+	public Documento updateDocumento(Documento doc) throws PermisosException, ValidationException, IOException  {
+		Documento current = this.documentoDAOService.findDocumento(doc.getDocId());
 		
-		HashMap<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
+		if (current.getDocCFEstatus().intValue() != 2) {
+			throw new ValidationException("Este documento no ha sido emitido en e-factura o no se disponen de los datos del mismo.");
+		}		
 		
-		listFilesForFolder(folder, sobres, duplicados, map, desde, hasta);
+		String rootOutput = "C:\\eFactura\\output\\";
 		
-		StringBuffer buffer1 = new StringBuffer("");		
-		for (String sobre : duplicados) {
-			ArrayList<String> files = map.get(sobre);
-			
-			for (String fileEntry : files) {
-	    		try {
-	    			String result = readFile("C:\\eFactura\\input\\" + fileEntry);
-	    			String[] rows = result != null ? result.split(System.getProperty("line.separator")) : null;
-	    			String[] fields = rows[0].split("\\|");
-	    			
-					Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(fields[3]);
-					
-					if (date1.after(desde) && date1.before(hasta)) {						
-						buffer1.append("# SOBRE #");
-						buffer1.append(System.getProperty("line.separator"));
-						buffer1.append(result);
-						
-						String filePath = "C:\\eFactura\\output\\" + fileEntry;
-						File file = new File(filePath);
-						if (file.exists()) {
-							buffer1.append("# RESULTADO #");
-							buffer1.append(System.getProperty("line.separator"));
-							buffer1.append(readFile(filePath));	
-
-						}
-						buffer1.append(System.getProperty("line.separator"));
-						buffer1.append("########################################################");
-						buffer1.append(System.getProperty("line.separator"));
-					}
-
-	    		} catch (ParseException e) {
-	    			e.printStackTrace();
-	    		} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+		String resultPathData = rootOutput + doc.getDocCFEFileName() + ".txt";
+		
+		File f = new File(resultPathData);
+		
+		if (!f.exists() || !f.canRead()) {
+			return null;
 		}
+
+		String result = readFile(resultPathData);
+		String[] rows = result != null ? result.split(System.getProperty("line.separator")) : null;
 		
-		StringBuffer buffer2 = new StringBuffer("");
-		StringBuffer buffer3 = new StringBuffer("");
-		for (String sobre : sobres) {
-			ArrayList<String> files = map.get(sobre);
-			
-			for (String fileEntry : files) {
-	    		try {
-	    			String result = readFile("C:\\eFactura\\input\\" + fileEntry);
-	    			String[] rows = result != null ? result.split(System.getProperty("line.separator")) : null;
-	    			String[] fields = rows[0].split("\\|");
-	    			
-	    			Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(fields[3]);
-
-	    			if (date1.after(desde) && date1.before(hasta)) {
-						buffer2.append("# SOBRE #");
-						buffer2.append(System.getProperty("line.separator"));
-						buffer2.append(result);
-					
-						String filePath = "C:\\eFactura\\output\\" + fileEntry;
-						
-						File file = new File(filePath);
-						if (file.exists()) {
-							buffer2.append("# RESULTADO #");
-							buffer2.append(System.getProperty("line.separator"));
-							
-							String r = readFile(filePath);
-							buffer2.append(r);	
-							
-							String[] rowsRes = r != null ? r.split(System.getProperty("line.separator")) : null;
-							String[] fieldsRes = rowsRes[0].split("\\|");
-							
-							if (fieldsRes[1].equals("BE")) {
-								buffer3.append("# SOBRE #");
-								buffer3.append(System.getProperty("line.separator"));
-								buffer3.append(result);
-
-								buffer3.append("# RESULTADO #");
-								buffer3.append(System.getProperty("line.separator"));
-								buffer3.append(r);
-
-								buffer3.append(System.getProperty("line.separator"));
-								buffer3.append("########################################################");
-								buffer3.append(System.getProperty("line.separator"));
-							}
-						}
-												
-						
-						buffer2.append(System.getProperty("line.separator"));
-						buffer2.append("########################################################");
-						buffer2.append(System.getProperty("line.separator"));
-					}
-
-	    		} catch (ParseException e) {
-	    			e.printStackTrace();
-	    		} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		String duplicadosMsg = buffer1.toString();
-		String todosMsg = buffer2.toString();
-		String errorsMsg = buffer3.toString();
+		if (rows != null && !rows[0].contains("1|BE|")) {
+			if (rows[1].startsWith("2|")) {
+				String[] fields = rows[1].split("\\|");
+				String serie = fields[1];
+				String nro = fields[2];
+				String codSeguridadCFE = fields[3];
 				
-		
-		ArrayList<String> values = new ArrayList<String>();
-		values.add(todosMsg.length() > 0 ? todosMsg : "No hay documentos emitidos en eFactura en este rango de fechas.");
-		values.add(duplicadosMsg.length() > 0 ? duplicadosMsg : "No hay documentos emitidos en eFactura en este rango de fechas.");
-		values.add(errorsMsg.length() > 0 ? errorsMsg : "No hay documentos emitidos en eFactura con resultado de error.");
-		
-		return values;
-	}
-	
-	
-	private void listFilesForFolder(final File folder, ArrayList<String> sobres, ArrayList<String> duplicados, HashMap<String, ArrayList<String>> map, Date desde, Date hasta) {
-	    for (final File fileEntry : folder.listFiles()) {
-	        if (fileEntry.isDirectory()) {
-	            listFilesForFolder(fileEntry, sobres, duplicados, map, desde, hasta);
-	        } else {
-	        	String fileName = fileEntry.getName();
-	        	String sobre = fileName.split("_")[1];
-	        	
-	        	if (map.containsKey(sobre)) {
-	        		ArrayList<String> list = map.get(sobre);
-	        		list.add(fileName);
-	        	} else {
-	        		ArrayList<String> list = new ArrayList<String>();
-	        		list.add(fileName);
-	        		
-	        		map.put(sobre, list);
-	        	}
-	        	if (sobres.contains(sobre)) {
-        			if (!duplicados.contains(sobre)) {
-        				duplicados.add(sobre);
-        			}
-	        	} else {
-	        		sobres.add(sobre);
-	        	}
-	        }
-	    }
+				current.setSerie(serie);
+				current.setNumero(new Long(nro));
+				current.setCodSeguridadCFE(codSeguridadCFE);
+			}
+			
+			if (rows[2].startsWith("3|")) {				
+				String[] fields = rows[2].split("\\|"); 
+				
+				BigInteger cAEnro = new BigInteger(fields[1]);
+				String cAEserie = fields[2];
+				Integer cAEdesde = new Integer(fields[3]);
+				Integer cAEhasta = new Integer(fields[4]);
+				
+				current.setCAEnro(cAEnro);
+				current.setCAEserie(cAEserie);
+				current.setCAEdesde(cAEdesde);
+				current.setCAEhasta(cAEhasta);
+			}
+			
+			final String codigoQR_path = rootOutput + doc.getDocCFEFileName() + ".png";
+
+			byte[] codigoQR = null;
+			if (!current.getComprobante().isContingencia()) {
+				File fileQR = new File(codigoQR_path);
+				codigoQR = fileQR.exists() || !fileQR.canRead() ? loadFile(codigoQR_path) : null;	 
+			}
+
+			Short tipoCFEdoc = getTipoCFEDoc(current);
+			
+			current.setTipoCFEid(tipoCFEdoc);
+			current.setCAEnom(getTipoCFENombre(tipoCFEdoc));
+			
+			current.setDocCFEstatus(Short.valueOf("1"));
+			current.setCodigoQR(codigoQR);
+			current.setEmitido(true);
+
+			if (current.getComprobante().isNotaCreditoFinanciera()) {
+				// Obtener el recibo
+				String reciboId = current.getPrevDocId();
+				Documento recibo = reciboId != null && reciboId.length() > 0 ? documentoDAOService.findDocumento(reciboId) : null;
+				if (recibo != null) {
+					recibo.setPrevDocId(current.getDocId());
+					recibo.setNotas(recibo.getNotas() + "\nSe emitió una N/C36 PC X DTOS FINANCIEROS " + current.getSerie() + current.getNumero() + ".");
+					
+					// guardar el recibo 
+					documentoDAOService.merge(recibo, Boolean.FALSE);
+				}
+			}
+			documentoDAOService.merge(current, Boolean.FALSE);
+			
+			return current;
+
+		} else {			
+			current.setDocCFEstatus(Short.valueOf("3"));
+			return null;
+		}
 	}
 
 	
@@ -253,7 +192,6 @@ public class EFacturaServiceImpl implements EFacturaService {
 			SerieNumero serieNumero = eFacturaDAOService.generarSobreNumero("EF");
 			nroSobre = serieNumero.getNumero().intValue();
 			current.setDocCFEId(nroSobre);
-			
 		}
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
@@ -320,7 +258,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 			bw.close();
 		}
 
-		LOGGER.info("Emitiendo documento | docId=" + doc.getDocId() + " | sobre=" + nroSobre );
+		LOGGER.info("Emitiendo documento | docId = " + doc.getDocId() + " | sobre = " + nroSobre );
 
 		// Ejecutar .exe por líneas de comandos
 		ProcessBuilder processBuilder = new ProcessBuilder("C:\\Program Files (x86)\\eFactShell\\eFact.exe", pathInput, pathOutput);
@@ -329,48 +267,68 @@ public class EFacturaServiceImpl implements EFacturaService {
 		}
 				
 		final String resultPath = rootOutput + fileName + ".txt";
-	
+
+		try {
+			Thread.sleep(2000);				
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+
 		int i = 0;
 		File f = new File(resultPath);
 		do {			
 			i++;
 			try {
-				Thread.sleep(500);				
+				Thread.sleep(1000);				
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			LOGGER.info("Verificar existe el archivo '" + resultPath + "' por " + i + " vez.");
 			
-		} while((!f.exists() || !f.canRead()) && i < 60);
+		} while ((!f.exists() || !f.canRead()) && i < MAX_CHECK_REPEAT);
+		
+		LOGGER.info("Se realizaron " + i + " intento/s para obtener el archivo de e-factura.");
 		
 		String result = f.exists() && f.canRead() ? readFile(resultPath) : null;
 		String[] rows = result != null ? result.split(System.getProperty("line.separator")) : null;
-		
+
 		EFacturaResult resultEFactura = new EFacturaResult();
 		resultEFactura.setFileName(fileName + "_cliente");
-		resultEFactura.setFileResultData(result != null ? result : "Error");
+		resultEFactura.setFileResultData(result != null ? result : "Error: No se pudo obtener el archivo resultado. (docId: " + current.getDocId() + ")");
 		resultEFactura.setDocCFEId(nroSobre);
+						
+		Date nowDate = new Date();
 		
-		if (!f.exists() || !f.canRead()) {
+		// Datos para uso posterior, en caso de actualizar el documento cuando no se emite correctamente.
+		current.setCAEemision(nowDate);
+		current.setFecha(nowDate);
+		current.setFecha2(nowDate);
+		current.setDocCFEId(nroSobre);
+		current.setDocCFEFileName(fileName);
+		
+		// Proceso los resultados en caso de tenerlos
+		BigDecimal tipoCambioF = documentoDAOService.getTipoCambioFiscal(doc.getMoneda().getCodigo(), new Date());
+		if (tipoCambioF != null) {
+			current.setDocTCF(tipoCambioF);
+		}
+
+		if (result == null) {
 			resultEFactura.setFilePDFData(null);
 			resultEFactura.setEfacturaFail(Boolean.TRUE);
-			current.setDocCFEstatus(Short.valueOf("0"));
+			
+			current.setDocCFEstatus(Short.valueOf("2"));
 			
 			// Guardar el documento con el estado y el numero de sobre que tiene asignado.
 			documentoDAOService.merge(current, Boolean.FALSE);
-			
+
+			LOGGER.info("EFacturaResult : " + resultEFactura.getFileResultData());
+
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-
 			return resultEFactura; 
 		}
-		
-		
-		// Proceso los resultados en caso de tenerlos
-		BigDecimal tipoCambioF = documentoDAOService.getTipoCambioFiscal(doc.getMoneda().getCodigo(), new Date());
 
 		byte[] codigoQR = null;
 		if (rows != null && !rows[0].contains("1|BE|")) {
@@ -396,7 +354,6 @@ public class EFacturaServiceImpl implements EFacturaService {
 				current.setCAEserie(cAEserie);
 				current.setCAEdesde(cAEdesde);
 				current.setCAEhasta(cAEhasta);
-				current.setCAEemision(new Date());
 			}
 			
 			final String codigoQR_path = rootOutput + fileName + ".png";
@@ -406,16 +363,21 @@ public class EFacturaServiceImpl implements EFacturaService {
 				int j = 0;
 				do {
 					try {
-						Thread.sleep(500);
+						Thread.sleep(1000);
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
 					j++;
-					LOGGER.info("Código QR chequeado '" + codigoQR_path + "'");
 					
-				} while((!fileQR.exists() || !fileQR.canRead()) && j < 60); 
+				} while((!fileQR.exists() || !fileQR.canRead()) && j < 10); 
 				
 				codigoQR = fileQR.exists() || !fileQR.canRead() ? loadFile(codigoQR_path) : null;
+
+				if (codigoQR != null) {
+					LOGGER.info("Código QR encontrado  '" + codigoQR_path + "'");
+				} else {
+					LOGGER.info("No se encontró código QR.");
+				}
 			} 
 
 			Short tipoCFEdoc = getTipoCFEDoc(current);
@@ -423,9 +385,6 @@ public class EFacturaServiceImpl implements EFacturaService {
 			if (tipoCambioF != null) {
 				current.setDocTCF(tipoCambioF);
 			}
-			current.setFecha(new Date());
-			current.setFecha2(new Date());
-
 			current.setTipoCFEid(tipoCFEdoc);
 			current.setCAEnom(getTipoCFENombre(tipoCFEdoc));
 			
@@ -462,8 +421,9 @@ public class EFacturaServiceImpl implements EFacturaService {
 
 		} else {
 			resultEFactura.setFilePDFData(null);
-			resultEFactura.setEfacturaFail(Boolean.TRUE);
-			current.setDocCFEstatus(Short.valueOf("0"));
+			resultEFactura.setEfacturaFail(Boolean.TRUE);			
+			
+			current.setDocCFEstatus(Short.valueOf("3"));
 		}
 		documentoDAOService.merge(current, Boolean.FALSE);
 		
@@ -993,5 +953,157 @@ public class EFacturaServiceImpl implements EFacturaService {
 		}
 
 	}
+	
+	
+	public ArrayList<String> obtenerDuplicados(Date desde, Date hasta) {
+		File folder = new File("C:\\eFactura\\input\\");
+	
+		ArrayList<String> sobres = new ArrayList<String>();
+		ArrayList<String> duplicados = new ArrayList<String>();
+		
+		HashMap<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
+		
+		listFilesForFolder(folder, sobres, duplicados, map, desde, hasta);
+		
+		StringBuffer buffer1 = new StringBuffer("");		
+		for (String sobre : duplicados) {
+			ArrayList<String> files = map.get(sobre);
+			
+			for (String fileEntry : files) {
+	    		try {
+	    			String result = readFile("C:\\eFactura\\input\\" + fileEntry);
+	    			String[] rows = result != null ? result.split(System.getProperty("line.separator")) : null;
+	    			String[] fields = rows[0].split("\\|");
+	    			
+					Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(fields[3]);
+					
+					if (date1.after(desde) && date1.before(hasta)) {						
+						buffer1.append("# SOBRE #");
+						buffer1.append(System.getProperty("line.separator"));
+						buffer1.append(result);
+						
+						String filePath = "C:\\eFactura\\output\\" + fileEntry;
+						File file = new File(filePath);
+						if (file.exists()) {
+							buffer1.append("# RESULTADO #");
+							buffer1.append(System.getProperty("line.separator"));
+							buffer1.append(readFile(filePath));	
+
+						}
+						buffer1.append(System.getProperty("line.separator"));
+						buffer1.append("########################################################");
+						buffer1.append(System.getProperty("line.separator"));
+					}
+
+	    		} catch (ParseException e) {
+	    			e.printStackTrace();
+	    		} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		StringBuffer buffer2 = new StringBuffer("");
+		StringBuffer buffer3 = new StringBuffer("");
+		for (String sobre : sobres) {
+			ArrayList<String> files = map.get(sobre);
+			
+			for (String fileEntry : files) {
+	    		try {
+	    			String result = readFile("C:\\eFactura\\input\\" + fileEntry);
+	    			String[] rows = result != null ? result.split(System.getProperty("line.separator")) : null;
+	    			String[] fields = rows[0].split("\\|");
+	    			
+	    			Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(fields[3]);
+
+	    			if (date1.after(desde) && date1.before(hasta)) {
+						buffer2.append("# SOBRE #");
+						buffer2.append(System.getProperty("line.separator"));
+						buffer2.append(result);
+					
+						String filePath = "C:\\eFactura\\output\\" + fileEntry;
+						
+						File file = new File(filePath);
+						if (file.exists()) {
+							buffer2.append("# RESULTADO #");
+							buffer2.append(System.getProperty("line.separator"));
+							
+							String r = readFile(filePath);
+							buffer2.append(r);	
+							
+							String[] rowsRes = r != null ? r.split(System.getProperty("line.separator")) : null;
+							String[] fieldsRes = rowsRes[0].split("\\|");
+							
+							if (fieldsRes[1].equals("BE")) {
+								buffer3.append("# SOBRE #");
+								buffer3.append(System.getProperty("line.separator"));
+								buffer3.append(result);
+
+								buffer3.append("# RESULTADO #");
+								buffer3.append(System.getProperty("line.separator"));
+								buffer3.append(r);
+
+								buffer3.append(System.getProperty("line.separator"));
+								buffer3.append("########################################################");
+								buffer3.append(System.getProperty("line.separator"));
+							}
+						}
+												
+						
+						buffer2.append(System.getProperty("line.separator"));
+						buffer2.append("########################################################");
+						buffer2.append(System.getProperty("line.separator"));
+					}
+
+	    		} catch (ParseException e) {
+	    			e.printStackTrace();
+	    		} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
+		String duplicadosMsg = buffer1.toString();
+		String todosMsg = buffer2.toString();
+		String errorsMsg = buffer3.toString();
+				
+		
+		ArrayList<String> values = new ArrayList<String>();
+		values.add(todosMsg.length() > 0 ? todosMsg : "No hay documentos emitidos en eFactura en este rango de fechas.");
+		values.add(duplicadosMsg.length() > 0 ? duplicadosMsg : "No hay documentos emitidos en eFactura en este rango de fechas.");
+		values.add(errorsMsg.length() > 0 ? errorsMsg : "No hay documentos emitidos en eFactura con resultado de error.");
+		
+		return values;
+	}
+	
+	
+	private void listFilesForFolder(final File folder, ArrayList<String> sobres, ArrayList<String> duplicados, HashMap<String, ArrayList<String>> map, Date desde, Date hasta) {
+	    for (final File fileEntry : folder.listFiles()) {
+	        if (fileEntry.isDirectory()) {
+	            listFilesForFolder(fileEntry, sobres, duplicados, map, desde, hasta);
+	        } else {
+	        	String fileName = fileEntry.getName();
+	        	String sobre = fileName.split("_")[1];
+	        	
+	        	if (map.containsKey(sobre)) {
+	        		ArrayList<String> list = map.get(sobre);
+	        		list.add(fileName);
+	        	} else {
+	        		ArrayList<String> list = new ArrayList<String>();
+	        		list.add(fileName);
+	        		
+	        		map.put(sobre, list);
+	        	}
+	        	if (sobres.contains(sobre)) {
+        			if (!duplicados.contains(sobre)) {
+        				duplicados.add(sobre);
+        			}
+	        	} else {
+	        		sobres.add(sobre);
+	        	}
+	        }
+	    }
+	}
+
 
 }

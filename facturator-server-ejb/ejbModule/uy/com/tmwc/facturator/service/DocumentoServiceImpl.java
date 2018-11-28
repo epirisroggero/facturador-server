@@ -379,7 +379,9 @@ public class DocumentoServiceImpl implements DocumentoService {
 		
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
-		Boolean hasPerm = Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
+		boolean esSupervisor = usuarioLogin.isSupervisor();
+		
+		Boolean hasPerm = esSupervisor || Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
 			|| Usuario.USUARIO_FACTURACION.equals(permisoId) || Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId);
 		
 		if (!hasPerm && permisoId.equals(Usuario.USUARIO_ALIADOS_COMERCIALES)) {

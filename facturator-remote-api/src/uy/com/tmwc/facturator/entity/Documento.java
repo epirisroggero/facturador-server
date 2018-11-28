@@ -75,8 +75,9 @@ public class Documento extends DocumentoBase implements Serializable {
 
 	private String docCFEetapa;
 	private Integer docCFEId;
+	private String docCFEFileName;
 
-	private Short docCFEstatus;
+	private Short docCFEstatus; // 0 = sin status, 1 = ok, 2 = chequear, 3 = error e-factura
 	private Short docCFEstatusAcuse;
 
 	private String serieCFEIdDoc;
@@ -104,7 +105,7 @@ public class Documento extends DocumentoBase implements Serializable {
 	private String CAEserie;
 	private Short tipoCFEid;
 
-	// private BigDecimal neto;
+	// private BigDecimal Neto;
 
 	private Moneda docRecMda;
 	private BigDecimal docRecNeto;
@@ -517,17 +518,27 @@ public class Documento extends DocumentoBase implements Serializable {
 	}
 	
 	public BigDecimal getRentaNetaDistComercial(){
-		BigDecimal ventaNeta = getVentaNeta();
-		BigDecimal precioDst = getCostoDistribuidor();
+		BigDecimal costoDistribuidor = getCostoDistribuidor();
 		
 		// No tiene precio distribuidor.
-		if (precioDst.equals(BigDecimal.ZERO)) {
+		if (costoDistribuidor == null) {
 			return BigDecimal.ZERO;
 		}		
-		BigDecimal precioDistCSigno = this.comprobante.isDevolucion() ? precioDst.negate() : precioDst;
-		return ventaNeta.subtract(precioDistCSigno);
+		BigDecimal ventaNeta = getVentaNeta();
+		BigDecimal costoDistCSigno = this.comprobante.isDevolucion() ? costoDistribuidor.negate() : costoDistribuidor;
+		BigDecimal renta = ventaNeta.subtract(costoDistCSigno);
+		return renta;
 	}
 	
+	public BigDecimal getRentaDistribuidor() {
+		BigDecimal costoDistribuidor = getCostoDistribuidor();
+		if (costoDistribuidor == null) {
+			return null;
+		}
+		BigDecimal vn = getVentaNeta();
+		BigDecimal renta = vn.subtract(costoDistribuidor);
+		return renta;
+	}	
 
 	public BigDecimal getVentaNeta() {
 		BigDecimal subTotal = getSubTotal();
@@ -705,15 +716,6 @@ public class Documento extends DocumentoBase implements Serializable {
 		return cd;
 	}
 
-	public BigDecimal getRentaDistribuidor() {
-		BigDecimal costoDistribuidor = getCostoDistribuidor();
-		if (costoDistribuidor == null) {
-			return null;
-		}
-		BigDecimal vn = getVentaNeta();
-		BigDecimal renta = vn.subtract(costoDistribuidor);
-		return renta;
-	}
 
 	public String getDocumento() {
 		return documento;
@@ -1081,6 +1083,14 @@ public class Documento extends DocumentoBase implements Serializable {
 
 	public void setDocMensaje(String docMensaje) {
 		this.docMensaje = docMensaje;
+	}
+
+	public String getDocCFEFileName() {
+		return docCFEFileName;
+	}
+
+	public void setDocCFEFileName(String docCFEFilename) {
+		this.docCFEFileName = docCFEFilename;
 	}
 
 }

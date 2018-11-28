@@ -943,7 +943,20 @@ public class RemoteServiceHandler {
 		}
 		
 		return getEFacturaService().obtenerDuplicados(desde, hasta);
-	}	
+	}
+	
+	
+	public Documento updateDocumento(Documento documento) throws PermisosException, ValidationException {
+		try {
+			if (!documento.getComprobante().isAster()) {
+				return getEFacturaService().updateDocumento(documento);
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		return null;
+		
+	}
 	
 	public EFacturaResult generateCFE(Documento documento) throws PermisosException {
 		String monedaId = documento.getMoneda().getCodigo();
@@ -1292,7 +1305,13 @@ public class RemoteServiceHandler {
 		
 		Usuario usuarioLogin = getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
-		Boolean hasPerm = Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_FACTURACION.equals(permisoId) || Usuario.USUARIO_VENDEDOR_SENIOR.equals(permisoId);
+		boolean esSupervisor = usuarioLogin.isSupervisor();
+		
+		Boolean hasPerm = esSupervisor 
+			|| Usuario.USUARIO_SUPERVISOR.equals(permisoId) 
+			|| Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
+			|| Usuario.USUARIO_FACTURACION.equals(permisoId) 
+			|| Usuario.USUARIO_VENDEDOR_SENIOR.equals(permisoId);
 		
 		if (!hasPerm && permisoId.equals(Usuario.USUARIO_ALIADOS_COMERCIALES)) {
 			String regex = System.getProperty("facturator.aliadosComerciales.familias");
@@ -1310,23 +1329,31 @@ public class RemoteServiceHandler {
 			return costo;
 		} else {
 			throw new PermisosException("'" + usuarioLogin.getNombre() + "' no tiene permisos para ver costo.");
-
 		}
 	}
-
 	
 	public BigDecimal getPrecioSugerido(String articulo, String preciosVenta, String monedaFacturacion) throws PermisosException  {
 		Usuario usuarioLogin = getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
+		boolean esSupervisor = usuarioLogin.isSupervisor();
 		Boolean hasPerm = false;
 	
 		if (preciosVenta.equals("1")) {
-			hasPerm = permisoId.equals(Usuario.USUARIO_SUPERVISOR) || permisoId.equals(Usuario.USUARIO_ADMINISTRADOR) || permisoId.equals(Usuario.USUARIO_FACTURACION) || permisoId.equals(Usuario.USUARIO_VENDEDOR_SENIOR) 
-						|| permisoId.equals(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR); 
+			hasPerm = esSupervisor 
+				|| permisoId.equals(Usuario.USUARIO_SUPERVISOR) 
+				|| permisoId.equals(Usuario.USUARIO_ADMINISTRADOR) 
+				|| permisoId.equals(Usuario.USUARIO_FACTURACION) 
+				|| permisoId.equals(Usuario.USUARIO_VENDEDOR_SENIOR) 
+				|| permisoId.equals(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR); 
 		} else if (preciosVenta.equals("2") || preciosVenta.equals("3")) {
 			hasPerm = true;
 		} else if (preciosVenta.equals("4")) {
-			hasPerm = permisoId.equals(Usuario.USUARIO_SUPERVISOR) || permisoId.equals(Usuario.USUARIO_ADMINISTRADOR) || permisoId.equals(Usuario.USUARIO_FACTURACION) || permisoId.equals(Usuario.USUARIO_VENDEDOR_SENIOR);
+			hasPerm = esSupervisor 
+				|| permisoId.equals(Usuario.USUARIO_SUPERVISOR) 
+				|| permisoId.equals(Usuario.USUARIO_ADMINISTRADOR) 
+				|| permisoId.equals(Usuario.USUARIO_FACTURACION) 
+				|| permisoId.equals(Usuario.USUARIO_VENDEDOR_SENIOR)
+				|| permisoId.equals(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR);
 		}
 		
 		Articulo a = findCatalogEntity("Articulo", articulo);

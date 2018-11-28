@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 
+import com.google.gwt.rpc.client.impl.EscapeUtil;
+
 import uy.com.tmwc.facturator.entity.VendedoresUsuario;
 import uy.com.tmwc.facturator.rapi.UsuariosService;
 
@@ -110,7 +112,9 @@ public class Usuario extends CodigoNombreEntity implements Serializable {
 	}
 
 	public Collection<PermisoFacturador> getPermisos() {
-		if (USUARIO_TITO.equals(permisoId)) {
+		if (isSupervisor() || USUARIO_SUPERVISOR.equals(permisoId)) {
+			return Arrays.asList(PermisoFacturador.values());
+		} else if (USUARIO_TITO.equals(permisoId)) {
 			return new ArrayList<PermisoFacturador>();
 		} else if (USUARIO_VENDEDOR_JUNIOR.equals(permisoId)) {
 			return Arrays.asList(new PermisoFacturador[] {PermisoFacturador.Deudores});
@@ -118,8 +122,6 @@ public class Usuario extends CodigoNombreEntity implements Serializable {
 			return Arrays.asList(new PermisoFacturador[] {PermisoFacturador.Deudores});
 		} else if (USUARIO_VENDEDOR_SENIOR.equals(permisoId)) {
 			return Arrays.asList(new PermisoFacturador[] {PermisoFacturador.Deudores});
-		} else if (USUARIO_SUPERVISOR.equals(permisoId)) {
-			return Arrays.asList(PermisoFacturador.values());
 		} else if (USUARIO_ADMINISTRADOR.equals(permisoId)) {
 			return Arrays.asList(new PermisoFacturador[] { PermisoFacturador.CostosYUtilidad, PermisoFacturador.Deudores,
 					PermisoFacturador.RutinaCargaCostos, PermisoFacturador.Informes});
@@ -146,6 +148,11 @@ public class Usuario extends CodigoNombreEntity implements Serializable {
 	}
 
 	public boolean getImpedirModificacionDocumentosAjenos() {
+		if (isSupervisor()) {
+			return false;
+		}
+
+		// Chequear permisos		
 		return !ArrayUtils.contains(new String[] { USUARIO_FACTURACION, USUARIO_ADMINISTRADOR, USUARIO_SUPERVISOR }, permisoId);
 	}
 
@@ -195,6 +202,10 @@ public class Usuario extends CodigoNombreEntity implements Serializable {
 
 	public void setVendedoresUsuario(List<VendedoresUsuario> vendedoresUsuario) {
 		this.vendedoresUsuario = vendedoresUsuario;
+	}
+	
+	public boolean isSupervisor() {
+		return usuTipo != null && usuTipo.equals("S"); 
 	}
 	
 }
