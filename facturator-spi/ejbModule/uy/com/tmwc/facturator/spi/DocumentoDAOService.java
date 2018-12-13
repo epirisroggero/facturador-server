@@ -52,7 +52,7 @@ public interface DocumentoDAOService {
 
 	List<DocumentoDTO> getTrazabilidad(String docId);
 
-	List<DocumentoDTO> getSolicitudImportacion(String prevDocId);
+	List<DocumentoDTO> getSolicitudImportacion(String processId);
 
 	List<ResumenEntrega> getResumenEntregas(Date paramDate1, Date paramDate2);
 

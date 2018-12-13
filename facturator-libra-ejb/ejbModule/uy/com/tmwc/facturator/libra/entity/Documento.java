@@ -73,6 +73,12 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	private String prevDocId;
 	
 	@Column(table = "lfx_documentos")
+	private String nextDocId;
+	
+	@Column(table = "lfx_documentos")
+	private String processId;
+
+	@Column(table = "lfx_documentos")
 	private String prevDocSerieNro;
 
 	@Column(table = "lfx_documentos")
@@ -1677,7 +1683,6 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	public void setDocRecMda(Moneda docRecMda) {
 		this.docRecMda = docRecMda;
 		this.docRecMdaId = (docRecMda == null ? null : Short.valueOf(docRecMda.getId().getMndId()));
-
 	}
 
 	public Set<Vinculosfp> getVinculosfp() {
@@ -1696,5 +1701,22 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 		this.docCFEFileName = docCFEFileName;
 	}
 
+	public String getNextDocId() {
+		return nextDocId;
+	}
+
+	public void setNextDocId(String nextDocId) {
+		this.nextDocId = nextDocId;
+	}
 	
+	public String getProcessId() {
+		return processId;
+	}
+
+	public void setProcessId(String processId) {
+		this.processId = processId;
+	}
+
+
+
 }

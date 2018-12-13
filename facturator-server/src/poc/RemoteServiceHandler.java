@@ -51,6 +51,7 @@ import uy.com.tmwc.facturator.entity.CodigoNombreEntity;
 import uy.com.tmwc.facturator.entity.Comprobante;
 import uy.com.tmwc.facturator.entity.Contacto;
 import uy.com.tmwc.facturator.entity.CotizacionesMonedas;
+import uy.com.tmwc.facturator.entity.CuotasDocumento;
 import uy.com.tmwc.facturator.entity.DescuentoPrometidoComprobante;
 import uy.com.tmwc.facturator.entity.Documento;
 import uy.com.tmwc.facturator.entity.Entrega;
@@ -59,6 +60,7 @@ import uy.com.tmwc.facturator.entity.LineaDocumento;
 import uy.com.tmwc.facturator.entity.Moneda;
 import uy.com.tmwc.facturator.entity.ParametrosAdministracion;
 import uy.com.tmwc.facturator.entity.Persona;
+import uy.com.tmwc.facturator.entity.PlanPagos;
 import uy.com.tmwc.facturator.entity.PreciosVenta;
 import uy.com.tmwc.facturator.entity.Proveedor;
 import uy.com.tmwc.facturator.entity.SerieNumero;
@@ -391,7 +393,7 @@ public class RemoteServiceHandler {
 			auditoria = new Auditoria();
 			auditoria.setAudFechaHora(new Date());
 			auditoria.setDocId(documento.getDocId());
-			auditoria.setNotas("Documento creado por un total de " + moneda + " " + total);
+			auditoria.setNotas("Comprobante creado por un total de " + moneda + " " + total);
 			auditoria.setProblemas("Ninguno");
 		}
 
@@ -843,6 +845,55 @@ public class RemoteServiceHandler {
 		return getArticulosService().queryArticulos(paramArticuloQuery);
 	}
 	
+	public Documento convertirMovimientoStock(Documento oldDoc, Documento newDoc) throws PermisosException {
+		return convertirMovimientoStock(oldDoc, newDoc, true);
+	}
+	
+	public Documento convertirMovimientoStock(Documento oldDoc, Documento newDoc, Boolean saveDoc) throws PermisosException {
+		try {
+			if (!newDoc.getComprobante().isCredito())  {
+				newDoc.setCuotasDocumento(new CuotasDocumento(newDoc));
+			} else {
+				if (newDoc.getPlanPagos() ==  null) {
+					newDoc.setPlanPagos(new PlanPagos());
+				}
+			}			
+			
+			if (oldDoc.getPrevDocId() == null) { // Es la solicitud...
+				oldDoc.setProcessId(oldDoc.getDocId());
+			}
+			newDoc.setPrevDocId(oldDoc.getDocId());
+			newDoc.setProcessId(oldDoc.getProcessId());
+
+			String nextDocId = alta(newDoc);
+			
+			// Ajustar datos en documento anterior
+			oldDoc.setNextDocId(nextDocId);
+						
+			// Finalizar documento convertido
+			if (oldDoc.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES) {
+				finalizarMovimientoStock(oldDoc);
+			} else {			
+				getService().emitir(oldDoc, null);
+			}
+			Documento nuevoDocumento = getDocumento(nextDocId);
+			return nuevoDocumento;
+			
+		} catch (ValidationException e) {
+			// Si no se pudo borrar y si dar de alta, Borrar el alta.
+			if (oldDoc.getNextDocId() != null) {
+				Documento nuevoDocumento = getDocumento(oldDoc.getNextDocId());
+				try {
+					getService().borrar(nuevoDocumento);
+				} catch (ValidationException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		
+		return null;
+	}
+	
 	public Boolean finalizarMovimientoStock(Documento documento) throws PermisosException {
 		return getService().finalizarMovimientoStock(documento);
 	}
@@ -907,8 +958,7 @@ public class RemoteServiceHandler {
 			}
 		}
 				
-		SerieNumero serieNro = getService().emitir(documento, fanfoldId);
-		return serieNro;
+		return getService().emitir(documento, fanfoldId);
 	}
 	
 	public Boolean existeTCFiscal() {
@@ -945,6 +995,59 @@ public class RemoteServiceHandler {
 		return getEFacturaService().obtenerDuplicados(desde, hasta);
 	}
 	
+	public Documento moveToNextDocument(Documento documento) throws PermisosException {
+		try {
+			// Obtener siguiente.
+			String nextDocId = documento.getNextDocId();
+			
+			// Próximo documento
+			Documento nextDoc = getDocumento(nextDocId);
+			if (nextDoc == null) {
+				throw new RuntimeException("No se encontró el documento siguiente.\nEl mismo fué borrado o no existe.");
+			}
+			
+			return nextDoc;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public Documento moveToPrevDocument(Documento documento) throws PermisosException {
+		try {
+			if (documento.getPrevDocId() == null || documento.getPrevDocId().equals("0") || documento.getNextDocId() != null || documento.getProcessId() == null) {
+				throw new RuntimeException("No se encontró el documento anterior.\nEl mismo fué borrado o no existe.");
+			} else {
+				if (getService().borrar(documento, true)) {
+					System.out.println("Se borro el documento " + documento.getDocId());
+				}
+			}
+			
+			// Obtener comprobante previo.
+			String prevDocId = documento.getPrevDocId();
+			
+			Documento prevDoc = getDocumento(prevDocId);
+			if (prevDoc == null) {
+				throw new RuntimeException("No se encontró el documento anterior.\nEl mismo fué borrado o no existe.");
+			}			
+			if (prevDoc.getNextDocId() == null) {
+				throw new RuntimeException("Esta acción esta disponible solo para procesos realizados con versión Facturador-v1.6.630 o superior.");
+			}
+
+			prevDoc.setNextDocId(null);
+			prevDoc.setEmitido(false);
+			prevDoc.setPendiente(true);
+
+			return getService().guardar(prevDoc, null);
+
+		} catch (ValidationException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}	
 	
 	public Documento updateDocumento(Documento documento) throws PermisosException, ValidationException {
 		try {
@@ -984,7 +1087,8 @@ public class RemoteServiceHandler {
 				return getEFacturaService().generarEfactura(documento);
 			}
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			throw new RuntimeException("Error al generar EFactura. " + ex.getLocalizedMessage());
+			
 		}
 		return null;
 	}
@@ -1308,7 +1412,6 @@ public class RemoteServiceHandler {
 		boolean esSupervisor = usuarioLogin.isSupervisor();
 		
 		Boolean hasPerm = esSupervisor 
-			|| Usuario.USUARIO_SUPERVISOR.equals(permisoId) 
 			|| Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
 			|| Usuario.USUARIO_FACTURACION.equals(permisoId) 
 			|| Usuario.USUARIO_VENDEDOR_SENIOR.equals(permisoId);
@@ -1340,7 +1443,6 @@ public class RemoteServiceHandler {
 	
 		if (preciosVenta.equals("1")) {
 			hasPerm = esSupervisor 
-				|| permisoId.equals(Usuario.USUARIO_SUPERVISOR) 
 				|| permisoId.equals(Usuario.USUARIO_ADMINISTRADOR) 
 				|| permisoId.equals(Usuario.USUARIO_FACTURACION) 
 				|| permisoId.equals(Usuario.USUARIO_VENDEDOR_SENIOR) 
@@ -1349,7 +1451,6 @@ public class RemoteServiceHandler {
 			hasPerm = true;
 		} else if (preciosVenta.equals("4")) {
 			hasPerm = esSupervisor 
-				|| permisoId.equals(Usuario.USUARIO_SUPERVISOR) 
 				|| permisoId.equals(Usuario.USUARIO_ADMINISTRADOR) 
 				|| permisoId.equals(Usuario.USUARIO_FACTURACION) 
 				|| permisoId.equals(Usuario.USUARIO_VENDEDOR_SENIOR)

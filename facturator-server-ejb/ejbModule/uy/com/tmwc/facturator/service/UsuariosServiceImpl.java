@@ -131,10 +131,9 @@ public class UsuariosServiceImpl implements UsuariosService {
 	
 	public void updateClaveSup(String userId, String clave) throws PermisosException {
 		Usuario usuarioLogin = getUsuarioLogin();
-		String permisoId = usuarioLogin.getPermisoId();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
 		
-		if (esSupervisor || Usuario.USUARIO_SUPERVISOR.equals(permisoId)) {
+		if (esSupervisor) {
 			this.usuariosDAOService.updateClaveSup(userId, clave);
 		} else {
 			throw new PermisosException("No tiene permisos.");
@@ -154,12 +153,11 @@ public class UsuariosServiceImpl implements UsuariosService {
 
 		ArrayList<Usuario> filtered = new ArrayList<Usuario>();
 		for (Usuario u : todos) {
-			if (u.isSupervisor()/* || u.getPermisoId().equals(Usuario.USUARIO_SUPERVISOR)*/) {
+			if (u.isSupervisor()) {
 				filtered.add(u);
 			}
 		}
-		return filtered;		
+		return filtered;
 	}
-
 
 }

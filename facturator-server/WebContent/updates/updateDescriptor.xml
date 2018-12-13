@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.6.625</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.6.625.air</url>
+	<versionNumber>1.6.631</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.6.631.air</url>
 	<description>
 	    <![CDATA[
-	    * Liquidacion vendedores distribuidor.
-	    * Mostrar utilidad distribuidor cuando esta involucrado en la venta un vendedor distribuidor.
-	    * Actualizar documento Fullair con los datos de EFactura, en caso de error en fullair al emitir. (Analizar y probar) 
-	    * Mostrar antecedentes de compra y venta del artículo para usuario permiso facturación.
-	    * Ajustar tiempos de espera y lógica, tratar de minimizar falta de resultados. Manejo de estados del comprobante.
+	    * No permitir ir atras cuando no es un proceso de conversión de solicitudes.
 	    
+	    * Cambios en la definición de permisos.
+	    * Totalizar en liquidación vendedores.
+	    * Permitir cambios en comprobantes post emisión (solo usuarios supervisores).
+	    * Mejoras varias en ayuda artículos.	    
+	    * Navegación en procesos de importaciones (Poder pasar al paso anterior, en caso de estar parado en el último comprobante del proceso).
+	    * En trazabilidad poder ir al documento seleccionado.
+	    * En caso de NO tener definido un tipo de cambio fiscal para el día, traer el último tipo de cambio fiscal definido. (Revisar)
+	   	
 		]]>
 	</description>
 </update>

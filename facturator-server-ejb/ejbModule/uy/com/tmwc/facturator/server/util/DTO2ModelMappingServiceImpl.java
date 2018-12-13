@@ -17,20 +17,20 @@ import uy.com.tmwc.facturator.utils.MappingUtils;
 
 @Stateless
 public class DTO2ModelMappingServiceImpl implements DTO2ModelMappingService {
-	private static final DozerBeanMapper mapper = new DozerBeanMapper();
+	private static final DozerBeanMapper maper_doc = new DozerBeanMapper();
 
 	static {
 		ArrayList<String> files = new ArrayList<String>();
 		files.add("dozerMappings_client.xml");
-		mapper.setMappingFiles(files);
+		maper_doc.setMappingFiles(files);
 
 		ArrayList<DozerEventListener> eventListeners = new ArrayList<DozerEventListener>();
 		eventListeners.add(new CatalogEntityConverterListener());
-		mapper.setEventListeners(eventListeners);
+		maper_doc.setEventListeners(eventListeners);
 	}
 
 	public DozerBeanMapper getDozerBeanMapper() {
-		return mapper;
+		return maper_doc;
 	}
 
 	private static class CatalogEntityConverterListener implements DozerEventListener {
@@ -72,6 +72,13 @@ public class DTO2ModelMappingServiceImpl implements DTO2ModelMappingService {
 
 		private void setField(Object object, String fieldName, Object value) {
 			try {
+				/*
+				System.out.println("Class: " + object.getClass());
+				System.out.println("Field Name: " + fieldName);
+				System.out.println("Field Value: " + value);
+				System.out.println("=========================================================");
+				*/
+				
 				Field field = MappingUtils.getField(object.getClass(), fieldName);
 				field.setAccessible(true);
 				field.set(object, value);

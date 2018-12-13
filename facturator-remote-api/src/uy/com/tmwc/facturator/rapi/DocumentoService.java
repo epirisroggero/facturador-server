@@ -22,6 +22,8 @@ public interface DocumentoService {
 	String alta(Documento paramDocumento, Auditoria auditoria) throws ValidationException, PermisosException;
 	
 	Boolean borrar(Documento paramDocumento) throws ValidationException, PermisosException;
+
+	Boolean borrar(Documento paramDocumento, Boolean force) throws ValidationException, PermisosException;
 	
 	void modificar(Documento paramDocumento, Auditoria auditoria) throws ValidationException, PermisosException;
 

@@ -230,26 +230,12 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			
 			NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("ES"));
 
-			if (doc.getComprobante().isRecibo()) {
-//				StringBuffer buffer = new StringBuffer("\n");
-//				buffer.append("Recibo guardado:").append("\n| ");
-//				buffer.append(current.getId().getDocId()).append(" | ");
-//				buffer.append(libraDoc.getTotal().toString()).append(" | ");
-//				buffer.append(libraDoc.getDocRecNeto()).append(" | ");
-//				buffer.append(libraDoc.getDescuentosPorc()).append("% | ");
-//				buffer.append(libraDoc.getDescuentos()).append(" | ");
-//				
+			if (doc.getComprobante().isRecibo()) {//				
 				BigDecimal saldoRecibo = ajustarSaldo(libraDoc.getMoneda().getCodigo(), libraDoc.getSaldo());
 
-//				buffer.append(saldoRecibo.toString()).append(" | ");
-//				buffer.append(aster ? "*" : "  ").append(" |\n");
-				
 				if (libraDoc.getSaldo().doubleValue() < 0) {
 					throw new RuntimeException("Saldo menor que cero (" + libraDoc.getSaldo().toString() + " < 0.00)");
 				}
-//				
-//				buffer.append("\nFacturas vinculadas:").append("\n");
-
 				for (Vinculosdoc vinDoc : current.getFacturasVinculadas()) {
 					int docIdVinA = vinDoc.getId().getDocIdVin1(); //
 
@@ -287,11 +273,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 								factura.setSaldo(nuevoSaldo);
 								facturasModificadas.add(factura);
 
-//								buffer.append("MODIFICADO").append("\t|\t");
-//								buffer.append(factura.getDocId()).append(" | ");
-//								buffer.append(viejoSaldo.toString()).append(" | ");
-//								buffer.append(nuevoSaldo.toString()).append("\n");
-								
 								String simbolo = factura.getMoneda().getSimbolo();
 								
 								Auditoria audit = new Auditoria();
@@ -328,11 +309,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						}						
 						factura.setSaldo(nuevoSaldo);
 						facturasModificadas.add(factura);
-						
-//						buffer.append("BORRADO").append("\t|\t");
-//						buffer.append(vinDoc.getFactura().getId().getDocId()).append(" | ");
-//						buffer.append(viejoSaldo.toString()).append(" | ");
-//						buffer.append(nuevoSaldo.toString()).append("\n");
 						
 						String simbolo = factura.getMoneda().getSimbolo();
 						
@@ -383,10 +359,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						if (nuevoSaldo.compareTo(BigDecimal.ZERO) < 0) {
 							throw new RuntimeException("Monto incorrecto documento " + factura.getSerie() + factura.getNumero().toString() + " saldo < 0 (" + nuevoSaldo + " < " + monto + ")");
 						} else {
-//							buffer.append("ADICIONADA").append("\t|\t");
-//							buffer.append(vinDoc.getFactura().getDocId()).append("| ");
-//							buffer.append(viejoSaldo.toString()).append(" | ");
-//							buffer.append(nuevoSaldo.toString()).append("\n");
 							factura.setSaldo(nuevoSaldo);
 							facturasModificadas.add(factura);
 							
@@ -406,8 +378,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						}						
 					}
 				}
-				
-//				buffer.append("----------------------------------------------").append("\n");
 				
 				// LOGGER.info(buffer.toString());
 				
@@ -488,6 +458,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		controlModificacionDocumento(docEntity);
 
 		docEntity.setPendiente("N"); // lo marco como no pendiente, remuevo la reserva de articulos
+		docEntity.setNextDocId(doc.getNextDocId());
+		docEntity.setProcessId(doc.getProcessId());
 
 		verifyUniqueSerieNumero(docEntity);
 
@@ -627,7 +599,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	}
 
 	public BigDecimal getTipoCambioFiscal(String codigoMoneda, Date fecha) {
-		Query query = this.em.createNamedQuery("TipoCambio.tipoCambioFiscalFechaDia").setParameter("empId", getEmpId()).setParameter("moneda", Short.valueOf(Short.parseShort(codigoMoneda)))
+		Query query = this.em.createNamedQuery("TipoCambio.tipoCambioFiscalFecha").setParameter("empId", getEmpId()).setParameter("moneda", Short.valueOf(Short.parseShort(codigoMoneda)))
 				.setParameter("fecha", fecha);
 		BigDecimal result = (BigDecimal) JPAUtils.getAtMostOne(query);
 		return result;
@@ -663,7 +635,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		boolean esSupervisor = usuarioLogin.isSupervisor();
 
 		if (esSupervisor
-				//|| Usuario.USUARIO_SUPERVISOR.equals(permisoId) 
 				|| Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
 				|| Usuario.USUARIO_VENDEDOR_SENIOR.equals(permisoId) 				
 				|| Usuario.USUARIO_FACTURACION.equals(permisoId) 
@@ -752,7 +723,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		}
 
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
-		String permisoId = usuarioLogin.getPermisoId();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
 		
 		final StringBuilder sb = new StringBuilder("");
@@ -765,7 +735,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO( " + "d.id.docId, " + "d.serie, " + "d.numero, " + "d.fecha, " + "d.CAEnom, " + "p.id.prvId, " + "p.nombre, "
 					+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
 	
-			if (esSupervisor || Usuario.USUARIO_SUPERVISOR.equals(permisoId)) {
+			if (esSupervisor) {
 				sb.append("d.costo, ");
 			}
 			sb.append("d.subTotal, d.iva, d.total, d.saldo, d.emitido, d.pendiente, d.comprobante.tipo) ");
@@ -784,7 +754,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
 			}
 			
-			if (esSupervisor || Usuario.USUARIO_SUPERVISOR.equals(permisoId)) {
+			if (esSupervisor) {
 				sb.append("d.costo, ");
 			}
 			sb.append("d.subTotal, d.iva, d.total, d.saldo, d.emitido, d.pendiente, d.comprobante.tipo) ");
@@ -831,7 +801,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		boolean esSupervisor = usuarioLogin.isSupervisor();
 		
 		if (esSupervisor 
-				|| Usuario.USUARIO_SUPERVISOR.equals(permisoId) 
 				|| Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
 				|| Usuario.USUARIO_FACTURACION.equals(permisoId)) {
 			return "";
@@ -981,7 +950,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		} catch (NumberFormatException ex) {
 			docId = -1;
 		}
-		List<DocumentoDTO> list = this.em.createNamedQuery("Documento.trazabilidadDocumento").setParameter("empId", getEmpId()).setParameter("docId", docId).setParameter("prevDocId", value)
+		List<DocumentoDTO> list = this.em.createNamedQuery("Documento.trazabilidadDocumento").setParameter("empId", getEmpId()).setParameter("docId", docId).setParameter("processId", value)
 				.getResultList();
 
 		return list;
@@ -989,7 +958,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 	@SuppressWarnings("unchecked")
 	public List<DocumentoDTO> getSolicitudImportacion(String value) {
-		List<DocumentoDTO> list = this.em.createNamedQuery("Documento.solicitudImportacion").setParameter("empId", getEmpId()).setParameter("prevDocId", value).getResultList();
+		List<DocumentoDTO> list = this.em.createNamedQuery("Documento.solicitudImportacion").setParameter("empId", getEmpId()).setParameter("processId", value).getResultList();
 
 		return list;
 	}
@@ -1000,27 +969,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		if (doc == null) {
 			return null;
 		}
-
-		// Permisos de lectura
-		// Collection<Integer> codigos =
-		// usuariosService.getCodigosComprobantesPermitidosUsuario();
-		// if (!(codigos.size() == 1 && codigos.iterator().next() ==
-		// Integer.MAX_VALUE)) {
-		// if (!codigos.contains((int)doc.getComprobante().getId().getCmpid()))
-		// {
-		// throw new
-		// PermisosException("El usuario no tiene permiso para ver este tipo de comprobantes");
-		// }
-		// Usuario usuarioLogin = usuariosService.getUsuarioLogin();
-		// if (usuarioLogin.getFiltrarDocumentosAjenos()) {
-		// if
-		// (!String.valueOf(doc.getUsuarioId()).equals(usuarioLogin.getCodigo()))
-		// {
-		// throw new
-		// PermisosException("El usuario no tiene permiso para ver documentos creados por otros usuarios");
-		// }
-		// }
-		// }
 
 		Documento mapped = (uy.com.tmwc.facturator.entity.Documento) this.mapService.getDozerBeanMapper().map(doc, uy.com.tmwc.facturator.entity.Documento.class);
 
@@ -1037,10 +985,10 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		boolean esSupervisor = usuarioLogin.isSupervisor();
 		
 		pdu.setRentaReal(esSupervisor 
-				|| Arrays.asList(new String[] { Usuario.USUARIO_SUPERVISOR, Usuario.USUARIO_FACTURACION, Usuario.USUARIO_ADMINISTRADOR }).contains(usuarioPermisoId)
+				|| Arrays.asList(new String[] { Usuario.USUARIO_FACTURACION, Usuario.USUARIO_ADMINISTRADOR }).contains(usuarioPermisoId)
 				|| (usuarioPermisoId.equals(Usuario.USUARIO_VENDEDOR_SENIOR) && doc.usuarioInvolucrado(usuarioLogin.getCodigo())));
 		pdu.setRentaDistribuidor(esSupervisor				
-				|| Arrays.asList(new String[] { Usuario.USUARIO_SUPERVISOR, Usuario.USUARIO_FACTURACION, Usuario.USUARIO_ADMINISTRADOR }).contains(usuarioPermisoId)
+				|| Arrays.asList(new String[] { Usuario.USUARIO_FACTURACION, Usuario.USUARIO_ADMINISTRADOR }).contains(usuarioPermisoId)
 				|| (usuarioPermisoId.equals(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR) && doc.usuarioInvolucrado(usuarioLogin.getCodigo())));
 		return mapped;
 	}
@@ -1792,7 +1740,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		pk.setDocId(Integer.parseInt(doc.getDocId()));
 		pk.setEmpId(getEmpId());
 
-		List<DocumentoDTO> documentsImp = doc.getPrevDocId() != null ? getSolicitudImportacion(doc.getPrevDocId()) : getSolicitudImportacion(doc.getDocId());
+		List<DocumentoDTO> documentsImp = doc.getProcessId() != null ? getSolicitudImportacion(doc.getProcessId()) : getSolicitudImportacion(doc.getDocId());
 
 		uy.com.tmwc.facturator.libra.entity.Documento current = (uy.com.tmwc.facturator.libra.entity.Documento) this.em.find(uy.com.tmwc.facturator.libra.entity.Documento.class, pk);
 

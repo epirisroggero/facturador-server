@@ -435,8 +435,7 @@
 					moneda.id.mndId = :moneda
 					and moneda.id.empId = :empId
 					and (
-						:fecha is null
-						or id.dia &lt;= :fecha
+						:fecha is null or id.dia &lt;= :fecha
 					) 
 				order by id.dia DESC limit 1
 			</query>
@@ -450,10 +449,7 @@
 				where 
 					moneda.id.mndId = :moneda
 					and moneda.id.empId = :empId
-					and (
-						:fecha is null
-						or id.dia &lt;= :fecha
-					) 
+					and (:fecha is null or id.dia &lt;= :fecha) 
 				order by id.dia DESC limit 1
 			</query>
 		</named-query>
@@ -973,7 +969,7 @@
 					Documento d join d.comprobante cmp
 				where
 					(d.id.empId = :empId)
-					and (d.id.docId = :docId or d.prevDocId = :prevDocId) 
+					and (d.id.docId = :docId or d.processId = :processId) 
 				order by
 					d.registroFecha asc
 					d.registroHora asc
@@ -1000,7 +996,7 @@
 				where
 					(d.id.empId = :empId)
 					and (cmp.id.cmpid = '124')
-					and (d.prevDocId = :prevDocId) 
+					and (d.processId = :processId) 
 				order by
 					d.registroFecha asc
 					d.registroHora asc

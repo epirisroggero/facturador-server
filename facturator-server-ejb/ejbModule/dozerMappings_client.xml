@@ -7,8 +7,7 @@
 		<class-a>uy.com.tmwc.facturator.entity.Documento</class-a>
 		<class-b>uy.com.tmwc.facturator.entity.Documento</class-b>
 
-		<field-exclude> <!-- cuotas es un alias a cuotasDocumento.cuotas. Si dozer llega por dos 
-				lugares a la lista de cuotas, duplica los elementos. -->
+		<field-exclude> <!-- cuotas es un alias a cuotasDocumento.cuotas. Si dozer llega por dos lugares a la lista de cuotas, duplica los elementos. -->
 			<a>cuotas</a>
 			<b>cuotas</b>
 

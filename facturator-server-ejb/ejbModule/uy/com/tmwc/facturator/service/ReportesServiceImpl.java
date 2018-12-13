@@ -165,7 +165,7 @@ public class ReportesServiceImpl implements ReportesService {
 		List<TipoCambio> tipoCambios = reportesLibra.getTipoCambios();
 		GetTipoCambio getTipoCambioFunction = new LogicaCotizacion.InMemoryGetTipoCambio(tipoCambios);
 		
-		Boolean mostrarPrecios = esSupervisor || Usuario.USUARIO_SUPERVISOR.equals(permisoId) || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId);
+		Boolean mostrarPrecios = esSupervisor || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId);
 		
 		if (Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId)) {
 			mostrarCosto = false;
@@ -409,17 +409,13 @@ public class ReportesServiceImpl implements ReportesService {
 		ArrayList<String> vendedoresJunior = new ArrayList<String>();
 		ArrayList<String> vendedoresSenior = new ArrayList<String>();
 		for (Usuario user : usuarios) {
-			//System.out.println("Usuario :: " + user.getCodigo() + " >> Vend: " + user.getVenId());
 			if (user.getVenId() != null && user.getVenId().trim().length() > 0) {
 				if (user.getUsuarioModoDistribuidor()) {
 					vendedoresDist.add(user.getVenId());
-					//System.out.println("Usuario :: " + user.getCodigo() +  " > Vendedor distribuidor :: " + user.getVenId());
 				} else if (user.getUsuarioModoMostrador()) {
 					vendedoresJunior.add(user.getVenId());
-					//System.out.println("Usuario :: " + user.getCodigo() +  " > Vendedor junior :: " + user.getVenId());
 				} else {
 					vendedoresSenior.add(user.getVenId());
-					//System.out.println("Usuario :: " + user.getCodigo() +  " > Vendedor senior :: " + user.getVenId());
 				}
 			}
 		}
@@ -457,7 +453,29 @@ public class ReportesServiceImpl implements ReportesService {
 			importeNetoVendido.put(codigoVen, ventaNeta);
 			
 			BigDecimal renta = getRenta(doc, lc);
-			if (vendedoresSenior.contains(codigoVen)) {
+				
+			if (vendedoresDist.contains(participacionVendedor.getVendedor().getCodigo())) {
+				Documento documento = participacionVendedor.getDocumento();
+				BigDecimal rentaDistribuidor = documento.getRentaDistribuidor();
+				BigDecimal part = participacionVendedor.getCuotaparte(rentaDistribuidor) != null ? participacionVendedor.getCuotaparte(rentaDistribuidor) : BigDecimal.ZERO;
+
+				if (rentaDistribuidor != null) {
+					if (creditoAlVendedor.containsKey(codigoVen)) {
+						rentaDistribuidor = creditoAlVendedor.get(codigoVen).add(rentaDistribuidor.divide(coti, 2, RoundingMode.HALF_UP));
+					} else {
+						rentaDistribuidor = rentaDistribuidor.divide(coti, 2, RoundingMode.HALF_UP);
+					}
+					creditoAlVendedor.put(codigoVen, rentaDistribuidor);
+				}
+				
+				if (participacion.containsKey(codigoVen)) {
+					part = participacion.get(codigoVen).add(part.divide(coti, 2, RoundingMode.HALF_UP));
+				} else {
+					part = part.divide(coti, 2, RoundingMode.HALF_UP);
+				}
+				participacion.put(codigoVen, part);
+			
+			} else {
 				BigDecimal cuotaparte = participacionVendedor.getCuotaparte(renta) != null ? participacionVendedor.getCuotaparte(renta) : BigDecimal.ZERO;
 				if (creditoAlVendedor.containsKey(codigoVen)) {
 					cuotaparte = creditoAlVendedor.get(codigoVen).add(cuotaparte.divide(coti, 2, RoundingMode.HALF_UP));
@@ -473,23 +491,7 @@ public class ReportesServiceImpl implements ReportesService {
 					aux = aux.divide(coti, 2, RoundingMode.HALF_UP);
 				}
 				rentaBruta.put(codigoVen, aux);
-				
-			} else if (vendedoresDist.contains(codigoVen)) {
-				BigDecimal porcentajeComision = participacionVendedor.getVendedor().getPorcentajeComision(doc.getPreciosVenta().getCodigo());
-				if (porcentajeComision == null) {
-					porcentajeComision = BigDecimal.ZERO;
-				}				
-				BigDecimal part = porcentajeComision.multiply(participacionVendedor.getCuotaparte(doc.getVentaNeta() == null ? BigDecimal.ZERO : doc.getVentaNeta())).divide(Maths.ONE_HUNDRED);
-				if (part == null) {
-					part = BigDecimal.ZERO;
-				}
-				if (participacion.containsKey(codigoVen)) {
-					part = participacion.get(codigoVen).add(part.divide(coti, 2, RoundingMode.HALF_UP));
-				} else {
-					part = part.divide(coti, 2, RoundingMode.HALF_UP);
-				}
-				participacion.put(codigoVen, part);
-			} 
+			}			 
 			
 		}
 	
@@ -511,11 +513,11 @@ public class ReportesServiceImpl implements ReportesService {
 				LiquidacionVendedor lv = ensureLiquidacion(codigoVendedorStr, liqByCodigo, lc, vendedoresDist, vendedoresJunior, vendedoresSenior);
 				lv.addParticipacion(participacionVendedor);
 			}
-
 			
 			Collection<LiquidacionVendedor> liqs = liqByCodigo.values();
 			for (LiquidacionVendedor liquidacionVendedor : liqs) {
 				int codigo = liquidacionVendedor.getCodigoVendedor();
+				
 				liquidacionVendedor.totalizar(importeNetoVendido.get(codigo), rentaBruta.get(codigo), creditoAlVendedor.get(codigo), participacion.get(codigo));
 			}
 			
@@ -747,7 +749,8 @@ public class ReportesServiceImpl implements ReportesService {
 		protected void totalizando(BigDecimal param1, BigDecimal param2, BigDecimal param3) throws IOException {
 			writer.write(""); writer.write("");
 			writer.write(""); writer.write("");
-			writer.write(formatter.format(param3 != null ? param3 : BigDecimal.ZERO));
+			if (param2 != null) writer.write(formatter.format(param2));
+			if (param3 != null) writer.write(formatter.format(param3));
 		}
 
 	}
@@ -773,10 +776,11 @@ public class ReportesServiceImpl implements ReportesService {
 		
 		@Override
 		protected void totalizando(BigDecimal param1, BigDecimal param2, BigDecimal param3) throws IOException {
-			writer.write(formatter.format(param1 != null ? param1 : BigDecimal.ZERO));
+			//writer.write(param1 != null ? formatter.format(param1) : "");
+			writer.write(param2 != null ? formatter.format(param2) : "");
 			writer.write(""); 
-			writer.write("");
-			writer.write(formatter.format(param2 != null ? param2 : BigDecimal.ZERO));
+			writer.write("");			
+			writer.write(param3 != null ? formatter.format(param3) : "");
 		}
 
      
@@ -816,9 +820,11 @@ public class ReportesServiceImpl implements ReportesService {
 
 		@Override
 		protected void totalizando(BigDecimal param1, BigDecimal param2, BigDecimal param3) throws IOException {
-			writer.write(formatter.format(param1 != null ? param1 : BigDecimal.ZERO));
-			writer.write(""); writer.write("");
-			writer.write(formatter.format(param2 != null ? param2 : BigDecimal.ZERO));
+			writer.write(param1 != null ? formatter.format(param1) : "");
+			writer.write(""); 
+			writer.write("");
+			if (param2 != null) writer.write(formatter.format(param2));
+			if (param3 != null) writer.write(formatter.format(param3));
 
 		}
 		

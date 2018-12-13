@@ -62,7 +62,10 @@ public class Documento extends DocumentoBase implements Serializable {
 	private BigDecimal descuentosPorc = BigDecimal.ZERO;
 	private BigDecimal descuentos = BigDecimal.ZERO;
 
+	private String processId;
 	private String prevDocId;
+	private String nextDocId;
+
 	private String prevDocSerieNro;
 
 	private String usuIdAut;
@@ -270,8 +273,7 @@ public class Documento extends DocumentoBase implements Serializable {
 			throw new RuntimeException("El comprobante no acepta cuotificacion");
 		}
 
-		// Sacar el chequeo provisoriamente para el comprobantes cotización que
-		// esta mal definido como venta...
+		// Sacar el chequeo provisoriamente para el comprobantes cotización que esta mal definido como venta...
 		if (!this.comprobante.getCodigo().equals("1") && !this.comprobante.isRecibo()) {
 			boolean mueveCaja = this.comprobante.isMueveCaja();
 			boolean tieneFP = (this.pagos != null) && (this.pagos.size() > 0);
@@ -1005,14 +1007,6 @@ public class Documento extends DocumentoBase implements Serializable {
 		this.recibosVinculados = recibosVinculados;
 	}
 
-	// public BigDecimal getNeto() {
-	// return neto;
-	// }
-	//
-	// public void setNeto(BigDecimal neto) {
-	// this.neto = neto;
-	// }
-
 	public BigDecimal getDescuentos() {
 		return descuentos;
 	}
@@ -1091,6 +1085,22 @@ public class Documento extends DocumentoBase implements Serializable {
 
 	public void setDocCFEFileName(String docCFEFilename) {
 		this.docCFEFileName = docCFEFilename;
+	}
+	
+	public String getNextDocId() {
+		return nextDocId;
+	}
+
+	public void setNextDocId(String nextDocId) {
+		this.nextDocId = nextDocId;
+	}
+	
+	public String getProcessId() {
+		return processId;
+	}
+
+	public void setProcessId(String processId) {
+		this.processId = processId;
 	}
 
 }
