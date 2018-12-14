@@ -561,6 +561,25 @@
 					d.numero
       		</query>
 		</named-query>
+
+		<named-query name="Documento.lineasAfiladoIntervaloFechas">
+			<query>
+				SELECT l
+				FROM Linea l JOIN l.documento d JOIN l.articulo a
+				WHERE
+					d.id.empId = :empId
+					AND d.pendiente = 'N'
+					AND a.familiaId LIKE '980%'
+					AND (d.comprobante.id.cmpid in (83,84))
+					AND (:fechaDesde is null or d.fecha >= :fechaDesde)
+					AND (:fechaHasta is null or d.fecha &lt;= :fechaHasta)
+				ORDER BY
+					d.fecha ASC,
+					d.serie ASC,
+					d.numero ASC
+			</query>
+		</named-query>
+
 		<named-query name="Documento.lineasCotizadas">
 			<query>
 				select
