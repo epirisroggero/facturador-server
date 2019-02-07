@@ -18,10 +18,12 @@ public class DocumentoQuery implements Serializable {
 	private String articulo;
 	private Date fechaDesde;
 	private Date fechaHasta;
-	private Boolean pendiente;
-	private Boolean tieneSaldo;
 
-	private Boolean emitido;
+	private Boolean pendiente = Boolean.FALSE;
+	
+	private Boolean tieneSaldo = Boolean.FALSE;
+	
+	private Boolean emitido = Boolean.FALSE;
 	
 	private String orden = "DESC";
 	

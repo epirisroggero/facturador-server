@@ -482,6 +482,97 @@ public class Linea extends PersistentEntity<LineaPK> implements Serializable, Ha
 		return lineaExts != null ? lineaExts.getDocRefId() : null;
 	}
 	
+	public void setAfilador(String afilador) {
+		if (afilador == null) {
+			if (lineaExts != null) {
+				lineaExts.setAfilador(null);
+			} 
+		} else {
+			if (lineaExts == null) {
+				lineaExts = new LineaExts();
+				lineaExts.setId(id);
+			}
+			lineaExts.setAfilador(afilador);
+		}
+	}
+	
+	public String getAfilador() {
+		return lineaExts != null ? lineaExts.getAfilador() : null;
+	}
+
+	public String getMarca() {
+		return lineaExts != null ? lineaExts.getMarca() : null;
+	}
+	
+	public void setMarca(String marca) {
+		if (marca == null) {
+			if (lineaExts != null) {
+				lineaExts.setMarca(null);
+			} 
+		} else {
+			if (lineaExts == null) {
+				lineaExts = new LineaExts();
+				lineaExts.setId(id);
+			}
+			lineaExts.setMarca(marca);
+		}
+	}
+	
+	public BigDecimal getDiametro() {
+		return lineaExts != null ? lineaExts.getDiametro() : null;
+	}
+	
+	public void setDiametro(BigDecimal diametro) {
+		if (diametro == null) {
+			if (lineaExts != null) {
+				lineaExts.setDiametro(null);
+			} 
+		} else {
+			if (lineaExts == null) {
+				lineaExts = new LineaExts();
+				lineaExts.setId(id);
+			}
+			lineaExts.setDiametro(diametro);
+		}
+	}
+
+	
+	public BigDecimal getRotos() {
+		return lineaExts != null ? lineaExts.getRotos() : null;
+	}
+	
+	public void setRotos(BigDecimal rotos) {
+		if (rotos == null) {
+			if (lineaExts != null) {
+				lineaExts.setRotos(null);
+			} 
+		} else {
+			if (lineaExts == null) {
+				lineaExts = new LineaExts();
+				lineaExts.setId(id);
+			}
+			lineaExts.setRotos(rotos);
+		}
+	}
+
+	public BigDecimal getCascados() {
+		return lineaExts != null ? lineaExts.getCascados() : null;
+	}
+	
+	public void setCascados(BigDecimal cascados) {
+		if (cascados == null) {
+			if (lineaExts != null) {
+				lineaExts.setCascados(null);
+			} 
+		} else {
+			if (lineaExts == null) {
+				lineaExts = new LineaExts();
+				lineaExts.setId(id);
+			}
+			lineaExts.setCascados(cascados);
+		}
+	}
+	
 	public String getNotas() {
 		return notas;
 	}
@@ -517,6 +608,15 @@ public class Linea extends PersistentEntity<LineaPK> implements Serializable, Ha
 	public void setRubIdlin(String rubIdLin) {
 		this.rubIdlin = rubIdLin;
 	}
+	
+	public LineaExts getLineaExts() {
+		return lineaExts;
+	}
+
+	public void setLineaExts(LineaExts lineaExts) {
+		this.lineaExts = lineaExts;
+	}
+
 	
 	
 

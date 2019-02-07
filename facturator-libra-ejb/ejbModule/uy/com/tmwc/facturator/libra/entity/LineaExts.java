@@ -25,6 +25,23 @@ public class LineaExts {
 	
 	@Column(name = "DocRefId")
 	private Integer docRefId;
+
+	@Column(name = "LinAfilador")
+	private String afilador;
+	
+	@Column(name = "LinMarca")
+	private String marca;
+
+	@Column(name = "LinDiametro")
+	private BigDecimal diametro;
+
+	@Column(name = "LinRotos")
+	private BigDecimal rotos;
+
+	@Column(name = "LinCascados")
+	private BigDecimal cascados;
+
+
 	
 	public void setId(LineaPK id) {
 		this.id = id;
@@ -65,4 +82,45 @@ public class LineaExts {
 	public void setDocRefId(Integer docRefId) {
 		this.docRefId = docRefId;
 	}
+
+	public String getAfilador() {
+		return afilador;
+	}
+
+	public void setAfilador(String afilador) {
+		this.afilador = afilador;
+	}
+	
+	public BigDecimal getDiametro() {
+		return diametro;
+	}
+
+	public void setDiametro(BigDecimal diametro) {
+		this.diametro = diametro;
+	}
+
+	public String getMarca() {
+		return marca;
+	}
+
+	public void setMarca(String marca) {
+		this.marca = marca;
+	}
+
+	public BigDecimal getRotos() {
+		return rotos;
+	}
+
+	public void setRotos(BigDecimal rotos) {
+		this.rotos = rotos;
+	}
+
+	public BigDecimal getCascados() {
+		return cascados;
+	}
+
+	public void setCascados(BigDecimal cascados) {
+		this.cascados = cascados;
+	}
+
 }

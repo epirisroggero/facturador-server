@@ -1,8 +1,10 @@
 package uy.com.tmwc.facturator.spi;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +15,7 @@ import uy.com.tmwc.facturator.entity.ArticuloCompraVentaCosto;
 import uy.com.tmwc.facturator.entity.ArticuloPrecioFabricaCosto;
 import uy.com.tmwc.facturator.entity.Documento;
 import uy.com.tmwc.facturator.entity.LineaDocumento;
+import uy.com.tmwc.facturator.entity.ParticipacionAfilador;
 import uy.com.tmwc.facturator.entity.ParticipacionVendedor;
 import uy.com.tmwc.facturator.entity.ResumenEntrega;
 import uy.com.tmwc.facturator.entity.SerieNumero;
@@ -58,13 +61,13 @@ public interface DocumentoDAOService {
 
 	List<ParticipacionVendedor> getParticipaciones(Date paramDate1, Date paramDate2, String[] compsIncluidos, String[] compsExcluidos);
 
-	List<ParticipacionVendedor> getParticipacionesEnContados(Date paramDate1, Date paramDate2, Date fechaCorte);
+	List<ParticipacionVendedor> getParticipacionesEnContados(Date fechaDesde, Date fechaHasta, Date fechaCorte);
 
-	List<ParticipacionEnCobranza> getParticipacionesEnCobranzas(Date paramDate1, Date paramDate2, Date fechaCorte);
+	List<ParticipacionEnCobranza> getParticipacionesEnCobranzas(Date fechaDesde, Date fechaHasta, Date fechaCorte);
 
 	Collection<VinculoDocumentos> getCobranzas(Date fechaDesde, Date fechaHasta, Date fechaCorte);
-
-	void grabarCostosOperativos(Date paramDate1, Date paramDate2, Map<String, BigDecimal> paramMap);
+	
+	void grabarCostosOperativos(Date fechaDesde, Date fechaHasta, Map<String, BigDecimal> paramMap);
 
 	List<DocumentoDTO> pendientesCliente(String cliId);
 
@@ -99,5 +102,8 @@ public interface DocumentoDAOService {
 
 	void updateCostosArticuloDocumentos(List<ArticuloCompraVentaCosto> lista) throws PermisosException;
 
-	Map<String, Object[]> getParticipacionesCobranza(Date paramDate1, Date paramDate2, String[] compsIncluidos, String[] compsExcluidos);
+	Map<String, Object[]> getParticipacionesCobranza(Date fechaDesde, Date fechaHasta, String[] compsIncluidos, String[] compsExcluidos);
+	
+	Map<String, ArrayList<ParticipacionAfilador>> getParticipacionesAfilados(Date fechaDesde, Date fechaHasta, BigDecimal value);
+
 }

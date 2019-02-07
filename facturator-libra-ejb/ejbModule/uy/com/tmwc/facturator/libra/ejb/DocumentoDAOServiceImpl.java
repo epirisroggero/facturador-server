@@ -44,6 +44,7 @@ import uy.com.tmwc.facturator.entity.CotizacionesMonedas;
 import uy.com.tmwc.facturator.entity.Documento;
 import uy.com.tmwc.facturator.entity.LineaDocumento;
 import uy.com.tmwc.facturator.entity.Moneda;
+import uy.com.tmwc.facturator.entity.ParticipacionAfilador;
 import uy.com.tmwc.facturator.entity.PermisosDocumentoUsuario;
 import uy.com.tmwc.facturator.entity.ResumenEntrega;
 import uy.com.tmwc.facturator.entity.SerieNumero;
@@ -458,6 +459,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		controlModificacionDocumento(docEntity);
 
 		docEntity.setPendiente("N"); // lo marco como no pendiente, remuevo la reserva de articulos
+		docEntity.setEmitido("N");
 		docEntity.setNextDocId(doc.getNextDocId());
 		docEntity.setProcessId(doc.getProcessId());
 
@@ -1115,20 +1117,61 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 	@SuppressWarnings({ "unchecked" })
 	private List<Object[]> getCobranzasAux(Date fechaDesde, Date fechaHasta, Date fechaCorte) {
-		/*
-		 * List dummy = this.em.createNamedQuery(
-		 * "Documento.participacionesEnCobranzasIntervaloFechas.aux").setParameter("empId", getEmpId()) .setParameter("fechaDesde",
-		 * fechaDesde).setParameter("fechaHasta", fechaHasta).getResultList();
-		 * 
-		 * List dummy2 = this.em.createNamedQuery("Documento.participacionesEnCobranzasIntervaloFechas.auxParticipaciones"
-		 * ).setParameter("empId", getEmpId()) .setParameter("fechaDesde", fechaDesde).setParameter("fechaHasta", fechaHasta).getResultList();
-		 */
-
 		List<Object[]> list = this.em.createNamedQuery("Documento.participacionesEnCobranzasIntervaloFechas").setParameter("empId", getEmpId()).setParameter("fechaDesde", fechaDesde)
 				.setParameter("fechaHasta", fechaHasta).setParameter("fechaCorte", fechaCorte).getResultList();
 
 		return list;
 	}
+	
+	public Map<String, ArrayList<ParticipacionAfilador>> getParticipacionesAfilados(Date fechaDesde, Date fechaHasta, BigDecimal value) {
+		@SuppressWarnings("unchecked")
+		List<Object[]> list = this.em.createNamedQuery("Documento.lineasAfiladoIntervaloFechas")
+			.setParameter("empId", getEmpId())
+			.setParameter("fechaDesde", fechaDesde)
+			.setParameter("fechaHasta", fechaHasta).getResultList();
+
+		Map<String, ArrayList<ParticipacionAfilador>> map = new HashMap<String, ArrayList<ParticipacionAfilador>>();
+		
+		//List<ParticipacionAfilador> result = new ArrayList<ParticipacionAfilador>();
+		for (Object[] objects : list) {
+			ParticipacionAfilador p = new ParticipacionAfilador();
+			
+			Linea linea = (Linea)objects[0];
+			uy.com.tmwc.facturator.libra.entity.Documento documento = (uy.com.tmwc.facturator.libra.entity.Documento) objects[1];
+			Articulo articulo = (uy.com.tmwc.facturator.libra.entity.Articulo) objects[2];
+			
+			BigDecimal precio = linea.getPrecio();
+			if (precio == null || precio.intValue() < 1) {
+				precio = value;
+			}
+			
+			String afilador = linea.getAfilador() != null ? linea.getAfilador() : "";
+			
+			p.setAfilador(afilador);
+			p.setItem(articulo.getNombre());
+			p.setFecha(documento.getFecha());
+			p.setSerieNro(documento.getSerie() + "/" + documento.getNumero() + "-" + linea.getId().getLinId());
+			p.setCliente(documento.getCliente().getNombre());
+			p.setDientes(linea.getCantidad());
+			p.setPrecio(precio);
+			p.setImporte(precio.multiply(linea.getCantidad()));
+			p.setPercentage(new BigDecimal(25));
+			p.setMontoACobrar(p.getImporte().multiply(new BigDecimal(.25)));
+			p.setMoneda(documento.getMoneda().getSimbolo());
+			
+			if (map.containsKey(afilador)) {
+				ArrayList<ParticipacionAfilador> l = map.get(afilador);
+				l.add(p);
+			} else {
+				ArrayList<ParticipacionAfilador> l = new ArrayList<ParticipacionAfilador>();
+				l.add(p);					
+				map.put(afilador, l);
+			}
+		}
+		
+		return map;
+	}
+
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<ParticipacionEnCobranza> getParticipacionesEnCobranzas(Date fechaDesde, Date fechaHasta, Date fechaCorte) {
@@ -1831,5 +1874,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	public Map<String, Object[]> getParticipacionesCobranza(Date paramDate1, Date paramDate2, String[] compsIncluidos, String[] compsExcluidos) {
 		return null;
 	}
+
 
 }
