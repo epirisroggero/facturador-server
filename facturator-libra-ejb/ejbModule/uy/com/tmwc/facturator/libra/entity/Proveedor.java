@@ -283,6 +283,54 @@ public class Proveedor extends PersistentEntity<ProveedorPK> implements Serializ
 	public void setFacturaElectronica(String valor) {
 		setAdicional("59", valor);
 	}
+	
+	public String getNroCuentaCB() {
+		return getAdicional("61");
+	}	
+	
+	public void setNroCuentaCB(String valor) {
+		setAdicional("61", valor);
+	}
+
+	public String getDestinatarioCB() {
+		return getAdicional("62");
+	}	
+	
+	public void setDestinatarioCB(String valor) {
+		setAdicional("62", valor);
+	}
+
+	public String getBancoCB() {
+		return getAdicional("64");
+	}	
+	
+	public void setBancoCB(String valor) {
+		setAdicional("64", valor);
+	}
+
+	public String getSucursalCB() {
+		return getAdicional("65");
+	}	
+	
+	public void setSucursalCB(String valor) {
+		setAdicional("65", valor);
+	}
+
+	public String getDireccionCB() {
+		return getAdicional("66");
+	}	
+	
+	public void setDireccionCB(String valor) {
+		setAdicional("66", valor);
+	}
+
+	public String getObservacionesCB() {
+		return getAdicional("67");
+	}	
+	
+	public void setObservacionesCB(String valor) {
+		setAdicional("67", valor);
+	}
 
 	private String getAdicional(String codigo) {
 		Map<String, String> adicionales = contacto != null ? contacto.getAdicionales() : null;

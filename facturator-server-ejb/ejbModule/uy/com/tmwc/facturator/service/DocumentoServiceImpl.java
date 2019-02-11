@@ -127,6 +127,10 @@ public class DocumentoServiceImpl implements DocumentoService {
 	public Documento guardar(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
 		Documento current = documentoDAOService.findDocumento(documento.getDocId());
 		
+		if (current == null) {
+			throw new ValidationException("No fué posible grabar el documento. El mismo no existe.");
+		}
+		
 		verificarFecha(current, documento);
 
 		if (current.isEmitido()) { // Revisar si se cambiaron los importes de iva, total, sub-total post emisión.
@@ -139,7 +143,6 @@ public class DocumentoServiceImpl implements DocumentoService {
 			if (!documento.getSubTotal().setScale(2, RoundingMode.HALF_EVEN).equals(current.getSubTotal().setScale(2, RoundingMode.HALF_EVEN))) {
 				throw new ValidationException("Sub-Total no válido");
 			}
-			
 			if (current.getComprobante().getCodigo().equals("122")) { // Es pro-forma de importación y ya esta emitida actualizo nacionalización.
 				BigDecimal coeficienteImp = documento.getCoeficienteImp();
 				
@@ -287,15 +290,15 @@ public class DocumentoServiceImpl implements DocumentoService {
 
 
 	private Boolean verificarFecha(Documento current, Documento modificado) throws ValidationException {
+		if (current == null || modificado == null) {
+			return Boolean.TRUE;
+		} 
+		
 		Date currentDate = current.getRegistroFecha();
 		Date currentTime = current.getRegistroHora();
 
 		Date newDate = modificado.getRegistroFecha();
 		Date newTime = modificado.getRegistroHora();
-		
-//		System.out.println("El documento " + current.getSerie() + current.getNumero() + " ha sido modificado :: " + (!currentDate.equals(newDate) || !currentTime.equals(newTime))); 
-//		System.out.println("Actual :: " + currentDate + " : " + currentTime);
-//		System.out.println("Nuevo :: " + newDate + " : " + newTime);
 		
 		if (!currentDate.equals(newDate) || !currentTime.equals(newTime)) {
 			String msg;

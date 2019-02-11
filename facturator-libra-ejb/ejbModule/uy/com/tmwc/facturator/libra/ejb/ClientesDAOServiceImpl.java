@@ -561,6 +561,25 @@ public class ClientesDAOServiceImpl extends ServiceBase implements ClientesDAOSe
 		if (p.getFacturaElectronica()  != null) {
 			adicionales.put("59", p.getFacturaElectronica());
 		}
+		if (p.getNroCuentaCB() != null) {
+			adicionales.put("61", p.getNroCuentaCB());
+		}
+		if (p.getDestinatarioCB()  != null) {
+			adicionales.put("62", p.getDestinatarioCB());
+		}
+		if (p.getBancoCB()  != null) {
+			adicionales.put("64", p.getBancoCB());
+		}
+		if (p.getSucursalCB()  != null) {
+			adicionales.put("65", p.getSucursalCB());
+		}
+		if (p.getDireccionCB() != null) {
+			adicionales.put("66", p.getDireccionCB());
+		}
+		if (p.getObservacionesCB() != null) {
+			adicionales.put("67", p.getObservacionesCB());
+		}
+
 
 		libraProveedor.getContacto().setAdicionales(adicionales);
 		
@@ -623,6 +642,24 @@ public class ClientesDAOServiceImpl extends ServiceBase implements ClientesDAOSe
 		}
 		if (p.getFacturaElectronica() != null) {
 			adicionales.put("59", p.getFacturaElectronica());
+		}
+		if (p.getNroCuentaCB() != null) {
+			adicionales.put("61", p.getNroCuentaCB());
+		}
+		if (p.getDestinatarioCB()  != null) {
+			adicionales.put("62", p.getDestinatarioCB());
+		}
+		if (p.getBancoCB()  != null) {
+			adicionales.put("64", p.getBancoCB());
+		}
+		if (p.getSucursalCB()  != null) {
+			adicionales.put("65", p.getSucursalCB());
+		}
+		if (p.getDireccionCB() != null) {
+			adicionales.put("66", p.getDireccionCB());
+		}
+		if (p.getObservacionesCB() != null) {
+			adicionales.put("67", p.getObservacionesCB());
 		}
 		
 		String codigo = p.getCodigo();

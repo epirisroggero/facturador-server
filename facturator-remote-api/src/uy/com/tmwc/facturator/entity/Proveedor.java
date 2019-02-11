@@ -42,6 +42,19 @@ public class Proveedor extends CodigoNombreEntity {
 	
 	private String facturaElectronica;
 	
+	private String destinatarioCB;
+	
+	private String nroCuentaCB;
+	
+	private String bancoCB;
+	
+	private String sucursalCB;
+	
+	private String direccionCB;
+	
+	private String observacionesCB;
+
+	
 	private PlanPagos planPagos;
 	
 	public Proveedor() {
@@ -218,6 +231,55 @@ public class Proveedor extends CodigoNombreEntity {
 	public void setFacturaElectronica(String facturaElectronica) {
 		this.facturaElectronica = facturaElectronica;
 	}
+	
+	public String getDestinatarioCB() {
+		return destinatarioCB;
+	}	
+	
+	public void setDestinatarioCB(String valor) {
+		destinatarioCB = valor;
+	}
+
+	public String getNroCuentaCB() {
+		return nroCuentaCB;
+	}	
+	
+	public void setNroCuentaCB(String valor) {
+		nroCuentaCB = valor;
+	}
+
+	public String getBancoCB() {
+		return bancoCB;
+	}	
+	
+	public void setBancoCB(String valor) {
+		bancoCB = valor;
+	}
+
+	public String getSucursalCB() {
+		return sucursalCB;
+	}	
+	
+	public void setSucursalCB(String valor) {
+		sucursalCB = valor;
+	}
+
+	public String getDireccionCB() {
+		return direccionCB;
+	}	
+	
+	public void setDireccionCB(String valor) {
+		direccionCB = valor;
+	}
+
+	public String getObservacionesCB() {
+		return observacionesCB;
+	}	
+	
+	public void setObservacionesCB(String valor) {
+		observacionesCB = valor;
+	}
+
 
 
 }

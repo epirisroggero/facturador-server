@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -418,7 +419,7 @@ public class RemoteServiceHandler {
 			
 			Set<VinculoDocumentos> vinculos = new HashSet<VinculoDocumentos>();
 			
-			// Agregar vinculos
+			// Agregar vínculos
 			List<LineaDocumento> lineas = doc.getLineas().getLineas();
 			for (LineaDocumento lineaDocumento : lineas) {
 				String notas = lineaDocumento.getNotas() != null ? lineaDocumento.getNotas() : null;
@@ -445,7 +446,7 @@ public class RemoteServiceHandler {
 				vinculos.add(vinculo);
 			}
 			
-			// Vincular facturas en nota de credito financiera.
+			// Vincular facturas en nota de crédito financiera.
 			doc.setFacturasVinculadas(vinculos);
 			
 			HashMap<String, Documento> documentos = new HashMap<String, Documento>();
@@ -526,6 +527,60 @@ public class RemoteServiceHandler {
 		}
 		return saldo;
 
+	}
+	
+	public LineaDocumento getLineaDocumento(String ordenTrabajo) throws PermisosException {
+		int index = ordenTrabajo.indexOf("-");
+		if (index < 0) {
+			index = ordenTrabajo.indexOf("/");
+		} 
+		
+		String numero = ordenTrabajo.substring(0, index);
+		int linea = 0;
+		try {
+			linea = new Integer(ordenTrabajo.substring(index + 1)).intValue();	
+		} catch (NumberFormatException exc) {
+			exc.printStackTrace();
+		}
+		DocumentoQuery query = new DocumentoQuery();
+		query.setLimit(20);
+		query.setSerie("80");
+		query.setNumero(new BigInteger(numero));
+		query.setPendiente(Boolean.FALSE);
+		query.setEmitido(Boolean.FALSE);
+		query.setTieneSaldo(Boolean.FALSE);
+		
+		LineaDocumento ld = null;
+		
+		List<DocumentoDTO> documentos = getService().queryDocumentos(query);
+		if (documentos.size() > 0) {
+			DocumentoDTO doc = documentos.get(0);
+			
+			Documento d = getService().findDocumento(doc.getDocId());
+			if (d.getLineas().getLineas().size() > linea - 1) {
+				ld = d.getLineas().getLineas().get(linea - 1);
+			}
+		}
+		
+		if (ld != null) {
+			query.setSerie("82");
+			List<DocumentoDTO> documentos82 = getService().queryDocumentos(query);
+			if (documentos82.size() > 0) {
+				DocumentoDTO doc82 = documentos82.get(0);
+				
+				Documento d = getService().findDocumento(doc82.getDocId());
+				if (d.getLineas().getLineas().size() > linea - 1) {
+					LineaDocumento linDoc = d.getLineas().getLineas().get(linea - 1);
+					ld.setAfilador(linDoc.getAfilador());
+					if (linDoc.getDocumento() != null && linDoc.getDocumento().getFechaEmisionStr()!= null) {
+						ld.setNotas("Fecha: " + linDoc.getDocumento().getFechaEmisionStr() + "\n" + d.getNotas());
+					}
+				}
+			}
+		}		
+		
+		return ld;
+		
 	}
 
 	public List<Auditoria> getLineasAuditoria(String docId) {
@@ -1608,7 +1663,25 @@ public class RemoteServiceHandler {
 		}
 
 	}
+	
+	public byte[] getLiquidacionAfilados(Date fechaDesde, Date fechaHasta, String defaultValue) {
+		long start = new Date().getTime();
+		
+		BigDecimal value = BigDecimal.ZERO;
+		try {
+			value = new BigDecimal(defaultValue);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+		try {
+			return getReportesService().generarLiquidacionAfilados(fechaDesde, fechaHasta, value);
+		} catch (Exception exc) {
+			return null;
+		} finally {
+			System.out.println("Tiempo total reporte Control Plus: " + (new Date().getTime() - start));
+		}
 
+	}
 
 	public Boolean esComprobanteAster(String codigo) {
 		String regex = System.getProperty("facturator.comprobantes.aster");

@@ -34,9 +34,17 @@ public class LineaDocumento implements Serializable {
 	
 	private String contactoId;
 	private Integer docRefId;
-		
+	
 	private String rubIdlin;
+	private String afilador;
 
+	private BigDecimal diametro = BigDecimal.ZERO;
+	private BigDecimal rotos = BigDecimal.ZERO;
+	private BigDecimal cascados = BigDecimal.ZERO;
+
+	private String marca;
+	
+	
 	public BigDecimal getTotal() {
 		return getSubTotal().add(getIva());
 	}
@@ -316,6 +324,46 @@ public class LineaDocumento implements Serializable {
 
 	public void setRubIdlin(String rubIdlin) {
 		this.rubIdlin = rubIdlin;
+	}
+	
+	public String getAfilador() {
+		return afilador;
+	}
+
+	public void setAfilador(String afilador) {
+		this.afilador = afilador;
+	}
+
+	public BigDecimal getDiametro() {
+		return diametro;
+	}
+
+	public void setDiametro(BigDecimal diametro) {
+		this.diametro = diametro;
+	}
+
+	public String getMarca() {
+		return marca;
+	}
+
+	public void setMarca(String marca) {
+		this.marca = marca;
+	}
+
+	public BigDecimal getRotos() {
+		return rotos;
+	}
+
+	public void setRotos(BigDecimal rotos) {
+		this.rotos = rotos;
+	}
+
+	public BigDecimal getCascados() {
+		return cascados;
+	}
+
+	public void setCascados(BigDecimal cascados) {
+		this.cascados = cascados;
 	}
 
 }

@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -28,11 +30,13 @@ import org.apache.commons.io.FileUtils;
 import uy.com.tmwc.facturator.dto.CodigoNombre;
 import uy.com.tmwc.facturator.dto.ReportParameters;
 import uy.com.tmwc.facturator.dto.TableReportResult;
+import uy.com.tmwc.facturator.entity.Cliente;
 import uy.com.tmwc.facturator.entity.Documento;
 import uy.com.tmwc.facturator.entity.Entrega;
 import uy.com.tmwc.facturator.entity.LineaDocumento;
 import uy.com.tmwc.facturator.entity.ListaPrecios;
 import uy.com.tmwc.facturator.entity.Moneda;
+import uy.com.tmwc.facturator.entity.ParticipacionAfilador;
 import uy.com.tmwc.facturator.entity.ParticipacionVendedor;
 import uy.com.tmwc.facturator.entity.TipoCambio;
 import uy.com.tmwc.facturator.entity.Usuario;
@@ -260,6 +264,104 @@ public class ReportesServiceImpl implements ReportesService {
 		}
 		return null;
 	}
+	
+	public byte[] generarLiquidacionAfilados(Date desde, Date hasta, BigDecimal value) throws IOException {
+		Map<String, ArrayList<ParticipacionAfilador>> participaciones = documentoDAOService.getParticipacionesAfilados(desde, hasta, value);
+		
+		File baseDir = new File(System.getProperty("java.io.tmpdir"));
+		File tmpFilePath = new File(baseDir, "listado-participacion-afiladores.csv");
+		CsvWriter w = new CsvWriter(tmpFilePath.getPath());
+		
+		try {
+			w.write("AFILADOS");
+			w.endRecord();
+			w.write("FECHA DESDE");
+			w.write("FECHA HASTA");
+			w.endRecord();
+			
+			w.write(desde);
+			w.write(hasta);
+			w.endRecord();
+
+			w.write("");
+			w.endRecord();
+						
+			w.write("AFILADOR");
+			w.write("FECHA");
+			w.write("ORDEN NRO");
+			w.write("ITEM");
+			w.write("CLIENTE");
+			w.write("DIENTES");
+			w.write("MONEDA");
+			w.write("PRECIO");
+			w.write("IMPORTE");
+			w.write("PORCENTAGE (%)");
+			w.write("A COBRAR");
+			
+			w.endRecord();
+
+			Iterator<String> keys = participaciones.keySet().iterator();
+			while (keys.hasNext()) {
+				String key = (String) keys.next();
+				w = generarLineasAfilado(participaciones.get(key), w);
+				w.write("");
+				w.endRecord();
+			}
+			
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} finally {
+			w.close();
+		}
+		return getFileByteArray(tmpFilePath);
+	}
+	
+	private CsvWriter generarLineasAfilado(List<ParticipacionAfilador> lineas, CsvWriter w) throws IOException {
+		NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("ES"));
+		
+		NumberFormat formatterCantidad = NumberFormat.getNumberInstance(new Locale("ES"));
+		formatterCantidad.setMinimumFractionDigits(0);
+		formatterCantidad.setMaximumFractionDigits(0);
+		
+		BigDecimal montoTotalACobrar = BigDecimal.ZERO;
+		BigDecimal dientesTotales = BigDecimal.ZERO;
+		BigDecimal importeTotal = BigDecimal.ZERO;
+
+		for (ParticipacionAfilador p: lineas) {
+			w.write(p.getAfilador());
+			w.write(p.getFecha());
+			w.write(p.getSerieNro());
+			w.write(p.getItem());
+			w.write(p.getCliente());
+			w.write(p.getDientes() != null ? formatterCantidad.format(p.getDientes()) : "");
+			w.write(p.getMoneda());
+			w.write(p.getPrecio() != null ? formatter.format(p.getPrecio()) : "");
+			w.write(p.getImporte() != null ? formatter.format(p.getImporte()) : "");
+			w.write(p.getPercentage() != null ? formatterCantidad.format(p.getPercentage()) : "");
+			w.write(p.getMontoACobrar() != null ? formatter.format(p.getMontoACobrar()) : "");
+			
+			w.endRecord();
+			
+			montoTotalACobrar = montoTotalACobrar.add(p.getMontoACobrar());
+			dientesTotales = dientesTotales.add(p.getDientes());
+			importeTotal = importeTotal.add(p.getImporte());
+		}		
+
+		w.write("");
+		w.write("");
+		w.write("");
+		w.write("");
+		w.write("TOTALES");
+		w.write(formatterCantidad.format(dientesTotales));
+		w.write("");
+		w.write("");
+		w.write(formatter.format(importeTotal));
+		w.write("");
+		w.write(formatter.format(montoTotalACobrar));
+		w.endRecord();
+		
+		return w;
+	}
 
 	public byte[] generarListadoControlLineasVenta(Date fechaDesde, Date fechaHasta, BigDecimal rentaMinima, BigDecimal rentaMaxima) {
 		List<Documento> docs1 = documentoDAOService.getDocumentos(fechaDesde, fechaHasta, Moneda.CODIGO_MONEDA_PESOS);
@@ -381,6 +483,8 @@ public class ReportesServiceImpl implements ReportesService {
 		}
 
 	}
+	
+		
 	
 	public byte[] generarLiquidacionVendedores(Date desde, Date hasta, String[] compsIncluidos, 
 			String[] compsExcluidos) throws IOException {

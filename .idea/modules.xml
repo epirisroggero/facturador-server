@@ -2,7 +2,16 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/facturador-server.iml" filepath="$PROJECT_DIR$/.idea/facturador-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Servers/Servers.iml" filepath="$PROJECT_DIR$/Servers/Servers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facturator-figaro-ejb/facturator-figaro-ejb.iml" filepath="$PROJECT_DIR$/facturator-figaro-ejb/facturator-figaro-ejb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facturator-libra-ejb/facturator-libra-ejb.iml" filepath="$PROJECT_DIR$/facturator-libra-ejb/facturator-libra-ejb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facturator-remote-api/facturator-remote-api.iml" filepath="$PROJECT_DIR$/facturator-remote-api/facturator-remote-api.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facturator-server/facturator-server.iml" filepath="$PROJECT_DIR$/facturator-server/facturator-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facturator-server-ear/facturator-server-ear.iml" filepath="$PROJECT_DIR$/facturator-server-ear/facturator-server-ear.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facturator-server-ejb/facturator-server-ejb.iml" filepath="$PROJECT_DIR$/facturator-server-ejb/facturator-server-ejb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facturator-server-tester/facturator-server-tester.iml" filepath="$PROJECT_DIR$/facturator-server-tester/facturator-server-tester.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facturator-spi/facturator-spi.iml" filepath="$PROJECT_DIR$/facturator-spi/facturator-spi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/twmc-utils/twmc-utils.iml" filepath="$PROJECT_DIR$/twmc-utils/twmc-utils.iml" />
     </modules>
   </component>
 </project>
