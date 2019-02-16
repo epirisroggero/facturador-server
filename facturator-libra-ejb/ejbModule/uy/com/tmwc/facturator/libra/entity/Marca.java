@@ -32,6 +32,11 @@ public class Marca extends PersistentEntity<MarcaPK> implements Serializable, Ha
 
     public Marca() {
     }
+    
+	public Marca(MarcaPK id, String marcaNom) {
+		this.id = id;
+		this.nombre = marcaNom;
+	}
 
 	public MarcaPK getId() {
 		return this.id;

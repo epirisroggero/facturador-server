@@ -29,15 +29,18 @@ import uy.com.tmwc.utils.orm.CatalogEntity;
 @Table(name = "articulos")
 @CatalogEntity(useNamedQuery = true)
 @SecondaryTable(name = "lfx_articulos")
-public class Articulo extends PersistentEntity<ArticuloPK> implements Serializable, HasId<ArticuloPK>, ICodigoNombre {
+public class Articulo extends PersistentEntity<ArticuloPK> implements
+		Serializable, HasId<ArticuloPK>, ICodigoNombre {
 	private static final long serialVersionUID = 1L;
 
 	public Articulo() {
 	}
 
-	public Articulo(String codigo, String nombre, String familiaId, String marcaId, String codigoOrigen, String prvId, String activo, Familia familia, Marca marca) {
+	public Articulo(String codigo, String nombre, String familiaId,
+			String marcaId, String codigoOrigen, String prvId, String activo,
+			Familia familia, Marca marca) {
 		setCodigo(codigo);
-		
+
 		this.nombre = nombre;
 		this.familiaId = familiaId;
 		this.marcaId = marcaId;
@@ -46,18 +49,17 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 		this.activo = activo != null ? activo : "N";
 		this.familia = familia;
 		this.marca = marca;
-	}	
+	}
 
 	@EmbeddedId
 	private ArticuloPK id;
-	
+
 	@Column(table = "lfx_articulos", name = "ArtNotasInt", length = 4096)
 	private String artNotasInt;
-	
+
 	@SuppressWarnings("unused")
 	@Column(name = "ArtId", insertable = false, updatable = false)
 	private String codigo;
-
 
 	@Column(name = "ArtAbrevia")
 	private String abrevia;
@@ -123,16 +125,19 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 	@Column(name = "ArtWeb")
 	private String web;
 
+	@Column(name = "MarcaId")
+	private String marcaId;
+	
 	@Column(name = "CategArtId")
 	private String categArtId;
-
+	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumns({
 			@javax.persistence.JoinColumn(name = "FamiliaId", referencedColumnName = "FamiliaId", insertable = false, updatable = false),
 			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Familia familia;
- 
+
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
 	@JoinColumns({
@@ -140,41 +145,45 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Marca marca;
 
+	@NotFound(action = NotFoundAction.IGNORE)
+	@ManyToOne
+	@JoinColumns({
+			@javax.persistence.JoinColumn(name = "CategArtId", referencedColumnName = "CATEGARTID", insertable = false, updatable = false),
+			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
+	private Categoriasarticulo categArt;
+	
+
 	@Column(name = "FamiliaId")
 	private String familiaId;
-	
-	//private String GTCIdArt;
-	
+
 	@Column(name = "ArtEmpaque")
 	private BigDecimal artEmpaque;
-	
+
 	@Column(name = "ArtDobleCantidad")
 	private String artDobleCantidad;
 
 	@Column(name = "UnidadId2")
 	private String unidadId2;
-	
+
 	@Column(name = "ArtGXPortal")
 	private String artGXPortal;
-	
+
 	@Column(name = "ArtCodigoBarras")
 	private String artCodigoBarras;
-	
+
 	@Column(name = "ConceptoIdArt")
 	private String conceptoIdArt;
 
-
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
-	@JoinColumns({ @javax.persistence.JoinColumn(name = "IvaIdArt", referencedColumnName = "IvaId", insertable = false, updatable = false),
+	@JoinColumns({
+			@javax.persistence.JoinColumn(name = "IvaIdArt", referencedColumnName = "IvaId", insertable = false, updatable = false),
 			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Iva iva;
 
 	@Column(name = "IvaIdArt")
 	private Short ivaIdArt;
 
-	@Column(name = "MarcaId")
-	private String marcaId;
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
@@ -188,7 +197,8 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
-	@JoinColumns({ @javax.persistence.JoinColumn(name = "PrvIdArt", referencedColumnName = "PrvId", insertable = false, updatable = false),
+	@JoinColumns({
+			@javax.persistence.JoinColumn(name = "PrvIdArt", referencedColumnName = "PrvId", insertable = false, updatable = false),
 			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Proveedor proveedor;
 
@@ -209,13 +219,13 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 
 	@Column(name = "UnidadId")
 	private String unidadId;
-	
+
 	@CollectionOfElements()
-	@JoinTable(name = "articulos6", joinColumns = {@JoinColumn(name = "EmpId"), @JoinColumn(name = "ArtId")})
+	@JoinTable(name = "articulos6", joinColumns = {
+			@JoinColumn(name = "EmpId"), @JoinColumn(name = "ArtId") })
 	@org.hibernate.annotations.MapKey(columns = @Column(name = "CampoIdArt"))
 	@Column(name = "ArtCampoValor")
 	private Map<String, String> adicionales;
-
 
 	public void provideId(String empId, String artId) {
 		this.id = new ArticuloPK(empId, artId);
@@ -227,7 +237,8 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 
 	public void setIva(Iva iva) {
 		this.iva = iva;
-		this.ivaIdArt = (iva == null ? null : Short.valueOf(iva.getId().getIvaId()));
+		this.ivaIdArt = (iva == null ? null : Short.valueOf(iva.getId()
+				.getIvaId()));
 	}
 
 	public ArticuloPK getId() {
@@ -301,7 +312,7 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 	public void setInventario(boolean inventario) {
 		this.inventario = BooleanDozerConverter.toString(inventario);
 	}
-	
+
 	public boolean getActivo() {
 		return BooleanDozerConverter.toBooleanValue(activo);
 	}
@@ -518,12 +529,13 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 		this.artEmpaque = artEmpaque;
 	}
 
-	public String getArtDobleCantidad() {
-		return artDobleCantidad;
+	public boolean getArtDobleCantidad() {
+		return BooleanDozerConverter.toBooleanValue(artDobleCantidad);
 	}
 
-	public void setArtDobleCantidad(String artDobleCantidad) {
-		this.artDobleCantidad = artDobleCantidad;
+	public void setArtDobleCantidad(boolean artDobleCantidad) {
+		this.artDobleCantidad = BooleanDozerConverter
+				.toString(artDobleCantidad);
 	}
 
 	public String getUnidadId2() {
@@ -565,7 +577,7 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 	public void setAdicionales(Map<String, String> adicionales) {
 		this.adicionales = adicionales;
 	}
-	
+
 	private String getAdicional(String codigo) {
 		if (adicionales != null) {
 			return adicionales.get(codigo);
@@ -573,53 +585,52 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 			return null;
 		}
 	}
-	
+
 	private void setAdicional(String codigo, String valor) {
 		if (adicionales != null) {
 			if (adicionales.containsKey(codigo)) {
 				adicionales.remove(codigo);
-			} 
+			}
 			adicionales.put(codigo, valor);
 		}
 	}
 
 	public String getNotaInterna() {
 		return getAdicional("115");
-	}	
-	
+	}
+
 	public void setNotaInterna(String value) {
 		setAdicional("115", value);
 	}
 
 	public String getVideoYoutube() {
 		return getAdicional("103");
-	}	
-	
+	}
+
 	public void setVideoYoutube(String value) {
 		setAdicional("103", value);
 	}
-	
+
 	public String getVideoYoutube2() {
 		return getAdicional("113");
-	}	
-	
+	}
+
 	public void setVideoYoutube2(String value) {
 		setAdicional("113", value);
 	}
 
 	public String getVideoYoutube3() {
 		return getAdicional("114");
-	}	
-	
+	}
+
 	public void setVideoYoutube3(String value) {
 		setAdicional("114", value);
 	}
 
-
 	public String getPeso() {
 		return getAdicional("105");
-	}	
-	
+	}
+
 	public void setPeso(String value) {
 		setAdicional("105", value);
 	}
@@ -639,5 +650,14 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements Serializab
 	public void setMarca(Marca marca) {
 		this.marca = marca;
 	}
+	
+	public Categoriasarticulo getCategArt() {
+		return categArt;
+	}
+
+	public void setCategArt(Categoriasarticulo categArt) {
+		this.categArt = categArt;
+	}
+
 
 }

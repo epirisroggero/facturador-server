@@ -1,6 +1,7 @@
 package uy.com.tmwc.facturator.libra.ejb;
 
 import java.math.BigDecimal;
+import java.text.Format;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.dozer.DozerBeanMapper;
+import org.jboss.ejb.plugins.cmp.jdbc.SQLUtil;
 
 import uy.com.tmwc.facturator.dto.ArticuloDTO;
 import uy.com.tmwc.facturator.dto.ArticuloQuery;
@@ -91,7 +93,6 @@ public class ArticulosDAOServiceImpl extends ServiceBase implements ArticulosDAO
 		}
 
 		articulolibra.setAdicionales(adicionales);
-
 		
 		em.persist(articulolibra);
 		this.em.flush();
@@ -113,11 +114,9 @@ public class ArticulosDAOServiceImpl extends ServiceBase implements ArticulosDAO
 		if (e.getVideoYoutube() != null) {
 			adicionales.put("114", e.getVideoYoutube3());
 		}
-
 		if (e.getPeso() != null) {
 			adicionales.put("105", e.getPeso());
 		}
-		
 		if (e.getNotaInterna() != null) {
 			adicionales.put("115", e.getNotaInterna());
 		}

@@ -92,6 +92,8 @@
       <class>uy.com.tmwc.facturator.libra.entity.AgendatareaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.ConceptoPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Auditoria</class>
+      <class>uy.com.tmwc.facturator.libra.entity.Categoriasarticulo</class>
+      <class>uy.com.tmwc.facturator.libra.entity.CategoriasarticuloPK</class>
       
 	  
       <exclude-unlisted-classes />

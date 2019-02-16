@@ -15,6 +15,7 @@ public class Articulo extends CodigoNombreEntity {
 	private boolean activo;
 	private boolean lotes;
 	private boolean artGXPortal;
+	private boolean artDobleCantidad;
 	
 	private String familiaId; 
 	private String marcaId;
@@ -22,6 +23,7 @@ public class Articulo extends CodigoNombreEntity {
 	private Proveedor proveedor;
 	private Iva iva;
 	private FamiliaArticulos familia;
+	private CategoriasArticulos categArt;
 	private Marca marca;
 	
 	private byte[] blob;
@@ -40,9 +42,9 @@ public class Articulo extends CodigoNombreEntity {
 	private String rubIdArtVentas;
 	private String textoIdArt;
 	private String unidadId;
+	private String unidadId2;
+	private String artCodigoBarras;
 
-	///////////////////////////////
-	
 	private String abrevia;
 	private Date alta;
 	private String codigoOrigen;
@@ -59,7 +61,8 @@ public class Articulo extends CodigoNombreEntity {
 	private String peso;
 	private String notaInterna;
 	
-	private String artNotasInt;
+	private String artNotasInt;		
+	private String conceptoIdArt;
 	
 	public Iva getIva() {
 		return this.iva;
@@ -407,6 +410,46 @@ public class Articulo extends CodigoNombreEntity {
 
 	public void setMarca(Marca marca) {
 		this.marca = marca;
+	}
+
+	public boolean isArtDobleCantidad() {
+		return artDobleCantidad;
+	}
+
+	public void setArtDobleCantidad(boolean artDobleCantidad) {
+		this.artDobleCantidad = artDobleCantidad;
+	}
+
+	public String getUnidadId2() {
+		return unidadId2;
+	}
+
+	public void setUnidadId2(String unidadId2) {
+		this.unidadId2 = unidadId2;
+	}
+
+	public String getArtCodigoBarras() {
+		return artCodigoBarras;
+	}
+
+	public void setArtCodigoBarras(String artCodigoBarras) {
+		this.artCodigoBarras = artCodigoBarras;
+	}
+
+	public String getConceptoIdArt() {
+		return conceptoIdArt;
+	}
+
+	public void setConceptoIdArt(String conceptoIdArt) {
+		this.conceptoIdArt = conceptoIdArt;
+	}
+
+	public CategoriasArticulos getCategArt() {
+		return categArt;
+	}
+
+	public void setCategArt(CategoriasArticulos categArt) {
+		this.categArt = categArt;
 	}
 
 

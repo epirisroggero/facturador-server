@@ -599,6 +599,16 @@
     </field>
   </mapping>  
 
+  <mapping> 
+    <class-a>uy.com.tmwc.facturator.libra.entity.Categoriasarticulo</class-a>   
+    <class-b>uy.com.tmwc.facturator.entity.CategoriasArticulos</class-b>
+    <field>
+      <a>id.categartid</a>
+      <b>codigo</b>
+    </field>
+  </mapping>
+
+
 </mappings>
         
       
