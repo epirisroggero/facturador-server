@@ -580,10 +580,7 @@ public class ClientesDAOServiceImpl extends ServiceBase implements ClientesDAOSe
 			adicionales.put("67", p.getObservacionesCB());
 		}
 
-		
-		
-		
-		
+
 		libraProveedor.getContacto().setAdicionales(adicionales);
 		
 		ProveedorPK proveedorPK = new ProveedorPK();
