@@ -25,7 +25,11 @@ import javax.mail.MessagingException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import com.mysql.fabric.xmlrpc.base.Array;
+
+import uy.com.tmwc.facturator.deudores.Cuponera;
 import uy.com.tmwc.facturator.deudores.DocumentoDeudor;
+import uy.com.tmwc.facturator.deudores.LineaCuponera;
 import uy.com.tmwc.facturator.dto.AgendaTareaDTO;
 import uy.com.tmwc.facturator.dto.AntecedentesArticulo;
 import uy.com.tmwc.facturator.dto.ArticuloDTO;
@@ -53,6 +57,7 @@ import uy.com.tmwc.facturator.entity.Comprobante;
 import uy.com.tmwc.facturator.entity.Contacto;
 import uy.com.tmwc.facturator.entity.CotizacionesMonedas;
 import uy.com.tmwc.facturator.entity.CuotasDocumento;
+import uy.com.tmwc.facturator.entity.Deposito;
 import uy.com.tmwc.facturator.entity.DescuentoPrometidoComprobante;
 import uy.com.tmwc.facturator.entity.Documento;
 import uy.com.tmwc.facturator.entity.Entrega;
@@ -96,22 +101,12 @@ public class RemoteServiceHandler {
 	private static Class<?> reportesServiceProxyClass;
 	private static Constructor<?> reportesServiceProxyClassConstructor;
 	static {
-		reportesServiceProxyClass = Proxy.getProxyClass(ReportesService.class.getClassLoader(), new Class[] { ReportesService.class });
+		reportesServiceProxyClass = Proxy.getProxyClass(
+				ReportesService.class.getClassLoader(),
+				new Class[] { ReportesService.class });
 		try {
-			reportesServiceProxyClassConstructor = reportesServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
-		} catch (SecurityException e) {
-			throw new RuntimeException(e);
-		} catch (NoSuchMethodException e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	private static Class<?> eFacturaServiceProxyClass;
-	private static Constructor<?> eFacturaServiceProxyClassConstructor;
-	static {
-		eFacturaServiceProxyClass = Proxy.getProxyClass(EFacturaService.class.getClassLoader(), new Class[] { EFacturaService.class });
-		try {
-			eFacturaServiceProxyClassConstructor = eFacturaServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
+			reportesServiceProxyClassConstructor = reportesServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
@@ -119,13 +114,31 @@ public class RemoteServiceHandler {
 		}
 	}
 
+	private static Class<?> eFacturaServiceProxyClass;
+	private static Constructor<?> eFacturaServiceProxyClassConstructor;
+	static {
+		eFacturaServiceProxyClass = Proxy.getProxyClass(
+				EFacturaService.class.getClassLoader(),
+				new Class[] { EFacturaService.class });
+		try {
+			eFacturaServiceProxyClassConstructor = eFacturaServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
+		} catch (SecurityException e) {
+			throw new RuntimeException(e);
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
 	private static Class<?> catalogServiceProxyClass;
 	private static Constructor<?> catalogServiceProxyClassConstructor;
 	static {
-		catalogServiceProxyClass = Proxy.getProxyClass(CatalogService.class.getClassLoader(), new Class[] { CatalogService.class });
+		catalogServiceProxyClass = Proxy.getProxyClass(
+				CatalogService.class.getClassLoader(),
+				new Class[] { CatalogService.class });
 		try {
-			catalogServiceProxyClassConstructor = catalogServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
+			catalogServiceProxyClassConstructor = catalogServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
@@ -136,9 +149,12 @@ public class RemoteServiceHandler {
 	private static Class<?> docServiceProxyClass;
 	private static Constructor<?> docServiceProxyClassConstructor;
 	static {
-		docServiceProxyClass = Proxy.getProxyClass(DocumentoService.class.getClassLoader(), new Class[] { DocumentoService.class });
+		docServiceProxyClass = Proxy.getProxyClass(
+				DocumentoService.class.getClassLoader(),
+				new Class[] { DocumentoService.class });
 		try {
-			docServiceProxyClassConstructor = docServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
+			docServiceProxyClassConstructor = docServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
@@ -149,9 +165,12 @@ public class RemoteServiceHandler {
 	private static Class<?> agendaTareaServiceProxyClass;
 	private static Constructor<?> agendaTareaServiceProxyClassConstructor;
 	static {
-		agendaTareaServiceProxyClass = Proxy.getProxyClass(AgendaTareaService.class.getClassLoader(), new Class[] { AgendaTareaService.class });
+		agendaTareaServiceProxyClass = Proxy.getProxyClass(
+				AgendaTareaService.class.getClassLoader(),
+				new Class[] { AgendaTareaService.class });
 		try {
-			agendaTareaServiceProxyClassConstructor = agendaTareaServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
+			agendaTareaServiceProxyClassConstructor = agendaTareaServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
@@ -162,22 +181,28 @@ public class RemoteServiceHandler {
 	private static Class<?> entregaServiceProxyClass;
 	private static Constructor<?> entregaServiceProxyClassConstructor;
 	static {
-		entregaServiceProxyClass = Proxy.getProxyClass(EntregaService.class.getClassLoader(), new Class[] { EntregaService.class });
+		entregaServiceProxyClass = Proxy.getProxyClass(
+				EntregaService.class.getClassLoader(),
+				new Class[] { EntregaService.class });
 		try {
-			entregaServiceProxyClassConstructor = entregaServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
+			entregaServiceProxyClassConstructor = entregaServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	private static Class<?> fanfoldServiceProxyClass;
 	private static Constructor<?> fanfoldServiceProxyClassConstructor;
 	static {
-		fanfoldServiceProxyClass = Proxy.getProxyClass(EntregaService.class.getClassLoader(), new Class[] { FanfoldService.class });
+		fanfoldServiceProxyClass = Proxy.getProxyClass(
+				EntregaService.class.getClassLoader(),
+				new Class[] { FanfoldService.class });
 		try {
-			fanfoldServiceProxyClassConstructor = fanfoldServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
+			fanfoldServiceProxyClassConstructor = fanfoldServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
@@ -188,9 +213,12 @@ public class RemoteServiceHandler {
 	private static Class<?> auditoriaServiceProxyClass;
 	private static Constructor<?> auditoriaServiceProxyClassConstructor;
 	static {
-		auditoriaServiceProxyClass = Proxy.getProxyClass(AuditoriaService.class.getClassLoader(), new Class[] { AuditoriaService.class });
+		auditoriaServiceProxyClass = Proxy.getProxyClass(
+				AuditoriaService.class.getClassLoader(),
+				new Class[] { AuditoriaService.class });
 		try {
-			auditoriaServiceProxyClassConstructor = auditoriaServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
+			auditoriaServiceProxyClassConstructor = auditoriaServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
@@ -201,9 +229,12 @@ public class RemoteServiceHandler {
 	private static Class<?> monedasCotizacionesServiceProxyClass;
 	private static Constructor<?> monedasCotizacionesServiceProxyClassConstructor;
 	static {
-		monedasCotizacionesServiceProxyClass = Proxy.getProxyClass(MonedasCotizacionesService.class.getClassLoader(), new Class[] { MonedasCotizacionesService.class });
+		monedasCotizacionesServiceProxyClass = Proxy.getProxyClass(
+				MonedasCotizacionesService.class.getClassLoader(),
+				new Class[] { MonedasCotizacionesService.class });
 		try {
-			monedasCotizacionesServiceProxyClassConstructor = monedasCotizacionesServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
+			monedasCotizacionesServiceProxyClassConstructor = monedasCotizacionesServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
@@ -214,9 +245,12 @@ public class RemoteServiceHandler {
 	private static Class<?> liquidacionServiceProxyClass;
 	private static Constructor<?> liquidacionServiceProxyClassConstructor;
 	static {
-		liquidacionServiceProxyClass = Proxy.getProxyClass(LiquidacionService.class.getClassLoader(), new Class[] { LiquidacionService.class });
+		liquidacionServiceProxyClass = Proxy.getProxyClass(
+				LiquidacionService.class.getClassLoader(),
+				new Class[] { LiquidacionService.class });
 		try {
-			liquidacionServiceProxyClassConstructor = liquidacionServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
+			liquidacionServiceProxyClassConstructor = liquidacionServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
@@ -227,9 +261,12 @@ public class RemoteServiceHandler {
 	private static Class<?> descuentosPrometidosServiceProxyClass;
 	private static Constructor<?> descuentosServiceProxyClassConstructor;
 	static {
-		descuentosPrometidosServiceProxyClass = Proxy.getProxyClass(DescuentosPrometidosService.class.getClassLoader(), new Class[] { DescuentosPrometidosService.class });
+		descuentosPrometidosServiceProxyClass = Proxy.getProxyClass(
+				DescuentosPrometidosService.class.getClassLoader(),
+				new Class[] { DescuentosPrometidosService.class });
 		try {
-			descuentosServiceProxyClassConstructor = descuentosPrometidosServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
+			descuentosServiceProxyClassConstructor = descuentosPrometidosServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
@@ -240,9 +277,12 @@ public class RemoteServiceHandler {
 	private static Class<?> usuariosServiceProxyClass;
 	private static Constructor<?> usuariosServiceProxyClassConstructor;
 	static {
-		usuariosServiceProxyClass = Proxy.getProxyClass(UsuariosService.class.getClassLoader(), new Class[] { UsuariosService.class });
+		usuariosServiceProxyClass = Proxy.getProxyClass(
+				UsuariosService.class.getClassLoader(),
+				new Class[] { UsuariosService.class });
 		try {
-			usuariosServiceProxyClassConstructor = usuariosServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
+			usuariosServiceProxyClassConstructor = usuariosServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
@@ -253,9 +293,12 @@ public class RemoteServiceHandler {
 	private static Class<?> clientesServiceProxyClass;
 	private static Constructor<?> clientesServiceProxyClassConstructor;
 	static {
-		clientesServiceProxyClass = Proxy.getProxyClass(ClientesService.class.getClassLoader(), new Class[] { ClientesService.class });
+		clientesServiceProxyClass = Proxy.getProxyClass(
+				ClientesService.class.getClassLoader(),
+				new Class[] { ClientesService.class });
 		try {
-			clientesServiceProxyClassConstructor = clientesServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
+			clientesServiceProxyClassConstructor = clientesServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
@@ -263,13 +306,15 @@ public class RemoteServiceHandler {
 		}
 	}
 
-
 	private static Class<?> articulosServiceProxyClass;
 	private static Constructor<?> articulosServiceProxyClassConstructor;
 	static {
-		articulosServiceProxyClass = Proxy.getProxyClass(UsuariosService.class.getClassLoader(), new Class[] { ArticulosService.class });
+		articulosServiceProxyClass = Proxy.getProxyClass(
+				UsuariosService.class.getClassLoader(),
+				new Class[] { ArticulosService.class });
 		try {
-			articulosServiceProxyClassConstructor = articulosServiceProxyClass.getConstructor(new Class[] { InvocationHandler.class });
+			articulosServiceProxyClassConstructor = articulosServiceProxyClass
+					.getConstructor(new Class[] { InvocationHandler.class });
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {
@@ -301,32 +346,37 @@ public class RemoteServiceHandler {
 			throw e;
 		}
 	}
-	
+
 	public List<ArticuloPrecioFabricaCosto> getCostoArticulos(Documento doc) {
 		return getService().getCostosArticulos(doc);
 	}
-	
+
 	public void actualizarCostos(List<ArticuloPrecioFabricaCosto> precios) {
 		getService().updateArticulosCostos(precios);
 	}
-	
-	public void actualizarArticulosCompraVenta(List<ArticuloCompraVentaCosto> costos) throws PermisosException {
+
+	public void actualizarArticulosCompraVenta(
+			List<ArticuloCompraVentaCosto> costos) throws PermisosException {
 		getService().updateCostosArticuloDocumentos(costos);
 	}
-	
-	public List<ArticuloPrecioFabricaCosto> getPreciosArticuloDocumento(Documento doc) {
+
+	public List<ArticuloPrecioFabricaCosto> getPreciosArticuloDocumento(
+			Documento doc) {
 		return getService().getPreciosArticuloDocumento(doc);
 	}
-	
+
 	public List<ArticuloCompraVentaCosto> getCompraVentaCostos(Documento doc) {
 		return getService().getCompraVentaCostos(doc);
 	}
-	
-	public List<ArticuloCompraVentaCosto> getCompraVentaCostos(Date fechaDesde, Date fechaHasta, Boolean mostrarTodas) {
-		return getService().getComprasPlazaCostos(fechaDesde, fechaHasta, mostrarTodas);
+
+	public List<ArticuloCompraVentaCosto> getCompraVentaCostos(Date fechaDesde,
+			Date fechaHasta, Boolean mostrarTodas) {
+		return getService().getComprasPlazaCostos(fechaDesde, fechaHasta,
+				mostrarTodas);
 	}
-	
-	public void actualizarPrecios(List<ArticuloPrecioFabricaCosto> precios, Boolean updateCosto) {
+
+	public void actualizarPrecios(List<ArticuloPrecioFabricaCosto> precios,
+			Boolean updateCosto) {
 		getService().updateArticulosPrecios(precios, updateCosto);
 	}
 
@@ -335,10 +385,12 @@ public class RemoteServiceHandler {
 			DocumentoService service;
 			InitialContext ctx;
 			ctx = new InitialContext();
-			service = (DocumentoService) ctx.lookup("facturator-server-ear/DocumentoServiceImpl/local");
+			service = (DocumentoService) ctx
+					.lookup("facturator-server-ear/DocumentoServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (DocumentoService) docServiceProxyClassConstructor.newInstance(handler);
+			service = (DocumentoService) docServiceProxyClassConstructor
+					.newInstance(handler);
 
 			return service;
 		} catch (NamingException e) {
@@ -367,7 +419,7 @@ public class RemoteServiceHandler {
 		}
 		return getService().countDocumentos(query);
 	}
-	
+
 	private Documento ajustarDocumento(Documento doc) {
 		if (doc.getComprobante().isRecibo()) {
 			if (doc.getFacturasVinculadas().size() <= 0) {
@@ -378,27 +430,34 @@ public class RemoteServiceHandler {
 		return doc;
 	}
 
-	public String alta(Documento documento) throws ValidationException, PermisosException {
+	public String alta(Documento documento) throws ValidationException,
+			PermisosException {
 		return alta(documento, null);
 	}
 
-	public String alta(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
+	public String alta(Documento documento, Auditoria auditoria)
+			throws ValidationException, PermisosException {
 		documento = ajustarDocumento(documento);
-		
-		NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("ES"));
+
+		NumberFormat formatter = NumberFormat
+				.getNumberInstance(new Locale("ES"));
 
 		if (auditoria == null) {
-			String moneda = documento.getMoneda() != null ? documento.getMoneda().getSimbolo() : "";
-			String total = documento.getTotal() != null ? formatter.format(documento.getTotal().doubleValue()) : "0";
+			String moneda = documento.getMoneda() != null ? documento
+					.getMoneda().getSimbolo() : "";
+			String total = documento.getTotal() != null ? formatter
+					.format(documento.getTotal().doubleValue()) : "0";
 
 			auditoria = new Auditoria();
 			auditoria.setAudFechaHora(new Date());
 			auditoria.setDocId(documento.getDocId());
-			auditoria.setNotas("Comprobante creado por un total de " + moneda + " " + total);
+			auditoria.setNotas("Comprobante creado por un total de " + moneda
+					+ " " + total);
 			auditoria.setProblemas("Ninguno");
 		}
 
-		String tcFiscal = getTipoCambioFiscal(Moneda.CODIGO_MONEDA_DOLAR, documento.getFecha());
+		String tcFiscal = getTipoCambioFiscal(Moneda.CODIGO_MONEDA_DOLAR,
+				documento.getFecha());
 		if (tcFiscal.length() > 0) {
 			documento.setDocTCF(new BigDecimal(tcFiscal));
 		}
@@ -406,23 +465,24 @@ public class RemoteServiceHandler {
 			// Realizar cosas para los recibos
 			documento.setDocTCF(documento.getDocTCC());
 		}
-		
+
 		if (documento.getComprobante().isNotaCreditoFinanciera()) {
 			documento.setSaldo(documento.getTotal());
 		}
-		
+
 		String docId = getService().alta(documento, auditoria);
-		
+
 		// Agregar vínculos de nota de crédito financiera.
 		if (documento.getComprobante().isNotaCreditoFinanciera()) {
 			Documento doc = getService().findDocumento(docId);
-			
+
 			Set<VinculoDocumentos> vinculos = new HashSet<VinculoDocumentos>();
-			
+
 			// Agregar vínculos
 			List<LineaDocumento> lineas = doc.getLineas().getLineas();
 			for (LineaDocumento lineaDocumento : lineas) {
-				String notas = lineaDocumento.getNotas() != null ? lineaDocumento.getNotas() : null;
+				String notas = lineaDocumento.getNotas() != null ? lineaDocumento
+						.getNotas() : null;
 				if (notas == null || notas.length() == 0) {
 					continue;
 				}
@@ -431,67 +491,90 @@ public class RemoteServiceHandler {
 					continue;
 				}
 				String datosFactura = rows[1];
-				
+
 				String[] tokens = datosFactura.split("\\|");
 				int docIdVin1 = new Integer(tokens[0]).intValue();
 				int docIdVin2 = new Integer(docId).intValue();
-				BigDecimal monto = lineaDocumento.getPrecio().multiply(new BigDecimal(1.22)).setScale(4, RoundingMode.HALF_EVEN);
-								
+				BigDecimal monto = lineaDocumento.getPrecio()
+						.multiply(new BigDecimal(1.22))
+						.setScale(4, RoundingMode.HALF_EVEN);
+
 				VinculoDocumentos vinculo = new VinculoDocumentos();
 				vinculo.setDocIdVin1(docIdVin1);
 				vinculo.setDocIdVin2(docIdVin2);
 				vinculo.setMonto(monto);
 				vinculo.setDescuentoPorc(BigDecimal.ZERO);
-				
+
 				vinculos.add(vinculo);
 			}
-			
+
 			// Vincular facturas en nota de crédito financiera.
 			doc.setFacturasVinculadas(vinculos);
-			
+
 			HashMap<String, Documento> documentos = new HashMap<String, Documento>();
 			HashMap<String, Auditoria> audits = new HashMap<String, Auditoria>();
-			
+
 			BigDecimal montoTotal = BigDecimal.ZERO;
-			
+
 			// Ajustar saldos una vez guardado los vínculos
 			for (LineaDocumento lineaDocumento : lineas) {
-				String notas = lineaDocumento.getNotas() != null ? lineaDocumento.getNotas() : null;
+				String notas = lineaDocumento.getNotas() != null ? lineaDocumento
+						.getNotas() : null;
 				if (notas == null || notas.length() == 0) {
 					continue;
-				} 				
+				}
 				String[] rows = notas.split("[\\r\\n]+");
 				if (rows.length < 2 || rows[1] == null) {
 					continue;
 				}
-				BigDecimal monto = lineaDocumento.getPrecio().multiply(new BigDecimal(1.22));
+				BigDecimal monto = lineaDocumento.getPrecio().multiply(
+						new BigDecimal(1.22));
 				montoTotal = montoTotal.add(monto);
-				
+
 				String datosFactura = rows[1];
-				
+
 				String[] tokens = datosFactura.split("\\|");
 				int docIdVin1 = new Integer(tokens[0]).intValue();
 				String serie = tokens[1];
 				String numero = tokens[2];
-				
-				Documento docVin = getService().findDocumento(String.valueOf(docIdVin1));
+
+				Documento docVin = getService().findDocumento(
+						String.valueOf(docIdVin1));
 				String moneda = docVin.getMoneda().getCodigo();
 				BigDecimal viejoSaldo = docVin.getSaldo();
-				BigDecimal nuevoSaldo = viejoSaldo.subtract(monto).setScale(2, RoundingMode.HALF_EVEN);
+				BigDecimal nuevoSaldo = viejoSaldo.subtract(monto).setScale(2,
+						RoundingMode.HALF_EVEN);
 				nuevoSaldo = ajustarSaldo(moneda, nuevoSaldo);
-				
-				if (nuevoSaldo.doubleValue() < 0 ) {
-					throw new RuntimeException("Error: " + docVin.getSerie() + docVin.getNumero() + " saldo inválido (" + docVin.getSaldo().setScale(2, RoundingMode.HALF_EVEN) + "<" + monto.setScale(2, RoundingMode.HALF_EVEN)+ ").");
+
+				if (nuevoSaldo.doubleValue() < 0) {
+					throw new RuntimeException("Error: "
+							+ docVin.getSerie()
+							+ docVin.getNumero()
+							+ " saldo inválido ("
+							+ docVin.getSaldo().setScale(2,
+									RoundingMode.HALF_EVEN) + "<"
+							+ monto.setScale(2, RoundingMode.HALF_EVEN) + ").");
 				}
 
 				Auditoria audit = new Auditoria();
 				audit.setAudFechaHora(new Date());
 				audit.setDocId(docVin.getDocId());
-				audit.setNotas("Vinculado por N/C36 PC X DTOS FINANCIEROS [" + serie + numero + "] por un monto de " + docVin.getMoneda().getSimbolo() + formatter.format(monto.setScale(4, RoundingMode.HALF_EVEN).doubleValue()));
-				audit.setProblemas("Monto cancelado:\t" + docVin.getMoneda().getSimbolo() + formatter.format(monto.setScale(4, RoundingMode.HALF_EVEN).doubleValue()) + "\n" +
-						"Saldo anterior:\t" + docVin.getMoneda().getSimbolo()  + formatter.format(viejoSaldo.doubleValue()) + "\n" +
-						"Saldo actual:\t" + docVin.getMoneda().getSimbolo()  + formatter.format(nuevoSaldo.doubleValue()) + "\n");
-				
+				audit.setNotas("Vinculado por N/C36 PC X DTOS FINANCIEROS ["
+						+ serie
+						+ numero
+						+ "] por un monto de "
+						+ docVin.getMoneda().getSimbolo()
+						+ formatter.format(monto.setScale(4,
+								RoundingMode.HALF_EVEN).doubleValue()));
+				audit.setProblemas("Monto cancelado:\t"
+						+ docVin.getMoneda().getSimbolo()
+						+ formatter.format(monto.setScale(4,
+								RoundingMode.HALF_EVEN).doubleValue()) + "\n"
+						+ "Saldo anterior:\t" + docVin.getMoneda().getSimbolo()
+						+ formatter.format(viejoSaldo.doubleValue()) + "\n"
+						+ "Saldo actual:\t" + docVin.getMoneda().getSimbolo()
+						+ formatter.format(nuevoSaldo.doubleValue()) + "\n");
+
 				audits.put(docVin.getDocId(), audit);
 				docVin.setSaldo(nuevoSaldo);
 
@@ -500,45 +583,178 @@ public class RemoteServiceHandler {
 
 			// Ajustar saldos una vez guardado los vinculos
 			for (String docVId : documentos.keySet()) {
-				getService().guardar(documentos.get(docVId), audits.get(docVId));
+				getService()
+						.guardar(documentos.get(docVId), audits.get(docVId));
 			}
-			
+
 			// Ajustar el saldo
 			doc.setSaldo(doc.getSaldo().subtract(montoTotal));
-			
+
 			// Guardar el documento con las facturas vinculadas.
 			getService().guardar(doc);
 		}
-		
+
 		return docId;
 	}
-	
+
 	private BigDecimal ajustarSaldo(String moneda, BigDecimal saldo) {
 		double ss = Math.abs(saldo.doubleValue());
-		if (moneda.equals(Moneda.CODIGO_MONEDA_DOLAR) || moneda.equals(Moneda.CODIGO_MONEDA_EUROS)  ||
-				moneda.equals(Moneda.CODIGO_MONEDA_DOLAR_ASTER) || moneda.equals(Moneda.CODIGO_MONEDA_EUROS_ASTER)) {
+		if (moneda.equals(Moneda.CODIGO_MONEDA_DOLAR)
+				|| moneda.equals(Moneda.CODIGO_MONEDA_EUROS)
+				|| moneda.equals(Moneda.CODIGO_MONEDA_DOLAR_ASTER)
+				|| moneda.equals(Moneda.CODIGO_MONEDA_EUROS_ASTER)) {
 			if (ss < 0.1) {
 				saldo = BigDecimal.ZERO;
-			} 
-		} else if (moneda.equals(Moneda.CODIGO_MONEDA_PESOS) || moneda.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
+			}
+		} else if (moneda.equals(Moneda.CODIGO_MONEDA_PESOS)
+				|| moneda.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
 			if (ss < 1) {
 				saldo = BigDecimal.ZERO;
-			} 
+			}
 		}
 		return saldo;
 
 	}
 	
-	public LineaDocumento getLineaDocumento(String ordenTrabajo) throws PermisosException {
+	public ArrayList<Cuponera> getCuponeras(ArrayList<String> cuponerasId) throws PermisosException {
+		ArrayList<Cuponera> cuponerasList = new ArrayList<Cuponera>();
+		for (String artId : cuponerasId) {
+			cuponerasList.add(getDatosCuponera(artId));
+		}
+		return cuponerasList;
+	}
+
+	public Cuponera getDatosCuponera(String artId) throws PermisosException {
+		int index = artId.indexOf(".");
+
+		String cliId = artId.substring(0, index);
+
+		DocumentoQuery query = new DocumentoQuery();
+		query.setLimit(1);
+		query.setCliente(cliId);
+		query.setComprobantes("2");
+		query.setPendiente(Boolean.FALSE);
+		query.setEmitido(Boolean.TRUE);
+		query.setTieneSaldo(Boolean.FALSE);
+
+
+		Date fecha = new Date();
+		BigDecimal precioUnitario = BigDecimal.ZERO;
+		BigDecimal cantidad = BigDecimal.ZERO;
+		BigDecimal total = BigDecimal.ZERO;
+		
+		BigDecimal stock = getStock(artId, "1");
+		if (stock != null) {
+			stock = stock.multiply(new BigDecimal("-1"));
+		} else {
+			stock = BigDecimal.ZERO;
+		}
+
+		Cuponera cuponera = new Cuponera();
+		cuponera.setArtId(artId);
+		cuponera.setLineasCuponera(getMovimientosCuponera(artId));
+		cuponera.setStock(stock);
+		cuponera.setFecha(null);
+		cuponera.setCantidadTotal(cantidad);
+		cuponera.setPrecioTotal(total);
+		cuponera.setPrecioUnitario(precioUnitario);
+
+
+		// Obtener los documentos de bajada de cuponera para este cliente.
+		List<DocumentoDTO> documentos = getService().queryDocumentos(query);
+		if (documentos.size() > 0) {
+			Documento d = getService().findDocumento(
+					documentos.get(0).getDocId());
+
+			fecha = d.getFecha();
+			precioUnitario = BigDecimal.ZERO;
+			cantidad = BigDecimal.ZERO;
+			total = BigDecimal.ZERO;
+
+			// quedarse con los documentos que tienen lineas de esa cuponera.
+			for (LineaDocumento linea : d.getLineas().getLineas()) {
+				if (linea.getArticulo().getCodigo().toLowerCase()
+						.equals(artId.toLowerCase())) {
+					precioUnitario = linea.getPrecioUnitario();
+					cantidad = linea.getCantidad();
+					total = linea.getTotal();
+				}
+			}
+
+			cuponera.setFecha(fecha);
+			cuponera.setCantidadTotal(cantidad);
+			cuponera.setPrecioTotal(total);
+			cuponera.setPrecioUnitario(precioUnitario);
+
+		} 
+		return cuponera;
+	}
+
+	public List<LineaCuponera> getMovimientosCuponera(String artId)
+			throws PermisosException {
+		int index = artId.indexOf(".");
+
+		String cliId = artId.substring(0, index);
+
+		DocumentoQuery query = new DocumentoQuery();
+		query.setLimit(20);
+		query.setCliente(cliId);
+		query.setComprobantes("84");
+		query.setPendiente(Boolean.FALSE);
+		query.setEmitido(Boolean.FALSE);
+		query.setTieneSaldo(Boolean.FALSE);
+
+		List<LineaCuponera> movCuponera = new ArrayList<LineaCuponera>();
+
+		// Obtener el stock del artículo.
+		BigDecimal saldo = getStock(artId, "1");
+
+		// Obtener los documentos de bajada de cuponera para este clinte.
+		List<DocumentoDTO> documentos = getService().queryDocumentos(query);
+		if (documentos.size() > 0) {
+			for (DocumentoDTO doc : documentos) {
+				Documento d = getService().findDocumento(doc.getDocId());
+
+				int k = 0;
+				BigDecimal cantidad = BigDecimal.ZERO;
+
+				// quedarse con los documentos que tienen lineas de esa
+				// cuponera.
+				for (LineaDocumento linea : d.getLineas().getLineas()) {
+					if (linea.getArticulo().getCodigo().toLowerCase()
+							.equals(artId.toLowerCase())) {
+						k++;
+						cantidad = cantidad.add(linea.getCantidad());
+						saldo = saldo.add(linea.getCantidad());
+					}
+				}
+
+				if (k > 0) {
+					LineaCuponera lineaCuponera = new LineaCuponera();
+					lineaCuponera.setFecha(d.getFecha());
+					lineaCuponera.setSerie(d.getSerie());
+					lineaCuponera.setNumero(d.getNumero());
+					lineaCuponera.setCantidad(cantidad);
+					lineaCuponera.setSaldo(saldo);
+
+					movCuponera.add(lineaCuponera);
+				}
+			}
+		}
+		return movCuponera;
+	}
+
+	public LineaDocumento getLineaDocumento(String ordenTrabajo)
+			throws PermisosException {
 		int index = ordenTrabajo.indexOf("-");
 		if (index < 0) {
 			index = ordenTrabajo.indexOf("/");
-		} 
-		
+		}
+
 		String numero = ordenTrabajo.substring(0, index);
 		int linea = 0;
 		try {
-			linea = new Integer(ordenTrabajo.substring(index + 1)).intValue();	
+			linea = new Integer(ordenTrabajo.substring(index + 1)).intValue();
 		} catch (NumberFormatException exc) {
 			exc.printStackTrace();
 		}
@@ -547,106 +763,124 @@ public class RemoteServiceHandler {
 		query.setSerie("80");
 		query.setNumero(new BigInteger(numero));
 		query.setPendiente(Boolean.FALSE);
-		query.setEmitido(Boolean.FALSE);
 		query.setTieneSaldo(Boolean.FALSE);
-		
+
 		LineaDocumento ld = null;
-		
+
 		List<DocumentoDTO> documentos = getService().queryDocumentos(query);
 		if (documentos.size() > 0) {
 			DocumentoDTO doc = documentos.get(0);
-			
+
 			Documento d = getService().findDocumento(doc.getDocId());
 			if (d.getLineas().getLineas().size() > linea - 1) {
 				ld = d.getLineas().getLineas().get(linea - 1);
 			}
 		}
-		
+
 		if (ld != null) {
 			query.setSerie("82");
-			List<DocumentoDTO> documentos82 = getService().queryDocumentos(query);
+			List<DocumentoDTO> documentos82 = getService().queryDocumentos(
+					query);
 			if (documentos82.size() > 0) {
 				DocumentoDTO doc82 = documentos82.get(0);
-				
+
 				Documento d = getService().findDocumento(doc82.getDocId());
 				if (d.getLineas().getLineas().size() > linea - 1) {
-					LineaDocumento linDoc = d.getLineas().getLineas().get(linea - 1);
+					LineaDocumento linDoc = d.getLineas().getLineas()
+							.get(linea - 1);
 					ld.setAfilador(linDoc.getAfilador());
-					if (linDoc.getDocumento() != null && linDoc.getDocumento().getFechaEmisionStr()!= null) {
-						ld.setNotas("Fecha: " + linDoc.getDocumento().getFechaEmisionStr() + "\n" + d.getNotas());
+					if (linDoc.getDocumento() != null
+							&& linDoc.getDocumento().getFechaEmisionStr() != null) {
+						ld.setNotas("Fecha: "
+								+ linDoc.getDocumento().getFechaEmisionStr()
+								+ "\n" + d.getNotas());
 					}
 				}
 			}
-		}		
-		
+		}
+
 		return ld;
-		
+
 	}
 
 	public List<Auditoria> getLineasAuditoria(String docId) {
 		return getAuditoriaService().getAuditoria(docId);
 	}
-	
+
 	public List<Auditoria> getDepositos(String docId) {
 		return getAuditoriaService().getAuditoria(docId);
 	}
-	
-	public Documento modificar(Documento documento) throws ValidationException, PermisosException {
+
+	public Documento modificar(Documento documento) throws ValidationException,
+			PermisosException {
 		return modificar(documento, null);
 	}
 
-	public Documento modificar(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
+	public Documento modificar(Documento documento, Auditoria auditoria)
+			throws ValidationException, PermisosException {
 		documento = ajustarDocumento(documento);
-		
-		if (auditoria == null) {
-			NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("ES"));
 
-			String moneda = documento.getMoneda() != null ? documento.getMoneda().getSimbolo() : "";
-			String total = documento.getTotal() != null ? formatter.format(documento.getTotal().doubleValue()) : "0";
-			
+		if (auditoria == null) {
+			NumberFormat formatter = NumberFormat.getNumberInstance(new Locale(
+					"ES"));
+
+			String moneda = documento.getMoneda() != null ? documento
+					.getMoneda().getSimbolo() : "";
+			String total = documento.getTotal() != null ? formatter
+					.format(documento.getTotal().doubleValue()) : "0";
+
 			auditoria = new Auditoria();
 			auditoria.setAudFechaHora(new Date());
 			auditoria.setDocId(documento.getDocId());
-			auditoria.setNotas("Documento guardado con modificaciones, por un total de "  + moneda + " " + total);
+			auditoria
+					.setNotas("Documento guardado con modificaciones, por un total de "
+							+ moneda + " " + total);
 			auditoria.setProblemas("Ninguno");
 		}
-		
+
 		if (!documento.isPendiente()) {
-			BigDecimal docTCF = getService().getTipoCambioFiscal(Moneda.CODIGO_MONEDA_DOLAR, new Date());
+			BigDecimal docTCF = getService().getTipoCambioFiscal(
+					Moneda.CODIGO_MONEDA_DOLAR, new Date());
 			if (docTCF != null) {
 				documento.setDocTCF(docTCF);
 			}
 		}
-		
-		// Para el caso de ser un recibo, se guarda el tipo de cambio del documento(DocTC) dependiendo de la moneda. 
+
+		// Para el caso de ser un recibo, se guarda el tipo de cambio del
+		// documento(DocTC) dependiendo de la moneda.
 		if (documento.getComprobante().isRecibo()) {
-			Moneda moneda = documento.getMoneda();			
-			//TODO: Revisar. En caso de ser pesos, el tipo de cambio es 1. Esto se usa para generar los reportes dependiento del tipo de cambio.
-			if (moneda.getCodigo().equals(Moneda.CODIGO_MONEDA_PESOS) || moneda.getCodigo().equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
+			Moneda moneda = documento.getMoneda();
+			// TODO: Revisar. En caso de ser pesos, el tipo de cambio es 1. Esto
+			// se usa para generar los reportes dependiento del tipo de cambio.
+			if (moneda.getCodigo().equals(Moneda.CODIGO_MONEDA_PESOS)
+					|| moneda.getCodigo().equals(
+							Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
 				documento.setDocTCF(BigDecimal.ONE);
 			} else {
 				documento.setDocTCF(documento.getDocTCC());
 			}
 		}
-		
+
 		getService().modificar(documento, auditoria);
-		
+
 		Documento result = getService().findDocumento(documento.getDocId());
-		
+
 		return result;
 	}
-	
 
-	public int modificarCostos(String codart, Date dateDesde, Date dateHasta, RUTINA_MODIFCOSTO_ENUM costoAnterior, BigDecimal valorCostoAnterior, BigDecimal costoNuevo, String monedaNuevoCosto,
-			BigDecimal tcd) {
+	public int modificarCostos(String codart, Date dateDesde, Date dateHasta,
+			RUTINA_MODIFCOSTO_ENUM costoAnterior,
+			BigDecimal valorCostoAnterior, BigDecimal costoNuevo,
+			String monedaNuevoCosto, BigDecimal tcd) {
 		try {
-			return getService().modificarCostos(codart, dateDesde, dateHasta, costoAnterior, valorCostoAnterior, costoNuevo, monedaNuevoCosto, tcd);
+			return getService().modificarCostos(codart, dateDesde, dateHasta,
+					costoAnterior, valorCostoAnterior, costoNuevo,
+					monedaNuevoCosto, tcd);
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 			throw e;
 		}
 	}
-	
 
 	public SerieNumero generateSerieNumero(Comprobante comprobante) {
 		DocumentoService service = getService();
@@ -654,14 +888,16 @@ public class RemoteServiceHandler {
 		return service.generarSerieNumero(comprobante.getCodigo());
 	}
 
-	public Boolean baja(Documento documento) throws ValidationException, PermisosException {
+	public Boolean baja(Documento documento) throws ValidationException,
+			PermisosException {
 		return getService().borrar(documento);
 	}
-	
-	public Boolean borrarCotizaciones(String cotizaciones) throws ValidationException, PermisosException {
+
+	public Boolean borrarCotizaciones(String cotizaciones)
+			throws ValidationException, PermisosException {
 		return getService().borrarCotizaciones(cotizaciones);
 	}
-	
+
 	public String obtenerClaveSupervisora() {
 		return "";
 	}
@@ -669,12 +905,13 @@ public class RemoteServiceHandler {
 	public void guardarClaveSupervisora(String clave) {
 	}
 
-	//////////////////
+	// ////////////////
 	// COTIZACIONES //
-	//////////////////
+	// ////////////////
 
 	public CotizacionesMonedas getCotizacionHoy() {
-		CotizacionesMonedas cotizacion =  getMonedasCotizacionesService().getCotizacion(new Date());
+		CotizacionesMonedas cotizacion = getMonedasCotizacionesService()
+				.getCotizacion(new Date());
 		if (cotizacion != null) {
 			return cotizacion;
 		} else {
@@ -683,57 +920,65 @@ public class RemoteServiceHandler {
 				return cotizaciones.get(0);
 			} else {
 				throw new RuntimeException("No hay cotizaciónes definidas.");
-			}			
+			}
 		}
 	}
-	
+
 	public CotizacionesMonedas getUltimaCotizacion(Date fechaHasta) {
-		CotizacionesMonedas cotizacion = getMonedasCotizacionesService().getUltimaCotizacion(fechaHasta);
+		CotizacionesMonedas cotizacion = getMonedasCotizacionesService()
+				.getUltimaCotizacion(fechaHasta);
 		if (cotizacion != null) {
 			return cotizacion;
 		} else {
 			throw new RuntimeException("No hay cotización definida.");
-		}		
+		}
 	}
 
 	public CotizacionesMonedas getCotizacion(Date fecha) {
-		CotizacionesMonedas cotizacion =  getMonedasCotizacionesService().getCotizacion(fecha);
+		CotizacionesMonedas cotizacion = getMonedasCotizacionesService()
+				.getCotizacion(fecha);
 		if (cotizacion != null) {
 			return cotizacion;
 		} else {
 			throw new RuntimeException("No hay cotización definida.");
-		}		
+		}
 	}
 
-	public List<LineaDocumento> getLineasCotizadas(String cliId, Date fromDate, Date toDate) {
-		return getService().getLineasCotizadas(cliId, null, Comprobante.COTIZACION, fromDate, toDate, 1000);
+	public List<LineaDocumento> getLineasCotizadas(String cliId, Date fromDate,
+			Date toDate) {
+		return getService().getLineasCotizadas(cliId, null,
+				Comprobante.COTIZACION, fromDate, toDate, 1000);
 	}
 
-	public List<LineaDocumento> getLineasCotizadas(String cliId, String artId, Date fromDate, Date toDate) {
-		return getService().getLineasCotizadas(cliId, artId, Comprobante.COTIZACION, fromDate, toDate, 1000);
+	public List<LineaDocumento> getLineasCotizadas(String cliId, String artId,
+			Date fromDate, Date toDate) {
+		return getService().getLineasCotizadas(cliId, artId,
+				Comprobante.COTIZACION, fromDate, toDate, 1000);
 	}
-	
+
 	public List<CotizacionesMonedas> getCotizaciones(Date fromDate) {
-		List<CotizacionesMonedas> list =  getMonedasCotizacionesService().getCotizacionesMonedas(fromDate);
-		
+		List<CotizacionesMonedas> list = getMonedasCotizacionesService()
+				.getCotizacionesMonedas(fromDate);
+
 		return list;
 	}
-	
+
 	public Boolean altaCotizacion(CotizacionesMonedas cotizacion) {
-		CotizacionesMonedas c =  getMonedasCotizacionesService().getCotizacion(cotizacion.getDia());
+		CotizacionesMonedas c = getMonedasCotizacionesService().getCotizacion(
+				cotizacion.getDia());
 		if (c != null) {
 			getMonedasCotizacionesService().merge(cotizacion);
 		} else {
 			getMonedasCotizacionesService().persist(cotizacion);
 		}
-		
-		return true;		
+
+		return true;
 	}
 
 	public void actualizarCotizacion(CotizacionesMonedas cotizacion) {
 		getMonedasCotizacionesService().merge(cotizacion);
 	}
-	
+
 	// ///////////
 	// ARTÍCULO //
 	// ///////////
@@ -744,7 +989,7 @@ public class RemoteServiceHandler {
 	public void modificarArticulo(Articulo articulo) {
 		getArticulosService().merge(articulo);
 	}
-	
+
 	public void activarArticulos(List<Articulo> articulos) {
 		for (Articulo articulo : articulos) {
 			Articulo a = findCatalogEntity("Articulo", articulo.getCodigo());
@@ -757,30 +1002,31 @@ public class RemoteServiceHandler {
 		Articulo articulo = findCatalogEntity("Articulo", codigo);
 		getArticulosService().delete(articulo);
 	}
-	
+
 	public void updatePrecios(List<ArticuloPrecio> precios) {
 		for (ArticuloPrecio articuloPrecio : precios) {
-			getArticulosService().updateArticuloPrecio(articuloPrecio);	
-		}	
-		
+			getArticulosService().updateArticuloPrecio(articuloPrecio);
+		}
+
 	}
-	
-	/////////////
+
+	// ///////////
 	// CLIENTE //
-	/////////////
+	// ///////////
 
 	public String altaCliente(Cliente cliente) {
-		if (cliente != null && cliente.getContacto() != null && cliente.getContacto().getUsuIdCto() == 0) {
+		if (cliente != null && cliente.getContacto() != null
+				&& cliente.getContacto().getUsuIdCto() == 0) {
 			cliente.getContacto().setUsuIdCto(null);
 		}
 		return getClientesService().persist(cliente, false);
 	}
-	
+
 	public String verifyAltaCliente(Cliente cliente) {
 		Contacto contacto = cliente.getContacto();
 		contacto.setCodigo(cliente.getCodigo());
 		contacto.setNombre(cliente.getNombre());
-		
+
 		return getClientesService().verifyContacto(contacto);
 	}
 
@@ -793,14 +1039,16 @@ public class RemoteServiceHandler {
 	}
 
 	public String altaCliente(Cliente cliente, Boolean force) {
-		if (cliente != null && cliente.getContacto() != null && cliente.getContacto().getUsuIdCto() == 0) {
+		if (cliente != null && cliente.getContacto() != null
+				&& cliente.getContacto().getUsuIdCto() == 0) {
 			cliente.getContacto().setUsuIdCto(null);
 		}
 		return getClientesService().persist(cliente, force);
 	}
 
 	public void modificarCliente(Cliente cliente) {
-		if (cliente != null && cliente.getContacto() != null && cliente.getContacto().getUsuIdCto() == 0) {
+		if (cliente != null && cliente.getContacto() != null
+				&& cliente.getContacto().getUsuIdCto() == 0) {
 			cliente.getContacto().setUsuIdCto(null);
 		}
 		getClientesService().merge(cliente);
@@ -824,38 +1072,40 @@ public class RemoteServiceHandler {
 		return true;
 	}
 
-	public List<ClienteDTO> queryClientes(ClienteQuery paramClienteQuery) throws ValidationException {
+	public List<ClienteDTO> queryClientes(ClienteQuery paramClienteQuery)
+			throws ValidationException {
 		return getClientesService().queryClientes(paramClienteQuery);
 	}
-	
+
 	public List<ContactoDTO> queryContactos(ContactoQuery paramContactoQuery) {
 		return getClientesService().queryContactos(paramContactoQuery);
 	}
 
-	
-	/////////////////
+	// ///////////////
 	// PROVEEDORES //
-	/////////////////
+	// ///////////////
 
 	public String altaProveedor(Proveedor proveedor) {
-		if (proveedor != null && proveedor.getContacto() != null && proveedor.getContacto().getUsuIdCto() == 0) {
+		if (proveedor != null && proveedor.getContacto() != null
+				&& proveedor.getContacto().getUsuIdCto() == 0) {
 			proveedor.getContacto().setUsuIdCto(null);
 		}
 		return getClientesService().persist(proveedor);
 	}
 
 	public void modificarProveedor(Proveedor proveedor) {
-		if (proveedor != null && proveedor.getContacto() != null && proveedor.getContacto().getUsuIdCto() == 0) {
+		if (proveedor != null && proveedor.getContacto() != null
+				&& proveedor.getContacto().getUsuIdCto() == 0) {
 			proveedor.getContacto().setUsuIdCto(null);
 		}
 		getClientesService().merge(proveedor);
 	}
-	
+
 	public Boolean borrarProveedor(String codigo) {
 		Proveedor proveedor = findCatalogEntity("Proveedor", codigo);
 		proveedor.getContacto().setCtoActivo("N");
 		getClientesService().merge(proveedor);
-		
+
 		return true;
 	}
 
@@ -863,17 +1113,17 @@ public class RemoteServiceHandler {
 		Proveedor proveedor = findCatalogEntity("Proveedor", codigo);
 		proveedor.getContacto().setCtoActivo(stateActivo ? "S" : "N");
 		getClientesService().merge(proveedor);
-		
+
 		return true;
 	}
-	
+
 	public List<ProveedorDTO> queryProveedores(ProveedoresQuery paramProvQuery) {
 		return getClientesService().queryProveedores(paramProvQuery);
 	}
 
-	//////////////
+	// ////////////
 	// PERSONAS //
-	//////////////
+	// ////////////
 
 	public List<Persona> getPersonas(String codigo) {
 		return getClientesService().queryPersonas(codigo);
@@ -882,38 +1132,39 @@ public class RemoteServiceHandler {
 	public String altaPersona(Persona persona) {
 		return getClientesService().persist(persona);
 	}
-	
+
 	public void editarPersona(Persona persona) {
 		getClientesService().merge(persona);
 	}
-	
+
 	public Boolean borrarPersona(Persona persona) {
 		return getClientesService().delete(persona);
 	}
 
-
-	///////////////
+	// /////////////
 	// ARTICULOS //
-	///////////////
-	
+	// /////////////
+
 	public List<ArticuloDTO> queryArticulos(ArticuloQuery paramArticuloQuery) {
 		return getArticulosService().queryArticulos(paramArticuloQuery);
 	}
-	
-	public Documento convertirMovimientoStock(Documento oldDoc, Documento newDoc) throws PermisosException {
+
+	public Documento convertirMovimientoStock(Documento oldDoc, Documento newDoc)
+			throws PermisosException {
 		return convertirMovimientoStock(oldDoc, newDoc, true);
 	}
-	
-	public Documento convertirMovimientoStock(Documento oldDoc, Documento newDoc, Boolean saveDoc) throws PermisosException {
+
+	public Documento convertirMovimientoStock(Documento oldDoc,
+			Documento newDoc, Boolean saveDoc) throws PermisosException {
 		try {
-			if (!newDoc.getComprobante().isCredito())  {
+			if (!newDoc.getComprobante().isCredito()) {
 				newDoc.setCuotasDocumento(new CuotasDocumento(newDoc));
 			} else {
-				if (newDoc.getPlanPagos() ==  null) {
+				if (newDoc.getPlanPagos() == null) {
 					newDoc.setPlanPagos(new PlanPagos());
 				}
-			}			
-			
+			}
+
 			if (oldDoc.getPrevDocId() == null) { // Es la solicitud...
 				oldDoc.setProcessId(oldDoc.getDocId());
 			}
@@ -921,19 +1172,19 @@ public class RemoteServiceHandler {
 			newDoc.setProcessId(oldDoc.getProcessId());
 
 			String nextDocId = alta(newDoc);
-			
+
 			// Ajustar datos en documento anterior
 			oldDoc.setNextDocId(nextDocId);
-						
+
 			// Finalizar documento convertido
 			if (oldDoc.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES) {
 				finalizarMovimientoStock(oldDoc);
-			} else {			
+			} else {
 				getService().emitir(oldDoc, null);
 			}
 			Documento nuevoDocumento = getDocumento(nextDocId);
 			return nuevoDocumento;
-			
+
 		} catch (ValidationException e) {
 			// Si no se pudo borrar y si dar de alta, Borrar el alta.
 			if (oldDoc.getNextDocId() != null) {
@@ -945,19 +1196,22 @@ public class RemoteServiceHandler {
 				}
 			}
 		}
-		
+
 		return null;
 	}
-	
-	public Boolean finalizarMovimientoStock(Documento documento) throws PermisosException {
+
+	public Boolean finalizarMovimientoStock(Documento documento)
+			throws PermisosException {
 		return getService().finalizarMovimientoStock(documento);
 	}
-	
-	public Boolean finalizarCompra(Documento documento) throws PermisosException {
+
+	public Boolean finalizarCompra(Documento documento)
+			throws PermisosException {
 		return getService().finalizarCompra(documento);
 	}
 
-	public Boolean finalizarRecibo(Documento documento) throws PermisosException {
+	public Boolean finalizarRecibo(Documento documento)
+			throws PermisosException {
 		return getService().finalizarRecibo(documento);
 	}
 
@@ -985,45 +1239,52 @@ public class RemoteServiceHandler {
 		return getFanfoldService().remove(fanfold);
 	}
 
-	public SerieNumero emitir(String docId, String fanfoldId) throws ValidationException, PermisosException {
+	public SerieNumero emitir(String docId, String fanfoldId)
+			throws ValidationException, PermisosException {
 		Documento documento = getDocumento(docId);
 		return emitir(documento, fanfoldId);
 	}
 
-	public SerieNumero emitir(Documento documento, String fanfoldId) throws ValidationException, PermisosException {
-		String monedaId = documento.getMoneda().getCodigo();	
+	public SerieNumero emitir(Documento documento, String fanfoldId)
+			throws ValidationException, PermisosException {
+		String monedaId = documento.getMoneda().getCodigo();
 		if (monedaId.equals(Moneda.CODIGO_MONEDA_DOLAR_ASTER)) {
 			monedaId = Moneda.CODIGO_MONEDA_DOLAR;
 		}
 		if (monedaId.equals(Moneda.CODIGO_MONEDA_EUROS_ASTER)) {
 			monedaId = Moneda.CODIGO_MONEDA_EUROS;
 		}
-		
+
 		if (!documento.getComprobante().isRecibo()) {
-			if (!monedaId.equals(Moneda.CODIGO_MONEDA_PESOS) && !monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
-				BigDecimal tcFiscal = getService().getTipoCambioFiscal(monedaId, new Date());
+			if (!monedaId.equals(Moneda.CODIGO_MONEDA_PESOS)
+					&& !monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
+				BigDecimal tcFiscal = getService().getTipoCambioFiscal(
+						monedaId, new Date());
 				if (tcFiscal == null) {
-					throw new RuntimeException("No hay tipo de cambio fiscal definido para el día de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
+					throw new RuntimeException(
+							"No hay tipo de cambio fiscal definido para el día de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
 				}
 				documento.setDocTCF(tcFiscal);
 			}
 		} else if (documento.getComprobante().isRecibo()) {
-			if (monedaId.equals(Moneda.CODIGO_MONEDA_PESOS) || monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
-				documento.setDocTCF(BigDecimal.ONE);	
+			if (monedaId.equals(Moneda.CODIGO_MONEDA_PESOS)
+					|| monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
+				documento.setDocTCF(BigDecimal.ONE);
 			}
 		}
-				
+
 		return getService().emitir(documento, fanfoldId);
 	}
-	
+
 	public Boolean existeTCFiscal() {
-		String monedaId = Moneda.CODIGO_MONEDA_DOLAR;		
+		String monedaId = Moneda.CODIGO_MONEDA_DOLAR;
 		return existeTCFiscal(monedaId);
-		
+
 	}
-	
+
 	public Boolean existeTCFiscal(String monedaId) {
-		if (monedaId.equals(Moneda.CODIGO_MONEDA_PESOS) || monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
+		if (monedaId.equals(Moneda.CODIGO_MONEDA_PESOS)
+				|| monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
 			return true;
 		}
 		if (monedaId.equals(Moneda.CODIGO_MONEDA_DOLAR_ASTER)) {
@@ -1032,13 +1293,14 @@ public class RemoteServiceHandler {
 		if (monedaId.equals(Moneda.CODIGO_MONEDA_EUROS_ASTER)) {
 			monedaId = Moneda.CODIGO_MONEDA_EUROS;
 		}
-		BigDecimal tcFiscal = getService().getTipoCambioFiscal(monedaId, new Date());
+		BigDecimal tcFiscal = getService().getTipoCambioFiscal(monedaId,
+				new Date());
 		if (tcFiscal == null) {
 			return false;
 		}
 		return true;
 	}
-	
+
 	public List<String> obtenerDuplicados(Date desde, Date hasta) {
 		if (desde == null) {
 			desde = new Date();
@@ -1046,49 +1308,59 @@ public class RemoteServiceHandler {
 		if (hasta == null) {
 			hasta = new Date();
 		}
-		
+
 		return getEFacturaService().obtenerDuplicados(desde, hasta);
 	}
-	
-	public Documento moveToNextDocument(Documento documento) throws PermisosException {
+
+	public Documento moveToNextDocument(Documento documento)
+			throws PermisosException {
 		try {
 			// Obtener siguiente.
 			String nextDocId = documento.getNextDocId();
-			
+
 			// Próximo documento
 			Documento nextDoc = getDocumento(nextDocId);
 			if (nextDoc == null) {
-				throw new RuntimeException("No se encontró el documento siguiente.\nEl mismo fué borrado o no existe.");
+				throw new RuntimeException(
+						"No se encontró el documento siguiente.\nEl mismo fué borrado o no existe.");
 			}
-			
+
 			return nextDoc;
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
-	public Documento moveToPrevDocument(Documento documento) throws PermisosException {
+
+	public Documento moveToPrevDocument(Documento documento)
+			throws PermisosException {
 		try {
-			if (documento.getPrevDocId() == null || documento.getPrevDocId().equals("0") || documento.getNextDocId() != null || documento.getProcessId() == null) {
-				throw new RuntimeException("No se encontró el documento anterior.\nEl mismo fué borrado o no existe.");
+			if (documento.getPrevDocId() == null
+					|| documento.getPrevDocId().equals("0")
+					|| documento.getNextDocId() != null
+					|| documento.getProcessId() == null) {
+				throw new RuntimeException(
+						"No se encontró el documento anterior.\nEl mismo fué borrado o no existe.");
 			} else {
 				if (getService().borrar(documento, true)) {
-					System.out.println("Se borro el documento " + documento.getDocId());
+					System.out.println("El documento " + documento.getDocId()
+							+ " ha sido eliminado.");
 				}
 			}
-			
+
 			// Obtener comprobante previo.
 			String prevDocId = documento.getPrevDocId();
-			
+
 			Documento prevDoc = getDocumento(prevDocId);
 			if (prevDoc == null) {
-				throw new RuntimeException("No se encontró el documento anterior.\nEl mismo fué borrado o no existe.");
-			}			
+				throw new RuntimeException(
+						"No se encontró el documento anterior.\nEl mismo fué borrado o no existe.");
+			}
 			if (prevDoc.getNextDocId() == null) {
-				throw new RuntimeException("Esta acción esta disponible solo para procesos realizados con versión Facturador-v1.6.630 o superior.");
+				throw new RuntimeException(
+						"Esta acción esta disponible solo para procesos realizados con versión Facturador-v1.6.630 o superior.");
 			}
 
 			prevDoc.setNextDocId(null);
@@ -1100,11 +1372,12 @@ public class RemoteServiceHandler {
 		} catch (ValidationException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
-	}	
-	
-	public Documento updateDocumento(Documento documento) throws PermisosException, ValidationException {
+	}
+
+	public Documento updateDocumento(Documento documento)
+			throws PermisosException, ValidationException {
 		try {
 			if (!documento.getComprobante().isAster()) {
 				return getEFacturaService().updateDocumento(documento);
@@ -1113,24 +1386,31 @@ public class RemoteServiceHandler {
 			ex.printStackTrace();
 		}
 		return null;
-		
+
 	}
-	
-	public EFacturaResult generateCFE(Documento documento) throws PermisosException {
+
+	public EFacturaResult generateCFE(Documento documento)
+			throws PermisosException {
 		String monedaId = documento.getMoneda().getCodigo();
-		
-		if (!monedaId.equals(Moneda.CODIGO_MONEDA_PESOS) && !monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
-			BigDecimal tcFiscal = getService().getTipoCambioFiscal(monedaId, new Date());
+
+		if (!monedaId.equals(Moneda.CODIGO_MONEDA_PESOS)
+				&& !monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
+			BigDecimal tcFiscal = getService().getTipoCambioFiscal(monedaId,
+					new Date());
 			if (tcFiscal == null) {
-				throw new RuntimeException("No hay tipo de cambio fiscal definido para el día de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
+				throw new RuntimeException(
+						"No hay tipo de cambio fiscal definido para el día de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
 			}
 		}
 		if (esContingencia(documento.getComprobante().getCodigo())) {
-			if (documento.getSerie() == null || documento.getSerie().trim().equals("")) {
-				throw new RuntimeException("La serie en contingencias es requerido");
+			if (documento.getSerie() == null
+					|| documento.getSerie().trim().equals("")) {
+				throw new RuntimeException(
+						"La serie en contingencias es requerido");
 			}
 			if (documento.getNumero() == null) {
-				throw new RuntimeException("El número en contingencias es requerido");
+				throw new RuntimeException(
+						"El número en contingencias es requerido");
 			}
 		} else {
 			documento.setSerie(null);
@@ -1142,43 +1422,53 @@ public class RemoteServiceHandler {
 				return getEFacturaService().generarEfactura(documento);
 			}
 		} catch (IOException ex) {
-			throw new RuntimeException("Error al generar EFactura. " + ex.getLocalizedMessage());
-			
+			throw new RuntimeException("Error al generar EFactura. "
+					+ ex.getLocalizedMessage());
+
 		}
 		return null;
 	}
-	
+
 	private Boolean esContingencia(String codigo) {
-		if (codigo.equals("300") || codigo.equals("301") || codigo.equals("302") || codigo.equals("303") || codigo.equals("304") || codigo.equals("305") || codigo.equals("306") || codigo.equals("307")) {
+		if (codigo.equals("300") || codigo.equals("301")
+				|| codigo.equals("302") || codigo.equals("303")
+				|| codigo.equals("304") || codigo.equals("305")
+				|| codigo.equals("306") || codigo.equals("307")) {
 			return true;
 		}
 		return false;
 	}
 
-	public Boolean guardar(Documento documento) throws ValidationException, PermisosException {
+	public Boolean guardar(Documento documento) throws ValidationException,
+			PermisosException {
 		if (documento.getDocId() != null) {
 			getService().guardar(documento);
 			return true;
 		}
 		return false;
 	}
-	
-	public Documento guardarDocumento(Documento documento) throws ValidationException, PermisosException {
+
+	public Documento guardarDocumento(Documento documento)
+			throws ValidationException, PermisosException {
 		if (documento.getDocId() == null) {
-			throw new RuntimeException("No fué posible grabar el documento.");	
-		}		
+			throw new RuntimeException("No fué posible grabar el documento.");
+		}
 		return getService().guardar(documento);
 	}
 
-	////////////////////////////////////////
+	// //////////////////////////////////////
 	// DESCUENTOS PROMETIDOS COMPROBANTES //
-	////////////////////////////////////////
-	
-	public List<DescuentoPrometidoComprobante> getDescuentosPrometidos(String cmpid, String categoriaCliente) {
-		return getDescuentosPrometidosService().getDescuentosPrometidos(cmpid, categoriaCliente);
+	// //////////////////////////////////////
+
+	public List<DescuentoPrometidoComprobante> getDescuentosPrometidos(
+			String cmpid, String categoriaCliente) {
+		return getDescuentosPrometidosService().getDescuentosPrometidos(cmpid,
+				categoriaCliente);
 	}
 
-	public void saveDescuentosPrometidos(List<DescuentoPrometidoComprobante> oldValues, List<DescuentoPrometidoComprobante> newValues) {
+	public void saveDescuentosPrometidos(
+			List<DescuentoPrometidoComprobante> oldValues,
+			List<DescuentoPrometidoComprobante> newValues) {
 		DescuentosPrometidosService service = getDescuentosPrometidosService();
 		for (DescuentoPrometidoComprobante descuento : oldValues) {
 			service.remove(descuento);
@@ -1186,22 +1476,24 @@ public class RemoteServiceHandler {
 		for (DescuentoPrometidoComprobante descuento : newValues) {
 			Integer value = new Integer(descuento.getComprobante().getCodigo());
 			descuento.setCmpid(value.intValue());
-			descuento.setCategoriaCliente(descuento.getCategCliente().getCodigo());
+			descuento.setCategoriaCliente(descuento.getCategCliente()
+					.getCodigo());
 
 			service.persist(descuento);
 		}
 	}
 
-	//////////////////
+	// ////////////////
 	// EXPEDICIONES //
-	//////////////////
-	
+	// ////////////////
+
 	public List<AgendaTareaDTO> queryTareas(AgendaTareaQuery query) {
 		return getAgendaTareaService().queryAgendaTareas(query);
 	}
 
 	public List<AgendaTareaDTO> queryTareasSupervisadas(AgendaTareaQuery query) {
-		List<AgendaTareaDTO> tareas = getAgendaTareaService().queryAgendaTareasSupervisadas(query);
+		List<AgendaTareaDTO> tareas = getAgendaTareaService()
+				.queryAgendaTareasSupervisadas(query);
 		return tareas;
 	}
 
@@ -1263,35 +1555,37 @@ public class RemoteServiceHandler {
 	public void modificar(AgendaTarea e) {
 		getAgendaTareaService().merge(e);
 	}
-	
+
 	public void modificarTareaDTO(AgendaTareaDTO e) {
-		AgendaTarea tarea =  getAgendaTarea(String.valueOf(e.getAgeId()));
-		
+		AgendaTarea tarea = getAgendaTarea(String.valueOf(e.getAgeId()));
+
 		if (tarea != null) {
 			tarea.setFechaHora(e.getFechaHora());
 			tarea.setDescripcion(e.getDescripcion());
-			tarea.setOrden(e.getOrden() != null ? new Long(e.getOrden().toString()) : null);
+			tarea.setOrden(e.getOrden() != null ? new Long(e.getOrden()
+					.toString()) : null);
 			tarea.setNroOrden(e.getNroOrden());
 			tarea.setEstado(e.getEstado());
-			
+
 			if (e.getIdUsuAsignado() > 0) {
-				Usuario usuario = findCatalogEntity("Usuario", String.valueOf(e.getIdUsuAsignado()));
+				Usuario usuario = findCatalogEntity("Usuario",
+						String.valueOf(e.getIdUsuAsignado()));
 				tarea.setUsuarioAsignado(usuario);
 			}
 			getAgendaTareaService().merge(tarea);
-		}		
+		}
 	}
 
-		
-	// TODO seguridad: un usuario solo puede hacer tareas donde el es el asignador.
+	// TODO seguridad: un usuario solo puede hacer tareas donde el es el
+	// asignador.
 	public void modificarTareas(List<AgendaTareaDTO> values, Boolean matutino) {
 		for (AgendaTareaDTO t : values) {
-			AgendaTarea tarea =  getAgendaTarea(String.valueOf(t.getAgeId()));
-			
+			AgendaTarea tarea = getAgendaTarea(String.valueOf(t.getAgeId()));
+
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(tarea.getFechaHora());
 			calendar.set(Calendar.HOUR_OF_DAY, matutino ? 8 : 16);
-			
+
 			tarea.setFechaHora(calendar.getTime());
 
 			getAgendaTareaService().merge(tarea);
@@ -1317,7 +1611,8 @@ public class RemoteServiceHandler {
 	 *            Fecha a la que se agenda la tarea
 	 * @return true si la tarea se ha reasignado correctamente.
 	 */
-	public Boolean reagendarTarea(AgendaTarea agendaTarea, Date fechaHasta, Usuario asignado, Boolean matutino) {
+	public Boolean reagendarTarea(AgendaTarea agendaTarea, Date fechaHasta,
+			Usuario asignado, Boolean matutino) {
 		agendaTarea.setEstado("C");
 		agendaTarea.setFechaHoraFin(null); // Poner la fecha del servidor
 		getAgendaTareaService().merge(agendaTarea);
@@ -1331,7 +1626,7 @@ public class RemoteServiceHandler {
 		}
 
 		AgendaTarea tarea = (AgendaTarea) agendaTarea.clone();
-		//tarea.setAgeId(null);
+		// tarea.setAgeId(null);
 		tarea.setEstado("P");
 		tarea.setFechaHoraFin(null);
 		tarea.setFechaHora(calendar.getTime());
@@ -1349,42 +1644,56 @@ public class RemoteServiceHandler {
 	public BigDecimal getTipoCambio(String p1, String p2, Date date) {
 		return getService().getTipoCambio(p1, p2, date);
 	}
-	
+
 	public String getTipoCambioFiscal(String monedaId, Date date) {
-		BigDecimal tipoCambio = getService().getTipoCambioFiscal(monedaId, date);
-		
+		BigDecimal tipoCambio = getService()
+				.getTipoCambioFiscal(monedaId, date);
+
 		if (tipoCambio != null) {
 			return tipoCambio.toString();
 		}
 		return "";
-		
+
 	}
 
-
-	public BigDecimal getMontoMayorCotizacion(String articulo, Date fechaPrecio, String monedaPrecio, BigDecimal precio, String monedaFacturacion, Cotizaciones paramCotizaciones) {
-		return getService().getMontoMayorCotizacion(articulo, fechaPrecio, monedaPrecio, precio, monedaFacturacion, false, paramCotizaciones);
+	public BigDecimal getMontoMayorCotizacion(String articulo,
+			Date fechaPrecio, String monedaPrecio, BigDecimal precio,
+			String monedaFacturacion, Cotizaciones paramCotizaciones) {
+		return getService().getMontoMayorCotizacion(articulo, fechaPrecio,
+				monedaPrecio, precio, monedaFacturacion, false,
+				paramCotizaciones);
 	}
 
-	public BigDecimal getMontoMayorCotizacion(String articulo, Date fechaPrecio, String monedaPrecio, BigDecimal precio, String monedaFacturacion, Boolean esRemito, Cotizaciones paramCotizaciones) {
-		return getService().getMontoMayorCotizacion(articulo, fechaPrecio, monedaPrecio, precio, monedaFacturacion, esRemito, paramCotizaciones);
+	public BigDecimal getMontoMayorCotizacion(String articulo,
+			Date fechaPrecio, String monedaPrecio, BigDecimal precio,
+			String monedaFacturacion, Boolean esRemito,
+			Cotizaciones paramCotizaciones) {
+		return getService().getMontoMayorCotizacion(articulo, fechaPrecio,
+				monedaPrecio, precio, monedaFacturacion, esRemito,
+				paramCotizaciones);
 	}
 
-	public ArticuloPrecio getArticuloPrecio(String articulo, String preciosVenta) throws PermisosException {
+	public ArticuloPrecio getArticuloPrecio(String articulo, String preciosVenta)
+			throws PermisosException {
 		return getArticuloPrecio(articulo, preciosVenta, null);
 	}
-	
-	public ArticuloPrecio getArticuloPrecio(String articulo, String preciosVenta, String monedaId) throws PermisosException {
-		ArticuloPrecio artPrecio = getService().getArticuloPrecio(articulo, preciosVenta);
+
+	public ArticuloPrecio getArticuloPrecio(String articulo,
+			String preciosVenta, String monedaId) throws PermisosException {
+		ArticuloPrecio artPrecio = getService().getArticuloPrecio(articulo,
+				preciosVenta);
 		if (artPrecio == null) {
 			return null;
 		}
 		if (monedaId == null || monedaId.equals(artPrecio.getMndIdPrecio())) {
 			return artPrecio;
 		} else {
-			BigDecimal nuevoPrecio = convertPrecio(artPrecio.getPrecio(), artPrecio.getMndIdPrecio(), monedaId);
+			BigDecimal nuevoPrecio = convertPrecio(artPrecio.getPrecio(),
+					artPrecio.getMndIdPrecio(), monedaId);
 			Moneda nuevaMoneda = null;
 			List<Moneda> monedas = getCatalogoByName("Moneda");
-			for (Iterator<Moneda> iterator = monedas.iterator(); iterator.hasNext();) {
+			for (Iterator<Moneda> iterator = monedas.iterator(); iterator
+					.hasNext();) {
 				Moneda moneda = (Moneda) iterator.next();
 				if (moneda.getCodigo().equals(moneda.getCodigo())) {
 					nuevaMoneda = moneda;
@@ -1394,85 +1703,105 @@ public class RemoteServiceHandler {
 			artPrecio.setPrecio(nuevoPrecio);
 			artPrecio.setMoneda(nuevaMoneda);
 			artPrecio.setMndIdPrecio(nuevaMoneda.getCodigo());
-			
+
 			return artPrecio;
 		}
-		
+
 	}
-	
+
 	/**
-	 * Para una precio de 100 pesos
-	 *	100 / 32 = 3.125 dolares
-	 *	100 / 35 = 2.857 euros
-	 *
-	 * Para una precio de 100 pesos
-	 *	100 * 33 = 3300 pesos
-	 *  100 * (32 / 35) = 91.428 dólares
-	 *  
-	 * Para un precio de 100 euros
-	 *	100 * 39 = 3900 pesos
-	 *	100 * (39 / 33) = 118.1818 dólares
+	 * Para una precio de 100 pesos 100 / 32 = 3.125 dolares 100 / 35 = 2.857
+	 * euros
+	 * 
+	 * Para una precio de 100 pesos 100 * 33 = 3300 pesos 100 * (32 / 35) =
+	 * 91.428 dólares
+	 * 
+	 * Para un precio de 100 euros 100 * 39 = 3900 pesos 100 * (39 / 33) =
+	 * 118.1818 dólares
 	 */
-	public BigDecimal convertPrecio(BigDecimal precio, String monedaOrigen, String monedaDestino) {
-		Calendar calendar = Calendar.getInstance(); 
-		//calendar.add(Calendar.DAY_OF_MONTH, -15);
-		List<CotizacionesMonedas> tiposCambio =  getMonedasCotizacionesService().getCotizacionesMonedas(calendar.getTime());
+	public BigDecimal convertPrecio(BigDecimal precio, String monedaOrigen,
+			String monedaDestino) {
+		Calendar calendar = Calendar.getInstance();
+		// calendar.add(Calendar.DAY_OF_MONTH, -15);
+		List<CotizacionesMonedas> tiposCambio = getMonedasCotizacionesService()
+				.getCotizacionesMonedas(calendar.getTime());
 		if (tiposCambio.size() < 1) {
 			return precio;
 		}
 		CotizacionesMonedas tipoCambio = tiposCambio.get(0);
-		
-		BigDecimal dolarCompra = tipoCambio.getDolarCompra().setScale(4, RoundingMode.HALF_UP);
-		BigDecimal dolarVenta = tipoCambio.getDolarVenta().setScale(4, RoundingMode.HALF_UP);
-		BigDecimal euroCompra = tipoCambio.getEuroCompra().setScale(4, RoundingMode.HALF_UP);
-		BigDecimal euroVenta = tipoCambio.getEuroVenta().setScale(4, RoundingMode.HALF_UP);
-		
+
+		BigDecimal dolarCompra = tipoCambio.getDolarCompra().setScale(4,
+				RoundingMode.HALF_UP);
+		BigDecimal dolarVenta = tipoCambio.getDolarVenta().setScale(4,
+				RoundingMode.HALF_UP);
+		BigDecimal euroCompra = tipoCambio.getEuroCompra().setScale(4,
+				RoundingMode.HALF_UP);
+		BigDecimal euroVenta = tipoCambio.getEuroVenta().setScale(4,
+				RoundingMode.HALF_UP);
+
 		if (monedaOrigen.equals(Moneda.CODIGO_MONEDA_PESOS)) {
 			if (monedaDestino.equals(Moneda.CODIGO_MONEDA_DOLAR)) {
-				return precio.setScale(4, RoundingMode.HALF_UP).divide(dolarCompra, 4, RoundingMode.HALF_UP).setScale(4, RoundingMode.HALF_UP); 
-			} else if (monedaDestino.equals(Moneda.CODIGO_MONEDA_EUROS)) { 
-				return precio.setScale(4, RoundingMode.HALF_UP).divide(euroCompra, 4, RoundingMode.HALF_UP).setScale(4, RoundingMode.HALF_UP);
-			}			
-		} else if (monedaOrigen.equals(Moneda.CODIGO_MONEDA_DOLAR)) { 
+				return precio.setScale(4, RoundingMode.HALF_UP)
+						.divide(dolarCompra, 4, RoundingMode.HALF_UP)
+						.setScale(4, RoundingMode.HALF_UP);
+			} else if (monedaDestino.equals(Moneda.CODIGO_MONEDA_EUROS)) {
+				return precio.setScale(4, RoundingMode.HALF_UP)
+						.divide(euroCompra, 4, RoundingMode.HALF_UP)
+						.setScale(4, RoundingMode.HALF_UP);
+			}
+		} else if (monedaOrigen.equals(Moneda.CODIGO_MONEDA_DOLAR)) {
 			if (monedaDestino.equals(Moneda.CODIGO_MONEDA_PESOS)) {
-				return precio.setScale(4, RoundingMode.HALF_UP).multiply(dolarVenta).setScale(4, RoundingMode.HALF_UP);
-			} else if (monedaDestino.equals(Moneda.CODIGO_MONEDA_EUROS)) { 
-				return precio.setScale(4, RoundingMode.HALF_UP).multiply(dolarCompra.divide(euroCompra, 4, RoundingMode.HALF_UP)).setScale(4, RoundingMode.HALF_UP);
-			}			
+				return precio.setScale(4, RoundingMode.HALF_UP)
+						.multiply(dolarVenta).setScale(4, RoundingMode.HALF_UP);
+			} else if (monedaDestino.equals(Moneda.CODIGO_MONEDA_EUROS)) {
+				return precio
+						.setScale(4, RoundingMode.HALF_UP)
+						.multiply(
+								dolarCompra.divide(euroCompra, 4,
+										RoundingMode.HALF_UP))
+						.setScale(4, RoundingMode.HALF_UP);
+			}
 		} else if (monedaOrigen.equals(Moneda.CODIGO_MONEDA_EUROS)) {
 			if (monedaDestino.equals(Moneda.CODIGO_MONEDA_PESOS)) {
-				return precio.setScale(4, RoundingMode.HALF_UP).multiply(euroVenta).setScale(4, RoundingMode.HALF_UP);
-			} else if (monedaDestino.equals(Moneda.CODIGO_MONEDA_DOLAR)) { 
-				return precio.setScale(4, RoundingMode.HALF_UP).multiply(euroVenta).divide(dolarVenta, 4, RoundingMode.HALF_UP).setScale(4, RoundingMode.HALF_UP);
+				return precio.setScale(4, RoundingMode.HALF_UP)
+						.multiply(euroVenta).setScale(4, RoundingMode.HALF_UP);
+			} else if (monedaDestino.equals(Moneda.CODIGO_MONEDA_DOLAR)) {
+				return precio.setScale(4, RoundingMode.HALF_UP)
+						.multiply(euroVenta)
+						.divide(dolarVenta, 4, RoundingMode.HALF_UP)
+						.setScale(4, RoundingMode.HALF_UP);
 			}
-			
+
 		}
-		
+
 		return BigDecimal.ZERO;
 	}
-	
-	public int obtenerUltimoDiaMes (int anio, int mes) {
+
+	public int obtenerUltimoDiaMes(int anio, int mes) {
 		Calendar cal = Calendar.getInstance();
 		cal.set(anio, mes, 1);
 		return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 	}
 
-	public BigDecimal getArticuloCosto(String articulo) throws PermisosException {
-		Articulo a = getCatalogService().findCatalogEntity("Articulo", articulo);
+	public BigDecimal getArticuloCosto(String articulo)
+			throws PermisosException {
+		Articulo a = getCatalogService()
+				.findCatalogEntity("Articulo", articulo);
 		String familiaId = a.getFamiliaId();
 		BigDecimal costo = a.getCosto();
-		
+
 		Usuario usuarioLogin = getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
-		
-		Boolean hasPerm = esSupervisor 
-			|| Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
-			|| Usuario.USUARIO_FACTURACION.equals(permisoId) 
-			|| Usuario.USUARIO_VENDEDOR_SENIOR.equals(permisoId);
-		
+
+		Boolean hasPerm = esSupervisor
+				|| Usuario.USUARIO_ADMINISTRADOR.equals(permisoId)
+				|| Usuario.USUARIO_FACTURACION.equals(permisoId)
+				|| Usuario.USUARIO_VENDEDOR_SENIOR.equals(permisoId);
+
 		if (!hasPerm && permisoId.equals(Usuario.USUARIO_ALIADOS_COMERCIALES)) {
-			String regex = System.getProperty("facturator.aliadosComerciales.familias");
+			String regex = System
+					.getProperty("facturator.aliadosComerciales.familias");
 			if (regex != null) {
 				String[] values = regex.split(",");
 				for (int i = 0; i < values.length; i++) {
@@ -1486,37 +1815,40 @@ public class RemoteServiceHandler {
 		if (hasPerm) {
 			return costo;
 		} else {
-			throw new PermisosException("'" + usuarioLogin.getNombre() + "' no tiene permisos para ver costo.");
+			throw new PermisosException("'" + usuarioLogin.getNombre()
+					+ "' no tiene permisos para ver costo.");
 		}
 	}
-	
-	public BigDecimal getPrecioSugerido(String articulo, String preciosVenta, String monedaFacturacion) throws PermisosException  {
+
+	public BigDecimal getPrecioSugerido(String articulo, String preciosVenta,
+			String monedaFacturacion) throws PermisosException {
 		Usuario usuarioLogin = getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
 		Boolean hasPerm = false;
-	
+
 		if (preciosVenta.equals("1")) {
-			hasPerm = esSupervisor 
-				|| permisoId.equals(Usuario.USUARIO_ADMINISTRADOR) 
-				|| permisoId.equals(Usuario.USUARIO_FACTURACION) 
-				|| permisoId.equals(Usuario.USUARIO_VENDEDOR_SENIOR) 
-				|| permisoId.equals(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR); 
+			hasPerm = esSupervisor
+					|| permisoId.equals(Usuario.USUARIO_ADMINISTRADOR)
+					|| permisoId.equals(Usuario.USUARIO_FACTURACION)
+					|| permisoId.equals(Usuario.USUARIO_VENDEDOR_SENIOR)
+					|| permisoId.equals(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR);
 		} else if (preciosVenta.equals("2") || preciosVenta.equals("3")) {
 			hasPerm = true;
 		} else if (preciosVenta.equals("4")) {
-			hasPerm = esSupervisor 
-				|| permisoId.equals(Usuario.USUARIO_ADMINISTRADOR) 
-				|| permisoId.equals(Usuario.USUARIO_FACTURACION) 
-				|| permisoId.equals(Usuario.USUARIO_VENDEDOR_SENIOR)
-				|| permisoId.equals(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR);
+			hasPerm = esSupervisor
+					|| permisoId.equals(Usuario.USUARIO_ADMINISTRADOR)
+					|| permisoId.equals(Usuario.USUARIO_FACTURACION)
+					|| permisoId.equals(Usuario.USUARIO_VENDEDOR_SENIOR)
+					|| permisoId.equals(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR);
 		}
-		
+
 		Articulo a = findCatalogEntity("Articulo", articulo);
 		String familiaId = a.getFamiliaId();
-		
+
 		if (!hasPerm && permisoId.equals(Usuario.USUARIO_ALIADOS_COMERCIALES)) {
-			String regex = System.getProperty("facturator.aliadosComerciales.familias");
+			String regex = System
+					.getProperty("facturator.aliadosComerciales.familias");
 			if (regex != null) {
 				String[] values = regex.split(",");
 				for (int i = 0; i < values.length; i++) {
@@ -1527,15 +1859,16 @@ public class RemoteServiceHandler {
 				}
 			}
 		}
-		
+
 		if (!hasPerm) {
-			throw new PermisosException("'" + usuarioLogin.getNombre() + "' no tiene permisos.");
+			throw new PermisosException("'" + usuarioLogin.getNombre()
+					+ "' no tiene permisos.");
 		}
-		
+
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
 		cal.add(Calendar.MONTH, -1);
-		
+
 		int mes = cal.get(Calendar.MONTH);
 		int anio = cal.get(Calendar.YEAR);
 
@@ -1546,52 +1879,72 @@ public class RemoteServiceHandler {
 		fechaCotizacion.set(Calendar.MONTH, mes);
 		fechaCotizacion.set(Calendar.DAY_OF_MONTH, ultimoDiaMes);
 
-		CotizacionesMonedas oCotizaciones = getUltimaCotizacion(fechaCotizacion.getTime());
-		
+		CotizacionesMonedas oCotizaciones = getUltimaCotizacion(fechaCotizacion
+				.getTime());
+
 		Cotizaciones cotizaciones = new Cotizaciones();
 		cotizaciones.setFecha(oCotizaciones.getDia());
-		cotizaciones.agregarCotizacion(Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_DOLAR, true, oCotizaciones.getDolarCompra());
-		cotizaciones.agregarCotizacion(Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_DOLAR, false, oCotizaciones.getDolarVenta());
-		cotizaciones.agregarCotizacion(Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_EUROS, true, oCotizaciones.getEuroCompra());
-		cotizaciones.agregarCotizacion(Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_EUROS, false, oCotizaciones.getEuroVenta());
-				
-		return getService().getPrecioSugerido(articulo, preciosVenta, monedaFacturacion, cotizaciones);
+		cotizaciones.agregarCotizacion(Moneda.CODIGO_MONEDA_PESOS,
+				Moneda.CODIGO_MONEDA_DOLAR, true,
+				oCotizaciones.getDolarCompra());
+		cotizaciones.agregarCotizacion(Moneda.CODIGO_MONEDA_PESOS,
+				Moneda.CODIGO_MONEDA_DOLAR, false,
+				oCotizaciones.getDolarVenta());
+		cotizaciones
+				.agregarCotizacion(Moneda.CODIGO_MONEDA_PESOS,
+						Moneda.CODIGO_MONEDA_EUROS, true,
+						oCotizaciones.getEuroCompra());
+		cotizaciones
+				.agregarCotizacion(Moneda.CODIGO_MONEDA_PESOS,
+						Moneda.CODIGO_MONEDA_EUROS, false,
+						oCotizaciones.getEuroVenta());
+
+		return getService().getPrecioSugerido(articulo, preciosVenta,
+				monedaFacturacion, cotizaciones);
 	}
-	
-	public BigDecimal getPrecioSugerido(String articulo, String preciosVenta, String monedaFacturacion, Cotizaciones oCotizaciones) {
-		return getService().getPrecioSugerido(articulo, preciosVenta, monedaFacturacion, oCotizaciones);
+
+	public BigDecimal getPrecioSugerido(String articulo, String preciosVenta,
+			String monedaFacturacion, Cotizaciones oCotizaciones) {
+		return getService().getPrecioSugerido(articulo, preciosVenta,
+				monedaFacturacion, oCotizaciones);
 	}
-	
+
 	public List<ArticuloPrecio> getArticuloPrecio(String articulo) {
 		return getArticulosService().getArticuloPrecio(articulo);
 	}
 
-
-	public List<AntecedentesArticulo> getAntecedentes(String articulo, String cliente, int max, boolean venta) throws PermisosException {
+	public List<AntecedentesArticulo> getAntecedentes(String articulo,
+			String cliente, int max, boolean venta) throws PermisosException {
 		return getService().getAntecedentes(articulo, cliente, max, venta);
 	}
 
-	public List<AntecedentesArticulo> getLineasCompraCliente(String cliId, int limit) {
+	public List<AntecedentesArticulo> getLineasCompraCliente(String cliId,
+			int limit) {
 		return getService().getLineasCompraCliente(cliId, null, null, limit);
 	}
 
-	public List<AntecedentesArticulo> getLineasCompraCliente(String cliId, Date fromDate, Date toDate, int limit) {
-		return getService().getLineasCompraCliente(cliId, fromDate, toDate, limit);
+	public List<AntecedentesArticulo> getLineasCompraCliente(String cliId,
+			Date fromDate, Date toDate, int limit) {
+		return getService().getLineasCompraCliente(cliId, fromDate, toDate,
+				limit);
 	}
 
 	public String getResults(String name) {
 		String result = null;
-		result = "Hi " + name + ", this is a service and the time now is : " + new Date();
+		result = "Hi " + name + ", this is a service and the time now is : "
+				+ new Date();
 
 		return result;
 	}
 
-	public TableReportResult getReporteStockPrecios(final ReportParameters parameters) {
+	public TableReportResult getReporteStockPrecios(
+			final ReportParameters parameters) {
 		long start = new Date().getTime();
 		try {
 			return getReportesService().getReporteStockPrecios(parameters);
 		} finally {
-			System.out.println("Tiempo total reporte stock/precio: " + (new Date().getTime() - start));
+			System.out.println("Tiempo total reporte stock/precio: "
+					+ (new Date().getTime() - start));
 		}
 	}
 
@@ -1599,12 +1952,13 @@ public class RemoteServiceHandler {
 		return getReportesService().getMonedasReporte();
 	}
 
-	public byte[] getReporteControlPlus(Date fechaDesde, Date fechaHasta, String rMinima, String rMaxima) {
+	public byte[] getReporteControlPlus(Date fechaDesde, Date fechaHasta,
+			String rMinima, String rMaxima) {
 		long start = new Date().getTime();
-		
+
 		BigDecimal rentaMinima = null;
 		BigDecimal rentaMaxima = null;
-		
+
 		if (rMinima != null && rMinima.length() > 0) {
 			rentaMinima = new BigDecimal(rMinima);
 		}
@@ -1612,39 +1966,48 @@ public class RemoteServiceHandler {
 			rentaMaxima = new BigDecimal(rMaxima);
 		}
 		try {
-			byte[] bytes = getReportesService().generarListadoControlLineasVenta(fechaDesde, fechaHasta, rentaMinima, rentaMaxima);
+			byte[] bytes = getReportesService()
+					.generarListadoControlLineasVenta(fechaDesde, fechaHasta,
+							rentaMinima, rentaMaxima);
 			return bytes;
 		} catch (Exception exc) {
 			return null;
 		} finally {
-			System.out.println("Tiempo total reporte Control Plus: " + (new Date().getTime() - start));
+			System.out.println("Tiempo total reporte Control Plus: "
+					+ (new Date().getTime() - start));
 		}
 
 	}
 
-	public byte[] getReporteLiquidacion(Date fechaDesde, Date fechaHasta, BigDecimal gastosPeriodo) {
+	public byte[] getReporteLiquidacion(Date fechaDesde, Date fechaHasta,
+			BigDecimal gastosPeriodo) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(0);
 		cal.set(2016, 12, 31, 0, 0, 0);
 		Date fechaCorte = cal.getTime();
-		
-		return getReporteLiquidacion(fechaDesde, fechaHasta, fechaCorte, gastosPeriodo);
+
+		return getReporteLiquidacion(fechaDesde, fechaHasta, fechaCorte,
+				gastosPeriodo);
 	}
-		
-	public byte[] getReporteLiquidacion(Date fechaDesde, Date fechaHasta, Date fechaCorte, BigDecimal gastosPeriodo) {
+
+	public byte[] getReporteLiquidacion(Date fechaDesde, Date fechaHasta,
+			Date fechaCorte, BigDecimal gastosPeriodo) {
 		long start = new Date().getTime();
 		try {
-			return getLiquidacionService().generarLiquidacion(fechaDesde, fechaHasta, fechaCorte, gastosPeriodo);
+			return getLiquidacionService().generarLiquidacion(fechaDesde,
+					fechaHasta, fechaCorte, gastosPeriodo);
 		} catch (Exception exc) {
 			return null;
 		} finally {
-			System.out.println("Tiempo total reporte Control Plus: " + (new Date().getTime() - start));
+			System.out.println("Tiempo total reporte Control Plus: "
+					+ (new Date().getTime() - start));
 		}
 	}
-	
-	public byte[] getLiquidacionVendedores(Date fechaDesde, Date fechaHasta, String compsIncluidos, String compsExcluidos) {
+
+	public byte[] getLiquidacionVendedores(Date fechaDesde, Date fechaHasta,
+			String compsIncluidos, String compsExcluidos) {
 		long start = new Date().getTime();
-		
+
 		String[] compsInc = null;
 		if (compsIncluidos != null) {
 			compsInc = compsIncluidos.split(",");
@@ -1655,18 +2018,21 @@ public class RemoteServiceHandler {
 		}
 
 		try {
-			return getReportesService().generarLiquidacionVendedores(fechaDesde, fechaHasta, compsInc, compsExc);
+			return getReportesService().generarLiquidacionVendedores(
+					fechaDesde, fechaHasta, compsInc, compsExc);
 		} catch (Exception exc) {
 			return null;
 		} finally {
-			System.out.println("Tiempo total reporte Control Plus: " + (new Date().getTime() - start));
+			System.out.println("Tiempo total reporte Control Plus: "
+					+ (new Date().getTime() - start));
 		}
 
 	}
-	
-	public byte[] getLiquidacionAfilados(Date fechaDesde, Date fechaHasta, String defaultValue) {
+
+	public byte[] getLiquidacionAfilados(Date fechaDesde, Date fechaHasta,
+			String defaultValue) {
 		long start = new Date().getTime();
-		
+
 		BigDecimal value = BigDecimal.ZERO;
 		try {
 			value = new BigDecimal(defaultValue);
@@ -1674,11 +2040,13 @@ public class RemoteServiceHandler {
 			e.printStackTrace();
 		}
 		try {
-			return getReportesService().generarLiquidacionAfilados(fechaDesde, fechaHasta, value);
+			return getReportesService().generarLiquidacionAfilados(fechaDesde,
+					fechaHasta, value);
 		} catch (Exception exc) {
 			return null;
 		} finally {
-			System.out.println("Tiempo total reporte Control Plus: " + (new Date().getTime() - start));
+			System.out.println("Tiempo total reporte Control Plus: "
+					+ (new Date().getTime() - start));
 		}
 
 	}
@@ -1711,7 +2079,8 @@ public class RemoteServiceHandler {
 	}
 
 	public Boolean esCotizacionDeVenta(String codigoComprobante) {
-		String regex = System.getProperty("facturator.comprobantes.cotizacionVenta");
+		String regex = System
+				.getProperty("facturator.comprobantes.cotizacionVenta");
 		if (regex != null) {
 			String[] values = regex.split(",");
 			for (int i = 0; i < values.length; i++) {
@@ -1738,7 +2107,8 @@ public class RemoteServiceHandler {
 	}
 
 	public Boolean esSolicitudCompra(String codigoComprobante) {
-		String regex = System.getProperty("facturator.comprobantes.solicitudCompra");
+		String regex = System
+				.getProperty("facturator.comprobantes.solicitudCompra");
 		if (regex != null) {
 			String[] values = regex.split(",");
 			for (int i = 0; i < values.length; i++) {
@@ -1775,21 +2145,24 @@ public class RemoteServiceHandler {
 	// }
 	//
 
-	public <T extends CodigoNombreEntity> List<T> getCatalogoByName(String catalog) {
+	public <T extends CodigoNombreEntity> List<T> getCatalogoByName(
+			String catalog) {
 		return getCatalogService().getCatalog(catalog);
 	}
 
-	public <D extends CodigoNombreEntity> D findCatalogEntity(String catalog, String codigo) {
+	public <D extends CodigoNombreEntity> D findCatalogEntity(String catalog,
+			String codigo) {
 		return getCatalogService().findCatalogEntity(catalog, codigo);
 	}
 
-	public  String  sendEmail(String[] addresses, String subject, String body, byte[] attachmentData) {
+	public String sendEmail(String[] addresses, String subject, String body,
+			byte[] attachmentData) {
 		EmailSenderService eMailSender = new EmailSenderService();
 		eMailSender.setSubjectText(subject);
 		eMailSender.setBodyText(body);
 		eMailSender.setAddresses(addresses);
 		eMailSender.setAttachmentData(attachmentData);
-		
+
 		StringBuffer result = new StringBuffer("<result>");
 		try {
 			eMailSender.sendEmail();
@@ -1797,14 +2170,14 @@ public class RemoteServiceHandler {
 			result.append("</result>");
 		} catch (MessagingException me) {
 			result.append("<state>false</state>");
-			
-			String details = me.toString().replace("<", "[").replace(">","]");
-			
+
+			String details = me.toString().replace("<", "[").replace(">", "]");
+
 			result.append("<message>").append(details).append("</message>");
 			result.append("</result>");
-			
+
 			me.printStackTrace();
-		} 
+		}
 		return result.toString();
 
 	}
@@ -1824,7 +2197,7 @@ public class RemoteServiceHandler {
 	public BigDecimal getStock(String articulo, String deposito) {
 		return getService().getStock(articulo, deposito);
 	}
-	
+
 	public List<StockActual> getStockActual(String articuloId) {
 		return getService().getStockActual(articuloId);
 	}
@@ -1832,13 +2205,14 @@ public class RemoteServiceHandler {
 	public List<AgendaTareaDTO> getAgendaTareas(String usuario) {
 		return getAgendaTareaService().getAgendaTareas(usuario);
 	}
-	
+
 	public AgendaTarea getAgendaTarea(String tareaId) {
 		return getAgendaTareaService().getAgendaTarea(tareaId);
 	}
 
 	public List<DocumentoDeudor> getDocumentosDeudores() {
-		List<DocumentoDeudor> deudores = getLiquidacionService().getDocumentosDeudores(new Date());
+		List<DocumentoDeudor> deudores = getLiquidacionService()
+				.getDocumentosDeudores(new Date());
 		return deudores;
 	}
 
@@ -1847,10 +2221,12 @@ public class RemoteServiceHandler {
 			LiquidacionService service;
 			InitialContext ctx;
 			ctx = new InitialContext();
-			service = (LiquidacionService) ctx.lookup("facturator-server-ear/LiquidacionServiceImpl/local");
+			service = (LiquidacionService) ctx
+					.lookup("facturator-server-ear/LiquidacionServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (LiquidacionService) liquidacionServiceProxyClassConstructor.newInstance(handler);
+			service = (LiquidacionService) liquidacionServiceProxyClassConstructor
+					.newInstance(handler);
 
 			return service;
 		} catch (NamingException e) {
@@ -1871,10 +2247,12 @@ public class RemoteServiceHandler {
 			DescuentosPrometidosService service;
 			InitialContext ctx;
 			ctx = new InitialContext();
-			service = (DescuentosPrometidosService) ctx.lookup("facturator-server-ear/DescuentosPrometidosServiceImpl/local");
+			service = (DescuentosPrometidosService) ctx
+					.lookup("facturator-server-ear/DescuentosPrometidosServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (DescuentosPrometidosService) descuentosServiceProxyClassConstructor.newInstance(handler);
+			service = (DescuentosPrometidosService) descuentosServiceProxyClassConstructor
+					.newInstance(handler);
 
 			return service;
 		} catch (NamingException e) {
@@ -1894,10 +2272,12 @@ public class RemoteServiceHandler {
 		try {
 			ClientesService service;
 			InitialContext ctx = new InitialContext();
-			service = (ClientesService) ctx.lookup("facturator-server-ear/ClientesServiceImpl/local");
+			service = (ClientesService) ctx
+					.lookup("facturator-server-ear/ClientesServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (ClientesService) clientesServiceProxyClassConstructor.newInstance(handler);
+			service = (ClientesService) clientesServiceProxyClassConstructor
+					.newInstance(handler);
 			return service;
 		} catch (NamingException e) {
 			throw new RuntimeException(e);
@@ -1916,10 +2296,12 @@ public class RemoteServiceHandler {
 		try {
 			ArticulosService service;
 			InitialContext ctx = new InitialContext();
-			service = (ArticulosService) ctx.lookup("facturator-server-ear/ArticulosServiceImpl/local");
+			service = (ArticulosService) ctx
+					.lookup("facturator-server-ear/ArticulosServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (ArticulosService) articulosServiceProxyClassConstructor.newInstance(handler);
+			service = (ArticulosService) articulosServiceProxyClassConstructor
+					.newInstance(handler);
 			return service;
 		} catch (NamingException e) {
 			throw new RuntimeException(e);
@@ -1934,16 +2316,16 @@ public class RemoteServiceHandler {
 		}
 	}
 
-	
-	
 	private UsuariosService getUsuariosService() {
 		try {
 			UsuariosService service;
 			InitialContext ctx = new InitialContext();
-			service = (UsuariosService) ctx.lookup("facturator-server-ear/UsuariosServiceImpl/local");
+			service = (UsuariosService) ctx
+					.lookup("facturator-server-ear/UsuariosServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (UsuariosService) usuariosServiceProxyClassConstructor.newInstance(handler);
+			service = (UsuariosService) usuariosServiceProxyClassConstructor
+					.newInstance(handler);
 			return service;
 		} catch (NamingException e) {
 			throw new RuntimeException(e);
@@ -1963,10 +2345,12 @@ public class RemoteServiceHandler {
 			ReportesService service;
 			InitialContext ctx;
 			ctx = new InitialContext();
-			service = (ReportesService) ctx.lookup("facturator-server-ear/ReportesServiceImpl/local");
+			service = (ReportesService) ctx
+					.lookup("facturator-server-ear/ReportesServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (ReportesService) reportesServiceProxyClassConstructor.newInstance(handler);
+			service = (ReportesService) reportesServiceProxyClassConstructor
+					.newInstance(handler);
 
 			return service;
 		} catch (NamingException e) {
@@ -1987,10 +2371,12 @@ public class RemoteServiceHandler {
 			EFacturaService service;
 			InitialContext ctx;
 			ctx = new InitialContext();
-			service = (EFacturaService) ctx.lookup("facturator-server-ear/EFacturaServiceImpl/local");
+			service = (EFacturaService) ctx
+					.lookup("facturator-server-ear/EFacturaServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (EFacturaService) eFacturaServiceProxyClassConstructor.newInstance(handler);
+			service = (EFacturaService) eFacturaServiceProxyClassConstructor
+					.newInstance(handler);
 
 			return service;
 		} catch (NamingException e) {
@@ -2011,10 +2397,12 @@ public class RemoteServiceHandler {
 			AgendaTareaService service;
 			InitialContext ctx;
 			ctx = new InitialContext();
-			service = (AgendaTareaService) ctx.lookup("facturator-server-ear/AgendaTareaServiceImpl/local");
+			service = (AgendaTareaService) ctx
+					.lookup("facturator-server-ear/AgendaTareaServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (AgendaTareaService) agendaTareaServiceProxyClassConstructor.newInstance(handler);
+			service = (AgendaTareaService) agendaTareaServiceProxyClassConstructor
+					.newInstance(handler);
 
 			return service;
 		} catch (NamingException e) {
@@ -2035,10 +2423,12 @@ public class RemoteServiceHandler {
 			EntregaService service;
 			InitialContext ctx;
 			ctx = new InitialContext();
-			service = (EntregaService) ctx.lookup("facturator-server-ear/EntregaServiceImpl/local");
+			service = (EntregaService) ctx
+					.lookup("facturator-server-ear/EntregaServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (EntregaService) entregaServiceProxyClassConstructor.newInstance(handler);
+			service = (EntregaService) entregaServiceProxyClassConstructor
+					.newInstance(handler);
 
 			return service;
 		} catch (NamingException e) {
@@ -2053,14 +2443,16 @@ public class RemoteServiceHandler {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	private FanfoldService getFanfoldService() {
 		try {
 			InitialContext ctx = new InitialContext();
-			FanfoldService service = (FanfoldService) ctx.lookup("facturator-server-ear/FanfoldServiceImpl/local");
+			FanfoldService service = (FanfoldService) ctx
+					.lookup("facturator-server-ear/FanfoldServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (FanfoldService) fanfoldServiceProxyClassConstructor.newInstance(handler);
+			service = (FanfoldService) fanfoldServiceProxyClassConstructor
+					.newInstance(handler);
 
 			return service;
 		} catch (NamingException e) {
@@ -2075,17 +2467,18 @@ public class RemoteServiceHandler {
 			throw new RuntimeException(e);
 		}
 	}
-
 
 	private MonedasCotizacionesService getMonedasCotizacionesService() {
 		try {
 			MonedasCotizacionesService service;
 			InitialContext ctx;
 			ctx = new InitialContext();
-			service = (MonedasCotizacionesService) ctx.lookup("facturator-server-ear/MonedasCotizacionesServiceImpl/local");
+			service = (MonedasCotizacionesService) ctx
+					.lookup("facturator-server-ear/MonedasCotizacionesServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (MonedasCotizacionesService) monedasCotizacionesServiceProxyClassConstructor.newInstance(handler);
+			service = (MonedasCotizacionesService) monedasCotizacionesServiceProxyClassConstructor
+					.newInstance(handler);
 
 			return service;
 
@@ -2107,10 +2500,12 @@ public class RemoteServiceHandler {
 			AuditoriaService service;
 			InitialContext ctx;
 			ctx = new InitialContext();
-			service = (AuditoriaService) ctx.lookup("facturator-server-ear/AuditoriaServiceImpl/local");
+			service = (AuditoriaService) ctx
+					.lookup("facturator-server-ear/AuditoriaServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (AuditoriaService) auditoriaServiceProxyClassConstructor.newInstance(handler);
+			service = (AuditoriaService) auditoriaServiceProxyClassConstructor
+					.newInstance(handler);
 
 			return service;
 		} catch (NamingException e) {
@@ -2131,10 +2526,12 @@ public class RemoteServiceHandler {
 			CatalogService service;
 			InitialContext ctx;
 			ctx = new InitialContext();
-			service = (CatalogService) ctx.lookup("facturator-server-ear/CatalogServiceImpl/local");
+			service = (CatalogService) ctx
+					.lookup("facturator-server-ear/CatalogServiceImpl/local");
 
 			MyInvocationHandler handler = new MyInvocationHandler(service);
-			service = (CatalogService) catalogServiceProxyClassConstructor.newInstance(handler);
+			service = (CatalogService) catalogServiceProxyClassConstructor
+					.newInstance(handler);
 
 			return service;
 		} catch (NamingException e) {
@@ -2158,7 +2555,8 @@ public class RemoteServiceHandler {
 			this.proxiedService = proxiedService;
 		}
 
-		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+		public Object invoke(Object proxy, Method method, Object[] args)
+				throws Throwable {
 
 			String name = method.getName();
 			if (name.equals("hashCode")) {
@@ -2168,7 +2566,8 @@ public class RemoteServiceHandler {
 			} else if (name.equals("toString")) {
 				return proxiedService.toString();
 			} else {
-				UserPrincipalLocator.userPrincipalTL.set(FlexContext.getUserPrincipal());
+				UserPrincipalLocator.userPrincipalTL.set(FlexContext
+						.getUserPrincipal());
 				try {
 					return method.invoke(proxiedService, args);
 				} catch (InvocationTargetException e) {
@@ -2190,15 +2589,17 @@ public class RemoteServiceHandler {
 		}
 	}
 
-	public void updateClaveSup(String userId, String claveSup) throws PermisosException{
+	public void updateClaveSup(String userId, String claveSup)
+			throws PermisosException {
 		getUsuariosService().updateClaveSup(userId, claveSup);
 	}
-	
-	public void updateEmail(String userId, String email) throws PermisosException{
+
+	public void updateEmail(String userId, String email)
+			throws PermisosException {
 		getUsuariosService().updateEmail(userId, email);
 	}
-	
-	public void updateUsuario(Usuario user) throws PermisosException{
+
+	public void updateUsuario(Usuario user) throws PermisosException {
 		getUsuariosService().update(user);
 	}
 

@@ -56,6 +56,11 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements
 
 	@Column(table = "lfx_articulos", name = "ArtNotasInt", length = 4096)
 	private String artNotasInt;
+	
+	@Column(table = "lfx_articulos", name = "ArtEsCuponera")
+	private String artEsCuponera;
+
+
 
 	@SuppressWarnings("unused")
 	@Column(name = "ArtId", insertable = false, updatable = false)
@@ -553,6 +558,15 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements
 	public void setArtGXPortal(boolean artGXPortal) {
 		this.artGXPortal = BooleanDozerConverter.toString(artGXPortal);
 	}
+	
+	public boolean getArtEsCuponera() {
+		return BooleanDozerConverter.toBooleanValue(artEsCuponera);
+	}
+
+	public void setArtEsCuponera(boolean artEsCuponera) {
+		this.artEsCuponera = BooleanDozerConverter.toString(artEsCuponera);
+	}
+
 
 	public String getArtCodigoBarras() {
 		return artCodigoBarras;

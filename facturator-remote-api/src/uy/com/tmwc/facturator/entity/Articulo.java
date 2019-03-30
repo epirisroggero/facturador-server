@@ -16,7 +16,9 @@ public class Articulo extends CodigoNombreEntity {
 	private boolean lotes;
 	private boolean artGXPortal;
 	private boolean artDobleCantidad;
+	private boolean artEsCuponera;
 	
+
 	private String familiaId; 
 	private String marcaId;
 
@@ -348,6 +350,14 @@ public class Articulo extends CodigoNombreEntity {
 		this.artGXPortal = artGXPortal;
 	}
 	
+	public boolean isArtEsCuponera() {
+		return artEsCuponera;
+	}
+
+	public void setArtEsCuponera(boolean artEsCuponera) {
+		this.artEsCuponera = artEsCuponera;
+	}
+
 	public boolean isListaPrecios() {
 		return listaPrecios;
 	}

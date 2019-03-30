@@ -113,56 +113,65 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 	private static final int SCALE = 2;
 
-	private static final String ULTIMOS_FACTURADOS_SUBQUERY_CONCEPTO = "FROM "
-			+ "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r left join d.lineas l left join c.vendedor v left join v.vendedoresUsuario vu left join vu.usuario u "
-			+ "WHERE " + "d.comprobante.tipo IN (1,2,3,4,32) " + "AND d.id.empId = :empId " + "AND (c.id.cliId = :cliente OR :cliente IS NULL) " + "AND (m.codigo = :moneda OR :moneda IS NULL) "
-			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " + "AND (d.numero = :numero OR :numero IS NULL) "
-			+ "AND (d.serie = :serie OR :serie IS NULL) " + "AND (d.pendiente = :pendiente OR :pendiente is null OR d.comprobante.tipo != 32) "
+	private static final String ULTIMOS_FACTURADOS_SUBQUERY_CONCEPTO = "FROM Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r left join d.lineas l left join c.vendedor v left join v.vendedoresUsuario vu left join vu.usuario u "
+			+ "WHERE d.comprobante.tipo IN (1,2,3,4,32) " + "AND d.id.empId = :empId " + "AND (c.id.cliId = :cliente OR :cliente IS NULL) " 
+			+ "AND (m.codigo = :moneda OR :moneda IS NULL) "
+			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " 
+			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) " 
+			+ "AND (d.pendiente = :pendiente OR :pendiente is null OR d.pendiente = '' OR d.comprobante.tipo != 32) "
 			+ "AND (d.emitido = :emitido OR d.emitido is null OR d.emitido = '' OR :emitido is null OR d.comprobante.tipo = 32) "
 			+ "AND (d.saldo > 0 OR :tieneSaldo is NULL) "
 			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " + "AND (d.estado is null or d.estado != 'A') " + "AND (:concepto IS NULL OR l.concepto LIKE :concepto)";
 
-	private static final String ULTIMOS_FACTURADOS_SUBQUERY = "FROM "
-			+ "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r left join c.vendedor v left join v.vendedoresUsuario vu left join vu.usuario u " + "WHERE "
-			+ "d.comprobante.tipo IN (1,2,3,4,32) " + "AND d.id.empId = :empId " + "AND (c.id.cliId = :cliente OR :cliente IS NULL) " + "AND (m.codigo = :moneda OR :moneda IS NULL) "
-			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " + "AND (d.numero = :numero OR :numero IS NULL) "
-			+ "AND (d.serie = :serie OR :serie IS NULL) " + "AND (d.pendiente = :pendiente OR :pendiente is null OR d.comprobante.tipo != 32) "
-			+ "AND (d.emitido = :emitido OR d.emitido is null OR d.emitido = '' OR :emitido is null OR d.comprobante.tipo = 32) "
+	private static final String ULTIMOS_FACTURADOS_SUBQUERY = "FROM Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r left join c.vendedor v left join v.vendedoresUsuario vu left join vu.usuario u " 
+			+ "WHERE d.comprobante.tipo IN (1,2,3,4,32) " + "AND d.id.empId = :empId " + "AND (c.id.cliId = :cliente OR :cliente IS NULL) " 
+			+ "AND (m.codigo = :moneda OR :moneda IS NULL) "
+			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " 
+			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) " 
+			+ "AND (d.pendiente = :pendiente OR :pendiente is null OR d.pendiente is null OR d.pendiente = '' OR d.comprobante.tipo != 32) "
+			+ "AND (d.emitido = :emitido OR :emitido is null OR d.emitido is null OR d.emitido = '' OR d.comprobante.tipo = 32) "
 			+ "AND (d.saldo > 0 OR :tieneSaldo is NULL) "
 			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " + "AND (d.estado is null or d.estado != 'A') ";
 
-	private static final String ULTIMOS_FACTURADOS_SUBQUERY_ARTICULO = "FROM "
-			+ "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r left join d.lineas l left join c.vendedor v left join v.vendedoresUsuario vu left join vu.usuario u "
+	private static final String ULTIMOS_FACTURADOS_SUBQUERY_ARTICULO = "FROM Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r left join d.lineas l left join c.vendedor v left join v.vendedoresUsuario vu left join vu.usuario u "
 			+ "WHERE " + "d.comprobante.tipo IN (1,2,3,4,32) " + "AND d.id.empId = :empId " + "AND (c.id.cliId = :cliente OR :cliente IS NULL) " + "AND (m.codigo = :moneda OR :moneda IS NULL) "
-			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " + "AND (d.numero = :numero OR :numero IS NULL) "
-			+ "AND (d.serie = :serie OR :serie IS NULL) " + "AND (d.pendiente = :pendiente OR :pendiente is null OR d.comprobante.tipo != 32) "
-			+ "AND (d.emitido = :emitido OR d.emitido is null OR d.emitido = '' OR :emitido is null OR d.comprobante.tipo = 32) " + "AND (d.estado is null OR d.estado != 'A') "
+			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " 
+			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) " 
+			+ "AND (d.pendiente = :pendiente OR :pendiente is null OR d.pendiente = '' OR d.comprobante.tipo != 32) "
+			+ "AND (d.emitido = :emitido OR d.emitido is null OR d.emitido = '' OR :emitido is null OR d.comprobante.tipo = 32) " 
+			+ "AND (d.estado is null OR d.estado != 'A') "
 			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " + "AND (:concepto IS NULL OR :concepto LIKE l.concepto) " + "AND (m.codigo = :moneda OR :moneda IS NULL) "
 			+ "AND (d.saldo > 0 OR :tieneSaldo is NULL) "
 			+ "AND (:articulo IS NULL OR l.articuloId = :articulo) ";
 
-	private static final String ULTIMAS_SOLICITUDES_SUBQUERY = "FROM " + "Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r " + "WHERE "
-			+ "d.comprobante.tipo IN (21,22,23,31) " + "AND (d.id.empId = :empId) " + "AND (p.id.prvId = :proveedor OR :proveedor IS NULL) " + "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
-			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " + "AND (d.numero = :numero OR :numero IS NULL) " + "AND (d.serie = :serie OR :serie IS NULL) "
-			+ "AND (d.pendiente = :pendiente OR :pendiente is null) " + "AND (d.emitido = :emitido OR d.emitido is null OR d.emitido = '' OR :emitido is null) "
+	private static final String ULTIMAS_SOLICITUDES_SUBQUERY = "FROM " + "Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r " 
+			+ "WHERE d.comprobante.tipo IN (21,22,23,31) AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) " 
+			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " 
+			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) "
+			+ "AND (d.pendiente = :pendiente OR :pendiente is null) " 
 			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " 
 			+ "AND (d.estado is null or d.estado != 'A') ";
 
-	private static final String ULTIMOS_GASTOS_SUBQUERY = "FROM Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r  WHERE  d.comprobante.tipo IN (21,22,23,24,31) " 
-			+ "AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) " 
-			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " 
-			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) "
-			+ "AND (d.estado is null or d.estado != 'A') ";
-	
-	private static final String ULTIMAS_SOLICITUDES_SUBQUERY_CONCEPTO = "FROM " + "Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r left join d.lineas l "
-			+ "WHERE " + "d.comprobante.tipo IN (5,21,22,23,31) " + "AND (d.id.empId = :empId) " + "AND (p.id.prvId = :proveedor OR :proveedor IS NULL) "
-			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " + "AND (d.numero = :numero OR :numero IS NULL) "
-			+ "AND (d.serie = :serie OR :serie IS NULL) " + "AND (d.pendiente = :pendiente OR :pendiente is null) "
-			+ "AND (d.emitido = :emitido OR d.emitido is null OR d.emitido = '' OR :emitido is null) " + "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
+	private static final String ULTIMAS_SOLICITUDES_SUBQUERY_CONCEPTO = "FROM Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r left join d.lineas l "
+			+ "WHERE d.comprobante.tipo IN (5,21,22,23,31) AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) "
+			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) AND (d.numero = :numero OR :numero IS NULL) "
+			+ "AND (d.serie = :serie OR :serie IS NULL) " 
+			+ "AND (d.pendiente = :pendiente OR :pendiente is null) "
+			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
 			+ "AND (d.estado is null or d.estado != 'A') " 
 			+ "AND (:concepto IS NULL OR l.concepto LIKE :concepto) ";
+	
+	private static final String ULTIMOS_GASTOS_SUBQUERY = "FROM Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r  " 
+			+ "WHERE  d.comprobante.tipo IN (21,22,23,24,31) " 
+			+ "AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) " 
+			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " 
+			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " 
+			+ "AND (d.numero = :numero OR :numero IS NULL) " 
+			+ "AND (d.serie = :serie OR :serie IS NULL) "
+			+ "AND (d.estado is null or d.estado != 'A') ";	
 
-	private static final String ULTIMOS_RECIBOS_SUBQUERY = "FROM " + "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r " + "WHERE " + "d.comprobante.tipo = 5 "
+	private static final String ULTIMOS_RECIBOS_SUBQUERY = "FROM " + "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r " 
+			+ "WHERE d.comprobante.tipo = 5 "
 			+ "AND (d.id.empId = :empId) " + "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
 			+ "AND (d.numero = :numero OR :numero IS NULL) " + "AND (d.serie = :serie OR :serie IS NULL) " + "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
 			+ "AND (d.emitido = :emitido OR (d.emitido is null AND 'N' = :emitido) OR ('N' = :emitido AND d.emitido = '')) " 
@@ -170,8 +179,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " 
 			+ "AND (m.codigo = :moneda OR :moneda IS NULL) " + "AND (d.estado is null or d.estado != 'A') ";
 
-
-	private static final String ULTIMOS_CHEQHES_SUBQUERY = "FROM " + "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r " + "WHERE " + "d.comprobante.tipo = 43 "
+	private static final String ULTIMOS_CHEQHES_SUBQUERY = "FROM " + "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r " 
+			+ "WHERE " + "d.comprobante.tipo = 43 "
 			+ "AND (d.id.empId = :empId) " + "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
 			+ "AND (d.numero = :numero OR :numero IS NULL) " + "AND (d.serie = :serie OR :serie IS NULL) " 
 			+ "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
@@ -771,7 +780,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		} else if (query.getEsCheque()) {
 			sb.append(ULTIMOS_CHEQHES_SUBQUERY);
 		} else {
-			if (query.getArticulo() == null || query.getArticulo() == "") {
+			if (query.getArticulo() == null || "".equals(query.getArticulo())) {
 				sb.append(query.getLineaConcepto() == null ? ULTIMOS_FACTURADOS_SUBQUERY : ULTIMOS_FACTURADOS_SUBQUERY_CONCEPTO);
 			} else {
 				sb.append(ULTIMOS_FACTURADOS_SUBQUERY_ARTICULO);
@@ -864,24 +873,39 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 				}
 
 			} else {
-				q.setParameter("empId", getEmpId()).setParameter("articulo", query.getArticulo()).setParameter("cliente", query.getCliente())
-						.setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null).setParameter("fechaDesde", query.getFechaDesde())
-						.setParameter("fechaHasta", query.getFechaHasta())
-						.setParameter("pendiente", pendiente)
-						.setParameter("emitido", emitido).setParameter("numero", numero)
-						.setParameter("serie", query.getSerie())
-						.setParameter("concepto", query.getLineaConcepto())
-						.setParameter("tipoComprobante", query.getTipoComprobante())
-						.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null);
-			}
-		} else {
-			q.setParameter("empId", getEmpId()).setParameter("proveedor", query.getProveedor())
-				.setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta())
-					.setParameter("pendiente", pendiente).setParameter("emitido", emitido)
+				q.setParameter("empId", getEmpId()).setParameter("articulo", query.getArticulo())
+					.setParameter("cliente", query.getCliente())
+					.setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null).setParameter("fechaDesde", query.getFechaDesde())
+					.setParameter("fechaHasta", query.getFechaHasta())
+					.setParameter("pendiente", pendiente)
+					.setParameter("emitido", emitido)
 					.setParameter("numero", numero)
 					.setParameter("serie", query.getSerie())
-					/*.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null)*/
-					.setParameter("tipoComprobante", query.getTipoComprobante());
+					.setParameter("concepto", query.getLineaConcepto())
+					.setParameter("tipoComprobante", query.getTipoComprobante())
+					.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null);
+			}
+		} else if (query.getEsSolicitud() != null && query.getEsSolicitud()) {
+			q.setParameter("empId", getEmpId())
+				.setParameter("proveedor", query.getProveedor())
+				.setParameter("fechaDesde", query.getFechaDesde())
+				.setParameter("fechaHasta", query.getFechaHasta())
+				.setParameter("pendiente", pendiente)
+				.setParameter("numero", numero)
+				.setParameter("serie", query.getSerie())
+				.setParameter("tipoComprobante", query.getTipoComprobante());
+			
+		} else {
+			q.setParameter("empId", getEmpId())
+				.setParameter("proveedor", query.getProveedor())
+				.setParameter("fechaDesde", query.getFechaDesde())
+				.setParameter("fechaHasta", query.getFechaHasta())
+				.setParameter("pendiente", pendiente)
+				.setParameter("emitido", emitido)
+				.setParameter("numero", numero)
+				.setParameter("serie", query.getSerie())
+				/*.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null)*/
+				.setParameter("tipoComprobante", query.getTipoComprobante());
 			
 			if (query.getLineaConcepto() != null) {
 				q.setParameter("concepto", concepto);
@@ -1316,12 +1340,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		ormResult.addAll(ormResultFacturas);
 		ormResult.addAll(ormResultRecibos);
 
-		// for (uy.com.tmwc.facturator.libra.entity.Documento doc : ormResult) {
-		// doc.setPendiente("S");
-		// doc.getCliente().getContacto().setCtoBlob(null);
-		// doc.setEmitido("S"); //Para evitar fallas en el mapeo de DTOs. En
-		// realidad, puede haber documentos emitidos y no emitidos.
-		// }
 		ArrayList<Documento> result = new ArrayList<Documento>(new Mapper().mapCollection(ormResult, Documento.class));
 
 		return result;

@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.7.000</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.000.air</url>
+	<versionNumber>1.7.005</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.005.air</url>
 	<description>
 	    <![CDATA[
+	    # Versión 1.7.005
+
+			Artículos:
+			1.- Ajustar pantallas visualización del artículo (Ajustes en el layout, consultar a los usuarios de la aplicación si mejoró). 
+			2.- Permitir mostrar/editar marca del artículo.
+			3.- Permitir mostrar/editar categoría del artículo.
+			
+			Afilados:
+			1.- Calcular precios de forma automática.
+			2.- Ajustes al mostrar la cuponera.
+
 	    # Versión 1.7.000
 	    
 	    * Cuenta bancaria del proveedor.
