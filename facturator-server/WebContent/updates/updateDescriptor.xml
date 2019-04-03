@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.7.005</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.005.air</url>
+	<versionNumber>1.7.010</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.010.air</url>
 	<description>
 	    <![CDATA[
+	    # Versión 1.7.010 (31/03/2019) 
+	    
+			1.- Obtener/mostrar datos de la cuponera en pantalla principal de factura.
+			2.- Obtener/mostrar movimientos de la cuponera.
+			3.- Mostrar cuponeras en el selector de articulos.
+			4.- Corrige error al obtener solicitudes pendientes.
+			5.- Obtener último precio de la cuponera en base al comprobante de pago.
+			6.- Corrige error en calculos de precios automáticos.
+			7.- Corrige error en permisoss, usuarios generales con permiso supervisor, son supervisores. 
+			8.- Revisar error al calcular deuda del cliente. (Esta mal la fecha de la cuota o sea hay que recalcular las cuotas al emitir el documento)
+		
 	    # Versión 1.7.005
 
 			Artículos:

@@ -14,6 +14,9 @@ public class LineaCuponera implements Serializable {
 
 	private String serie;
 
+	private String comprobante;
+	
+
 	private Long numero;
 
 	private BigDecimal cantidad;
@@ -67,4 +70,13 @@ public class LineaCuponera implements Serializable {
 	public void setSaldo(BigDecimal saldo) {
 		this.saldo = saldo;
 	}
+	
+	public String getComprobante() {
+		return comprobante;
+	}
+
+	public void setComprobante(String comprobante) {
+		this.comprobante = comprobante;
+	}
+
 }

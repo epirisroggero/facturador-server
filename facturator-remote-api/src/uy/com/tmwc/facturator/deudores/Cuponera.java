@@ -5,22 +5,23 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import uy.com.tmwc.facturator.entity.Articulo;
+
 public class Cuponera implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private Date fecha;
 	
-	private BigDecimal precioTotal;
+	private BigDecimal precioTotal = BigDecimal.ZERO;
 	
-	private BigDecimal cantidadTotal;
+	private BigDecimal cantidadTotal = BigDecimal.ZERO;
 	
-	private BigDecimal precioUnitario;
+	private BigDecimal precioUnitario = BigDecimal.ZERO;
 	
-	private BigDecimal stock;
+	private BigDecimal stock = BigDecimal.ZERO;
 	
-	private String artId;
-
+	private Articulo articulo;
 
 	private List<LineaCuponera> lineasCuponera;
 
@@ -74,14 +75,13 @@ public class Cuponera implements Serializable {
 		this.stock = stock;
 	}
 
-	public String getArtId() {
-		return artId;
+	public Articulo getArticulo() {
+		return articulo;
 	}
 
-	public void setArtId(String artId) {
-		this.artId = artId;
+	public void setArticulo(Articulo articulo) {
+		this.articulo = articulo;
 	}
-
 
 
 }
