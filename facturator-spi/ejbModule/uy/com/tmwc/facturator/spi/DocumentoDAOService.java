@@ -34,7 +34,7 @@ public interface DocumentoDAOService {
 	Boolean finalizarCompra(Documento paramDocumento) throws PermisosException;
 
 	void merge(Documento paramDocumento) throws PermisosException;
-
+	
 	void merge(Documento paramDocumento, Boolean verify) throws PermisosException;
 
 	SerieNumero generarSerieNumero(String paramString);
@@ -106,4 +106,6 @@ public interface DocumentoDAOService {
 	
 	Map<String, ArrayList<ParticipacionAfilador>> getParticipacionesAfilados(Date fechaDesde, Date fechaHasta, BigDecimal value);
 
+	Boolean updateNotaCreditoFinancieraEnRecibo(Documento paramDocumento, String ncfId) throws PermisosException;
+	
 }

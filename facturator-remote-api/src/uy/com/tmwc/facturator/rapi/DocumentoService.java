@@ -91,5 +91,7 @@ public interface DocumentoService {
 	List<ArticuloCompraVentaCosto> getComprasPlazaCostos(Date fechaDesde, Date fechaHasta, Boolean mostrarTodas);
 	
 	void updateCostosArticuloDocumentos(List<ArticuloCompraVentaCosto> lista) throws PermisosException;
+	
+	Boolean updateNotaCreditoFinancieraEnRecibo(Documento documento, String ncfId) throws PermisosException;
 
 }

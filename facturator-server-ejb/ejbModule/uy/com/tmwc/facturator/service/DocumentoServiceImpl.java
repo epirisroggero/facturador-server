@@ -268,6 +268,8 @@ public class DocumentoServiceImpl implements DocumentoService {
 		return this.documentoDAOService.finalizarMovimientoStock(documento);
 	}
 	
+
+	
 	public Boolean finalizarCompra(Documento documento) throws PermisosException {
 		if (!documento.isPendiente()) {
 			throw new IllegalStateException("Esta compra ya ha sido finalizado");
@@ -607,6 +609,11 @@ public class DocumentoServiceImpl implements DocumentoService {
 	private Documento replaceReadonlyEntities(Documento documento) {
 		return (Documento) this.dto2ModelMappingService.getDozerBeanMapper().map(documento, Documento.class);
 	}
+	
+	public Boolean updateNotaCreditoFinancieraEnRecibo(Documento documento, String ncfId) throws PermisosException {
+		return this.documentoDAOService.updateNotaCreditoFinancieraEnRecibo(documento, ncfId);
+	}
+
 
 
 	

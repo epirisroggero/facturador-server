@@ -242,17 +242,42 @@
 		<named-query name="Articulo.query">
 			<query>
 				select 
-					new uy.com.tmwc.facturator.libra.entity.Articulo(e.id.artId, e.nombre, e.familiaId, e.marcaId, e.codigoOrigen, e.prvIdArt, e.activo, fam, marca)
+					new uy.com.tmwc.facturator.libra.entity.Articulo(e.id.artId, e.nombre, e.familiaId, e.marcaId, e.codigoOrigen, 
+						e.prvIdArt, e.activo, fam, marca, prov, s.SAcantidad)
 				from
-					Articulo e join e.familia fam left outer join e.marca marca
+					Articulo e join e.familia fam left join e.proveedor prov left join e.marca marca, 
+					Stockactual s
 				where 
 					e.nombre like :query
 					and e.id.empId = :empId
+					and s.id.artIdSA = e.id.artId 
+					and s.id.depIdSA = '1' 
 				order by
 					e.nombre
 			</query>
 		</named-query>
 	</entity>
+	
+	<entity class="uy.com.tmwc.facturator.libra.entity.Articulo">
+		<named-query name="Articulo.query2">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.libra.entity.Articulo(e.id.artId, e.nombre, e.familiaId, e.marcaId, e.codigoOrigen, 
+						e.prvIdArt, e.activo, fam, marca, prov, s.SAcantidad)
+				from
+					Articulo e join e.familia fam left join e.proveedor prov left join e.marca marca, 
+					Stockactual s
+				where 
+					e.nombre like :query
+					and e.id.empId = :empId
+					and s.id.artIdSA = e.id.artId 
+					and s.id.depIdSA = :depositoId 
+				order by
+					e.nombre
+			</query>
+		</named-query>
+	</entity>
+	
 
 	<entity class="uy.com.tmwc.facturator.libra.entity.ArticuloPrecio">
 		<named-query name="ArticuloPrecio.precioArticuloParaPrecioVenta">

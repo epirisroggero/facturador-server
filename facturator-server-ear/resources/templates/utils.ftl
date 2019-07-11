@@ -1,0 +1,3 @@
+<#function partyDocUtil partyDocument>
+
+</#function>

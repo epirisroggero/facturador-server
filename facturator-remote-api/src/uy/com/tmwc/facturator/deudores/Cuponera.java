@@ -6,12 +6,19 @@ import java.util.Date;
 import java.util.List;
 
 import uy.com.tmwc.facturator.entity.Articulo;
+import uy.com.tmwc.facturator.entity.Moneda;
 
 public class Cuponera implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private Date fecha;
+	
+	private String tipoComprobante;
+	
+	private String numero;
+	
+	private Moneda moneda;
 	
 	private BigDecimal precioTotal = BigDecimal.ZERO;
 	
@@ -81,6 +88,30 @@ public class Cuponera implements Serializable {
 
 	public void setArticulo(Articulo articulo) {
 		this.articulo = articulo;
+	}
+	
+	public String getTipoComprobante() {
+		return tipoComprobante;
+	}
+
+	public void setTipoComprobante(String tipoComprobante) {
+		this.tipoComprobante = tipoComprobante;
+	}
+
+	public String getNumero() {
+		return numero;
+	}
+
+	public void setNumero(String numero) {
+		this.numero = numero;
+	}
+
+	public Moneda getMoneda() {
+		return moneda;
+	}
+
+	public void setMoneda(Moneda moneda) {
+		this.moneda = moneda;
 	}
 
 

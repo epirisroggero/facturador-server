@@ -573,6 +573,78 @@ public class Linea extends PersistentEntity<LineaPK> implements Serializable, Ha
 		}
 	}
 	
+	public BigDecimal getLinDto1() {
+		return lineaExts != null ? lineaExts.getDcto1() : null;
+	}
+	
+	public void setLinDto1(BigDecimal dto) {
+		if (dto == null) {
+			if (lineaExts != null) {
+				lineaExts.setDcto1(null);
+			} 
+		} else {
+			if (lineaExts == null) {
+				lineaExts = new LineaExts();
+				lineaExts.setId(id);
+			}
+			lineaExts.setDcto1(dto);
+		}
+	}
+
+	public BigDecimal getLinDto2() {
+		return lineaExts != null ? lineaExts.getDcto2() : null;
+	}
+	
+	public void setLinDto2(BigDecimal dto) {
+		if (dto == null) {
+			if (lineaExts != null) {
+				lineaExts.setDcto2(null);
+			} 
+		} else {
+			if (lineaExts == null) {
+				lineaExts = new LineaExts();
+				lineaExts.setId(id);
+			}
+			lineaExts.setDcto2(dto);
+		}
+	}
+	
+	public BigDecimal getLinDto3() {
+		return lineaExts != null ? lineaExts.getDcto3() : null;
+	}
+	
+	public void setLinDto3(BigDecimal dto) {
+		if (dto == null) {
+			if (lineaExts != null) {
+				lineaExts.setDcto3(null);
+			} 
+		} else {
+			if (lineaExts == null) {
+				lineaExts = new LineaExts();
+				lineaExts.setId(id);
+			}
+			lineaExts.setDcto3(dto);
+		}
+	}
+	
+	public BigDecimal getLinDto4() {
+		return lineaExts != null ? lineaExts.getDcto4() : null;
+	}
+
+	public void setLinDto4(BigDecimal dto) {
+		if (dto == null) {
+			if (lineaExts != null) {
+				lineaExts.setDcto4(null);
+			} 
+		} else {
+			if (lineaExts == null) {
+				lineaExts = new LineaExts();
+				lineaExts.setId(id);
+			}
+			lineaExts.setDcto4(dto);
+		}
+	}
+	
 	public String getNotas() {
 		return notas;
 	}

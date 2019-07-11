@@ -51,6 +51,10 @@ public class Usuario extends CodigoNombreEntity implements Serializable {
 	
 	private String venId;
 	
+	private String usuCargo;
+	
+	private String usuCelular;
+	
 	private PermisosDocumentoUsuario permisosDocumentoUsuario;
 	
 	private List<VendedoresUsuario> vendedoresUsuario;
@@ -206,6 +210,22 @@ public class Usuario extends CodigoNombreEntity implements Serializable {
 	
 	public boolean isSupervisor() {
 		return usuTipo != null && usuTipo.equals("S"); 
+	}
+
+	public String getUsuCargo() {
+		return usuCargo;
+	}
+
+	public void setUsuCargo(String usuCargo) {
+		this.usuCargo = usuCargo;
+	}
+
+	public String getUsuCelular() {
+		return usuCelular;
+	}
+
+	public void setUsuCelular(String usuCelular) {
+		this.usuCelular = usuCelular;
 	}
 	
 }

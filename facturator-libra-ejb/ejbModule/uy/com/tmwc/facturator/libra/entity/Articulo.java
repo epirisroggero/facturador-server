@@ -3,6 +3,7 @@ package uy.com.tmwc.facturator.libra.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.Column;
@@ -13,6 +14,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SecondaryTable;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -37,8 +39,8 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements
 	}
 
 	public Articulo(String codigo, String nombre, String familiaId,
-			String marcaId, String codigoOrigen, String prvId, String activo,
-			Familia familia, Marca marca) {
+			String marcaId, String codigoOrigen, String prvId, String activo, 
+			Familia familia, Marca marca, Proveedor proveedor, Object stockactual) {
 		setCodigo(codigo);
 
 		this.nombre = nombre;
@@ -49,6 +51,15 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements
 		this.activo = activo != null ? activo : "N";
 		this.familia = familia;
 		this.marca = marca;
+		
+		this.proveedor = proveedor;
+		if  (stockactual instanceof BigDecimal) {
+			System.out.println("Valor >>>> " + codigo + " :: " +  stockactual.toString());
+		} else {
+			System.out.println(" >> " + stockactual);
+		}
+		//this.stockactual = stockactual;
+		
 	}
 
 	@EmbeddedId
@@ -226,11 +237,26 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements
 	private String unidadId;
 
 	@CollectionOfElements()
-	@JoinTable(name = "articulos6", joinColumns = {
-			@JoinColumn(name = "EmpId"), @JoinColumn(name = "ArtId") })
+	@JoinTable(name = "articulos6", joinColumns = { @JoinColumn(name = "EmpId"), @JoinColumn(name = "ArtId") })
 	@org.hibernate.annotations.MapKey(columns = @Column(name = "CampoIdArt"))
 	@Column(name = "ArtCampoValor")
 	private Map<String, String> adicionales;
+	
+	@CollectionOfElements()
+	@JoinTable(name = "stockactual", joinColumns = { @JoinColumn(name = "EmpId"), @JoinColumn(name = "ArtIdSA") })
+	@org.hibernate.annotations.MapKey(columns = @Column(name = "DepIdSA"))
+	@Column(name = "SAcantidad")
+	private Map<String, BigDecimal> stockactual;
+	
+	
+
+	public Map<String, BigDecimal> getStockactual() {
+		return stockactual;
+	}
+
+	public void setStockactual(Map<String, BigDecimal> stockactual) {
+		this.stockactual = stockactual;
+	}
 
 	public void provideId(String empId, String artId) {
 		this.id = new ArticuloPK(empId, artId);
@@ -590,8 +616,8 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements
 
 	public void setAdicionales(Map<String, String> adicionales) {
 		this.adicionales = adicionales;
-	}
-
+	}	
+	
 	private String getAdicional(String codigo) {
 		if (adicionales != null) {
 			return adicionales.get(codigo);
@@ -608,7 +634,8 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements
 			adicionales.put(codigo, valor);
 		}
 	}
-
+	
+	
 	public String getNotaInterna() {
 		return getAdicional("115");
 	}

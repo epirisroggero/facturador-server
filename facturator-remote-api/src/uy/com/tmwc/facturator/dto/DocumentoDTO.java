@@ -37,6 +37,7 @@ public class DocumentoDTO implements Serializable {
 
 	private boolean emitido;
 	private boolean pendiente;
+	private boolean tieneNCF;
 
 	private BigDecimal tipoComprobante;
 
@@ -61,28 +62,38 @@ public class DocumentoDTO implements Serializable {
 		this.emitidoPor = emitidoPor;
 	}
 
-	public DocumentoDTO(Object docId, String serie, Number numero, Date fecha, String caeNom, Object clienteCodigo, String clienteNombre, Object monedaCodigo, String monedaNombre, Object comprobanteCodigo,
-			String comprobanteNombre, BigDecimal subtotal, BigDecimal iva, BigDecimal total, BigDecimal saldo, String emitido, String pendiente, BigDecimal tipoComprobante, Object registroHora, Object registroFecha) {
+	public DocumentoDTO(Object docId, String serie, Number numero, Date fecha, String caeNom, Object clienteCodigo, String clienteNombre, Object monedaCodigo, 
+			String monedaNombre, Object comprobanteCodigo, String comprobanteNombre, BigDecimal subtotal, BigDecimal iva, BigDecimal total, BigDecimal saldo, 
+			String emitido, String pendiente, BigDecimal tipoComprobante, Object registroHora, Object registroFecha) {
 
 		this(docId, serie, numero, fecha, caeNom, clienteCodigo, clienteNombre, null, monedaCodigo, monedaNombre, comprobanteCodigo, comprobanteNombre, null, subtotal, iva, total, saldo, emitido, pendiente,
-				tipoComprobante, registroHora, registroFecha);
+				tipoComprobante, registroHora, registroFecha,  null);
 	}
 
-	public DocumentoDTO(Object docId, String serie, Number numero, Date fecha, String caeNom, Object clienteCodigo, String clienteNombre, Object clienteRut, Object monedaCodigo, String monedaNombre,
-			Object comprobanteCodigo, String comprobanteNombre, BigDecimal subtotal, BigDecimal iva, BigDecimal total, BigDecimal saldo, String emitido, String pendiente, BigDecimal tipoComprobante) {
+	public DocumentoDTO(Object docId, String serie, Number numero, Date fecha, String caeNom, Object clienteCodigo, String clienteNombre, Object clienteRut, 
+			Object monedaCodigo, String monedaNombre, Object comprobanteCodigo, String comprobanteNombre, BigDecimal subtotal, BigDecimal iva, BigDecimal total, 
+			BigDecimal saldo, String emitido, String pendiente, BigDecimal tipoComprobante, String processId) {
+		
 		this(docId, serie, numero, fecha, caeNom, clienteCodigo, clienteNombre, clienteRut, monedaCodigo, monedaNombre, comprobanteCodigo, comprobanteNombre, null, subtotal, iva, total, saldo, emitido, pendiente,
-				tipoComprobante, null, null);
+				tipoComprobante, null, null, processId);
+	}
+	public DocumentoDTO(Object docId, String serie, Number numero, Date fecha, String caeNom, Object clienteCodigo, String clienteNombre, Object clienteRut, Object monedaCodigo, String monedaNombre,
+			Object comprobanteCodigo, String comprobanteNombre, BigDecimal costo, BigDecimal subtotal, BigDecimal iva, BigDecimal total, BigDecimal saldo, String emitido, String pendiente, BigDecimal tipoComprobante, String processId) {
+		
+		this(docId, serie, numero, fecha, caeNom, clienteCodigo, clienteNombre, clienteRut, monedaCodigo, monedaNombre, comprobanteCodigo, comprobanteNombre, null, subtotal, iva, total, saldo, emitido, pendiente,
+				tipoComprobante, null, null, processId);
 	}
 
 	public DocumentoDTO(Object docId, String serie, Number numero, Date fecha, String caeNom, Object clienteCodigo, String clienteNombre, Object clienteRut, Object monedaCodigo, String monedaNombre,
 			Object comprobanteCodigo, String comprobanteNombre, BigDecimal costo, BigDecimal subtotal, BigDecimal iva, BigDecimal total, BigDecimal saldo, String emitido, String pendiente, BigDecimal tipoComprobante) {
 		this(docId, serie, numero, fecha, caeNom, clienteCodigo, clienteNombre, clienteRut, monedaCodigo, monedaNombre, comprobanteCodigo, comprobanteNombre, costo, subtotal, iva, total, saldo, emitido, pendiente,
-				tipoComprobante, null, null);
+				tipoComprobante, null, null, null);
 	}
+	
 
 	public DocumentoDTO(Object docId, String serie, Number numero, Date fecha, String caeNom, Object clienteCodigo, String clienteNombre, Object clienteRut, Object monedaCodigo, String monedaNombre,
 			Object comprobanteCodigo, String comprobanteNombre, BigDecimal costo, BigDecimal subtotal, BigDecimal iva, BigDecimal total, BigDecimal saldo, String emitido, String pendiente, BigDecimal tipoComprobante,
-			Object registroHora, Object registroFecha) {
+			Object registroHora, Object registroFecha, String processId) {
 
 		this.docId = docId.toString();
 		this.serie = serie;
@@ -103,6 +114,16 @@ public class DocumentoDTO implements Serializable {
 		this.registroFecha = registroFecha != null ? DateFormatUtils.format((Date) registroFecha, "dd-MM-yyyy") : null;
 		this.registroHora = registroHora != null ? registroHora.toString() : null;
 		this.fecha = fecha != null ? DateFormatUtils.format((Date) fecha, "dd-MM-yyyy") : null;
+		
+		if (serie == null) {
+			serie = "";
+		}		
+		if (serie.toLowerCase().equals("c")) {
+			this.tieneNCF = this.emitido && (processId != null && processId.length() > 0 && !processId.equals("0"));
+		} else {
+			this.tieneNCF = this.emitido;
+		}
+	
 	}
 
 	public DocumentoDTO(Object docId, Object comprobanteCodigo, String comprobanteNombre, String serie, Number numero, String banco, Date fecha, 
@@ -329,5 +350,15 @@ public class DocumentoDTO implements Serializable {
 	public void setEmision(String emision) {
 		this.emision = emision;
 	}
+
+	public boolean isTieneNCF() {
+		return tieneNCF;
+	}
+
+	public void setTieneNCF(boolean tieneNCF) {
+		this.tieneNCF = tieneNCF;
+	}
+
+
 
 }

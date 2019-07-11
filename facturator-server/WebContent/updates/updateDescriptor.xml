@@ -1,11 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.7.010</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.010.air</url>
+	<versionNumber>1.7.060</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.060.air</url>
 	<description>
 	    <![CDATA[
-	    # Versión 1.7.010 (31/03/2019) 
+	    # Versión 1.7.060 (26/06/2019) 
+	    	1.- Proceso de afilados.
+	    	2.- Proveedor en ayuda clientes.
+	    	3.- UI - cambios menores (iconos, títulos, grillas, etc)
+
+	    # Versión 1.7.041 (20/05/2019) 
+	    	1.- Corrije error al obtener listado de documentos.
+	    	2.- Al emitir NCF asociarle el recibo correspondiente.
+
+	    # Versión 1.7.040 (18/05/2019) 
+	    	1.- Mostrar nota de crédito financiera en el recibo, en caso de tenerla.
+	    	2.- En listado de recibos ver si estos tienen o no NCF.
+
+	    # Versión 1.7.030 (15/05/2019) 
+	    	1.- Ajustes varios en impresion de tareas y documentos.
+	    	
+	    # Versión 1.7.028 (14/05/2019)	    
+	    	1.- Permitir editar el precio de cuponera usuario supervisor.
+	    	2.- Mostrar el neto y no el precio en precio U de cuponera.
+
+	    # Versión 1.7.025 (04/05/2019)
+	    	1.- Persistir descuentos en afilados.
+	    	2.- No permitir modificar el precio en caso de tratarse de una cuponera.
+	    	3.- Mejoras en envíos de mail con el recibo.
+	    	4.- Corrige error al filtrar solicitudes por concepto.
+
+	    # Versión 1.7.015 (06/04/2019) 
+	    	1.- Ajustes en procesos de Afilado. (WhatsApp)
+	    	2.- Enviar mail con el recibo.
 	    
+	    # Versión 1.7.010 (31/03/2019) 
 			1.- Obtener/mostrar datos de la cuponera en pantalla principal de factura.
 			2.- Obtener/mostrar movimientos de la cuponera.
 			3.- Mostrar cuponeras en el selector de articulos.
@@ -16,7 +45,6 @@
 			8.- Revisar error al calcular deuda del cliente. (Esta mal la fecha de la cuota o sea hay que recalcular las cuotas al emitir el documento)
 		
 	    # Versión 1.7.005
-
 			Artículos:
 			1.- Ajustar pantallas visualización del artículo (Ajustes en el layout, consultar a los usuarios de la aplicación si mejoró). 
 			2.- Permitir mostrar/editar marca del artículo.

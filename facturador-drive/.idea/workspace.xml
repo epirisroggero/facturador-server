@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="bec4e6ab-2583-4db9-81b4-c8dd19550fad" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/ejb/DocumentoDAOServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/ejb/DocumentoDAOServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/entity/Linea.java" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/entity/Linea.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/entity/LineaExts.java" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/entity/LineaExts.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-remote-api/src/uy/com/tmwc/facturator/deudores/Cuponera.java" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-remote-api/src/uy/com/tmwc/facturator/deudores/Cuponera.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-remote-api/src/uy/com/tmwc/facturator/entity/LineaDocumento.java" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-remote-api/src/uy/com/tmwc/facturator/entity/LineaDocumento.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-remote-api/src/uy/com/tmwc/facturator/javamail/EmailSenderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-remote-api/src/uy/com/tmwc/facturator/javamail/EmailSenderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-server/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-server/.classpath" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-server/.settings/org.eclipse.wst.common.component" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-server/.settings/org.eclipse.wst.common.component" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-server/WebContent/updates/updateDescriptor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-server/WebContent/updates/updateDescriptor.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-server/facturator-server.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-server/facturator-server.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-server/src/poc/MyServiceHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-server/src/poc_old/MyServiceHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-server/src/poc/RemoteServiceHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-server/src/poc_old/RemoteServiceHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-server/src/uy/com/tmwc/facturador/scheduler/QueueJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-server/src/uy_old/com/tmwc/facturador/scheduler/QueueJob.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../facturator-server/src/uy/com/tmwc/facturador/scheduler/StartupScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../facturator-server/src/uy_old/com/tmwc/facturador/scheduler/StartupScheduler.java" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="1912" />
+    <option name="y" value="-8" />
+    <option name="width" value="1456" />
+    <option name="height" value="876" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="facturador-drive" type="b2602c69:ProjectViewProjectNode" />
+              <item name="facturador-drive" type="8a07ba80:GradleTreeStructureProvider$GradleModuleDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../demo" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="bec4e6ab-2583-4db9-81b4-c8dd19550fad" name="Default Changelist" comment="" />
+      <created>1557027643126</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1557027643126</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="1912" y="-8" width="1456" height="876" extended-state="6" />
+    <layout>
+      <window_info id="Image Layers" />
+      <window_info id="Designer" />
+      <window_info id="UI Designer" />
+      <window_info id="Capture Tool" />
+      <window_info id="Favorites" side_tool="true" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Build" visible="true" weight="0.32974428" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="Palette" />
+      <window_info anchor="right" id="Gradle" />
+      <window_info anchor="right" id="Theme Preview" />
+      <window_info anchor="right" id="Maven" />
+      <window_info anchor="right" id="Capture Analysis" />
+      <window_info anchor="right" id="Palette&#9;" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>jdk1.6.0_19</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>

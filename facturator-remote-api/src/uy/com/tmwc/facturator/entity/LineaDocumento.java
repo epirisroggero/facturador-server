@@ -42,6 +42,11 @@ public class LineaDocumento implements Serializable {
 	private BigDecimal rotos = BigDecimal.ZERO;
 	private BigDecimal cascados = BigDecimal.ZERO;
 
+	private BigDecimal linDto1 = BigDecimal.ZERO;
+	private BigDecimal linDto2 = BigDecimal.ZERO;
+	private BigDecimal linDto3 = BigDecimal.ZERO;
+	private BigDecimal linDto4 = BigDecimal.ZERO;
+	
 	private String marca;
 	
 	
@@ -365,5 +370,39 @@ public class LineaDocumento implements Serializable {
 	public void setCascados(BigDecimal cascados) {
 		this.cascados = cascados;
 	}
+	
+	public BigDecimal getLinDto1() {
+		return linDto1;
+	}
+
+	public void setLinDto1(BigDecimal linDto1) {
+		this.linDto1 = linDto1;
+	}
+
+	public BigDecimal getLinDto2() {
+		return linDto2;
+	}
+
+	public void setLinDto2(BigDecimal linDcto2) {
+		this.linDto2 = linDcto2;
+	}
+
+	public BigDecimal getLinDto3() {
+		return linDto3;
+	}
+
+	public void setLinDto3(BigDecimal linDcto3) {
+		this.linDto3 = linDcto3;
+	}
+
+	public BigDecimal getLinDto4() {
+		return linDto4;
+	}
+
+	public void setLinDto4(BigDecimal linDcto4) {
+		this.linDto4 = linDcto4;
+	}
+
+
 
 }

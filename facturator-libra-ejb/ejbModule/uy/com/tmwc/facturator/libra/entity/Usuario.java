@@ -83,6 +83,13 @@ public class Usuario extends PersistentEntity<UsuarioPK> implements Serializable
 	@Column(table = "lfx_usuarios", length = 3)
 	private String venId;
 
+	@Column(table = "lfx_usuarios")
+	private String usuCargo;
+
+	@Column(table = "lfx_usuarios")
+	private String usuCelular;
+
+	
 	public Usuario() {
 	}
 	
@@ -247,6 +254,22 @@ public class Usuario extends PersistentEntity<UsuarioPK> implements Serializable
 
 	public void setVendedoresUsuario(List<VendedoresUsuario> vendedoresUsuario) {
 		this.vendedoresUsuario = vendedoresUsuario;
+	}
+
+	public String getUsuCargo() {
+		return usuCargo;
+	}
+
+	public void setUsuCargo(String usuCargo) {
+		this.usuCargo = usuCargo;
+	}
+
+	public String getUsuCelular() {
+		return usuCelular;
+	}
+
+	public void setUsuCelular(String usuCelular) {
+		this.usuCelular = usuCelular;
 	}
 
 }

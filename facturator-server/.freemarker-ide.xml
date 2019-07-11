@@ -1,0 +1,9 @@
+<config>
+	<context-values>
+		<resource path="src">
+			<value key="prueba" object-class="uy.com.tmwc.facturator.server.util.DTO2ModelMappingServiceImpl"/>
+		</resource>
+	</context-values>
+	<macro-library>
+	</macro-library>
+</config>

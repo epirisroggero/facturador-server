@@ -7,9 +7,9 @@ public class ArticuloDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String codigo;
-	private String nombre;
-	private String familia;
 	private String codigoOrigen;
+	private String familia;
+	private String nombre;
 
 	public ArticuloDTO() {
 	}

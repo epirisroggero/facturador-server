@@ -147,7 +147,7 @@ public class LogicaCotizacion {
 					return entry.getValue().getComercial();
 				}
 			}
-			return null;
+			return BigDecimal.ONE;
 
 		}
 		

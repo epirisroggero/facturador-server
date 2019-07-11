@@ -258,11 +258,11 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 							BigDecimal ajuste;
 							if (aster) {
 								BigDecimal montoViejo = vinDoc.getMonto().setScale(4, RoundingMode.HALF_DOWN);
-								BigDecimal montoNuevo = vinculoDocumentos.getMonto().setScale(4, RoundingMode.HALF_DOWN);
+								BigDecimal montoNuevo = vinculoDocumentos.getMonto() != null ? vinculoDocumentos.getMonto().setScale(4, RoundingMode.HALF_DOWN) : BigDecimal.ZERO;
 								ajuste = montoNuevo.subtract(montoViejo).setScale(4, RoundingMode.HALF_DOWN);
 							} else {
 								BigDecimal netoViejo = vinDoc.getNeto() != null ? vinDoc.getNeto().setScale(4, RoundingMode.HALF_DOWN) : vinDoc.getMonto().setScale(4, RoundingMode.HALF_DOWN);
-								BigDecimal netoNuevo = vinculoDocumentos.getNeto().setScale(4, RoundingMode.HALF_DOWN);
+								BigDecimal netoNuevo = vinculoDocumentos.getNeto() != null ? vinculoDocumentos.getNeto().setScale(4, RoundingMode.HALF_DOWN) : BigDecimal.ZERO;
 								ajuste = netoNuevo.subtract(netoViejo).setScale(4, RoundingMode.HALF_DOWN);
 							}
 							
@@ -748,7 +748,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	
 			if (esSupervisor) {
 				sb.append("d.costo, ");
-			}
+			} 
 			sb.append("d.subTotal, d.iva, d.total, d.saldo, d.emitido, d.pendiente, d.comprobante.tipo) ");
 
 		} else {
@@ -763,12 +763,12 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			} else {
 				sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO( " + "d.id.docId, " + "d.serie, " + "d.numero, " + "d.fecha, " + "d.CAEnom, " + "p.id.prvId, " + "p.nombre, "
 						+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
-			}
+			}		
 			
 			if (esSupervisor) {
 				sb.append("d.costo, ");
-			}
-			sb.append("d.subTotal, d.iva, d.total, d.saldo, d.emitido, d.pendiente, d.comprobante.tipo) ");
+			} 
+			sb.append("d.subTotal, d.iva, d.total, d.saldo, d.emitido, d.pendiente, d.comprobante.tipo, d.processId) ");
 		}
 
 		if (query.getEsSolicitud()) {
@@ -873,7 +873,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 				}
 
 			} else {
-				q.setParameter("empId", getEmpId()).setParameter("articulo", query.getArticulo())
+				q.setParameter("empId", getEmpId())
+					.setParameter("articulo", query.getArticulo())
 					.setParameter("cliente", query.getCliente())
 					.setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null).setParameter("fechaDesde", query.getFechaDesde())
 					.setParameter("fechaHasta", query.getFechaHasta())
@@ -894,7 +895,11 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 				.setParameter("numero", numero)
 				.setParameter("serie", query.getSerie())
 				.setParameter("tipoComprobante", query.getTipoComprobante());
-			
+				
+			if (query.getLineaConcepto() != null) {
+				q.setParameter("concepto", concepto);
+			}
+
 		} else {
 			q.setParameter("empId", getEmpId())
 				.setParameter("proveedor", query.getProveedor())
@@ -904,7 +909,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 				.setParameter("emitido", emitido)
 				.setParameter("numero", numero)
 				.setParameter("serie", query.getSerie())
-				/*.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null)*/
 				.setParameter("tipoComprobante", query.getTipoComprobante());
 			
 			if (query.getLineaConcepto() != null) {
@@ -1891,6 +1895,22 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 	public Map<String, Object[]> getParticipacionesCobranza(Date paramDate1, Date paramDate2, String[] compsIncluidos, String[] compsExcluidos) {
 		return null;
+	}
+
+	public Boolean updateNotaCreditoFinancieraEnRecibo(Documento doc, String ncfId) throws PermisosException {
+		DocumentoPK pk = new DocumentoPK();
+		pk.setDocId(Integer.parseInt(doc.getDocId()));
+		pk.setEmpId(getEmpId());
+		uy.com.tmwc.facturator.libra.entity.Documento docEntity = this.em.find(uy.com.tmwc.facturator.libra.entity.Documento.class, pk);
+
+		controlModificacionDocumento(docEntity);
+
+		docEntity.setProcessId(ncfId);
+		
+		this.em.merge(docEntity);
+		this.em.flush();
+
+		return true;
 	}
 
 

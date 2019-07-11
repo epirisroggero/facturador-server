@@ -40,7 +40,18 @@ public class LineaExts {
 
 	@Column(name = "LinCascados")
 	private BigDecimal cascados;
-
+	
+	@Column(name = "LinDcto1")
+	private BigDecimal dcto1;
+	
+	@Column(name = "LinDcto2")
+	private BigDecimal dcto2;
+	
+	@Column(name = "LinDcto3")
+	private BigDecimal dcto3;
+	
+	@Column(name = "LinDcto4")
+	private BigDecimal dcto4;
 
 	
 	public void setId(LineaPK id) {
@@ -122,5 +133,38 @@ public class LineaExts {
 	public void setCascados(BigDecimal cascados) {
 		this.cascados = cascados;
 	}
+	
+	public BigDecimal getDcto1() {
+		return dcto1;
+	}
+
+	public void setDcto1(BigDecimal dcto1) {
+		this.dcto1 = dcto1;
+	}
+
+	public BigDecimal getDcto2() {
+		return dcto2;
+	}
+
+	public void setDcto2(BigDecimal dcto2) {
+		this.dcto2 = dcto2;
+	}
+
+	public BigDecimal getDcto3() {
+		return dcto3;
+	}
+
+	public void setDcto3(BigDecimal dcto3) {
+		this.dcto3 = dcto3;
+	}
+
+	public BigDecimal getDcto4() {
+		return dcto4;
+	}
+
+	public void setDcto4(BigDecimal dcto4) {
+		this.dcto4 = dcto4;
+	}
+
 
 }
