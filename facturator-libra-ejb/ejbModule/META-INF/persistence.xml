@@ -18,7 +18,6 @@
       <class>uy.com.tmwc.facturator.libra.entity.TareaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Tarea</class>
       <class>uy.com.tmwc.facturator.libra.entity.StockactualPK</class>
-      <class>uy.com.tmwc.facturator.libra.entity.Stockactual</class>
       <class>uy.com.tmwc.facturator.libra.entity.RubroPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.ProveedorPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.PreciosventaPK</class>
@@ -32,7 +31,6 @@
       <class>uy.com.tmwc.facturator.libra.entity.PaisPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Pais</class>
       <class>uy.com.tmwc.facturator.libra.entity.NumeradorPK</class>
-      <class>uy.com.tmwc.facturator.libra.entity.Numerador</class>	  
       <class>uy.com.tmwc.facturator.libra.entity.FanfoldPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.MarcaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.MonedaPK</class>
@@ -52,7 +50,6 @@
       <class>uy.com.tmwc.facturator.libra.entity.Gruposconcepto</class>
       <class>uy.com.tmwc.facturator.libra.entity.GiroPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Giro</class>
-      <class>uy.com.tmwc.facturator.libra.entity.Formaspago</class>
       <class>uy.com.tmwc.facturator.libra.entity.FormaspagoPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.FamiliaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.EntregaPK</class>
@@ -81,7 +78,6 @@
       <class>uy.com.tmwc.facturator.libra.entity.CajaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Cae</class>
       <class>uy.com.tmwc.facturator.libra.entity.CaePK</class>
-      <class>uy.com.tmwc.facturator.libra.entity.Banco</class>
       <class>uy.com.tmwc.facturator.libra.entity.BancoPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.AuditoriaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Asientos1PK</class>
@@ -90,14 +86,10 @@
       <class>uy.com.tmwc.facturator.libra.entity.ArticuloPartidaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.ArticuloPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.AgendatareaPK</class>
-      <class>uy.com.tmwc.facturator.libra.entity.Concepto</class>
       <class>uy.com.tmwc.facturator.libra.entity.ConceptoPK</class>
-      <class>uy.com.tmwc.facturator.libra.entity.Auditoria</class>
       <class>uy.com.tmwc.facturator.libra.entity.Categoriasarticulo</class>
       <class>uy.com.tmwc.facturator.libra.entity.CategoriasarticuloPK</class>
-      <class>uy.com.tmwc.facturator.libra.entity.Referencia</class>
       <class>uy.com.tmwc.facturator.libra.entity.ReferenciaPK</class>
-      <class>uy.com.tmwc.facturator.libra.entity.Unidadesstock</class>
       <class>uy.com.tmwc.facturator.libra.entity.UnidadesstockPK</class>
       
 	  
