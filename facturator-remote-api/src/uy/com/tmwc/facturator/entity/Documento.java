@@ -117,6 +117,12 @@ public class Documento extends DocumentoBase implements Serializable {
 	private String titular;
 	private String bancoIdDoc;
 	private String concepto;
+	
+	private String centroCostosId;
+	private String referencia;
+	
+	private CentrosCosto centroCostos;
+
 
 	public Documento() {
 		this.comisiones = new ComisionesDocumento(this);
@@ -1101,6 +1107,30 @@ public class Documento extends DocumentoBase implements Serializable {
 
 	public void setProcessId(String processId) {
 		this.processId = processId;
+	}
+	
+	public String getCentroCostosId() {
+		return centroCostosId;
+	}
+
+	public void setCentroCostosId(String centroCostosId) {
+		this.centroCostosId = centroCostosId;
+	}
+
+	public CentrosCosto getCentroCostos() {
+		return centroCostos;
+	}
+
+	public void setCentroCostos(CentrosCosto centroCostos) {
+		this.centroCostos = centroCostos;
+	}
+	
+	public String getReferencia() {
+		return referencia;
+	}
+
+	public void setReferencia(String referencia) {
+		this.referencia = referencia;
 	}
 
 }

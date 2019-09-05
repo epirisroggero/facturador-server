@@ -35,6 +35,7 @@ import org.hibernate.Hibernate;
 import uy.com.tmwc.facturator.dto.DocumentoDTO;
 import uy.com.tmwc.facturator.dto.DocumentoQuery;
 import uy.com.tmwc.facturator.dto.ParticipacionEnCobranza;
+import uy.com.tmwc.facturator.dto.StockActualDTO;
 import uy.com.tmwc.facturator.entity.ArticuloCompraVentaCosto;
 import uy.com.tmwc.facturator.entity.ArticuloPrecio;
 import uy.com.tmwc.facturator.entity.ArticuloPrecioFabricaCosto;
@@ -102,115 +103,113 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 	@EJB
 	UsuariosService usuariosService;
-	
+
 	@EJB
 	AuditoriaService auditoriaService;
 
 	@EJB
 	MonedasCotizacionesService tipoCambioService;
-	
+
 	private Logger LOGGER = Logger.getLogger(DocumentoDAOServiceImpl.class);
 
 	private static final int SCALE = 2;
 
 	private static final String ULTIMOS_FACTURADOS_SUBQUERY_CONCEPTO = "FROM Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r left join d.lineas l left join c.vendedor v left join v.vendedoresUsuario vu left join vu.usuario u "
-			+ "WHERE d.comprobante.tipo IN (1,2,3,4,32) " + "AND d.id.empId = :empId " + "AND (c.id.cliId = :cliente OR :cliente IS NULL) " 
+			+ "WHERE d.comprobante.tipo IN (1,2,3,4,32) "
+			+ "AND d.id.empId = :empId "
+			+ "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
 			+ "AND (m.codigo = :moneda OR :moneda IS NULL) "
-			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " 
-			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) " 
+			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
+			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
+			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) "
 			+ "AND (d.pendiente = :pendiente OR :pendiente is null OR d.pendiente = '' OR d.comprobante.tipo != 32) "
 			+ "AND (d.emitido = :emitido OR d.emitido is null OR d.emitido = '' OR :emitido is null OR d.comprobante.tipo = 32) "
 			+ "AND (d.saldo > 0 OR :tieneSaldo is NULL) "
 			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " + "AND (d.estado is null or d.estado != 'A') " + "AND (:concepto IS NULL OR l.concepto LIKE :concepto)";
 
-	private static final String ULTIMOS_FACTURADOS_SUBQUERY = "FROM Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r left join c.vendedor v left join v.vendedoresUsuario vu left join vu.usuario u " 
-			+ "WHERE d.comprobante.tipo IN (1,2,3,4,32) " + "AND d.id.empId = :empId " + "AND (c.id.cliId = :cliente OR :cliente IS NULL) " 
+	private static final String ULTIMOS_FACTURADOS_SUBQUERY = "FROM Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r left join c.vendedor v left join v.vendedoresUsuario vu left join vu.usuario u "
+			+ "WHERE d.comprobante.tipo IN (1,2,3,4,32) "
+			+ "AND d.id.empId = :empId "
+			+ "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
 			+ "AND (m.codigo = :moneda OR :moneda IS NULL) "
-			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " 
-			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) " 
+			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
+			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
+			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) "
 			+ "AND (d.pendiente = :pendiente OR :pendiente is null OR d.pendiente is null OR d.pendiente = '' OR d.comprobante.tipo != 32) "
 			+ "AND (d.emitido = :emitido OR :emitido is null OR d.emitido is null OR d.emitido = '' OR d.comprobante.tipo = 32) "
 			+ "AND (d.saldo > 0 OR :tieneSaldo is NULL) "
 			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " + "AND (d.estado is null or d.estado != 'A') ";
 
 	private static final String ULTIMOS_FACTURADOS_SUBQUERY_ARTICULO = "FROM Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r left join d.lineas l left join c.vendedor v left join v.vendedoresUsuario vu left join vu.usuario u "
-			+ "WHERE " + "d.comprobante.tipo IN (1,2,3,4,32) " + "AND d.id.empId = :empId " + "AND (c.id.cliId = :cliente OR :cliente IS NULL) " + "AND (m.codigo = :moneda OR :moneda IS NULL) "
-			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " 
-			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) " 
-			+ "AND (d.pendiente = :pendiente OR :pendiente is null OR d.pendiente = '' OR d.comprobante.tipo != 32) "
-			+ "AND (d.emitido = :emitido OR d.emitido is null OR d.emitido = '' OR :emitido is null OR d.comprobante.tipo = 32) " 
-			+ "AND (d.estado is null OR d.estado != 'A') "
-			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " + "AND (:concepto IS NULL OR :concepto LIKE l.concepto) " + "AND (m.codigo = :moneda OR :moneda IS NULL) "
-			+ "AND (d.saldo > 0 OR :tieneSaldo is NULL) "
-			+ "AND (:articulo IS NULL OR l.articuloId = :articulo) ";
-
-	private static final String ULTIMAS_SOLICITUDES_SUBQUERY = "FROM " + "Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r " 
-			+ "WHERE d.comprobante.tipo IN (21,22,23,31) AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) " 
-			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " 
+			+ "WHERE "
+			+ "d.comprobante.tipo IN (1,2,3,4,32) "
+			+ "AND d.id.empId = :empId "
+			+ "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
+			+ "AND (m.codigo = :moneda OR :moneda IS NULL) "
+			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
+			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
 			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) "
-			+ "AND (d.pendiente = :pendiente OR :pendiente is null) " 
-			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " 
-			+ "AND (d.estado is null or d.estado != 'A') ";
+			+ "AND (d.pendiente = :pendiente OR :pendiente is null OR d.pendiente = '' OR d.comprobante.tipo != 32) "
+			+ "AND (d.emitido = :emitido OR d.emitido is null OR d.emitido = '' OR :emitido is null OR d.comprobante.tipo = 32) "
+			+ "AND (d.estado is null OR d.estado != 'A') "
+			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
+			+ "AND (:concepto IS NULL OR :concepto LIKE l.concepto) "
+			+ "AND (m.codigo = :moneda OR :moneda IS NULL) "
+			+ "AND (d.saldo > 0 OR :tieneSaldo is NULL) " + "AND (:articulo IS NULL OR l.articuloId = :articulo) ";
+
+	private static final String ULTIMAS_SOLICITUDES_SUBQUERY = "FROM " + "Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r "
+			+ "WHERE d.comprobante.tipo IN (21,22,23,31) AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) "
+			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
+			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) " + "AND (d.pendiente = :pendiente OR :pendiente is null) "
+			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " + "AND (d.estado is null or d.estado != 'A') ";
 
 	private static final String ULTIMAS_SOLICITUDES_SUBQUERY_CONCEPTO = "FROM Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r left join d.lineas l "
-			+ "WHERE d.comprobante.tipo IN (5,21,22,23,31) AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) "
-			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) AND (d.numero = :numero OR :numero IS NULL) "
-			+ "AND (d.serie = :serie OR :serie IS NULL) " 
-			+ "AND (d.pendiente = :pendiente OR :pendiente is null) "
-			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
-			+ "AND (d.estado is null or d.estado != 'A') " 
+			+ "WHERE d.comprobante.tipo IN (5,21,22,23,31) AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) " + "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
+			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) AND (d.numero = :numero OR :numero IS NULL) " + "AND (d.serie = :serie OR :serie IS NULL) "
+			+ "AND (d.pendiente = :pendiente OR :pendiente is null) " + "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " + "AND (d.estado is null or d.estado != 'A') "
 			+ "AND (:concepto IS NULL OR l.concepto LIKE :concepto) ";
-	
-	private static final String ULTIMOS_GASTOS_SUBQUERY = "FROM Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r  " 
-			+ "WHERE  d.comprobante.tipo IN (21,22,23,24,31) " 
-			+ "AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) " 
-			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " 
-			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " 
-			+ "AND (d.numero = :numero OR :numero IS NULL) " 
-			+ "AND (d.serie = :serie OR :serie IS NULL) "
-			+ "AND (d.estado is null or d.estado != 'A') ";	
 
-	private static final String ULTIMOS_RECIBOS_SUBQUERY = "FROM " + "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r " 
-			+ "WHERE d.comprobante.tipo = 5 "
+	private static final String ULTIMOS_GASTOS_SUBQUERY = "FROM Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r  "
+			+ "WHERE  d.comprobante.tipo IN (21,22,23,24,31) " + "AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) "
+			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " + "AND (d.numero = :numero OR :numero IS NULL) "
+			+ "AND (d.pendiente = :pendiente OR :pendiente is null) " 
+			+ "AND (d.serie = :serie OR :serie IS NULL) " + "AND (d.estado is null or d.estado != 'A') ";
+
+	private static final String ULTIMOS_RECIBOS_SUBQUERY = "FROM " + "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r " + "WHERE d.comprobante.tipo = 5 "
 			+ "AND (d.id.empId = :empId) " + "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
 			+ "AND (d.numero = :numero OR :numero IS NULL) " + "AND (d.serie = :serie OR :serie IS NULL) " + "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
-			+ "AND (d.emitido = :emitido OR (d.emitido is null AND 'N' = :emitido) OR ('N' = :emitido AND d.emitido = '')) " 
-			+ "AND (d.saldo > 0 OR :tieneSaldo is NULL) "
-			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " 
-			+ "AND (m.codigo = :moneda OR :moneda IS NULL) " + "AND (d.estado is null or d.estado != 'A') ";
+			+ "AND (d.emitido = :emitido OR (d.emitido is null AND 'N' = :emitido) OR ('N' = :emitido AND d.emitido = '')) " + "AND (d.saldo > 0 OR :tieneSaldo is NULL) "
+			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) " + "AND (m.codigo = :moneda OR :moneda IS NULL) " + "AND (d.estado is null or d.estado != 'A') ";
 
-	private static final String ULTIMOS_CHEQHES_SUBQUERY = "FROM " + "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r " 
-			+ "WHERE " + "d.comprobante.tipo = 43 "
-			+ "AND (d.id.empId = :empId) " + "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
-			+ "AND (d.numero = :numero OR :numero IS NULL) " + "AND (d.serie = :serie OR :serie IS NULL) " 
-			+ "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
+	private static final String ULTIMOS_CHEQHES_SUBQUERY = "FROM " + "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r " + "WHERE "
+			+ "d.comprobante.tipo = 43 " + "AND (d.id.empId = :empId) " + "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) " + "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
+			+ "AND (d.numero = :numero OR :numero IS NULL) " + "AND (d.serie = :serie OR :serie IS NULL) " + "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
 			+ "AND (m.codigo = :moneda OR :moneda IS NULL) ";
 
-	
 	public String persist(uy.com.tmwc.facturator.entity.Documento doc) throws PermisosException {
 		int docId = generateDocId();
 		uy.com.tmwc.facturator.libra.entity.Documento libraDoc = toLibraDocumento(doc, docId, null);
 
 		verifyUniqueSerieNumero(libraDoc);
-		
-		controlModificacionDocumento(libraDoc);		
-		
+
+		controlModificacionDocumento(libraDoc);
+
 		int signoStock = doc.getComprobante().isDevolucion() ? -1 : 1;
 		ajustarStockLineas(libraDoc, signoStock);
 		ajustarLineas(libraDoc);
-		//ajustarPrecioFabricaCosto(doc);
+		// ajustarPrecioFabricaCosto(doc);
 
 		this.em.persist(libraDoc);
 		this.em.flush();
 
 		return String.valueOf(docId);
 	}
-	
+
 	public void merge(uy.com.tmwc.facturator.entity.Documento doc) throws PermisosException {
 		Short cfeStatus = doc.getDocCFEstatus();
-		
+
 		Boolean isRecibo = doc.getComprobante() != null && doc.getComprobante().isRecibo();
-		
+
 		if (cfeStatus.equals(new Short("1")) || isRecibo) {
 			merge(doc, Boolean.FALSE);
 		} else {
@@ -232,15 +231,15 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		if (current != null) {
 			ArrayList<uy.com.tmwc.facturator.libra.entity.Documento> facturasModificadas = new ArrayList<uy.com.tmwc.facturator.libra.entity.Documento>();
 			HashMap<String, Auditoria> audits = new HashMap<String, Auditoria>();
-			
+
 			libraDoc.setRecibosVinculados(new HashSet<Vinculosdoc>());
 			libraDoc.getRecibosVinculados().addAll(current.getRecibosVinculados());
-			
+
 			boolean aster = doc.getComprobante().isAster();
-			
+
 			NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("ES"));
 
-			if (doc.getComprobante().isRecibo()) {//				
+			if (doc.getComprobante().isRecibo()) {//
 				BigDecimal saldoRecibo = ajustarSaldo(libraDoc.getMoneda().getCodigo(), libraDoc.getSaldo());
 
 				if (libraDoc.getSaldo().doubleValue() < 0) {
@@ -265,18 +264,19 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 								BigDecimal netoNuevo = vinculoDocumentos.getNeto() != null ? vinculoDocumentos.getNeto().setScale(4, RoundingMode.HALF_DOWN) : BigDecimal.ZERO;
 								ajuste = netoNuevo.subtract(netoViejo).setScale(4, RoundingMode.HALF_DOWN);
 							}
-							
+
 							DocumentoPK pk1 = new DocumentoPK();
 							pk1.setDocId(Integer.parseInt(vinDoc.getFactura().getDocId()));
 							pk1.setEmpId(getEmpId());
-							
-							uy.com.tmwc.facturator.libra.entity.Documento factura = (uy.com.tmwc.facturator.libra.entity.Documento) this.em.find(uy.com.tmwc.facturator.libra.entity.Documento.class, pk1);
+
+							uy.com.tmwc.facturator.libra.entity.Documento factura = (uy.com.tmwc.facturator.libra.entity.Documento) this.em.find(uy.com.tmwc.facturator.libra.entity.Documento.class,
+									pk1);
 							BigDecimal viejoSaldo = factura.getSaldo().setScale(4, RoundingMode.HALF_DOWN);
 							BigDecimal nuevoSaldo = viejoSaldo.subtract(ajuste);
 							String moneda = factura.getMoneda().getCodigo();
-							
+
 							nuevoSaldo = ajustarSaldo(moneda, nuevoSaldo);
-							
+
 							if (nuevoSaldo.compareTo(BigDecimal.ZERO) < 0) {
 								throw new RuntimeException("Monto incorrecto documento " + factura.getSerie() + factura.getNumero().toString() + "(" + viejoSaldo + " < " + ajuste + ")");
 							} else {
@@ -284,16 +284,15 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 								facturasModificadas.add(factura);
 
 								String simbolo = factura.getMoneda().getSimbolo();
-								
+
 								Auditoria audit = new Auditoria();
 								audit.setAudFechaHora(new Date());
 								audit.setDocId(factura.getDocId());
-								audit.setNotas("Saldo modificado, monto factura modificado en recibo " + current.getSerie() + current.getNumero() + ".\n" );
-								audit.setProblemas("Se modificó el monto cancelado en recibo " + current.getSerie() + current.getNumero() + ".\n" +
-										"Ajuste:        \t\t" + simbolo + formatter.format(ajuste.doubleValue()) + "\n" +
-										"Saldo anterior:\t" + simbolo  + formatter.format(viejoSaldo.doubleValue()) + "\n" +
-										"Saldo actual:  \t" + simbolo + formatter.format(nuevoSaldo.doubleValue()) + "\n");
-								
+								audit.setNotas("Saldo modificado, monto factura modificado en recibo " + current.getSerie() + current.getNumero() + ".\n");
+								audit.setProblemas("Se modificó el monto cancelado en recibo " + current.getSerie() + current.getNumero() + ".\n" + "Ajuste:        \t\t" + simbolo
+										+ formatter.format(ajuste.doubleValue()) + "\n" + "Saldo anterior:\t" + simbolo + formatter.format(viejoSaldo.doubleValue()) + "\n" + "Saldo actual:  \t"
+										+ simbolo + formatter.format(nuevoSaldo.doubleValue()) + "\n");
+
 								audits.put(factura.getDocId(), audit);
 
 							}
@@ -304,38 +303,37 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						DocumentoPK pk1 = new DocumentoPK();
 						pk1.setDocId(Integer.parseInt(vinDoc.getFactura().getDocId()));
 						pk1.setEmpId(getEmpId());
-						
+
 						uy.com.tmwc.facturator.libra.entity.Documento factura = (uy.com.tmwc.facturator.libra.entity.Documento) this.em.find(uy.com.tmwc.facturator.libra.entity.Documento.class, pk1);
 
 						BigDecimal viejoSaldo = factura.getSaldo().setScale(4, RoundingMode.HALF_DOWN);
 						BigDecimal monto = vinDoc.getMonto().setScale(4, RoundingMode.HALF_DOWN);
 						BigDecimal neto = vinDoc.getNeto() != null ? vinDoc.getNeto().setScale(4, RoundingMode.HALF_EVEN) : monto;
-						
+
 						BigDecimal nuevoSaldo;
 						if (aster) {
 							nuevoSaldo = viejoSaldo.add(monto);
 						} else {
 							nuevoSaldo = viejoSaldo.add(neto);
-						}						
+						}
 						factura.setSaldo(nuevoSaldo);
 						facturasModificadas.add(factura);
-						
+
 						String simbolo = factura.getMoneda().getSimbolo();
-						
+
 						Auditoria audit = new Auditoria();
 						audit.setAudFechaHora(new Date());
 						audit.setDocId(factura.getDocId());
 						audit.setNotas("Saldo modificado, factura borrada en recibo " + current.getSerie() + current.getNumero() + ".\n");
-						audit.setProblemas("Borrado de recibo " + current.getSerie() + current.getNumero() + ".\n" +
-								"Monto cancelado:\t" + simbolo + formatter.format(aster ? monto.doubleValue() : neto.doubleValue()) + "\n" +
-								"Saldo anterior: \t\t" + simbolo + formatter.format(viejoSaldo.doubleValue()) + "\n" +
-								"Saldo actual:   \t\t" + simbolo + formatter.format(nuevoSaldo.doubleValue()) + "\n");
-						
+						audit.setProblemas("Borrado de recibo " + current.getSerie() + current.getNumero() + ".\n" + "Monto cancelado:\t" + simbolo
+								+ formatter.format(aster ? monto.doubleValue() : neto.doubleValue()) + "\n" + "Saldo anterior: \t\t" + simbolo + formatter.format(viejoSaldo.doubleValue()) + "\n"
+								+ "Saldo actual:   \t\t" + simbolo + formatter.format(nuevoSaldo.doubleValue()) + "\n");
+
 						audits.put(factura.getDocId(), audit);
 
-					} 
+					}
 				}
-				
+
 				for (VinculoDocumentos vinDoc : doc.getFacturasVinculadas()) {
 					int docIdVinA = vinDoc.getDocIdVin1(); //
 
@@ -350,14 +348,14 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						DocumentoPK pk1 = new DocumentoPK();
 						pk1.setDocId(Integer.parseInt(vinDoc.getFactura().getDocId()));
 						pk1.setEmpId(getEmpId());
-						
+
 						uy.com.tmwc.facturator.libra.entity.Documento factura = (uy.com.tmwc.facturator.libra.entity.Documento) this.em.find(uy.com.tmwc.facturator.libra.entity.Documento.class, pk1);
 
 						BigDecimal monto = vinDoc.getMonto().setScale(4, RoundingMode.HALF_EVEN);
 						BigDecimal neto = vinDoc.getNeto().setScale(4, RoundingMode.HALF_EVEN);
 						BigDecimal viejoSaldo = factura.getSaldo().setScale(4, RoundingMode.HALF_EVEN);
 						String moneda = factura.getMoneda().getCodigo();
-						
+
 						BigDecimal nuevoSaldo;
 						if (aster) {
 							nuevoSaldo = viejoSaldo.subtract(monto).setScale(4, RoundingMode.HALF_EVEN);
@@ -365,36 +363,35 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 							nuevoSaldo = viejoSaldo.subtract(neto).setScale(4, RoundingMode.HALF_EVEN);
 						}
 						nuevoSaldo = ajustarSaldo(moneda, nuevoSaldo);
-						
+
 						if (nuevoSaldo.compareTo(BigDecimal.ZERO) < 0) {
 							throw new RuntimeException("Monto incorrecto documento " + factura.getSerie() + factura.getNumero().toString() + " saldo < 0 (" + nuevoSaldo + " < " + monto + ")");
 						} else {
 							factura.setSaldo(nuevoSaldo);
 							facturasModificadas.add(factura);
-							
+
 							String simbolo = factura.getMoneda().getSimbolo();
-							
+
 							Auditoria audit = new Auditoria();
 							audit.setAudFechaHora(new Date());
 							audit.setDocId(factura.getDocId());
 							audit.setNotas("Saldo modificado, factura adicionada en recibo " + current.getSerie() + current.getNumero() + ".\n");
-							audit.setProblemas("Factura vinculada al recibo " + current.getSerie() + current.getNumero() + ".\n" +
-									"Monto cancelado:\t" + simbolo + formatter.format(aster ? monto.doubleValue() : neto.doubleValue()) + "\n" +
-									"Saldo anterior:\t\t" + simbolo + formatter.format(viejoSaldo.doubleValue()) + "\n" +
-									"Saldo actual:\t\t" + simbolo + formatter.format(nuevoSaldo.doubleValue()) + "\n");
-							
+							audit.setProblemas("Factura vinculada al recibo " + current.getSerie() + current.getNumero() + ".\n" + "Monto cancelado:\t" + simbolo
+									+ formatter.format(aster ? monto.doubleValue() : neto.doubleValue()) + "\n" + "Saldo anterior:\t\t" + simbolo + formatter.format(viejoSaldo.doubleValue()) + "\n"
+									+ "Saldo actual:\t\t" + simbolo + formatter.format(nuevoSaldo.doubleValue()) + "\n");
+
 							audits.put(factura.getDocId(), audit);
 
-						}						
+						}
 					}
 				}
-				
+
 				// LOGGER.info(buffer.toString());
-				
+
 				for (uy.com.tmwc.facturator.libra.entity.Documento documento : facturasModificadas) {
 					this.em.merge(documento);
 					this.em.flush();
-					
+
 					Auditoria audit = audits.get(documento.getDocId());
 					auditoriaService.alta(audit);
 				}
@@ -404,7 +401,9 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			// Ajustar el stock. Pueden variar las lineas, y los depositos.
 			// Nunca el comprobante.
 			int signoStock = doc.getComprobante().isDevolucion() ? -1 : 1;
-			ajustarStockLineas(current, -signoStock); //Esto es un borrar, los signos estan cambiados
+			ajustarStockLineas(current, -signoStock); // Esto es un borrar, los
+														// signos estan
+														// cambiados
 			ajustarStockLineas(libraDoc, signoStock);
 			ajustarLineas(libraDoc);
 		}
@@ -412,8 +411,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		if (verificar) {
 			verifyUniqueSerieNumero(libraDoc);
 		}
-		
-		//TODO: Revisar este ajuste de saldo en el recibo.
+
+		// TODO: Revisar este ajuste de saldo en el recibo.
 		BigDecimal saldoRecibo = ajustarSaldo(libraDoc.getMoneda().getCodigo(), libraDoc.getSaldo());
 		if (saldoRecibo.compareTo(BigDecimal.ZERO) == 0) {
 			libraDoc.setRedondeo(libraDoc.getSaldo().setScale(2, RoundingMode.HALF_EVEN));
@@ -423,18 +422,18 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		this.em.merge(libraDoc);
 		this.em.flush();
 	}
-	
+
 	private BigDecimal ajustarSaldo(String moneda, BigDecimal saldo) {
 		double ss = Math.abs(saldo.doubleValue());
-		if (moneda.equals(Moneda.CODIGO_MONEDA_DOLAR) || moneda.equals(Moneda.CODIGO_MONEDA_EUROS)  ||
-				moneda.equals(Moneda.CODIGO_MONEDA_DOLAR_ASTER) || moneda.equals(Moneda.CODIGO_MONEDA_EUROS_ASTER)) {
+		if (moneda.equals(Moneda.CODIGO_MONEDA_DOLAR) || moneda.equals(Moneda.CODIGO_MONEDA_EUROS) || moneda.equals(Moneda.CODIGO_MONEDA_DOLAR_ASTER)
+				|| moneda.equals(Moneda.CODIGO_MONEDA_EUROS_ASTER)) {
 			if (ss < 0.1) {
 				saldo = BigDecimal.ZERO;
-			} 
+			}
 		} else if (moneda.equals(Moneda.CODIGO_MONEDA_PESOS) || moneda.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
 			if (ss < 1) {
 				saldo = BigDecimal.ZERO;
-			} 
+			}
 		}
 		return saldo;
 
@@ -448,7 +447,9 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			controlModificacionDocumento(docEntity);
 
 			int signoStock = doc.getComprobante().isDevolucion() ? -1 : 1;
-			ajustarStockLineas(docEntity, -signoStock); // Esto es un borrar, los signos estan cambiados
+			ajustarStockLineas(docEntity, -signoStock); // Esto es un borrar,
+														// los signos estan
+														// cambiados
 
 			if (docEntity != null) {
 				em.remove(docEntity);
@@ -467,7 +468,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		controlModificacionDocumento(docEntity);
 
-		docEntity.setPendiente("N"); // lo marco como no pendiente, remuevo la reserva de articulos
+		docEntity.setPendiente("N"); // lo marco como no pendiente, remuevo la
+										// reserva de articulos
 		docEntity.setEmitido("N");
 		docEntity.setNextDocId(doc.getNextDocId());
 		docEntity.setProcessId(doc.getProcessId());
@@ -509,14 +511,14 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	private void verifyUniqueSerieNumero(uy.com.tmwc.facturator.libra.entity.Documento doc) {
 		String serie = doc.getSerie();
 		BigInteger numero = doc.getNumero();
-		
+
 		if ((numero != null) && (!StringUtils.isEmpty(serie))) {
 			String queryName = "Documento.unique";
 			if (doc.getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_CLIENTE || doc.getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_CLIENTE) {
 				queryName = "Documento.unique.movimientoStock";
 			} else if (doc.getTipo() == Comprobante.RECIBO_COBRO) {
 				queryName = "Documento.unique.recibo";
-			} 
+			}
 			List result = this.em.createNamedQuery(queryName).setParameter("empId", getEmpId()).setParameter("serie", serie).setParameter("numero", numero).getResultList();
 			if ((result.size() > 0) && ((doc.getId() == null) || (doc.getId().getDocId() != ((DummyDocumento) result.get(0)).getId().getDocId())))
 				throw new IllegalArgumentException("Serie y número en uso");
@@ -534,7 +536,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		libraDoc.setLocalId(Short.parseShort("1"));
 
 		libraDoc.setFecha2(doc.getFecha());
-		
+
 		if (doc.getComprobante().getTipo() == Comprobante.COMPRA_CREDITO) {
 			if (current != null) {
 				if (current.getTotal().equals(doc.getTotal())) {
@@ -549,7 +551,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		} else {
 			if (doc.getComprobante().isNotaCreditoFinanciera()) {
 				libraDoc.setSaldo(doc.getSaldo());
-				
+
 			} else if (!doc.getComprobante().isRecibo()) {
 				if (!doc.isEmitido()) {
 					libraDoc.setSaldo((doc.getComprobante().isCredito() || (doc.getComprobante().getTipo() == Comprobante.NOTA_CREDITO)) ? doc.getTotal() : BigDecimal.ZERO);
@@ -615,7 +617,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		BigDecimal result = (BigDecimal) JPAUtils.getAtMostOne(query);
 		return result;
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<LineaDocumento> getLineasCompraCliente(String cliente, Date fromDate, Date toDate, int limit) {
 		List list = this.em.createNamedQuery("Documento.lineasCompraCliente").setParameter("empId", getEmpId()).setParameter("cliente", cliente).setParameter("fechaDesde", fromDate)
@@ -645,21 +647,30 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		String permisoId = usuarioLogin.getPermisoId();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
 
-		if (esSupervisor
-				|| Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
-				|| Usuario.USUARIO_VENDEDOR_SENIOR.equals(permisoId) 				
-				|| Usuario.USUARIO_FACTURACION.equals(permisoId) 
-				|| (Usuario.USUARIO_ALIADOS_COMERCIALES.equals(permisoId)  && venta) 
-				|| (Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId) && venta)) {
+		if (esSupervisor || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_VENDEDOR_SENIOR.equals(permisoId) || Usuario.USUARIO_FACTURACION.equals(permisoId)
+				|| (Usuario.USUARIO_ALIADOS_COMERCIALES.equals(permisoId) && venta) || (Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId) && venta)) {
 
-			if (cliente != null) {				
+			if (cliente != null) {
 				if (Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId)) {
-					List listAux = this.em.createNamedQuery("Documento.antecedentesArticulo").setParameter("empId", getEmpId()).setParameter("cliente", cliente).setParameter("articulo", articulo)
-						.setMaxResults(limit).getResultList();
-			
+					List listAux;
+					if (venta) {
+						listAux = this.em.createNamedQuery("Documento.antecedentesArticuloClienteVenta")
+							.setParameter("empId", getEmpId())
+							.setParameter("cliente", cliente)
+							.setParameter("articulo", articulo)
+								.setMaxResults(limit).getResultList();
+					} else {
+						listAux = this.em.createNamedQuery("Documento.antecedentesArticuloClienteCompra")
+							.setParameter("empId", getEmpId())
+							.setParameter("cliente", cliente)
+							.setParameter("articulo", articulo)
+								.setMaxResults(limit).getResultList();
+						
+					}
+
 					List<VendedoresUsuario> vendedores = usuarioLogin.getVendedoresUsuario();
-					
-					List<String> userVendedores = new ArrayList<String>(); 
+
+					List<String> userVendedores = new ArrayList<String>();
 					for (VendedoresUsuario vendedoresUsuario : vendedores) {
 						userVendedores.add(vendedoresUsuario.getVendedorId());
 					}
@@ -668,7 +679,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 					for (Object object : listAux) {
 						if (object instanceof Linea) {
 							Linea l = (Linea) object;
-							
+
 							String encargadoCuenta = l.getDocumento().getCliente().getEncargadoCuenta();
 							String vendedorId = l.getDocumento().getCliente().getVenIdCli();
 
@@ -676,21 +687,33 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 								list.add(object);
 							}
 						}
-					}					
-					
+					}
+
 				} else {
-					list = this.em.createNamedQuery("Documento.antecedentesArticulo").setParameter("empId", getEmpId()).setParameter("cliente", cliente).setParameter("articulo", articulo)
-						.setMaxResults(limit).getResultList();
+					if (venta) {
+						list = this.em.createNamedQuery("Documento.antecedentesArticuloClienteVenta")
+						.setParameter("empId", getEmpId())
+						.setParameter("cliente", cliente)
+						.setParameter("articulo", articulo)
+							.setMaxResults(limit).getResultList();
+					} else {
+						list = this.em.createNamedQuery("Documento.antecedentesArticuloClienteCompra")
+						.setParameter("empId", getEmpId())
+						.setParameter("cliente", cliente)
+						.setParameter("articulo", articulo)
+							.setMaxResults(limit).getResultList();
+					}
 				}
-				
+
 			} else {
 				if (venta) {
 					if (Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId)) {
-						List listAux = this.em.createNamedQuery("Documento.antecedentesArticuloVenta").setParameter("empId", getEmpId()).setParameter("articulo", articulo).setMaxResults(limit).getResultList();
-				
+						List listAux = this.em.createNamedQuery("Documento.antecedentesArticuloVenta").setParameter("empId", getEmpId()).setParameter("articulo", articulo).setMaxResults(limit)
+								.getResultList();
+
 						List<VendedoresUsuario> vendedores = usuarioLogin.getVendedoresUsuario();
-						
-						List<String> userVendedores = new ArrayList<String>(); 
+
+						List<String> userVendedores = new ArrayList<String>();
 						for (VendedoresUsuario vendedoresUsuario : vendedores) {
 							userVendedores.add(vendedoresUsuario.getVendedorId());
 						}
@@ -698,7 +721,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						for (Object object : listAux) {
 							if (object instanceof Linea) {
 								Linea l = (Linea) object;
-								
+
 								String encargadoCuenta = l.getDocumento().getCliente().getEncargadoCuenta();
 								String vendedorId = l.getDocumento().getCliente().getVenIdCli();
 
@@ -708,10 +731,16 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 							}
 						}
 					} else {
-						list = this.em.createNamedQuery("Documento.antecedentesArticuloVenta").setParameter("empId", getEmpId()).setParameter("articulo", articulo).setMaxResults(limit).getResultList();
+						list = this.em.createNamedQuery("Documento.antecedentesArticuloVenta")
+							.setParameter("empId", getEmpId())
+							.setParameter("articulo", articulo)
+								.setMaxResults(limit).getResultList();
 					}
 				} else {
-					list = this.em.createNamedQuery("Documento.antecedentesArticuloCompra").setParameter("empId", getEmpId()).setParameter("articulo", articulo).setMaxResults(limit).getResultList();
+					list = this.em.createNamedQuery("Documento.antecedentesArticuloCompra")
+						.setParameter("empId", getEmpId())
+						.setParameter("articulo", articulo)
+							.setMaxResults(limit).getResultList();
 				}
 			}
 
@@ -726,7 +755,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 	@SuppressWarnings("unchecked")
 	public List<DocumentoDTO> queryDocumentos(DocumentoQuery query) {
-		
+
 		// Filtros de usuario, no aplica en los recibos
 		String filtroUsuario = "";
 		if (!query.getEsRecibo()) {
@@ -735,20 +764,20 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
-		
+
 		final StringBuilder sb = new StringBuilder("");
 
 		if (query.getEsCheque()) {
-			sb.append("SELECT new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, cmp.id.cmpid, cmp.cmpNom, d.serie, d.numero, d.bancoIdDoc, d.fecha, " +
-					"d.emitido, d.titular, m.id.mndId, m.nombre, d.total, d.clienteId, c.nombre, d.fecha2) ");
-			
+			sb.append("SELECT new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, cmp.id.cmpid, cmp.cmpNom, d.serie, d.numero, d.bancoIdDoc, d.fecha, "
+					+ "d.emitido, d.titular, m.id.mndId, m.nombre, d.total, d.clienteId, c.nombre, d.fecha2) ");
+
 		} else if (query.getEsGasto()) {
 			sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO( " + "d.id.docId, " + "d.serie, " + "d.numero, " + "d.fecha, " + "d.CAEnom, " + "p.id.prvId, " + "p.nombre, "
 					+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
-	
+
 			if (esSupervisor) {
 				sb.append("d.costo, ");
-			} 
+			}
 			sb.append("d.subTotal, d.iva, d.total, d.saldo, d.emitido, d.pendiente, d.comprobante.tipo) ");
 
 		} else {
@@ -763,11 +792,11 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			} else {
 				sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO( " + "d.id.docId, " + "d.serie, " + "d.numero, " + "d.fecha, " + "d.CAEnom, " + "p.id.prvId, " + "p.nombre, "
 						+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
-			}		
-			
+			}
+
 			if (esSupervisor) {
 				sb.append("d.costo, ");
-			} 
+			}
 			sb.append("d.subTotal, d.iva, d.total, d.saldo, d.emitido, d.pendiente, d.comprobante.tipo, d.processId) ");
 		}
 
@@ -810,10 +839,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
-		
-		if (esSupervisor 
-				|| Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
-				|| Usuario.USUARIO_FACTURACION.equals(permisoId)) {
+
+		if (esSupervisor || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_FACTURACION.equals(permisoId)) {
 			return "";
 		} else {
 			String codigoUsuario = usuarioLogin.getCodigo();
@@ -836,81 +863,48 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		}
 		if (query.getEsRecibo()) {
 			q.setParameter("empId", getEmpId()).setParameter("cliente", query.getCliente()).setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null)
-				.setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta())
-				.setParameter("emitido", reciboEmitido).setParameter("numero", numero).setParameter("serie", query.getSerie()).setParameter("tipoComprobante", query.getTipoComprobante())
-				.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null);
+					.setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta()).setParameter("emitido", reciboEmitido).setParameter("numero", numero)
+					.setParameter("serie", query.getSerie()).setParameter("tipoComprobante", query.getTipoComprobante()).setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null);
 
 		} else if (query.getEsCheque()) {
-			q.setParameter("empId", getEmpId())
-				.setParameter("cliente", query.getCliente())
-				.setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null)
-				.setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta())
-				.setParameter("numero", numero)
-				.setParameter("serie", query.getSerie());
+			q.setParameter("empId", getEmpId()).setParameter("cliente", query.getCliente()).setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null)
+					.setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta()).setParameter("numero", numero).setParameter("serie", query.getSerie());
 
 		} else if (query.getEsGasto()) {
-			q.setParameter("empId", getEmpId())
-			.setParameter("proveedor", query.getProveedor())
-			.setParameter("fechaDesde", query.getFechaDesde())
-			.setParameter("fechaHasta", query.getFechaHasta())
-			.setParameter("numero", numero)
-			.setParameter("serie", query.getSerie());
+			q.setParameter("empId", getEmpId()).setParameter("proveedor", query.getProveedor())
+					.setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta())
+					.setParameter("pendiente", pendiente).setParameter("numero", numero).setParameter("serie", query.getSerie());
 
 		} else if (query.getEsSolicitud() == null || !query.getEsSolicitud()) {
 			if (query.getArticulo() == null || query.getArticulo() == "") {
-				q.setParameter("empId", getEmpId())
-					.setParameter("cliente", query.getCliente())
-					.setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null)
-					.setParameter("fechaDesde", query.getFechaDesde())
-					.setParameter("fechaHasta", query.getFechaHasta())
-					.setParameter("pendiente", pendiente)
-					.setParameter("emitido", emitido)
-					.setParameter("numero", numero).setParameter("serie", query.getSerie())
-					.setParameter("tipoComprobante", query.getTipoComprobante())
-					.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null);
+				q.setParameter("empId", getEmpId()).setParameter("cliente", query.getCliente()).setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null)
+						.setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta()).setParameter("pendiente", pendiente).setParameter("emitido", emitido)
+						.setParameter("numero", numero).setParameter("serie", query.getSerie()).setParameter("tipoComprobante", query.getTipoComprobante())
+						.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null);
 				if (query.getLineaConcepto() != null) {
 					q.setParameter("concepto", concepto);
 				}
 
 			} else {
-				q.setParameter("empId", getEmpId())
-					.setParameter("articulo", query.getArticulo())
-					.setParameter("cliente", query.getCliente())
-					.setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null).setParameter("fechaDesde", query.getFechaDesde())
-					.setParameter("fechaHasta", query.getFechaHasta())
-					.setParameter("pendiente", pendiente)
-					.setParameter("emitido", emitido)
-					.setParameter("numero", numero)
-					.setParameter("serie", query.getSerie())
-					.setParameter("concepto", query.getLineaConcepto())
-					.setParameter("tipoComprobante", query.getTipoComprobante())
-					.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null);
+				q.setParameter("empId", getEmpId()).setParameter("articulo", query.getArticulo()).setParameter("cliente", query.getCliente())
+						.setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null).setParameter("fechaDesde", query.getFechaDesde())
+						.setParameter("fechaHasta", query.getFechaHasta()).setParameter("pendiente", pendiente).setParameter("emitido", emitido).setParameter("numero", numero)
+						.setParameter("serie", query.getSerie()).setParameter("concepto", query.getLineaConcepto()).setParameter("tipoComprobante", query.getTipoComprobante())
+						.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null);
 			}
 		} else if (query.getEsSolicitud() != null && query.getEsSolicitud()) {
-			q.setParameter("empId", getEmpId())
-				.setParameter("proveedor", query.getProveedor())
-				.setParameter("fechaDesde", query.getFechaDesde())
-				.setParameter("fechaHasta", query.getFechaHasta())
-				.setParameter("pendiente", pendiente)
-				.setParameter("numero", numero)
-				.setParameter("serie", query.getSerie())
-				.setParameter("tipoComprobante", query.getTipoComprobante());
-				
+			q.setParameter("empId", getEmpId()).setParameter("proveedor", query.getProveedor()).setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta())
+					.setParameter("pendiente", pendiente).setParameter("numero", numero).setParameter("serie", query.getSerie()).setParameter("tipoComprobante", query.getTipoComprobante());
+
 			if (query.getLineaConcepto() != null) {
 				q.setParameter("concepto", concepto);
 			}
 
 		} else {
-			q.setParameter("empId", getEmpId())
-				.setParameter("proveedor", query.getProveedor())
-				.setParameter("fechaDesde", query.getFechaDesde())
-				.setParameter("fechaHasta", query.getFechaHasta())
-				.setParameter("pendiente", pendiente)
-				.setParameter("emitido", emitido)
-				.setParameter("numero", numero)
-				.setParameter("serie", query.getSerie())
-				.setParameter("tipoComprobante", query.getTipoComprobante());
-			
+			q.setParameter("empId", getEmpId()).setParameter("proveedor", query.getProveedor()).setParameter("fechaDesde", query.getFechaDesde()).setParameter("fechaHasta", query.getFechaHasta())
+					.setParameter("pendiente", pendiente).setParameter("emitido", emitido).setParameter("numero", numero).setParameter("serie", query.getSerie())
+					.setParameter("tipoComprobante", query.getTipoComprobante());
+
 			if (query.getLineaConcepto() != null) {
 				q.setParameter("concepto", concepto);
 			}
@@ -941,7 +935,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 				sb.append("SELECT COUNT(distinct(d.id.docId)) ");
 				sb.append(ULTIMOS_FACTURADOS_SUBQUERY_ARTICULO);
 			}
-			
+
 		} else {
 			sb.append("SELECT COUNT(d.id.docId) ");
 			if (query.getLineaConcepto() != null) {
@@ -1013,12 +1007,10 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		String usuarioPermisoId = usuarioLogin.getPermisoId();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
-		
-		pdu.setRentaReal(esSupervisor 
-				|| Arrays.asList(new String[] { Usuario.USUARIO_FACTURACION, Usuario.USUARIO_ADMINISTRADOR }).contains(usuarioPermisoId)
+
+		pdu.setRentaReal(esSupervisor || Arrays.asList(new String[] { Usuario.USUARIO_FACTURACION, Usuario.USUARIO_ADMINISTRADOR }).contains(usuarioPermisoId)
 				|| (usuarioPermisoId.equals(Usuario.USUARIO_VENDEDOR_SENIOR) && doc.usuarioInvolucrado(usuarioLogin.getCodigo())));
-		pdu.setRentaDistribuidor(esSupervisor				
-				|| Arrays.asList(new String[] { Usuario.USUARIO_FACTURACION, Usuario.USUARIO_ADMINISTRADOR }).contains(usuarioPermisoId)
+		pdu.setRentaDistribuidor(esSupervisor || Arrays.asList(new String[] { Usuario.USUARIO_FACTURACION, Usuario.USUARIO_ADMINISTRADOR }).contains(usuarioPermisoId)
 				|| (usuarioPermisoId.equals(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR) && doc.usuarioInvolucrado(usuarioLogin.getCodigo())));
 		return mapped;
 	}
@@ -1087,23 +1079,23 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		fetchEagerComprobantes();
 
 		fetchComisionesVendedores(pv);
-		
+
 		List<uy.com.tmwc.facturator.entity.ParticipacionVendedor> result = new ArrayList();
-		
-		for (Object object : pv) {		
+
+		for (Object object : pv) {
 			ParticipacionVendedor partVendOrigen = (ParticipacionVendedor) object;
-			
+
 			Documento mappedDocument = (uy.com.tmwc.facturator.entity.Documento) this.mapService.getDozerBeanMapper().map(partVendOrigen.getDocumento(), uy.com.tmwc.facturator.entity.Documento.class);
 			Vendedor mappedVendedor = (uy.com.tmwc.facturator.entity.Vendedor) this.mapService.getDozerBeanMapper().map(partVendOrigen.getVendedor(), uy.com.tmwc.facturator.entity.Vendedor.class);
-			
-			uy.com.tmwc.facturator.entity.ParticipacionVendedor partVendDest = new uy.com.tmwc.facturator.entity.ParticipacionVendedor();			
+
+			uy.com.tmwc.facturator.entity.ParticipacionVendedor partVendDest = new uy.com.tmwc.facturator.entity.ParticipacionVendedor();
 			partVendDest.setDocumento(mappedDocument);
 			partVendDest.setVendedor(mappedVendedor);
 			partVendDest.setPorcentaje(partVendOrigen.getPorcentaje());
-			
+
 			result.add(partVendDest);
 		}
-		
+
 		return result;
 	}
 
@@ -1112,7 +1104,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			Hibernate.initialize(pv.getVendedor().getComisiones());
 		}
 	}
-	
+
 	private void fetchLineas(List<ParticipacionVendedor> pvs) {
 		for (ParticipacionVendedor pv : pvs) {
 			Hibernate.initialize(pv.getDocumento().getLineas());
@@ -1150,31 +1142,30 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		return list;
 	}
-	
+
 	public Map<String, ArrayList<ParticipacionAfilador>> getParticipacionesAfilados(Date fechaDesde, Date fechaHasta, BigDecimal value) {
 		@SuppressWarnings("unchecked")
-		List<Object[]> list = this.em.createNamedQuery("Documento.lineasAfiladoIntervaloFechas")
-			.setParameter("empId", getEmpId())
-			.setParameter("fechaDesde", fechaDesde)
-			.setParameter("fechaHasta", fechaHasta).getResultList();
+		List<Object[]> list = this.em.createNamedQuery("Documento.lineasAfiladoIntervaloFechas").setParameter("empId", getEmpId()).setParameter("fechaDesde", fechaDesde)
+				.setParameter("fechaHasta", fechaHasta).getResultList();
 
 		Map<String, ArrayList<ParticipacionAfilador>> map = new HashMap<String, ArrayList<ParticipacionAfilador>>();
-		
-		//List<ParticipacionAfilador> result = new ArrayList<ParticipacionAfilador>();
+
+		// List<ParticipacionAfilador> result = new
+		// ArrayList<ParticipacionAfilador>();
 		for (Object[] objects : list) {
 			ParticipacionAfilador p = new ParticipacionAfilador();
-			
-			Linea linea = (Linea)objects[0];
+
+			Linea linea = (Linea) objects[0];
 			uy.com.tmwc.facturator.libra.entity.Documento documento = (uy.com.tmwc.facturator.libra.entity.Documento) objects[1];
 			Articulo articulo = (uy.com.tmwc.facturator.libra.entity.Articulo) objects[2];
-			
+
 			BigDecimal precio = linea.getPrecio();
 			if (precio == null || precio.intValue() < 1) {
 				precio = value;
 			}
-			
+
 			String afilador = linea.getAfilador() != null ? linea.getAfilador() : "";
-			
+
 			p.setAfilador(afilador);
 			p.setItem(articulo.getNombre());
 			p.setFecha(documento.getFecha());
@@ -1186,20 +1177,19 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			p.setPercentage(new BigDecimal(25));
 			p.setMontoACobrar(p.getImporte().multiply(new BigDecimal(.25)));
 			p.setMoneda(documento.getMoneda().getSimbolo());
-			
+
 			if (map.containsKey(afilador)) {
 				ArrayList<ParticipacionAfilador> l = map.get(afilador);
 				l.add(p);
 			} else {
 				ArrayList<ParticipacionAfilador> l = new ArrayList<ParticipacionAfilador>();
-				l.add(p);					
+				l.add(p);
 				map.put(afilador, l);
 			}
 		}
-		
+
 		return map;
 	}
-
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<ParticipacionEnCobranza> getParticipacionesEnCobranzas(Date fechaDesde, Date fechaHasta, Date fechaCorte) {
@@ -1367,7 +1357,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		// StockActual)
 
 		Stockactual stockActual = getStockActual(articulo, deposito);
-		// El registro de stock para el art/deposito puede no existir, las líneas que quedarian en 0 son borrados por libra.
+		// El registro de stock para el art/deposito puede no existir, las
+		// líneas que quedarian en 0 son borrados por libra.
 		if (stockActual == null) {
 			stockActual = new Stockactual();
 			StockactualPK pk = getStockActualPK();
@@ -1407,6 +1398,16 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		return new ArrayList<StockActual>(new Mapper().mapCollection(ormResult, StockActual.class));
 	}
 
+	public List<StockActualDTO> getStockActualEnDeposito(String depositoId) {
+		List<?> ormResult = this.em.createNamedQuery("Stockactual.deposito")
+			.setParameter("empId", getEmpId())
+			.setParameter("depositoId", new Short(depositoId))
+			.getResultList();
+
+		return new ArrayList<StockActualDTO>(new Mapper().mapCollection(ormResult, StockActualDTO.class));
+
+	}
+
 	public BigDecimal getStock(String articulo, short deposito) {
 		StockactualPK pk = getStockActualPK();
 		pk.setArtIdSA(articulo);
@@ -1441,7 +1442,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		controlModificacionDocumento(docEntity);
 
-		docEntity.setPendiente("N"); // lo marco como no pendiente, remuevo la reserva de articulos
+		docEntity.setPendiente("N"); // lo marco como no pendiente, remuevo la
+										// reserva de articulos
 
 		verifyUniqueSerieNumero(docEntity);
 
@@ -1688,11 +1690,11 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		BigDecimal descuentoProveedor = BigDecimal.ZERO;
 		try {
 			if (proveedor != null && proveedor.getDescuentoRecibo() != null && proveedor.getDescuentoRecibo().trim().length() > 0) {
-					descuentoProveedor = new BigDecimal(proveedor.getDescuentoRecibo());	
+				descuentoProveedor = new BigDecimal(proveedor.getDescuentoRecibo());
 			}
 		} catch (NumberFormatException ex) {
 			ex.printStackTrace();
-			
+
 		}
 
 		List<LineaDocumento> lineas = doc.getLineas().getLineas();
@@ -1906,12 +1908,11 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		controlModificacionDocumento(docEntity);
 
 		docEntity.setProcessId(ncfId);
-		
+
 		this.em.merge(docEntity);
 		this.em.flush();
 
 		return true;
 	}
-
 
 }

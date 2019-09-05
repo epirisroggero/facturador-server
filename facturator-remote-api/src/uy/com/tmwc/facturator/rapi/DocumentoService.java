@@ -7,6 +7,7 @@ import java.util.List;
 import uy.com.tmwc.facturator.dto.AntecedentesArticulo;
 import uy.com.tmwc.facturator.dto.DocumentoDTO;
 import uy.com.tmwc.facturator.dto.DocumentoQuery;
+import uy.com.tmwc.facturator.dto.StockActualDTO;
 import uy.com.tmwc.facturator.entity.ArticuloCompraVentaCosto;
 import uy.com.tmwc.facturator.entity.ArticuloPrecio;
 import uy.com.tmwc.facturator.entity.ArticuloPrecioFabricaCosto;
@@ -81,6 +82,8 @@ public interface DocumentoService {
 	void updateArticulosPrecios(List<ArticuloPrecioFabricaCosto> lista, Boolean updateCosto);
 	
 	List<StockActual> getStockActual(String articuloId);
+	
+	List<StockActualDTO> getStockEnDeposito(String depositoId);
 	
 	List<ArticuloPrecioFabricaCosto> getCostosArticulos(uy.com.tmwc.facturator.entity.Documento doc);
 	

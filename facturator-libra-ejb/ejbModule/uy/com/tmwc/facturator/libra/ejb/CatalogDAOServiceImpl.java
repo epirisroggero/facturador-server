@@ -88,6 +88,8 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 		classMapping.put(uy.com.tmwc.facturator.entity.Concepto.class, uy.com.tmwc.facturator.libra.entity.Concepto.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Marca.class, uy.com.tmwc.facturator.libra.entity.Marca.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.CategoriasArticulos.class, uy.com.tmwc.facturator.libra.entity.Categoriasarticulo.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Referencia.class, uy.com.tmwc.facturator.libra.entity.Referencia.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.UnidadesStock.class, uy.com.tmwc.facturator.libra.entity.Unidadesstock.class);
 
 		jefaturasClassMapper = new SimpleClassMapper();
 		jefaturasClassMapper.add(uy.com.tmwc.facturator.libra.entity.JefaturaArticulo.class, uy.com.tmwc.facturator.entity.JefaturaArticulo.class);

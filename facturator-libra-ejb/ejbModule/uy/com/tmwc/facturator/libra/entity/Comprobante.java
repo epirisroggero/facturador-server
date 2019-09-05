@@ -28,6 +28,10 @@ public class Comprobante extends PersistentEntity<ComprobantePK> implements Seri
 	public static final int NOTA_CREDITO = uy.com.tmwc.facturator.entity.Comprobante.NOTA_CREDITO;
 	public static final int VENTA_CONTADO = uy.com.tmwc.facturator.entity.Comprobante.VENTA_CONTADO;
 	public static final int DEVOLUCION_CONTADO = uy.com.tmwc.facturator.entity.Comprobante.DEVOLUCION_CONTADO;
+	
+	public static final int NOTA_CREDITO_COMPRA = uy.com.tmwc.facturator.entity.Comprobante.DEVOLUCION_CONTADO;
+	public static final int DEVOLUCION_COMPRA_CONTADO = uy.com.tmwc.facturator.entity.Comprobante.DEVOLUCION_COMPRA_CONTADO;
+	
 	public static final int RECIBO_COBRO = uy.com.tmwc.facturator.entity.Comprobante.RECIBO_COBRO;
 	
 	public static final int COMPRA_CREDITO = uy.com.tmwc.facturator.entity.Comprobante.COMPRA_CREDITO;

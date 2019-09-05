@@ -90,10 +90,15 @@
       <class>uy.com.tmwc.facturator.libra.entity.ArticuloPartidaPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.ArticuloPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.AgendatareaPK</class>
+      <class>uy.com.tmwc.facturator.libra.entity.Concepto</class>
       <class>uy.com.tmwc.facturator.libra.entity.ConceptoPK</class>
       <class>uy.com.tmwc.facturator.libra.entity.Auditoria</class>
       <class>uy.com.tmwc.facturator.libra.entity.Categoriasarticulo</class>
       <class>uy.com.tmwc.facturator.libra.entity.CategoriasarticuloPK</class>
+      <class>uy.com.tmwc.facturator.libra.entity.Referencia</class>
+      <class>uy.com.tmwc.facturator.libra.entity.ReferenciaPK</class>
+      <class>uy.com.tmwc.facturator.libra.entity.Unidadesstock</class>
+      <class>uy.com.tmwc.facturator.libra.entity.UnidadesstockPK</class>
       
 	  
       <exclude-unlisted-classes />

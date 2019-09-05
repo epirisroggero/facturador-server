@@ -1,14 +1,23 @@
 package uy.com.tmwc.facturator.libra.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumns;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.SecondaryTable;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
 import uy.com.tmwc.facturator.libra.util.BooleanDozerConverter;
-
-import java.util.Date;
 
 @Entity
 @Table(name = "agendatareas")
@@ -125,6 +134,12 @@ public class Agendatarea extends PersistentEntity<AgendatareaPK> implements Seri
 	
 	@Column(table = "lfx_agendatareas")
 	private String notify;
+
+	@Column(table = "lfx_agendatareas")
+	private String usuEstado;
+
+	@Column(table = "lfx_agendatareas")
+	private String usuCliId;
 
 	public Agendatarea() {
 	}
@@ -371,6 +386,27 @@ public class Agendatarea extends PersistentEntity<AgendatareaPK> implements Seri
 
 	public void setNotify(boolean notify) {
 		this.notify = BooleanDozerConverter.toString(notify);
+	}
+
+
+	public void setNotify(String notify) {
+		this.notify = notify;
+	}
+	
+	public String getUsuEstado() {
+		return usuEstado;
+	}
+
+	public void setUsuEstado(String usuEstado) {
+		this.usuEstado = usuEstado;
+	}
+	
+	public String getUsuCliId() {
+		return usuCliId;
+	}
+
+	public void setUsuCliId(String usuCliId) {
+		this.usuCliId = usuCliId;
 	}
 
 

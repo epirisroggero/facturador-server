@@ -11,6 +11,7 @@ import java.util.Map;
 import uy.com.tmwc.facturator.dto.DocumentoDTO;
 import uy.com.tmwc.facturator.dto.DocumentoQuery;
 import uy.com.tmwc.facturator.dto.ParticipacionEnCobranza;
+import uy.com.tmwc.facturator.dto.StockActualDTO;
 import uy.com.tmwc.facturator.entity.ArticuloCompraVentaCosto;
 import uy.com.tmwc.facturator.entity.ArticuloPrecioFabricaCosto;
 import uy.com.tmwc.facturator.entity.Documento;
@@ -34,7 +35,7 @@ public interface DocumentoDAOService {
 	Boolean finalizarCompra(Documento paramDocumento) throws PermisosException;
 
 	void merge(Documento paramDocumento) throws PermisosException;
-	
+
 	void merge(Documento paramDocumento, Boolean verify) throws PermisosException;
 
 	SerieNumero generarSerieNumero(String paramString);
@@ -66,7 +67,7 @@ public interface DocumentoDAOService {
 	List<ParticipacionEnCobranza> getParticipacionesEnCobranzas(Date fechaDesde, Date fechaHasta, Date fechaCorte);
 
 	Collection<VinculoDocumentos> getCobranzas(Date fechaDesde, Date fechaHasta, Date fechaCorte);
-	
+
 	void grabarCostosOperativos(Date fechaDesde, Date fechaHasta, Map<String, BigDecimal> paramMap);
 
 	List<DocumentoDTO> pendientesCliente(String cliId);
@@ -92,6 +93,8 @@ public interface DocumentoDAOService {
 
 	List<StockActual> getStockActual(String articuloId);
 
+	List<StockActualDTO> getStockActualEnDeposito(String depositoId);
+
 	List<ArticuloPrecioFabricaCosto> getCostoArticulos(Documento doc);
 
 	void updateArticulosCostos(List<ArticuloPrecioFabricaCosto> lista);
@@ -103,9 +106,9 @@ public interface DocumentoDAOService {
 	void updateCostosArticuloDocumentos(List<ArticuloCompraVentaCosto> lista) throws PermisosException;
 
 	Map<String, Object[]> getParticipacionesCobranza(Date fechaDesde, Date fechaHasta, String[] compsIncluidos, String[] compsExcluidos);
-	
+
 	Map<String, ArrayList<ParticipacionAfilador>> getParticipacionesAfilados(Date fechaDesde, Date fechaHasta, BigDecimal value);
 
 	Boolean updateNotaCreditoFinancieraEnRecibo(Documento paramDocumento, String ncfId) throws PermisosException;
-	
+
 }

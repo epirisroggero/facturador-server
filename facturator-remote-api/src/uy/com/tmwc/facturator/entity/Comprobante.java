@@ -22,7 +22,9 @@ public class Comprobante extends CodigoNombreEntity {
 	public static final int RECIBO_COBRO = 5;
 	
 	public static final int COMPRA_CREDITO = 21;
+	public static final int NOTA_CREDITO_COMPRA = 22;
 	public static final int COMPRA_CONTADO = 23;
+	public static final int DEVOLUCION_COMPRA_CONTADO = 24;
 	
 	public static final int MOVIMIENTO_DE_STOCK_DE_PROVEEDORES = 31;
 	public static final int MOVIMIENTO_DE_STOCK_DE_CLIENTE = 32;

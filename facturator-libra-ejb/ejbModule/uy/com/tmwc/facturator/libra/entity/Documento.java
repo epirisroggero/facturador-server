@@ -68,13 +68,13 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 
 	@Column(table = "lfx_documentos")
 	private Integer cantidadBultos;
-	
+
 	@Column(table = "lfx_documentos")
 	private String prevDocId;
-	
+
 	@Column(table = "lfx_documentos")
 	private String nextDocId;
-	
+
 	@Column(table = "lfx_documentos")
 	private String processId;
 
@@ -90,14 +90,12 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	@Column(table = "lfx_documentos", name = "DocTCC")
 	private BigDecimal docTCC;
 
-	
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
-	@JoinColumns({
-			@javax.persistence.JoinColumn(table = "lfx_documentos", name = "entrega_id", referencedColumnName = "codigo", insertable = false, updatable = false),
+	@JoinColumns({ @javax.persistence.JoinColumn(table = "lfx_documentos", name = "entrega_id", referencedColumnName = "codigo", insertable = false, updatable = false),
 			@javax.persistence.JoinColumn(table = "lfx_documentos", name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Entrega entrega;
-	
+
 	@OneToMany(cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "documento")
 	@Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	private List<ParticipacionVendedor> participaciones;
@@ -225,7 +223,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 
 	@Column(name = "DocRegistroHora")
 	private String registroHora;
-	
+
 	private static final String REGISTRO_HORA_FORMAT = "HH:mm:ss";
 
 	/**
@@ -301,17 +299,16 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	@JoinColumns({ @JoinColumn(table = "lfx_documentos", name = "condicionId", referencedColumnName = "PPid", insertable = false, updatable = false),
 			@JoinColumn(table = "lfx_documentos", name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Planpago condicion;
-	
+
 	@NotFound(action = NotFoundAction.IGNORE)
-	@ManyToOne 
+	@ManyToOne
 	@JoinColumns({ @JoinColumn(table = "lfx_documentos", name = "DocRecMdaId", referencedColumnName = "MndId", insertable = false, updatable = false),
 			@JoinColumn(table = "lfx_documentos", name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Moneda docRecMda;
-	
+
 	@Column(table = "lfx_documentos", name = "DocRecMdaId")
 	private Short docRecMdaId;
 
-		
 	@SuppressWarnings("unused")
 	@Column(name = "PPidDoc")
 	private String planPagosId;
@@ -366,7 +363,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	private Set<Vinculosdoc> recibosVinculados;
 
 	@OneToMany(cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "recibo")
-	/*@Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN })*/
+	/* @Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN }) */
 	private Set<Vinculosdoc> facturasVinculadas;
 
 	@OneToMany(cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "documento")
@@ -376,61 +373,60 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	@OneToMany(cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "documento")
 	@Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	private Set<Docruc> docruc;
-	
+
 	@OneToMany(cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "docFP1")
-	/*@Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN })*/
+	/* @Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN }) */
 	private Set<Vinculosfp> vinculosfp;
 
-	
 	@Column(name = "DocMensaje")
 	private String docMensaje = "";
-	
+
 	@Temporal(TemporalType.DATE)
 	@Column(name = "DocEntregaFecha")
-    private Date docEntregaFecha;
-    
-    @Column(name = "DocEntregaReparto")
-    private String docEntregaReparto = "";
-    
-    @Column(name = "DocCFEstatus")
-    private Short docCFEstatus;
-    
-    @Column(name = "DocCFEstatusAcuse")
-    private Short docCFEstatusAcuse;
-    
-    @Column(name = "TipoCFEidDoc")
-    private Short tipoCFEidDoc;
-    
-    @Column(name = "CAEiddDoc")
-    private Short cAEiddDoc;
-    
-    @Column(name = "DocIncoterm")
-    private String docIncoterm;
-    
-    @Column(name = "DocExpTransporte")
-    private Short docExpTransporte;
-     
-    @Column(name = "DocModExp")
-    private Short docModExp;
-    
-    @Column(name = "ConceptoIdDoc")
-    private String conceptoIdDoc = "";
-    
-    @Column(name = "DocDocId")
-    private Integer docDocId = 0;
-    
-    @Column(name = "DocCFEetapa")
-    private String docCFEetapa = "";
-    
-    @Column(name = "DocCFEId")
-    private Integer docCFEId;
-    
-    @Column(name = "DocShoppingEstado")
-    private long docShoppingEstado = 0;
-    
-    @Column(name = "DocShoppingIntervencion")
-    private String docShoppingIntervencion = "";
-	
+	private Date docEntregaFecha;
+
+	@Column(name = "DocEntregaReparto")
+	private String docEntregaReparto = "";
+
+	@Column(name = "DocCFEstatus")
+	private Short docCFEstatus;
+
+	@Column(name = "DocCFEstatusAcuse")
+	private Short docCFEstatusAcuse;
+
+	@Column(name = "TipoCFEidDoc")
+	private Short tipoCFEidDoc;
+
+	@Column(name = "CAEiddDoc")
+	private Short cAEiddDoc;
+
+	@Column(name = "DocIncoterm")
+	private String docIncoterm;
+
+	@Column(name = "DocExpTransporte")
+	private Short docExpTransporte;
+
+	@Column(name = "DocModExp")
+	private Short docModExp;
+
+	@Column(name = "ConceptoIdDoc")
+	private String conceptoIdDoc = "";
+
+	@Column(name = "DocDocId")
+	private Integer docDocId = 0;
+
+	@Column(name = "DocCFEetapa")
+	private String docCFEetapa = "";
+
+	@Column(name = "DocCFEId")
+	private Integer docCFEId;
+
+	@Column(name = "DocShoppingEstado")
+	private long docShoppingEstado = 0;
+
+	@Column(name = "DocShoppingIntervencion")
+	private String docShoppingIntervencion = "";
+
 	@Column(table = "lfx_documentos")
 	private Long entrega_id;
 
@@ -460,22 +456,22 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 
 	@Column(table = "lfx_documentos", length = 50)
 	private String localidad;
-	
+
 	@Column(table = "lfx_documentos", length = 50)
 	private String departamento;
 
 	@Column(table = "lfx_documentos", length = 255)
 	private String dirEntrega;
-	
+
 	@Column(table = "lfx_documentos", length = 3)
 	private String condicionId;
 
 	@Column(table = "lfx_documentos")
 	private BigDecimal costoEstimadoEntrega;
-		
+
 	@Column(table = "lfx_documentos", name = "TipoCFERef")
 	private String tipoCFERef;
-	
+
 	@Column(table = "lfx_documentos", name = "IndGlobalCFERef")
 	private String indGlobalCFERef;
 
@@ -490,22 +486,22 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 
 	@Column(table = "lfx_documentos", name = "RazonCFERef")
 	private String razonCFERef;
-	
+
 	@Column(table = "lfx_documentos", name = "SerieCFEIdDoc")
 	private String serieCFEIdDoc;
-	
+
 	@Column(table = "lfx_documentos", name = "NumCFEIdDoc")
-	private BigDecimal numCFEIdDoc ;
-		
+	private BigDecimal numCFEIdDoc;
+
 	@Column(table = "lfx_documentos", name = "CodSeguridadCFE")
 	private String codSeguridadCFE;
-	
+
 	@Column(table = "lfx_documentos", precision = 10, scale = 2)
 	private BigDecimal coeficienteImp;
-	
+
 	@Column(table = "lfx_documentos", name = "CodigoQR")
 	private byte[] codigoQR;
-	
+
 	@Column(table = "lfx_documentos", name = "CAEdesde")
 	private Integer CAEdesde;
 
@@ -523,7 +519,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 
 	@Column(table = "lfx_documentos", name = "CAEserie")
 	private String CAEserie;
-	
+
 	@Column(table = "lfx_documentos", name = "DocCFEFileName")
 	private String docCFEFileName;
 
@@ -539,7 +535,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	public Documento() {
 		this.estadoFecha = Constantes.DEFAULT_DATE;
 		this.docEntregaFecha = Constantes.DEFAULT_DATE;
-		
+
 		this.docCFEstatus = new Short("0");
 		this.cuentaId = new Short("0");
 		this.docCFEstatusAcuse = new Short("0");
@@ -547,7 +543,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 		this.cAEiddDoc = new Short("0");
 		this.ultFP = new Short("0");
 		this.ivaIdDoc = new Short("0");
-		
+
 		this.docDocId = new Integer("0");
 		this.docCFEId = new Integer("0");
 
@@ -598,7 +594,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 				cuota.setSaldo(cuota.getTotal());
 			}
 	}
-	
+
 	public Long getEntrega_id() {
 		return entrega_id;
 	}
@@ -606,12 +602,12 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	public void setEntrega_id(Long entrega_id) {
 		this.entrega_id = entrega_id;
 	}
-	
+
 	public boolean usuarioInvolucrado(String usuario) {
 		if (usuario.equals(String.valueOf(this.usuarioId))) {
 			return true;
 		}
-		if (cliente != null  && cliente.getVendedor() != null && usuario.equals(String.valueOf(cliente.getVendedor().getUsuarioId()))) {
+		if (cliente != null && cliente.getVendedor() != null && usuario.equals(String.valueOf(cliente.getVendedor().getUsuarioId()))) {
 			return true;
 		}
 		List<ParticipacionVendedor> parts = getParticipaciones();
@@ -624,7 +620,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 		}
 		return false;
 	}
-	
+
 	public String getCondicionId() {
 		return condicionId;
 	}
@@ -777,7 +773,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	}
 
 	public void setArtId(String artId) {
-		this.artId = (artId == null ? "": artId);
+		this.artId = (artId == null ? "" : artId);
 	}
 
 	public void setPendiente(String pendiente) {
@@ -924,7 +920,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 		this.origen = origen;
 	}
 
-	public String getPendiente() {		
+	public String getPendiente() {
 		return this.pendiente;
 	}
 
@@ -1152,7 +1148,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	public void setCosto(BigDecimal costo) {
 		this.costo = costo;
 	}
-	
+
 	public BigDecimal getCostoOperativo() {
 		return this.costoOperativo;
 	}
@@ -1220,7 +1216,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	public void setNroEnvio(String nroEnvio) {
 		this.nroEnvio = nroEnvio;
 	}
-	
+
 	public String getLocalidad() {
 		return localidad;
 	}
@@ -1286,7 +1282,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	}
 
 	public Boolean comprobanteComputaIva() {
-		if (comprobante.getCodigo().equals("122") || comprobante.getCodigo().equals("124") ) {
+		if (comprobante.getCodigo().equals("122") || comprobante.getCodigo().equals("124")) {
 			return false;
 		}
 		return !(comprobante.isExento());
@@ -1692,7 +1688,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	public void setVinculosfp(Set<Vinculosfp> vinculosfp) {
 		this.vinculosfp = vinculosfp;
 	}
-	
+
 	public String getDocCFEFileName() {
 		return docCFEFileName;
 	}
@@ -1708,7 +1704,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	public void setNextDocId(String nextDocId) {
 		this.nextDocId = nextDocId;
 	}
-	
+
 	public String getProcessId() {
 		return processId;
 	}
@@ -1716,7 +1712,5 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	public void setProcessId(String processId) {
 		this.processId = processId;
 	}
-
-
 
 }

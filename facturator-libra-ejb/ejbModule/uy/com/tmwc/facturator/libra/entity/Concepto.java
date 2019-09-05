@@ -7,6 +7,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import uy.com.tmwc.facturator.dto.ICodigoNombre;
 import uy.com.tmwc.utils.orm.CatalogEntity;
 
 /**
@@ -15,12 +16,16 @@ import uy.com.tmwc.utils.orm.CatalogEntity;
  */
 @Entity
 @Table(name = "conceptos")
-@CatalogEntity
-public class Concepto extends PersistentEntity<ConceptoPK> implements Serializable, HasId<ConceptoPK> {
+@CatalogEntity(useNamedQuery = true)
+public class Concepto extends PersistentEntity<ConceptoPK> implements Serializable, ICodigoNombre {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	private ConceptoPK id;
+	
+	@SuppressWarnings("unused")
+	@Column(name = "ConceptoId", insertable = false, updatable = false)
+	private String codigo;
 
 	@Column(name = "ConceptoActivo")
 	private String conceptoActivo;
@@ -48,7 +53,15 @@ public class Concepto extends PersistentEntity<ConceptoPK> implements Serializab
 
 	@Column(name = "IvaIdConcepto")
 	private Short ivaIdConcepto;
+	
+	public Concepto() {
+	}
+	
+	public Concepto(String codigo, String nombre) {
+		setCodigo(codigo);
 
+		this.nombre = nombre;
+	}
 
 	public ConceptoPK getId() {
 		return this.id;
@@ -128,6 +141,19 @@ public class Concepto extends PersistentEntity<ConceptoPK> implements Serializab
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getCodigo() {
+		return this.id.getConceptoId();
+	}
+
+	public void setCodigo(String value) {
+		this.codigo = value;
+		if (this.id == null) {
+			this.id = new ConceptoPK();
+		}
+		this.id.setConceptoId(value);
+
 	}
 
 

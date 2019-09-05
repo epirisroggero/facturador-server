@@ -93,15 +93,12 @@ public class EmailSenderService {
 
 		// Obtener el data source de la imagen
 		DataSource fds3 = null;
-		if (esCobranza) {
-			fds3 = new FileDataSource("C:/Fulltime/resources/templates/images/Marielvy.jpg");
+		if (usuario != null && new File("C:/Fulltime/resources/fotos/Foto_" + usuario.getCodigo().trim() + ".jpg").exists()) {
+			fds3 = new FileDataSource("C:/Fulltime/resources/fotos/Foto_" + usuario.getCodigo().trim() + ".jpg");	
 		} else {
-			if (usuario != null && new File("C:/Fulltime/resources/fotos/Foto_" + usuario.getCodigo().trim() + ".jpg").exists()) {
-				fds3 = new FileDataSource("C:/Fulltime/resources/fotos/Foto_" + usuario.getCodigo().trim() + ".jpg");	
-			} else {
-				fds3 = new FileDataSource("C:/Fulltime/resources/templates/images/Logo.jpg");
-			}
-		} 
+			fds3 = new FileDataSource("C:/Fulltime/resources/templates/images/Logo.jpg");
+		}
+
 		messageBodyPart = new MimeBodyPart();
 		messageBodyPart.setDataHandler(new DataHandler(fds3));
 		messageBodyPart.setFileName("photo.jpg");

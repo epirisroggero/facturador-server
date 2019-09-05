@@ -52,7 +52,7 @@
             			<td align="left" style="padding: 0px 10px 0px 20px;" bgcolor="#FFFFFF">
             				<table width="220px" style="border-left:solid 2px #cfcfcf; padding-left: 10px;" >
             					<tr>
-            						<td style="font-size:1.3em;font-weight:bold; color:blue;" >Marielvy Vargas</td>
+            						<td style="font-size:1.3em;font-weight:bold; color:blue;" >${usuario.nombre!""}</td>
             					</tr>
             					<tr>
             						<td style="font-size:1.1em;font-weight:bold; color:#666666;" >Cobranzas Fulltime</td>
@@ -71,7 +71,7 @@
             					<tr>
             						<td style="font-size:1.0em;font-weight:normal; color:#000000;">
             							<span>Correo:</span>
-            							<a href="mailto:cobranzasfulltimeuru@gmail.com">cobranzasfulltimeuru@gmail.com</a>
+            							<a href="mailto:cobranzasfulltimeuru@gmail.com">${usuario.usuEmail!"cobranzasfulltimeuru@gmail.com"}</a>
             						</td>
             					</tr>
             					<tr>

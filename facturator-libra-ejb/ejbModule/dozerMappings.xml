@@ -524,6 +524,15 @@
       <b>codigo</b>
     </field>
   </mapping>  
+
+  <mapping> 
+    <class-a>uy.com.tmwc.facturator.libra.entity.Referencia</class-a>   
+    <class-b>uy.com.tmwc.facturator.entity.Referencia</class-b>
+    <field>
+      <a>id.refId</a>
+      <b>codigo</b>
+    </field>
+  </mapping>  
   
   <mapping>
     <class-a>uy.com.tmwc.facturator.libra.entity.Vinculosdoc</class-a>   
@@ -608,6 +617,14 @@
     </field>
   </mapping>
 
+  <mapping> 
+    <class-a>uy.com.tmwc.facturator.libra.entity.Unidadesstock</class-a>   
+    <class-b>uy.com.tmwc.facturator.entity.UnidadesStock</class-b>
+    <field>
+      <a>id.unidadId</a>
+      <b>codigo</b>
+    </field>
+  </mapping>  
 
 </mappings>
         

@@ -50,6 +50,7 @@ import uy.com.tmwc.facturator.dto.EFacturaResult;
 import uy.com.tmwc.facturator.dto.ProveedorDTO;
 import uy.com.tmwc.facturator.dto.ProveedoresQuery;
 import uy.com.tmwc.facturator.dto.ReportParameters;
+import uy.com.tmwc.facturator.dto.StockActualDTO;
 import uy.com.tmwc.facturator.dto.TableReportResult;
 import uy.com.tmwc.facturator.entity.AgendaTarea;
 import uy.com.tmwc.facturator.entity.Articulo;
@@ -2073,6 +2074,7 @@ public class RemoteServiceHandler {
 			root.put("cliente", documento.getCliente().getNombre().toUpperCase());
 			root.put("serieNro", documento.getSerie() + documento.getNumero());
 			root.put("total", numberFormat.format(documento.getTotal()) + " " + documento.getMoneda().getNombre());
+			root.put("usuario", usuario);
 			htmlText = FreemarkerConfig.loadTemplate("templates/", "email-template-recibo.ftl", root);
 
 		} else if (documento != null) {
@@ -2098,6 +2100,7 @@ public class RemoteServiceHandler {
 			eMailSender.sendEmail();
 			result.append("<state>true</state>");
 			result.append("</result>");
+			
 		} catch (MessagingException me) {
 			result.append("<state>false</state>");
 
@@ -2129,6 +2132,10 @@ public class RemoteServiceHandler {
 
 	public List<StockActual> getStockActual(String articuloId) {
 		return getService().getStockActual(articuloId);
+	}
+
+	public List<StockActualDTO> getStockEnDeposito(String depositoId) {
+		return getService().getStockEnDeposito(depositoId);
 	}
 
 	public List<AgendaTareaDTO> getAgendaTareas(String usuario) {

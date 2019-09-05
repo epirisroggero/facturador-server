@@ -243,41 +243,17 @@
 			<query>
 				select 
 					new uy.com.tmwc.facturator.libra.entity.Articulo(e.id.artId, e.nombre, e.familiaId, e.marcaId, e.codigoOrigen, 
-						e.prvIdArt, e.activo, fam, marca, prov, s.SAcantidad)
+						e.prvIdArt, e.activo, fam, marca, prov)
 				from
-					Articulo e join e.familia fam left join e.proveedor prov left join e.marca marca, 
-					Stockactual s
+					Articulo e join e.familia fam left join e.proveedor prov left join e.marca marca
 				where 
 					e.nombre like :query
 					and e.id.empId = :empId
-					and s.id.artIdSA = e.id.artId 
-					and s.id.depIdSA = '1' 
 				order by
 					e.nombre
 			</query>
 		</named-query>
 	</entity>
-	
-	<entity class="uy.com.tmwc.facturator.libra.entity.Articulo">
-		<named-query name="Articulo.query2">
-			<query>
-				select 
-					new uy.com.tmwc.facturator.libra.entity.Articulo(e.id.artId, e.nombre, e.familiaId, e.marcaId, e.codigoOrigen, 
-						e.prvIdArt, e.activo, fam, marca, prov, s.SAcantidad)
-				from
-					Articulo e join e.familia fam left join e.proveedor prov left join e.marca marca, 
-					Stockactual s
-				where 
-					e.nombre like :query
-					and e.id.empId = :empId
-					and s.id.artIdSA = e.id.artId 
-					and s.id.depIdSA = :depositoId 
-				order by
-					e.nombre
-			</query>
-		</named-query>
-	</entity>
-	
 
 	<entity class="uy.com.tmwc.facturator.libra.entity.ArticuloPrecio">
 		<named-query name="ArticuloPrecio.precioArticuloParaPrecioVenta">
@@ -295,9 +271,9 @@
 					and pv.id.precioVentaId = :preciosVenta
 					and pv.id.empId = :empId
 			</query>
-		</named-query> 
+		</named-query>
 	</entity>
-	
+
 	<entity class="uy.com.tmwc.facturator.libra.entity.ArticuloPartida">
 		<named-query name="ArticuloPartida.queryArticuloPartida">
 			<query>
@@ -311,7 +287,7 @@
 			</query>
 		</named-query>
 	</entity>
-	
+
 	<entity class="uy.com.tmwc.facturator.libra.entity.Asiento" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Asientos1" />
 
@@ -501,8 +477,8 @@
 	</entity>
 
 	<entity class="uy.com.tmwc.facturator.libra.entity.Caja" />
-	<entity class="uy.com.tmwc.facturator.libra.entity.Centroscosto" >
-			<named-query name="Centroscosto.query">
+	<entity class="uy.com.tmwc.facturator.libra.entity.Centroscosto">
+		<named-query name="Centroscosto.query">
 			<query>
 				select 
 					new uy.com.tmwc.facturator.libra.entity.Centroscosto(e.id.cenId, e.nombre)
@@ -516,6 +492,56 @@
 			</query>
 		</named-query>
 	</entity>
+	
+	<entity class="uy.com.tmwc.facturator.libra.entity.Referencia">
+		<named-query name="Referencia.query">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.libra.entity.Referencia(r.id.refId, r.nombre)
+				from
+					Referencia r
+				where 
+					r.nombre like :query
+					and r.id.empId = :empId
+				order by
+					r.nombre
+			</query>
+		</named-query>
+	</entity>
+	
+	<entity class="uy.com.tmwc.facturator.libra.entity.Unidadesstock">
+		<named-query name="Unidadesstock.query">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.libra.entity.Unidadesstock(us.id.unidadId, us.nombre)
+				from
+					Unidadesstock us
+				where 
+					us.nombre like :query
+					and us.id.empId = :empId
+				order by
+					us.nombre
+			</query>
+		</named-query>
+	</entity>
+	
+
+	<entity class="uy.com.tmwc.facturator.libra.entity.Concepto">
+		<named-query name="Concepto.query">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.libra.entity.Concepto(c.id.conceptoId, c.nombre)
+				from 
+					Concepto c
+				where 
+					c.nombre like :query
+					and c.id.empId = :empId
+				order by
+					c.nombre
+			</query>
+		</named-query>
+	</entity>
+	
 	<entity class="uy.com.tmwc.facturator.libra.entity.ComisionJefatura" />
 	<entity
 		class="uy.com.tmwc.facturator.libra.entity.DescuentoPrometidoComprobante">
@@ -554,7 +580,7 @@
 					Comprobante c left join fetch c.descuentosPrometidos
 				where
 					c.id.empId = :empId
-					and c.tipo in (1,2,3,4,5,31,32,21,23)
+					and c.tipo in (1,2,3,4,5,31,32,21,22,23,24)
 					and c.cmpNom like :query
 				order by
 					c.cmpNom
@@ -629,12 +655,14 @@
       		</query>
 		</named-query>
 
-		<named-query name="Documento.antecedentesArticulo">
+		<named-query name="Documento.antecedentesArticuloClienteVenta">
 			<query>
 				select l
 				from Linea l join fetch l.documento d
 				where
 					d.cliente.id.empId = :empId
+					and (d.comprobante.tipo in (1,3,4))
+					and (d.comprobante.id.cmpid not in (1,17,991))
 					and (l.articuloId is not null and l.articuloId != '')
 					and d.cliente.id.cliId = :cliente
 					and l.articuloId = :articulo
@@ -644,6 +672,25 @@
 					d.numero
       		</query>
 		</named-query>
+
+		<named-query name="Documento.antecedentesArticuloClienteCompra">
+			<query>
+				select l
+				from Linea l join fetch l.documento d
+				where
+					d.cliente.id.empId = :empId
+					and (d.comprobante.tipo in (21,23))
+					and (d.comprobante.id.cmpid not in (1,17,991))
+					and (l.articuloId is not null and l.articuloId != '')
+					and d.cliente.id.cliId = :cliente
+					and l.articuloId = :articulo
+				order by 
+					d.fecha desc,
+					d.serie,
+					d.numero
+      		</query>
+		</named-query>
+
 		<named-query name="Documento.antecedentesArticuloCompra">
 			<query>
 				select l
@@ -939,7 +986,7 @@
 	      			)
       		</query>
 		</named-query>
-		
+
 		<named-query name="Documento.obtenerDocumentoClienteNumero">
 			<query>
 				select
@@ -955,7 +1002,7 @@
 					d.registroFecha desc
 					d.registroHora desc
       		</query>
-		</named-query>		
+		</named-query>
 
 		<named-query name="Documento.pendientesCliente">
 			<query>
@@ -1068,7 +1115,7 @@
 					d.serie,
 					d.numero
       		</query>
-      		
+
 		</named-query>
 
 		<named-native-query name="Documento.unique"
@@ -1168,14 +1215,13 @@
 			</query>
 		</named-query>
 	</entity>
-	<entity class="uy.com.tmwc.facturator.libra.entity.Concepto" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Marca" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Tiposasiento" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Usuario" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Vendedore" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Vinculosdoc" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Vinculosfp" />
-	<entity class="uy.com.tmwc.facturator.libra.entity.Stockactual" >
+	<entity class="uy.com.tmwc.facturator.libra.entity.Stockactual">
 		<named-query name="Stockactual.depositos">
 			<query>
 				select
@@ -1187,6 +1233,18 @@
 					and sa.articulo.id.artId = :articuloId
       		</query>
 		</named-query>
+		<named-query name="Stockactual.deposito">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.dto.StockActualDTO(sa.articulo.id.artId, sa.SAcantidad)
+				from
+					Stockactual sa 
+				where 
+					sa.id.empId = :empId
+					and sa.deposito.id.depId = :depositoId
+			</query>
+		</named-query>
+
 	</entity>
 	<entity class="uy.com.tmwc.facturator.libra.entity.Localescomerciale" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Parametrosadministracion">

@@ -19,6 +19,7 @@ import uy.com.tmwc.facturator.dto.AntecedentesArticulo;
 import uy.com.tmwc.facturator.dto.CodigoNombre;
 import uy.com.tmwc.facturator.dto.DocumentoDTO;
 import uy.com.tmwc.facturator.dto.DocumentoQuery;
+import uy.com.tmwc.facturator.dto.StockActualDTO;
 import uy.com.tmwc.facturator.entity.Articulo;
 import uy.com.tmwc.facturator.entity.ArticuloCompraVentaCosto;
 import uy.com.tmwc.facturator.entity.ArticuloPrecio;
@@ -612,6 +613,10 @@ public class DocumentoServiceImpl implements DocumentoService {
 	
 	public Boolean updateNotaCreditoFinancieraEnRecibo(Documento documento, String ncfId) throws PermisosException {
 		return this.documentoDAOService.updateNotaCreditoFinancieraEnRecibo(documento, ncfId);
+	}
+
+	public List<StockActualDTO> getStockEnDeposito(String depositoId) {
+		return this.documentoDAOService.getStockActualEnDeposito(depositoId);
 	}
 
 

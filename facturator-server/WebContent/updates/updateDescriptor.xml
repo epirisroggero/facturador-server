@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.7.060</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.060.air</url>
+	<versionNumber>1.7.100</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.100.air</url>
 	<description>
 	    <![CDATA[
+	    # Versión 1.7.100 (01/09/2019)
+		    1. Adicionar campo unidad de medida en el artículo.
+			2. Si un cliente/proveedor tienen RUT asignado, el tipo de documento es RUT siempre. Ademas se permite guardar documento del cliente/proveedor al igual que ZLibra.
+			3. Al mostrar el estado de deuda del cliente, cuando convierto de pesos a dólares utilizar la cotización comprador y no vendedor (la menor).
+			4. Ver listado de gastos.
+			5. Ver gasto y las correspondientes líneas de gasto.
+	    
+	    # Versión 1.7.067 (01/08/2019) 
+	    	1.- Al guardar el artículo se pierden los datos del stock.
+	    	2.- Al enviar recibo de cobranza en el pie del mensaje mostrar los datos del usuario.
+
+	    # Versión 1.7.065 (16/07/2019) 
+	    	1.- Ajustes y cambios varios en Proceso de afilados.
+	    	2.- Mostrar stock en ayuda artículos.
+	    	3.- Refrescar pantalla con datos del cliente tanto al guardar como al refrescar.
+	    	4.- Refrescar pantalla con datos del artículo tanto al guardar como al refrescar.
+	    	5.- Cambios en el ingreso del documento del cliente. (Ajuste en el layout) 
+
 	    # Versión 1.7.060 (26/06/2019) 
 	    	1.- Proceso de afilados.
 	    	2.- Proveedor en ayuda clientes.

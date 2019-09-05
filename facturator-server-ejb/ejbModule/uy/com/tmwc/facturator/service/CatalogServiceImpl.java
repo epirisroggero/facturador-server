@@ -44,8 +44,10 @@ import uy.com.tmwc.facturator.entity.ParametrosAdministracion;
 import uy.com.tmwc.facturator.entity.PlanPagos;
 import uy.com.tmwc.facturator.entity.PreciosVenta;
 import uy.com.tmwc.facturator.entity.Proveedor;
+import uy.com.tmwc.facturator.entity.Referencia;
 import uy.com.tmwc.facturator.entity.Rubro;
 import uy.com.tmwc.facturator.entity.Tarea;
+import uy.com.tmwc.facturator.entity.UnidadesStock;
 import uy.com.tmwc.facturator.entity.Usuario;
 import uy.com.tmwc.facturator.entity.Vendedor;
 import uy.com.tmwc.facturator.entity.Zona;
@@ -95,6 +97,8 @@ public class CatalogServiceImpl implements CatalogService {
 		add(Marca.class);
 		add(CategoriasClientes.class);
 		add(CategoriasArticulos.class);
+		add(Referencia.class);
+		add(UnidadesStock.class);
 	}
 
 	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog) {
@@ -103,15 +107,13 @@ public class CatalogServiceImpl implements CatalogService {
 		return this.catalogService.getCatalog(clazz);
 	}
 
-	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog,
-			String query) {
+	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog, String query) {
 		Class clazz = getCatalogClass(catalog);
 
 		return this.catalogService.getCatalog(clazz, query);
 	}
 
-	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog,
-			String query, int limit) {
+	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog, String query, int limit) {
 		Class clazz = getCatalogClass(catalog);
 
 		return this.catalogService.getCatalog(clazz, query, limit);
@@ -145,8 +147,7 @@ public class CatalogServiceImpl implements CatalogService {
 		return this.catalogService.getParametrosAdministracion();
 	}
 
-	public <T extends CodigoNombreEntity> List<T> queryCatalog(T example,
-			int firstResult, int limit) {
+	public <T extends CodigoNombreEntity> List<T> queryCatalog(T example, int firstResult, int limit) {
 		return this.catalogService.queryCatalog(example, firstResult, limit);
 	}
 
@@ -155,8 +156,7 @@ public class CatalogServiceImpl implements CatalogService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <D extends CodigoNombreEntity> D findCatalogEntity(String catalog,
-			String codigo) {
+	public <D extends CodigoNombreEntity> D findCatalogEntity(String catalog, String codigo) {
 		Class<D> clazz = (Class<D>) getCatalogClass(catalog);
 		return catalogService.findCatalogEntity(clazz, codigo);
 	}

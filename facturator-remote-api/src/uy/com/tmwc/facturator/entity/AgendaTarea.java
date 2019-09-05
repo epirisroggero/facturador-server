@@ -54,6 +54,11 @@ public class AgendaTarea implements Serializable, Cloneable {
 	private String supervisor3;
 	
 	private boolean notify;
+	
+	private String usuEstado;
+
+	private String usuCliId;
+
 
 	public Object clone() {
 		AgendaTarea obj=null;
@@ -275,5 +280,22 @@ public class AgendaTarea implements Serializable, Cloneable {
 	public void setNotify(boolean notify) {
 		this.notify = notify;
 	}
+	
+	public String getUsuEstado() {
+		return usuEstado;
+	}
+
+	public void setUsuEstado(String usuEstado) {
+		this.usuEstado = usuEstado;
+	}
+
+	public String getUsuCliId() {
+		return usuCliId;
+	}
+
+	public void setUsuCliId(String usuCliId) {
+		this.usuCliId = usuCliId;
+	}
+
 
 }
