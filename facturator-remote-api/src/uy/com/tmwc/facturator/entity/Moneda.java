@@ -15,6 +15,8 @@ public class Moneda extends CodigoNombreEntity {
 	private short redondeo;
 	private String simbolo;
 	private boolean aster;
+	private String mndAbrevia;
+
 
 	public Moneda() {
 		super();
@@ -51,6 +53,15 @@ public class Moneda extends CodigoNombreEntity {
 	public void setAster(boolean aster) {
 		this.aster = aster;
 	}
+	
+	public String getMndAbrevia() {
+		return mndAbrevia;
+	}
+
+	public void setMndAbrevia(String mndAbrevia) {
+		this.mndAbrevia = mndAbrevia;
+	}
+
 
 	public static String getCodigoMonedaNoAster(String codigoMoneda) {
 		if (codigoMoneda.equals(CODIGO_MONEDA_DOLAR_ASTER)) {

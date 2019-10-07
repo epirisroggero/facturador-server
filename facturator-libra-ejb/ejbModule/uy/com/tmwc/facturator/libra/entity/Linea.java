@@ -70,7 +70,7 @@ public class Linea extends PersistentEntity<LineaPK> implements Serializable, Ha
 	@ManyToOne
 	@JoinColumns({ @javax.persistence.JoinColumn(name = "IvaIdLin", referencedColumnName = "IvaId", insertable = false, updatable = false),
 			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
-	private Iva ivaArticulo;
+	private Iva ivaLin;
 
 	@Column(name = "IvaIdLin")
 	private Short ivaId;
@@ -118,7 +118,7 @@ public class Linea extends PersistentEntity<LineaPK> implements Serializable, Ha
 	private Integer items = Integer.valueOf(0);
 
 	@Column(name = "LinIVA")
-	private BigDecimal iva;
+	private BigDecimal linIva;
 
 	@Lob
 	@Column(name = "LinNotas")
@@ -232,12 +232,12 @@ public class Linea extends PersistentEntity<LineaPK> implements Serializable, Ha
 		this.depositoOrigenId = Short.valueOf(depositoOrigen == null ? (short)0 : depositoOrigen.getId().getDepId());
 	}
 
-	public void setIvaArticulo(Iva ivaArticulo) {
-		this.ivaArticulo = ivaArticulo;
+	public void setIvaLin(Iva ivaLin) {
+		this.ivaLin = ivaLin;
 	}
 	
-	public Iva getIvaArticulo() {
-		return this.ivaArticulo;
+	public Iva getIvaLin() {
+		return this.ivaLin;
 	}
 
 	public void setMonedaCosto(Moneda monedaCosto) {
@@ -343,11 +343,11 @@ public class Linea extends PersistentEntity<LineaPK> implements Serializable, Ha
 	}
 
 	public BigDecimal getIva() {
-		return this.iva;
+		return this.linIva;
 	}
 
 	public void setIva(BigDecimal iva) {
-		this.iva = iva;
+		this.linIva = iva;
 	}
 
 	public BigDecimal getPrecio() {

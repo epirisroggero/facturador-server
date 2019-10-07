@@ -25,6 +25,8 @@ public class DocumentoQuery implements Serializable {
 	
 	private Boolean emitido = Boolean.FALSE;
 	
+	private String estado;
+
 	private String orden = "DESC";
 	
 	private Boolean esSolicitud = Boolean.FALSE;
@@ -223,6 +225,14 @@ public class DocumentoQuery implements Serializable {
 
 	public void setEsGasto(Boolean esGasto) {
 		this.esGasto = esGasto;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
 	}
 
 

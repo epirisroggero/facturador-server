@@ -31,6 +31,8 @@ public class Comprobante extends CodigoNombreEntity {
 	
 	private static final int[] comprobantesEmitibles = { 1, 2, 3, 4 };
 	
+	private static final String[] comprobantesGasto = { "110","111","112","113","114","115","116","212","213","214","215" };
+	
 	private Deposito depositoOrigen;
 	private Deposito depositoDestino;
 	private int tipo;
@@ -91,7 +93,12 @@ public class Comprobante extends CodigoNombreEntity {
 	public boolean isCompra() {
 		return (this.tipo == COMPRA_CONTADO) || (this.tipo == COMPRA_CREDITO);
 	}
-	
+
+	public boolean isGasto() {
+		List<String> entityTypesList = Arrays.asList(comprobantesGasto);		
+		return entityTypesList.contains(getCodigo());
+	}
+
 	public boolean isRecibo() {
 		return (this.tipo == RECIBO_COBRO);
 	}

@@ -291,6 +291,19 @@ public class DocumentoServiceImpl implements DocumentoService {
 		return this.documentoDAOService.finalizarCompra(documento);
 	}
 
+	public Boolean finalizarGasto(Documento documento) throws PermisosException {
+		if (documento.getComprobante().getTipo() == 31 || documento.getComprobante().getTipo() >= 21 && documento.getComprobante().getTipo() <= 24) {
+			if (!documento.isPendiente()) {
+				throw new IllegalStateException("Este gasto ya ha sido finalizado");
+			}
+		}
+		
+		if (!documento.getComprobante().isMueveCaja()) {
+			documento.setCajaId(null);
+		}
+		return this.documentoDAOService.finalizarGasto(documento);
+	}
+
 
 	private Boolean verificarFecha(Documento current, Documento modificado) throws ValidationException {
 		if (current == null || modificado == null) {

@@ -36,6 +36,8 @@ public interface DocumentoService {
 
 	Boolean finalizarRecibo(Documento paramDocumento) throws PermisosException;
 	
+	Boolean finalizarGasto(Documento paramDocumento) throws PermisosException;
+	
 	BigDecimal getTipoCambio(String monedaOrigen, String monedaDestino, Date fecha);
 	
 	BigDecimal getTipoCambioFiscal(String monedaId, Date fecha);

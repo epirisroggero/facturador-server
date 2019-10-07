@@ -24,8 +24,8 @@ public class LineaDocumento implements Serializable {
 	private Short depositoDestinoId = 0;
 	private Short depositoOrigenId = 0;
 	
-	private Iva ivaArticulo;
-	private Short ivaId;
+	private Iva ivaLin;
+	//private Short ivaId;
 
 	private Documento documento;
 	
@@ -48,7 +48,7 @@ public class LineaDocumento implements Serializable {
 	private BigDecimal linDto4 = BigDecimal.ZERO;
 	
 	private String marca;
-	
+
 	
 	public BigDecimal getTotal() {
 		return getSubTotal().add(getIva());
@@ -113,7 +113,12 @@ public class LineaDocumento implements Serializable {
 		if (!comprobanteComputaIva()) {
 			return BigDecimal.ZERO;
 		}
-		return this.articulo.getTasaIva();
+		if (documento.getComprobante().isGasto()) {
+			return ivaLin != null ? ivaLin.getTasa() : BigDecimal.ZERO;
+		} else {
+			return articulo.getTasaIva();
+		}
+		
 	}
 
 	public BigDecimal getPesoDocumento() {
@@ -139,9 +144,11 @@ public class LineaDocumento implements Serializable {
 
 	public void setArticulo(Articulo articulo) {
 		this.articulo = articulo;
-		if (articulo != null && documento != null) {
-			setIvaArticulo(articulo == null ? null : articulo.getIva());
+		
+		if (articulo != null && !articulo.getCodigo().equals("GASTOS VARIOS")) {
+			setIvaLin(articulo == null ? null : articulo.getIva());
 		}
+		
 	}
 	
 	public BigDecimal getPrecio() {
@@ -214,8 +221,8 @@ public class LineaDocumento implements Serializable {
 	public void setDocumento(Documento documento) {
 		this.documento = documento;
 
-		if (articulo != null && documento != null) {
-			setIvaArticulo(articulo == null ? null : articulo.getIva());
+		if (articulo != null && documento != null && documento.getComprobante() != null && !documento.getComprobante().isGasto()) {
+			setIvaLin(articulo == null ? null : articulo.getIva());
 		}
 
 	}
@@ -283,20 +290,23 @@ public class LineaDocumento implements Serializable {
 		this.depositoOrigenId = depositoOrigenId;
 	}
 	
-	public void setIvaArticulo(Iva ivaArticulo) {
-		this.ivaArticulo = ivaArticulo;
+	public void setIvaLin(Iva ivaArticulo) {
+		this.ivaLin = ivaArticulo;
 	}
 
-	public Iva getIvaArticulo() {
-		return ivaArticulo;
+	public Iva getIvaLin() {
+		return ivaLin;
 	}
 
 	public Short getIvaId() {
-		return ivaId;
+		if (ivaLin != null) {
+			return new Short(ivaLin.getCodigo());
+		}		
+		return null;
 	}
 
 	public void setIvaId(Short ivaId) {
-		this.ivaId = ivaId;
+		//this.ivaId = ivaId;
 	}
 
 	public BigDecimal getCoeficienteImp() {

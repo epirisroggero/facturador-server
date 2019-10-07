@@ -21,6 +21,8 @@ public abstract interface LiquidacionService /* extends RemoteService */
 	ResumenEntregas calcularCostosOperativos(Date paramDate1, Date paramDate2, BigDecimal gastosPeriodo);
 
 	List<DocumentoDeudor> getDocumentosDeudores(Date fechaHoy);
+	
+	List<DocumentoDeudor> getDocumentosDeudoresCliente(Date fechaHoy, String clienteId);
 
 	//Calcula los costos operativos del mes, calcula valores nuevos de entrega, liquida.
 	byte[] generarLiquidacion(Date fechaDesde, Date fechaHasta, Date fechaCorte, BigDecimal gastosPeriodo);

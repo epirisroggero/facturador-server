@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +24,7 @@ import uy.com.tmwc.facturator.entity.VinculoDocumentos;
 import uy.com.tmwc.facturator.rapi.PermisosException;
 import uy.com.tmwc.facturator.rapi.RUTINA_MODIFCOSTO_ENUM;
 
-public interface DocumentoDAOService {
+public interface DocumentoDAOService { 
 	String persist(Documento paramDocumento) throws PermisosException;
 
 	Boolean remove(Documento paramDocumento) throws PermisosException;
@@ -33,6 +32,8 @@ public interface DocumentoDAOService {
 	Boolean finalizarMovimientoStock(Documento paramDocumento) throws PermisosException;
 
 	Boolean finalizarCompra(Documento paramDocumento) throws PermisosException;
+
+	Boolean finalizarGasto(Documento paramDocumento) throws PermisosException;
 
 	void merge(Documento paramDocumento) throws PermisosException;
 
@@ -73,6 +74,8 @@ public interface DocumentoDAOService {
 	List<DocumentoDTO> pendientesCliente(String cliId);
 
 	List<Documento> getDocumentosDeudores();
+	
+	List<Documento> getDocumentosDeudoresCliente(String clienteId);
 
 	BigDecimal getStock(String articulo, short deposito);
 

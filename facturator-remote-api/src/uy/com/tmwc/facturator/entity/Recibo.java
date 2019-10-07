@@ -49,4 +49,15 @@ public class Recibo extends DocumentoBase {
 		this.total = total;
 		this.cancela = total;
 	}
+
+	@Override
+	public BigDecimal getSubTotal() {
+		return BigDecimal.ZERO;
+	}
+
+	@Override
+	public void setSubTotal(BigDecimal subtotal) {
+		// TODO Auto-generated method stub
+		
+	}
 }

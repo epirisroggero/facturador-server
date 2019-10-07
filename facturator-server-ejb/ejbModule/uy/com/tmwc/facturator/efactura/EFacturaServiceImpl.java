@@ -726,7 +726,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 			}
 			StringBuffer lineasData = new StringBuffer("6|");
 			lineasData.append(linea.getNumeroLinea()).append("|");
-			lineasData.append(getIndDeFacturacionCFE(linea.getIvaArticulo() != null ? linea.getIvaArticulo().getCodigo() : "", linea.getPrecio())).append("|");
+			lineasData.append(getIndDeFacturacionCFE(linea.getIvaLin() != null ? linea.getIvaLin().getCodigo() : "", linea.getPrecio())).append("|");
 			lineasData.append(concepto).append("|");
 			lineasData.append(linea.getCantidad().setScale(3, RoundingMode.HALF_UP).toString()).append("|");
 			lineasData.append(getUnidadMedida(linea.getArticulo().getUnidadId() != null ? linea.getArticulo().getUnidadId() : "")).append("|");

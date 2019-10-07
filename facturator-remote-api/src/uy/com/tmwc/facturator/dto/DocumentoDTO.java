@@ -109,7 +109,7 @@ public class DocumentoDTO implements Serializable {
 		this.iva = iva;
 		this.total = total;
 		this.emitido = emitido.equals("S");
-		this.pendiente = pendiente == null || pendiente.equals("S");
+		this.pendiente = pendiente == null || !pendiente.equals("N");
 		this.tipoComprobante = tipoComprobante;
 		this.registroFecha = registroFecha != null ? DateFormatUtils.format((Date) registroFecha, "dd-MM-yyyy") : null;
 		this.registroHora = registroHora != null ? registroHora.toString() : null;

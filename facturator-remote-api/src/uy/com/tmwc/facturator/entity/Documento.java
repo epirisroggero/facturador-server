@@ -33,11 +33,11 @@ public class Documento extends DocumentoBase implements Serializable {
 	private BigDecimal costoOperativo;
 
 	private BigDecimal _iva;
-	private BigDecimal _subTotal;
+	//private BigDecimal _subTotal;
 	private BigDecimal _costo;
 
-	private boolean emitido;
-	private boolean pendiente;
+	private boolean emitido = false;
+	private String pendiente;
 
 	private String agencia;
 	private String reparto;
@@ -154,6 +154,50 @@ public class Documento extends DocumentoBase implements Serializable {
 			this.telefono = this.cliente.getContacto().getCtoTelefono();
 		}
 	}
+	
+	public static Documento getNuevoDocumento(Comprobante comprobante) {
+		Documento doc = new Documento(comprobante);
+
+		Date currentDate = new Date();
+		
+		doc.setFecha(currentDate);
+		doc.setFecha2(currentDate);
+		doc.setRegistroFecha(currentDate);
+		doc.setRegistroHora(currentDate);
+
+		return doc;
+	}
+	 
+	public Documento copyData(Documento doc) {
+		doc.setProveedor(proveedor);
+		doc.setMoneda(moneda);
+		
+		doc.setPrevDocSerieNro(prevDocSerieNro);
+		doc.setDireccion(direccion);
+		doc.setLocalidad(localidad);
+		doc.setRut(rut);
+		doc.setTelefono(telefono);
+		doc.setDocTCF(docTCF);
+		doc.setDocTCC(docTCC);
+		doc.setRazonSocial(razonSocial);
+					
+		doc.setUsuIdAut(usuIdAut);
+		doc.setCentroCostosId(centroCostosId);
+		doc.setReferencia(referencia);
+		doc.setNotas(notas);
+		
+		doc.setSubTotal(subTotal);
+		doc.setIva(_iva);
+		doc.setTotal(total);
+		doc.setCosto(_costo);
+		
+		doc.setLineas(lineas);
+		doc.getLineas().setDocumento(doc);
+		for (LineaDocumento linea : lineas.getLineas()) {
+			linea.setDocumento(doc);
+		}		
+		return doc;
+	}
 
 	public BigDecimal getTotal() {
 		if (this.total != null) {
@@ -186,13 +230,18 @@ public class Documento extends DocumentoBase implements Serializable {
 	}
 
 	public BigDecimal getSubTotal() {
-		if (this._subTotal != null) {
-			return this._subTotal;
+		if (this.subTotal != null) {
+			return this.subTotal;
 		}
-
-		List<LineaDocumento> items = this.lineas.getLineas();
+		return calcularSubTotal();
+	}
+	
+	private BigDecimal calcularSubTotal() {
+		if (comprobante.isGasto()) {
+			return BigDecimal.ZERO;
+		}		
 		BigDecimal sum = BigDecimal.ZERO;
-		for (LineaDocumento lineaDocumento : items) {
+		for (LineaDocumento lineaDocumento : lineas.getLineas()) {
 			if (lineaDocumento.getArticulo() == null) {
 				continue;
 			}
@@ -221,7 +270,6 @@ public class Documento extends DocumentoBase implements Serializable {
 				sum = sum.add(lineaDocumento.getIva());
 			}
 			return sum;
-
 		}
 	}
 
@@ -314,9 +362,18 @@ public class Documento extends DocumentoBase implements Serializable {
 		return this.emitido;
 	}
 
-	public boolean isPendiente() {
+	public Boolean isPendiente() {
+		return this.pendiente == null || !this.pendiente.equals("N");
+	}
+
+	public String getPendiente() {
 		return this.pendiente;
 	}
+
+	public void setPendiente(String pendiente) {
+		this.pendiente = pendiente;
+	}
+
 
 	public BigDecimal getAdeudadoNetoRecibo() {
 		BigDecimal deuda = getDeuda();
@@ -375,7 +432,7 @@ public class Documento extends DocumentoBase implements Serializable {
 
 	public void invalidarRedundancia() {
 		this._costo = null;
-		this._subTotal = null;
+		this.subTotal = null;
 		this.total = null;
 	}
 
@@ -495,6 +552,9 @@ public class Documento extends DocumentoBase implements Serializable {
 	}
 
 	public CuotasDocumento getCuotasDocumento() {
+		if (cuotasDocumento == null) {
+			cuotasDocumento = new CuotasDocumento();
+		}
 		return this.cuotasDocumento;
 	}
 
@@ -567,7 +627,7 @@ public class Documento extends DocumentoBase implements Serializable {
 	}
 
 	public void setSubTotal(BigDecimal subTotal) {
-		this._subTotal = subTotal;
+		this.subTotal = subTotal;
 	}
 
 	public void setCosto(BigDecimal costo) {
@@ -586,9 +646,6 @@ public class Documento extends DocumentoBase implements Serializable {
 		this.emitido = emitido;
 	}
 
-	public void setPendiente(boolean pendiente) {
-		this.pendiente = pendiente;
-	}
 
 	public String getAgencia() {
 		return this.agencia;

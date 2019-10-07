@@ -206,6 +206,10 @@ public class CuotasDocumento implements Serializable {
 	public Documento getDocumento() {
 		return this.documento;
 	}
+	
+	public void setDocumento(Documento documento) {
+		this.documento = documento;
+	}
 
 	private static class CalculoDeudaResult {
 		public boolean tieneCuotaVencida;

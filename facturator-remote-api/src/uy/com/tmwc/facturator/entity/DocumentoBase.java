@@ -38,9 +38,10 @@ public abstract class DocumentoBase implements Serializable {
 	protected String notas;
 	protected Date registroFecha;
 	protected Date registroHora;
-	protected BigDecimal total;
 
-	
+	protected BigDecimal total;
+	protected BigDecimal subTotal;
+
 	private byte[] docBlob;
 	private String docBlobExt;
 	
@@ -326,5 +327,9 @@ public abstract class DocumentoBase implements Serializable {
 	public abstract BigDecimal getTotal();
 
 	public abstract void setTotal(BigDecimal total);
+
+	public abstract BigDecimal getSubTotal();
+
+	public abstract void setSubTotal(BigDecimal subtotal);
 
 }

@@ -58,14 +58,17 @@ import uy.com.tmwc.facturator.entity.ArticuloCompraVentaCosto;
 import uy.com.tmwc.facturator.entity.ArticuloPrecio;
 import uy.com.tmwc.facturator.entity.ArticuloPrecioFabricaCosto;
 import uy.com.tmwc.facturator.entity.Auditoria;
+import uy.com.tmwc.facturator.entity.Caja;
 import uy.com.tmwc.facturator.entity.Cliente;
 import uy.com.tmwc.facturator.entity.CodigoNombreEntity;
 import uy.com.tmwc.facturator.entity.Comprobante;
 import uy.com.tmwc.facturator.entity.Contacto;
 import uy.com.tmwc.facturator.entity.CotizacionesMonedas;
+import uy.com.tmwc.facturator.entity.CuotaDocumento;
 import uy.com.tmwc.facturator.entity.CuotasDocumento;
 import uy.com.tmwc.facturator.entity.DescuentoPrometidoComprobante;
 import uy.com.tmwc.facturator.entity.Documento;
+import uy.com.tmwc.facturator.entity.DocumentoFormaPago;
 import uy.com.tmwc.facturator.entity.Entrega;
 import uy.com.tmwc.facturator.entity.Fanfold;
 import uy.com.tmwc.facturator.entity.LineaDocumento;
@@ -286,6 +289,7 @@ public class RemoteServiceHandler {
 		}
 	}
 
+	protected NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("ES"));
 	
 	private Logger LOGGER = Logger.getLogger(RemoteServiceHandler.class);
 
@@ -313,6 +317,97 @@ public class RemoteServiceHandler {
 			throw e;
 		}
 	}
+	
+	public Documento finalizarConvercion(Documento oldDoc, Documento newDoc) throws ValidationException, PermisosException {
+		DocumentoService service = getService();
+
+		try {
+			String docId = alta(newDoc);
+			
+			finalizarMovimientoStock(oldDoc);
+			
+			return service.findDocumento(docId);
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} 
+	}
+	
+	public Documento duplicarDocumento(Documento doc) throws ValidationException, PermisosException {
+		DocumentoService service = getService();
+		
+		Cliente cliente = findCatalogEntity("Cliente", doc.getCliente().getCodigo());
+		Contacto contacto = cliente.getContacto(); 
+		
+		doc.setDocId(null);
+		doc.setCliente(cliente);
+		doc.setPendiente("S");
+		doc.setEmitido(false);
+		
+		if (doc.getPreciosVenta() == null) {
+			doc.setPreciosVenta(cliente.getPreciosVenta());
+		}
+		if (doc.getVendedor() == null) {
+			doc.setVendedor(cliente.getVendedor());	
+		}
+		if (doc.getDireccion() == null) {
+			doc.setDireccion(contacto.getCtoDireccion());	
+		}
+		if (doc.getRazonSocial() == null) {
+			doc.setRazonSocial(contacto.getCtoRSocial());
+		}
+		if (doc.getRut() == null) {
+			doc.setRut(contacto.getCtoRUT());
+		}
+		if (doc.getTelefono() == null) {
+			String telefono = contacto.getCtoTelefono();
+			if (telefono != null) {
+				doc.setTelefono(telefono.length() > 30 ? telefono.substring(0, 30) : telefono);
+			} else {
+				doc.setTelefono(null);
+			}
+		}
+		if (doc.getCondicion() == null) {
+			doc.setCondicion(cliente.getPlanPagos());
+		}
+		doc.setProcessId(null);
+		doc.setPlanPagos(null);
+		doc.setFecha(new Date());
+		doc.setFecha2(new Date());
+		doc.getCuotasDocumento().setCuotas(new ArrayList<CuotaDocumento>());
+				
+		SerieNumero serieNro = generateSerieNumero(doc.getComprobante());
+		if (serieNro != null) {
+			doc.setSerie(serieNro.getSerie());
+			doc.setNumero(serieNro.getNumero());
+		}
+		String docId = alta(doc);
+		
+		return service.findDocumento(docId);
+
+	}
+
+	
+	public Documento convert(String id) throws PermisosException {
+		DocumentoService service = getService();
+
+		try {
+			if (id == null) {
+				return null;
+			}
+			Documento documento = service.findDocumento(id);
+
+			Comprobante comprobante = documento.getComprobante();
+			comprobante.setAster(esComprobanteAster(comprobante.getCodigo()));
+			documento.setComprobante(comprobante);
+
+			return documento;
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
+
 
 	public List<ArticuloPrecioFabricaCosto> getCostoArticulos(Documento doc) {
 		return getService().getCostosArticulos(doc);
@@ -390,6 +485,17 @@ public class RemoteServiceHandler {
 		return doc;
 	}
 
+	public Documento altaRecibo(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
+		try {
+			String docId = alta(documento, auditoria);		
+			return getService().findDocumento(docId);
+			
+		} catch (Exception exc) {
+			throw new RuntimeException(exc.getMessage());
+		}		
+	}
+
+	
 	public String alta(Documento documento) throws ValidationException, PermisosException {
 		return alta(documento, null);
 	}
@@ -432,11 +538,46 @@ public class RemoteServiceHandler {
 		}
 		return false;
 	}
+	
+	
+	public Documento altaGasto(Documento documento) throws ValidationException, PermisosException  {
+		try {
+			documento = ajustarDocumento(documento);
+
+			String tcFiscal = getTipoCambioFiscal(Moneda.CODIGO_MONEDA_DOLAR, documento.getFecha());
+			if (tcFiscal.length() > 0) {
+				documento.setDocTCF(new BigDecimal(tcFiscal));
+			}
+			if (documento.getComprobante().isNotaCreditoFinanciera()) {
+				documento.setSaldo(documento.getTotal());
+			}
+			if (documento.getComprobante().getNumCmpId() != null && documento.getComprobante().getNumCmpId().length() > 0) {
+				SerieNumero sn = generateSerieNumero(documento.getComprobante());
+				documento.setSerie(sn.getSerie());
+				documento.setNumero(sn.getNumero());				
+			} 
+			
+			String moneda = documento.getMoneda() != null ? documento.getMoneda().getSimbolo() : "";
+			String total = documento.getTotal() != null ? formatter.format(documento.getTotal().doubleValue()) : "0";
+
+			Auditoria auditoria = new Auditoria();
+			auditoria.setAudFechaHora(new Date());
+			auditoria.setDocId(documento.getDocId());
+			auditoria.setNotas("Comprobante creado por un total de " + moneda + " " + total);
+			auditoria.setProblemas("Ninguno");
+
+			String docId = getService().alta(documento, auditoria);
+		
+			return getService().findDocumento(docId);
+			
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
+		
+	}
 
 	public String alta(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
 		documento = ajustarDocumento(documento);
-
-		NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("ES"));
 
 		if (auditoria == null) {
 			String moneda = documento.getMoneda() != null ? documento.getMoneda().getSimbolo() : "";
@@ -453,6 +594,7 @@ public class RemoteServiceHandler {
 		if (tcFiscal.length() > 0) {
 			documento.setDocTCF(new BigDecimal(tcFiscal));
 		}
+		
 		if (documento.getComprobante().isRecibo()) {
 			// Realizar cosas para los recibos
 			documento.setDocTCF(documento.getDocTCC());
@@ -461,7 +603,7 @@ public class RemoteServiceHandler {
 		if (documento.getComprobante().isNotaCreditoFinanciera()) {
 			documento.setSaldo(documento.getTotal());
 		}
-
+		
 		String docId = getService().alta(documento, auditoria);
 
 		// Agregar vínculos de nota de crédito financiera.
@@ -618,9 +760,7 @@ public class RemoteServiceHandler {
 		query.setComprobantes("2,4,5,6,7,8,9,19");
 		query.setArticulo(art.getCodigo());
 
-		//query.setPendiente(Boolean.FALSE);
 		query.setEmitido(Boolean.TRUE);
-		//query.setTieneSaldo(Boolean.FALSE);
 
 		
 		// Obtener los documentos de bajada de cuponera para este cliente.
@@ -823,9 +963,7 @@ public class RemoteServiceHandler {
 	}
 
 	public SerieNumero generateSerieNumero(Comprobante comprobante) {
-		DocumentoService service = getService();
-
-		return service.generarSerieNumero(comprobante.getCodigo());
+		return getService().generarSerieNumero(comprobante.getCodigo());
 	}
 
 	public Boolean baja(Documento documento) throws ValidationException, PermisosException {
@@ -1088,23 +1226,26 @@ public class RemoteServiceHandler {
 
 			if (oldDoc.getPrevDocId() == null) { // Es la solicitud...
 				oldDoc.setProcessId(oldDoc.getDocId());
-			}
+			} 
 			newDoc.setPrevDocId(oldDoc.getDocId());
 			newDoc.setProcessId(oldDoc.getProcessId());
-
+			
 			String nextDocId = alta(newDoc);
 
 			// Ajustar datos en documento anterior
 			oldDoc.setNextDocId(nextDocId);
 
 			// Finalizar documento convertido
-			if (oldDoc.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES) {
-				finalizarMovimientoStock(oldDoc);
+			if (oldDoc.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES 
+					|| oldDoc.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_CLIENTE) {
+				if (oldDoc.isPendiente()) {
+					finalizarMovimientoStock(oldDoc);
+				}
 			} else {
 				getService().emitir(oldDoc, null);
 			}
-			Documento nuevoDocumento = getDocumento(nextDocId);
-			return nuevoDocumento;
+			
+			return getDocumento(nextDocId);
 
 		} catch (ValidationException e) {
 			// Si no se pudo borrar y si dar de alta, Borrar el alta.
@@ -1121,16 +1262,37 @@ public class RemoteServiceHandler {
 		return null;
 	}
 
-	public Boolean finalizarMovimientoStock(Documento documento) throws PermisosException {
-		return getService().finalizarMovimientoStock(documento);
+	public Documento finalizarMovimientoStock(Documento documento) throws PermisosException {
+		if (getService().finalizarMovimientoStock(documento)) {
+			return getService().findDocumento(documento.getDocId());
+		} else {
+			throw new RuntimeException("No se pudo finalizar el movimiento de stock.");	
+		}
 	}
 
-	public Boolean finalizarCompra(Documento documento) throws PermisosException {
-		return getService().finalizarCompra(documento);
+	public Documento finalizarCompra(Documento documento) throws PermisosException {
+		if (getService().finalizarCompra(documento)) {
+			return getService().findDocumento(documento.getDocId());
+		} else {
+			throw new RuntimeException("No se pudo finalizar la compra.");	
+		}
 	}
 
-	public Boolean finalizarRecibo(Documento documento) throws PermisosException {
-		return getService().finalizarRecibo(documento);
+	public Documento finalizarRecibo(Documento documento) throws PermisosException {
+		if (getService().finalizarRecibo(documento)) {
+			return getService().findDocumento(documento.getDocId());
+		} else {
+			throw new RuntimeException("No se pudo finalizar el recibo.");	
+		}
+	}
+	
+	public Documento finalizarGasto(Documento documento) throws PermisosException {
+		if (getService().finalizarGasto(documento)) {
+			return getService().findDocumento(documento.getDocId());
+		} else {
+			throw new RuntimeException("No se pudo finalizar el gasto.");	
+		}
+		 
 	}
 
 	public String altaEntrega(Entrega entrega) {
@@ -1157,14 +1319,13 @@ public class RemoteServiceHandler {
 		return getFanfoldService().remove(fanfold);
 	}
 
-	public SerieNumero emitir(String docId, String fanfoldId) throws ValidationException, PermisosException {
-		Documento documento = getDocumento(docId);
-		return emitir(documento, fanfoldId);
+	public Documento emitir(String docId, String fanfoldId) throws ValidationException, PermisosException {
+		return emitir(getDocumento(docId), fanfoldId);
 	}
 
-	public SerieNumero emitir(Documento documento, String fanfoldId) throws ValidationException, PermisosException {
-
+	public Documento emitir(Documento documento, String fanfoldId) throws ValidationException, PermisosException {
 		String monedaId = documento.getMoneda().getCodigo();
+
 		if (monedaId.equals(Moneda.CODIGO_MONEDA_DOLAR_ASTER)) {
 			monedaId = Moneda.CODIGO_MONEDA_DOLAR;
 		}
@@ -1172,21 +1333,21 @@ public class RemoteServiceHandler {
 			monedaId = Moneda.CODIGO_MONEDA_EUROS;
 		}
 
-		if (!documento.getComprobante().isRecibo()) {
-			if (!monedaId.equals(Moneda.CODIGO_MONEDA_PESOS) && !monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
-				BigDecimal tcFiscal = getService().getTipoCambioFiscal(monedaId, new Date());
-				if (tcFiscal == null) {
-					throw new RuntimeException("No hay tipo de cambio fiscal definido para el día de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
-				}
-				documento.setDocTCF(tcFiscal);
-			}
-		} else if (documento.getComprobante().isRecibo()) {
+		if (documento.getComprobante().isRecibo()) {
 			if (monedaId.equals(Moneda.CODIGO_MONEDA_PESOS) || monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
 				documento.setDocTCF(BigDecimal.ONE);
 			}
+		} else if (!monedaId.equals(Moneda.CODIGO_MONEDA_PESOS) && !monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
+			BigDecimal tcFiscal = getService().getTipoCambioFiscal(monedaId, new Date());
+			if (tcFiscal == null) {
+				throw new RuntimeException("No hay tipo de cambio fiscal definido para el día de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
+			}
+			documento.setDocTCF(tcFiscal);
 		}
 
-		return getService().emitir(documento, fanfoldId);
+		getService().emitir(documento, fanfoldId);
+		
+		return getDocumento(documento.getDocId());
 	}
 
 	public Boolean existeTCFiscal() {
@@ -1266,7 +1427,7 @@ public class RemoteServiceHandler {
 
 			prevDoc.setNextDocId(null);
 			prevDoc.setEmitido(false);
-			prevDoc.setPendiente(true);
+			prevDoc.setPendiente("S");
 
 			return getService().guardar(prevDoc, null);
 
@@ -1350,6 +1511,22 @@ public class RemoteServiceHandler {
 			return true;
 		}
 		return false;
+	}
+	
+	public Documento guardarGasto(Documento documento) throws ValidationException, PermisosException {
+		try {
+			if (guardar(documento)) {
+				return getService().findDocumento(documento.getDocId());
+			} else {
+				throw new RuntimeException("No fué posible grabar el gasto.");
+			}		
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			throw new RuntimeException("Error: No fué posible grabar el gasto.");
+		}
+		
 	}
 
 	public Documento guardarDocumento(Documento documento) throws ValidationException, PermisosException {
@@ -2113,13 +2290,126 @@ public class RemoteServiceHandler {
 		return result.toString();
 
 	}
+	
+	public List<ArticuloPrecio> getArticuloPrecios(String codigo, String monedaCosto) {
+		ArticuloPrecio articuloPrecioFab;
+		try {
+			articuloPrecioFab = getArticuloPrecio(codigo, "7");
+			if (articuloPrecioFab == null) {
+				articuloPrecioFab = new ArticuloPrecio(codigo, "01", BigDecimal.ZERO, Short.valueOf(monedaCosto), "N");
+			}
+		} catch (PermisosException  ex) {			
+			articuloPrecioFab = new ArticuloPrecio(codigo, "01", null, Short.valueOf(monedaCosto), "N");
+		}
+				
+		BigDecimal articuloPrecioDis;
+		try {
+			articuloPrecioDis = getPrecioSugerido(codigo, "1", monedaCosto);			
+		} catch (PermisosException  ex) {			
+			articuloPrecioDis = null;
+		}
+
+		BigDecimal articuloPrecioMay;
+		try {
+			articuloPrecioMay = getPrecioSugerido(codigo, "2", monedaCosto);			
+		} catch (PermisosException  ex) {
+			articuloPrecioMay = null;
+		}
+		
+		BigDecimal articuloPrecioMin;
+		try {
+			articuloPrecioMin = getPrecioSugerido(codigo, "3", monedaCosto);			
+		} catch (PermisosException  ex) {			
+			articuloPrecioMin = null;
+		}
+
+		BigDecimal articuloPrecioRev;
+		try {
+			articuloPrecioRev = getPrecioSugerido(codigo, "4", monedaCosto);			
+		} catch (PermisosException  ex) {
+			articuloPrecioRev = null;
+		}
+
+		BigDecimal articuloCosto;
+		try {
+			articuloCosto = getArticuloCosto(codigo);			
+		} catch (PermisosException  ex) {
+			articuloCosto = null;;
+		}
+
+		ArrayList<ArticuloPrecio> result = new ArrayList<ArticuloPrecio>();
+		result.add(articuloPrecioFab);
+		result.add(new ArticuloPrecio(codigo, "0", articuloCosto, Short.valueOf(monedaCosto), "N"));
+		result.add(new ArticuloPrecio(codigo, "1", articuloPrecioDis, Short.valueOf(monedaCosto), "N"));
+		result.add(new ArticuloPrecio(codigo, "2", articuloPrecioMay, Short.valueOf(monedaCosto), "N"));
+		result.add(new ArticuloPrecio(codigo, "3", articuloPrecioMin, Short.valueOf(monedaCosto), "N"));
+		result.add(new ArticuloPrecio(codigo, "4", articuloPrecioRev, Short.valueOf(monedaCosto), "N"));
+		
+		return result;
+		
+	}
+	
+	public Documento convertirDocumento(Documento doc, String codeCompDestino, boolean usarCajaPrincipal) {
+		// Obtener todos los datos del proveedor
+		Proveedor proveedor = findCatalogEntity("Proveedor", doc.getProveedor().getCodigo());
+		
+		// Obtener comprobante destino
+		Comprobante comprobante = findCatalogEntity("Comprobante", codeCompDestino);
+				
+		
+		// Resultado
+		Documento documento = Documento.getNuevoDocumento(comprobante); 
+		documento = doc.copyData(documento);
+								
+		if (comprobante.isCredito()) {
+			documento.setCuotasDocumento(doc.getCuotasDocumento());
+			
+			documento.setCondicion(null);
+			documento.setPlanPagos(doc.getPlanPagos() != null ? doc.getPlanPagos() : (doc.getCondicion() != null ? doc.getCondicion() : proveedor.getPlanPagos()));
+			if (documento.getPagos() == null) {
+				documento.setPagos(new HashSet<DocumentoFormaPago>());	
+			}
+			if (documento.getRecibosVinculados() == null) {
+				documento.setRecibosVinculados(new HashSet<VinculoDocumentos>());
+			}
+			documento.getCuotasDocumento().setDocumento(documento);
+			documento.getCuotasDocumento().inicializarCuotas();
+			
+		} else {
+			documento.setPlanPagos(null);
+			documento.setCondicion(doc.getCondicion() != null ? doc.getCondicion() : proveedor.getPlanPagos());
+			documento.setCuotas(new ArrayList<CuotaDocumento>());
+		}
+		
+		if (comprobante.getNumCmpId() != null && comprobante.getNumCmpId().length() > 0) {
+			SerieNumero sn = generateSerieNumero(comprobante);
+			documento.setSerie(sn.getSerie());
+			documento.setNumero(sn.getNumero());				
+		} else {
+			documento.setSerie(codeCompDestino + "/");
+			documento.setNumero(doc.getNumero());
+		}
+
+		documento.setCajaId(comprobante.isMueveCaja() ? Short.valueOf("1") : null);
+		try {
+			Documento result =  convertirMovimientoStock(doc, documento, false);	
+			
+			if (result != null) {
+				finalizarGasto(doc);	
+			}		
+			return result;
+		} catch (PermisosException exc) {
+			throw new RuntimeException("No tiene permisos para realizar esta operación");
+		}			
+			
+	}
 
 	public ParametrosAdministracion getParametrosAdministracion() {
 		return getCatalogService().getParametrosAdministracion();
 	}
 
-	public List<DocumentoDTO> getDocumentosPendientes(String cliente) {
-		return getService().pendientesCliente(cliente);
+	public List<DocumentoDTO> getDocumentosPendientes(String clienteId) {
+		return getService().pendientesCliente(clienteId);
 	}
 
 	public List<DocumentoDTO> getTrazabilidad(String docId) {
@@ -2151,6 +2441,11 @@ public class RemoteServiceHandler {
 		return deudores;
 	}
 
+	public List<DocumentoDeudor> getDocumentosDeudoresCliente(String clienteId) {
+		List<DocumentoDeudor> deudores = getLiquidacionService().getDocumentosDeudoresCliente(new Date(), clienteId);
+		return deudores;
+	}
+	
 	private LiquidacionService getLiquidacionService() {
 		try {
 			LiquidacionService service;

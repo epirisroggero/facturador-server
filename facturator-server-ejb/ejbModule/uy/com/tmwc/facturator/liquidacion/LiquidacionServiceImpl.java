@@ -216,6 +216,64 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 		return result;
 	}
 
+	public List<DocumentoDeudor> getDocumentosDeudoresCliente(Date fechaHoy, String clienteId) {
+		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
+		String permisoId = usuarioLogin.getPermisoId();
+		Boolean esVendedorDist = Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId);
+		Boolean esAliadoComercial = Usuario.USUARIO_ALIADOS_COMERCIALES.equals(permisoId);
+
+		SimpleDateFormat dt1 = new SimpleDateFormat("dd-MM-yyyy");
+
+		CodigoNombreFactory dtoCache = new CodigoNombreFactory();
+		List<Documento> documentos = documentoDAOService.getDocumentosDeudoresCliente(clienteId);
+		ArrayList<DocumentoDeudor> result = new ArrayList<DocumentoDeudor>();
+		for (Documento documento : documentos) {
+			String vendedor = documento.getCliente().getVendedor() != null ? documento.getCliente().getVendedor().getCodigo() : "";
+			String encargadoCuenta = documento.getCliente().getEncargadoCuenta() != null ? documento.getCliente().getEncargadoCuenta() : "";
+			
+			if (esVendedorDist && !vendedor.equals(usuarioLogin.getVenId())) {
+				continue;
+			} else if (esAliadoComercial && !vendedor.equals(usuarioLogin.getVenId()) && !encargadoCuenta.equals(usuarioLogin.getVenId())) {
+				continue;
+			} else {
+				DocumentoDeudor pendiente = new DocumentoDeudor();
+				pendiente.setDocId(documento.getDocId());
+				pendiente.setDeudor(documento.getCliente());
+				pendiente.setFecha(dt1.format(documento.getFecha()));
+				pendiente.setMoneda(dtoCache.getFor(documento.getMoneda()));
+				pendiente.setComprobante(dtoCache.getFor(documento.getComprobante()));
+				pendiente.setNumero(documento.getNumero() != null ? documento.getNumero() : 0);
+
+				if (documento.getComprobante().getTipo() == Comprobante.RECIBO_COBRO) {
+					pendiente.setFacturado(documento.getTotal().negate());
+					pendiente.setAdeudado(documento.getDeuda().negate());
+					pendiente.setDescuento(documento.getDescuentosPorc() == null ? BigDecimal.ZERO : documento.getDescuentosPorc());
+					pendiente.setAdeudadoNeto(documento.getAdeudadoNetoRecibo().negate());
+					pendiente.setCancelado(documento.getCancelado().negate());
+				} else {
+					pendiente.setFacturado(documento.getTotal());
+					pendiente.setCancelado(documento.getCancelado());
+					pendiente.setAdeudado(documento.getDeuda());
+					pendiente.setAdeudadoNeto(documento.calcularDeuda(fechaHoy));
+					pendiente.setPlanPago(dtoCache.getFor(documento.getPlanPagos()));
+					
+					BigDecimal descuento;
+					if (pendiente.getAdeudado().compareTo(BigDecimal.ZERO) == 0) {
+						descuento = BigDecimal.ZERO;
+					} else {
+						descuento = (pendiente.getAdeudado().subtract(pendiente.getAdeudadoNeto())).multiply(Maths.ONE_HUNDRED).divide(pendiente.getAdeudado(), 2, RoundingMode.HALF_UP);
+					}
+					pendiente.setDescuento(descuento);
+					pendiente.setTieneCuotaVencida(documento.isTieneCuotaVencida(fechaHoy));
+				}
+				result.add(pendiente);
+			}
+
+		}
+		return result;
+	}
+
+	
 	public byte[] generarLiquidacion(Date fechaDesde, Date fechaHasta, Date fechaCorte, BigDecimal gastosPeriodo) {
 		Locale.setDefault(new Locale("es"));
 
