@@ -120,7 +120,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 
 		return true;
 	}
-	
+
 	public Documento guardar(Documento documento) throws ValidationException, PermisosException {
 		return guardar(documento, null);
 	}
@@ -134,7 +134,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 		
 		verificarFecha(current, documento);
 
-		if (current.isEmitido()) { // Revisar si se cambiaron los importes de iva, total, sub-total post emisión.
+		if (current.isEmitido()) { // Revisar si se cambiaron los importes de iva, total, sub-total post emisiï¿½n.
 			if (!documento.calcularIva().setScale(2, RoundingMode.HALF_EVEN).equals(current.calcularIva().setScale(2, RoundingMode.HALF_EVEN))) {
 				throw new ValidationException("Iva no válido");
 			}
@@ -144,7 +144,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 			if (!documento.getSubTotal().setScale(2, RoundingMode.HALF_EVEN).equals(current.getSubTotal().setScale(2, RoundingMode.HALF_EVEN))) {
 				throw new ValidationException("Sub-Total no válido");
 			}
-			if (current.getComprobante().getCodigo().equals("122")) { // Es pro-forma de importación y ya esta emitida actualizo nacionalización.
+			if (current.getComprobante().getCodigo().equals("122")) { // Es pro-forma de importaciï¿½n y ya esta emitida actualizo nacionalizaciï¿½n.
 				BigDecimal coeficienteImp = documento.getCoeficienteImp();
 				
 				List<DocumentoDTO> documentsImp = null; 
@@ -340,7 +340,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 			try {
 				usuarioId = Short.parseShort(ppal.getName());
 			} catch (NumberFormatException nfe) {
-				throw new ValidationException("Código de usuario inesperado: " + ppal.getName());
+				throw new ValidationException("Cï¿½digo de usuario inesperado: " + ppal.getName());
 			}
 		} else {
 			throw new ValidationException("No se pudo determinar el usuario");

@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.7.205</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.205.air</url>
+	<versionNumber>1.7.213</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.213.air</url>
 	<description>
 	    <![CDATA[
+	    # Versión 1.7.213(13/10/2019)
+	    	1.- Recibos: Permitir borrar vínculos.
+
+	    # Versión 1.7.212(12/10/2019)
+	    	1.- Pasaje de gastos: Corrige errores detectados en testeo.
+	    	2.- El centro de costo no se debe guardar en los movimientos de stock de proveedores.
+
+	    # Versión 1.7.210 
+	    	1.- Impresion de facturas sin pre-impreso.
+
 	    # Versión 1.7.205 (30/09/2019)
 	    	1.- Corrige error al dar de alta un nuevo recibo.
 	    	2.- Permitir cargar RUT en documento de gasto.

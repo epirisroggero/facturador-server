@@ -522,7 +522,7 @@ public class RemoteServiceHandler {
 						Boolean result = getService().updateNotaCreditoFinancieraEnRecibo(documentoRBO, documentoNCF.getDocId());
 						
 						if (result) {							
-							LOGGER.info(i + ") Se actualizó recibo: " + documentoRBO.getSerie() + documentoRBO.getNumero() +
+							LOGGER.info(i + ") Se actualizï¿½ recibo: " + documentoRBO.getSerie() + documentoRBO.getNumero() +
 									" | NCF: " + documentoNCF.getSerie() + documentoNCF.getNumero() +
 									" | processId: " + documentoNCF.getProcessId());
 							i++;
@@ -544,12 +544,11 @@ public class RemoteServiceHandler {
 		try {
 			documento = ajustarDocumento(documento);
 
-			String tcFiscal = getTipoCambioFiscal(Moneda.CODIGO_MONEDA_DOLAR, documento.getFecha());
-			if (tcFiscal.length() > 0) {
-				documento.setDocTCF(new BigDecimal(tcFiscal));
-			}
-			if (documento.getComprobante().isNotaCreditoFinanciera()) {
-				documento.setSaldo(documento.getTotal());
+			if (documento.getDocTCF() == null || documento.getDocTCF().compareTo(BigDecimal.ZERO) <= 0) {
+				String tcFiscal = getTipoCambioFiscal(documento.getMoneda().getCodigo(), documento.getFecha());
+				if (tcFiscal.length() > 0) {
+					documento.setDocTCF(new BigDecimal(tcFiscal));
+				}
 			}
 			if (documento.getComprobante().getNumCmpId() != null && documento.getComprobante().getNumCmpId().length() > 0) {
 				SerieNumero sn = generateSerieNumero(documento.getComprobante());
@@ -590,29 +589,35 @@ public class RemoteServiceHandler {
 			auditoria.setProblemas("Ninguno");
 		}
 
-		String tcFiscal = getTipoCambioFiscal(Moneda.CODIGO_MONEDA_DOLAR, documento.getFecha());
-		if (tcFiscal.length() > 0) {
-			documento.setDocTCF(new BigDecimal(tcFiscal));
+		if (documento.getComprobante().isGasto()) {
+			if (documento.getDocTCF() == null || documento.getDocTCF().compareTo(BigDecimal.ZERO) <= 0) {
+				String tcFiscal = getTipoCambioFiscal(documento.getMoneda().getCodigo(), documento.getFecha());
+				if (tcFiscal.length() > 0) {
+					documento.setDocTCF(new BigDecimal(tcFiscal));
+				}
+			}
+		} else if (documento.getComprobante().isRecibo()) {
+			documento.setDocTCF(documento.getDocTCC());
+		} else {
+			String tcFiscal = getTipoCambioFiscal(Moneda.CODIGO_MONEDA_DOLAR, documento.getFecha());
+			if (tcFiscal.length() > 0) {
+				documento.setDocTCF(new BigDecimal(tcFiscal));
+			}
 		}
 		
-		if (documento.getComprobante().isRecibo()) {
-			// Realizar cosas para los recibos
-			documento.setDocTCF(documento.getDocTCC());
-		}
-
 		if (documento.getComprobante().isNotaCreditoFinanciera()) {
 			documento.setSaldo(documento.getTotal());
 		}
 		
 		String docId = getService().alta(documento, auditoria);
 
-		// Agregar vínculos de nota de crédito financiera.
+		// Agregar vï¿½nculos de nota de crï¿½dito financiera.
 		if (documento.getComprobante().isNotaCreditoFinanciera()) {
 			Documento doc = getService().findDocumento(docId);
 
 			Set<VinculoDocumentos> vinculos = new HashSet<VinculoDocumentos>();
 
-			// Agregar vínculos
+			// Agregar vï¿½nculos
 			List<LineaDocumento> lineas = doc.getLineas().getLineas();
 			for (LineaDocumento lineaDocumento : lineas) {
 				String notas = lineaDocumento.getNotas() != null ? lineaDocumento.getNotas() : null;
@@ -639,7 +644,7 @@ public class RemoteServiceHandler {
 				vinculos.add(vinculo);
 			}
 
-			// Vincular facturas en nota de crédito financiera.
+			// Vincular facturas en nota de crï¿½dito financiera.
 			doc.setFacturasVinculadas(vinculos);
 
 			HashMap<String, Documento> documentos = new HashMap<String, Documento>();
@@ -647,7 +652,7 @@ public class RemoteServiceHandler {
 
 			BigDecimal montoTotal = BigDecimal.ZERO;
 
-			// Ajustar saldos una vez guardado los vínculos
+			// Ajustar saldos una vez guardado los vï¿½nculos
 			for (LineaDocumento lineaDocumento : lineas) {
 				String notas = lineaDocumento.getNotas() != null ? lineaDocumento.getNotas() : null;
 				if (notas == null || notas.length() == 0) {
@@ -674,7 +679,7 @@ public class RemoteServiceHandler {
 				nuevoSaldo = ajustarSaldo(moneda, nuevoSaldo);
 
 				if (nuevoSaldo.doubleValue() < 0) {
-					throw new RuntimeException("Error: " + docVin.getSerie() + docVin.getNumero() + " saldo inválido (" + docVin.getSaldo().setScale(2, RoundingMode.HALF_EVEN) + "<"
+					throw new RuntimeException("Error: " + docVin.getSerie() + docVin.getNumero() + " saldo invÃ¡lido (" + docVin.getSaldo().setScale(2, RoundingMode.HALF_EVEN) + "<"
 							+ monto.setScale(2, RoundingMode.HALF_EVEN) + ").");
 				}
 
@@ -804,7 +809,7 @@ public class RemoteServiceHandler {
 
 		List<LineaCuponera> movCuponera = new ArrayList<LineaCuponera>();
 
-		// Obtener el stock del artículo.
+		// Obtener el stock del artï¿½culo.
 		BigDecimal saldo = getStock(artId, "1").negate();
 
 		// Obtener los documentos de bajada de cuponera para este clinte.
@@ -994,7 +999,7 @@ public class RemoteServiceHandler {
 			if (cotizaciones != null && cotizaciones.size() > 0) {
 				return cotizaciones.get(0);
 			} else {
-				throw new RuntimeException("No hay cotizaciónes definidas.");
+				throw new RuntimeException("No hay cotizaciones definidas.");
 			}
 		}
 	}
@@ -1004,7 +1009,7 @@ public class RemoteServiceHandler {
 		if (cotizacion != null) {
 			return cotizacion;
 		} else {
-			throw new RuntimeException("No hay cotización definida.");
+			throw new RuntimeException("No hay cotizaciÃ³n definida.");
 		}
 	}
 
@@ -1013,7 +1018,7 @@ public class RemoteServiceHandler {
 		if (cotizacion != null) {
 			return cotizacion;
 		} else {
-			throw new RuntimeException("No hay cotización definida.");
+			throw new RuntimeException("No hay cotizaciÃ³n definida.");
 		}
 	}
 
@@ -1047,7 +1052,7 @@ public class RemoteServiceHandler {
 	}
 
 	// ///////////
-	// ARTÍCULO //
+	// ARTï¿½CULO //
 	// ///////////
 	public String altaArticulo(Articulo articulo) {
 		return getArticulosService().persist(articulo);
@@ -1340,7 +1345,7 @@ public class RemoteServiceHandler {
 		} else if (!monedaId.equals(Moneda.CODIGO_MONEDA_PESOS) && !monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
 			BigDecimal tcFiscal = getService().getTipoCambioFiscal(monedaId, new Date());
 			if (tcFiscal == null) {
-				throw new RuntimeException("No hay tipo de cambio fiscal definido para el día de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
+				throw new RuntimeException("No hay tipo de cambio fiscal definido para el dÃ­a de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
 			}
 			documento.setDocTCF(tcFiscal);
 		}
@@ -1389,10 +1394,10 @@ public class RemoteServiceHandler {
 			// Obtener siguiente.
 			String nextDocId = documento.getNextDocId();
 
-			// Próximo documento
+			// Prï¿½ximo documento
 			Documento nextDoc = getDocumento(nextDocId);
 			if (nextDoc == null) {
-				throw new RuntimeException("No se encontró el documento siguiente.\nEl mismo fué borrado o no existe.");
+				throw new RuntimeException("No se encontrÃ³ el documento siguiente.\nEl mismo fuÃ© borrado o no existe.");
 			}
 
 			return nextDoc;
@@ -1407,7 +1412,7 @@ public class RemoteServiceHandler {
 	public Documento moveToPrevDocument(Documento documento) throws PermisosException {
 		try {
 			if (documento.getPrevDocId() == null || documento.getPrevDocId().equals("0") || documento.getNextDocId() != null || documento.getProcessId() == null) {
-				throw new RuntimeException("No se encontró el documento anterior.\nEl mismo fué borrado o no existe.");
+				throw new RuntimeException("No se encontrÃ³ el documento anterior.\nEl mismo fuÃ© borrado o no existe.");
 			} else {
 				if (getService().borrar(documento, true)) {
 					System.out.println("El documento " + documento.getDocId() + " ha sido eliminado.");
@@ -1419,10 +1424,10 @@ public class RemoteServiceHandler {
 
 			Documento prevDoc = getDocumento(prevDocId);
 			if (prevDoc == null) {
-				throw new RuntimeException("No se encontró el documento anterior.\nEl mismo fué borrado o no existe.");
+				throw new RuntimeException("No se encontrÃ³ el documento anterior.\nEl mismo fuÃ© borrado o no existe.");
 			}
 			if (prevDoc.getNextDocId() == null) {
-				throw new RuntimeException("Esta acción esta disponible solo para procesos realizados con versión Facturador-v1.6.630 o superior.");
+				throw new RuntimeException("Esta acciÃ³n esta disponible solo para procesos realizados con versiÃ³n Facturador-v1.6.630 o superior.");
 			}
 
 			prevDoc.setNextDocId(null);
@@ -1453,7 +1458,7 @@ public class RemoteServiceHandler {
 	public EFacturaResult generateCFE(Documento documento) throws PermisosException {
 		String monedaId = documento.getMoneda().getCodigo();
 
-		// Guardar el processId en caso de guardar una nota de credito financiera automática.
+		// Guardar el processId en caso de guardar una nota de credito financiera automï¿½tica.
 		if (documento.getComprobante().isNotaCreditoFinanciera()) {
 			if (documento.getProcessId() != null) {
 				// Obtener el recibo
@@ -1462,7 +1467,7 @@ public class RemoteServiceHandler {
 				if (documentoRBO != null) {
 					Boolean result = getService().updateNotaCreditoFinancieraEnRecibo(documentoRBO, documento.getDocId());
 					if (result) {
-						LOGGER.info("Se actualizó recibo: " + documentoRBO.getSerie() + documentoRBO.getNumero());
+						LOGGER.info("Se actualizÃ³ recibo: " + documentoRBO.getSerie() + documentoRBO.getNumero());
 					}
 				}					
 			}				
@@ -1471,7 +1476,7 @@ public class RemoteServiceHandler {
 		if (!monedaId.equals(Moneda.CODIGO_MONEDA_PESOS) && !monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
 			BigDecimal tcFiscal = getService().getTipoCambioFiscal(monedaId, new Date());
 			if (tcFiscal == null) {
-				throw new RuntimeException("No hay tipo de cambio fiscal definido para el día de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
+				throw new RuntimeException("No hay tipo de cambio fiscal definido para el dÃ­a de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
 			}
 		}
 		if (esContingencia(documento.getComprobante().getCodigo())) {
@@ -1479,7 +1484,7 @@ public class RemoteServiceHandler {
 				throw new RuntimeException("La serie en contingencias es requerido");
 			}
 			if (documento.getNumero() == null) {
-				throw new RuntimeException("El número en contingencias es requerido");
+				throw new RuntimeException("El nÃºmero en contingencias es requerido");
 			}
 		} else {
 			documento.setSerie(null);
@@ -1518,20 +1523,20 @@ public class RemoteServiceHandler {
 			if (guardar(documento)) {
 				return getService().findDocumento(documento.getDocId());
 			} else {
-				throw new RuntimeException("No fué posible grabar el gasto.");
+				throw new RuntimeException("No fuÃ© posible grabar el gasto.");
 			}		
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			
-			throw new RuntimeException("Error: No fué posible grabar el gasto.");
+			throw new RuntimeException("Error: No fuÃ© posible grabar el gasto.");
 		}
 		
 	}
 
 	public Documento guardarDocumento(Documento documento) throws ValidationException, PermisosException {
 		if (documento.getDocId() == null) {
-			throw new RuntimeException("No fué posible grabar el documento.");
+			throw new RuntimeException("No fuÃ© posible grabar el documento.");
 		}
 		return getService().guardar(documento);
 	}
@@ -1665,8 +1670,8 @@ public class RemoteServiceHandler {
 	}
 
 	/**
-	 * Copiar las tareas que no se realizarón a la fecha de hoy y quedaron
-	 * pendientes de ser realizadas. Además a dicha tarea se le debe de poner
+	 * Copiar las tareas que no se realizarï¿½n a la fecha de hoy y quedaron
+	 * pendientes de ser realizadas. Ademï¿½s a dicha tarea se le debe de poner
 	 * una marca para saber que la misma fue reasignada.
 	 * 
 	 */
@@ -1675,7 +1680,7 @@ public class RemoteServiceHandler {
 
 	/**
 	 * Reagendar la tarea dada. Esta se hace de forma manual y no de forma
-	 * automática.
+	 * automï¿½tica.
 	 * 
 	 * @param agendaTarea
 	 *            Tarea a ser re-asignada
@@ -1770,10 +1775,10 @@ public class RemoteServiceHandler {
 	 * euros
 	 * 
 	 * Para una precio de 100 pesos 100 * 33 = 3300 pesos 100 * (32 / 35) =
-	 * 91.428 dólares
+	 * 91.428 dï¿½lares
 	 * 
 	 * Para un precio de 100 euros 100 * 39 = 3900 pesos 100 * (39 / 33) =
-	 * 118.1818 dólares
+	 * 118.1818 dï¿½lares
 	 */
 	public BigDecimal convertPrecio(BigDecimal precio, String monedaOrigen, String monedaDestino) {
 		Calendar calendar = Calendar.getInstance();
@@ -2348,6 +2353,49 @@ public class RemoteServiceHandler {
 		return result;
 		
 	}
+
+	public Documento convertirCotizacion(Documento doc, String codeCompDestino, boolean usarCajaPrincipal) {
+		// Obtener comprobante destino
+		Comprobante comprobante = findCatalogEntity("Comprobante", codeCompDestino);
+
+		// Resultado
+		Documento documento = Documento.getNuevoDocumento(comprobante); 
+		documento = doc.copyData(documento);
+		
+		SerieNumero sn = generateSerieNumero(comprobante);
+		if (sn != null) {
+			documento.setSerie(sn.getSerie());
+			documento.setNumero(sn.getNumero());
+		}		
+		try {
+			String docID = alta(documento);
+			
+			// doy de baja el documento
+			baja(doc);
+			
+			return getDocumento(docID);
+
+		} catch (ValidationException e) {
+			throw new RuntimeException("Error de vlidación");
+		} catch (PermisosException e) {
+			throw new RuntimeException("No tiene permisos para realizar esta operación");
+		}		
+
+	}
+	
+	public Documento clonarDocumento(Documento doc) {
+		Documento documento = Documento.getNuevoDocumento(doc.getComprobante()); 
+		documento = doc.copyData(documento);
+		
+		documento.setPendiente("S");
+		try {
+			return altaGasto(documento);
+		} catch (ValidationException e) {
+			throw new RuntimeException("Error de vlidación");
+		} catch (PermisosException e) {
+			throw new RuntimeException("No tiene permisos para realizar esta operación");
+		}
+	}
 	
 	public Documento convertirDocumento(Documento doc, String codeCompDestino, boolean usarCajaPrincipal) {
 		// Obtener todos los datos del proveedor
@@ -2355,12 +2403,23 @@ public class RemoteServiceHandler {
 		
 		// Obtener comprobante destino
 		Comprobante comprobante = findCatalogEntity("Comprobante", codeCompDestino);
-				
 		
 		// Resultado
 		Documento documento = Documento.getNuevoDocumento(comprobante); 
-		documento = doc.copyData(documento);
-								
+		documento.setDocVinculado("N");
+		documento.setDocCFEId(Integer.valueOf("0"));
+		documento.setDocCFEstatus(Short.valueOf("0"));
+		documento.setDocCFEstatusAcuse(Short.valueOf("0"));
+		
+		documento = doc.copyData(documento); 
+		documento.setPendiente("S");
+		
+		// Convierto de 110 o 111 a factura...
+		if (doc.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES &&
+				documento.getComprobante().getTipo() != Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES) {
+			documento.setCentroCostosId(doc.getDocCenCostosId());
+		}
+				
 		if (comprobante.isCredito()) {
 			documento.setCuotasDocumento(doc.getCuotasDocumento());
 			
@@ -2392,14 +2451,36 @@ public class RemoteServiceHandler {
 
 		documento.setCajaId(comprobante.isMueveCaja() ? Short.valueOf("1") : null);
 		try {
-			Documento result =  convertirMovimientoStock(doc, documento, false);	
+			if (!documento.getComprobante().isCredito()) {
+				documento.setCuotasDocumento(new CuotasDocumento(documento));
+			} else {
+				if (documento.getPlanPagos() == null) {
+					documento.setPlanPagos(new PlanPagos());
+				}
+			}
 			
+			// Es la solicitud e gasto???
+			if (doc.getPrevDocId() == null) { 
+				doc.setProcessId(doc.getDocId());
+			} 
+			documento.setPrevDocId(doc.getDocId());
+			documento.setProcessId(doc.getProcessId());
+
+			// Se da de alta el nuevo gasto
+			Documento result = altaGasto(documento);
+
+			// Ajustar datos en documento anterior
+			doc.setNextDocId(result.getDocId());
+
 			if (result != null) {
 				finalizarGasto(doc);	
 			}		
 			return result;
 		} catch (PermisosException exc) {
-			throw new RuntimeException("No tiene permisos para realizar esta operación");
+			throw new RuntimeException("Error: No tiene permisos para realizar esta operación");
+		} catch (ValidationException e) {
+			// Si no se pudo borrar y si dar de alta, Borrar el alta.
+			throw new RuntimeException("Error: Los datos no son válidos");
 		}			
 			
 	}

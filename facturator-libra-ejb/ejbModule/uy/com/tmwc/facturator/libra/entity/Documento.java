@@ -227,11 +227,11 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	private static final String REGISTRO_HORA_FORMAT = "HH:mm:ss";
 
 	/**
-	 * Este campo N15,2 guarda el Saldo Pendiente de cada factura crédito. El
+	 * Este campo N15,2 guarda el Saldo Pendiente de cada factura crï¿½dito. El
 	 * sistema trabaja de la siguiente forma: Cuando se ingresa una nueva
-	 * factura crédito (venta o compra) en DocTotal y en DocSaldo se graba el
+	 * factura crï¿½dito (venta o compra) en DocTotal y en DocSaldo se graba el
 	 * mismo importe, es decir, el importe total de la factura. A medida que se
-	 * van realizando pagos por medio de recibos o notas de crédito, el saldo de
+	 * van realizando pagos por medio de recibos o notas de crï¿½dito, el saldo de
 	 * la factura va disminuyendo, es decir, el importe grabado en DocSaldo va
 	 * disminuyendo hasta quedar en cero.
 	 */
@@ -363,7 +363,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	private Set<Vinculosdoc> recibosVinculados;
 
 	@OneToMany(cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "recibo")
-	/* @Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN }) */
+	@Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
 	private Set<Vinculosdoc> facturasVinculadas;
 
 	@OneToMany(cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "documento")
@@ -532,6 +532,10 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	@Column(table = "lfx_documentos", name = "DocRtaFin")
 	private BigDecimal docRenFin;
 
+	@Column(table = "lfx_documentos", name = "DocCenIdTmp")
+	private String docCenCostosId = "";
+	
+	
 	public Documento() {
 		this.estadoFecha = Constantes.DEFAULT_DATE;
 		this.docEntregaFecha = Constantes.DEFAULT_DATE;
@@ -669,6 +673,14 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	public void setCentroCostos(Centroscosto centroCostos) {
 		this.centroCostos = centroCostos;
 		this.centroCostosId = (centroCostos == null ? "" : centroCostos.getId().getCenId());
+	}
+	
+	public String getDocCenCostosId() {
+		return docCenCostosId;
+	}
+
+	public void setDocCenCostosId(String docCenCostosId) {
+		this.docCenCostosId = docCenCostosId;
 	}
 
 	public Cliente getCliente() {

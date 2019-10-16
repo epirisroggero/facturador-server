@@ -28,7 +28,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.dozer.DozerBeanMapper;
 import org.hibernate.Hibernate;
 
@@ -218,6 +217,10 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	public void merge(uy.com.tmwc.facturator.entity.Documento doc) throws PermisosException {
 		Short cfeStatus = doc.getDocCFEstatus();
 
+		if (cfeStatus == null) {
+			cfeStatus = Short.valueOf("0");
+		}
+
 		Boolean isRecibo = doc.getComprobante() != null && doc.getComprobante().isRecibo();
 
 		if (cfeStatus.equals(new Short("1")) || isRecibo) {
@@ -263,15 +266,23 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						int docIdVinB = vinculoDocumentos.getDocIdVin1();
 						if (docIdVinA == docIdVinB) {
 							found = true;
-
+							
 							BigDecimal ajuste;
+							
+							BigDecimal montoViejo;
+							BigDecimal montoNuevo;
+							BigDecimal netoViejo;
+							BigDecimal netoNuevo = BigDecimal.ZERO;
+							BigDecimal descNuevo = BigDecimal.ZERO;
+							
 							if (aster) {
-								BigDecimal montoViejo = vinDoc.getMonto().setScale(4, RoundingMode.HALF_DOWN);
-								BigDecimal montoNuevo = vinculoDocumentos.getMonto() != null ? vinculoDocumentos.getMonto().setScale(4, RoundingMode.HALF_DOWN) : BigDecimal.ZERO;
+								montoViejo = vinDoc.getMonto().setScale(4, RoundingMode.HALF_DOWN);
+								montoNuevo = vinculoDocumentos.getMonto() != null ? vinculoDocumentos.getMonto().setScale(4, RoundingMode.HALF_DOWN) : BigDecimal.ZERO;
 								ajuste = montoNuevo.subtract(montoViejo).setScale(4, RoundingMode.HALF_DOWN);
 							} else {
-								BigDecimal netoViejo = vinDoc.getNeto() != null ? vinDoc.getNeto().setScale(4, RoundingMode.HALF_DOWN) : vinDoc.getMonto().setScale(4, RoundingMode.HALF_DOWN);
-								BigDecimal netoNuevo = vinculoDocumentos.getNeto() != null ? vinculoDocumentos.getNeto().setScale(4, RoundingMode.HALF_DOWN) : BigDecimal.ZERO;
+								netoViejo = vinDoc.getNeto() != null ? vinDoc.getNeto().setScale(4, RoundingMode.HALF_DOWN) : vinDoc.getMonto().setScale(4, RoundingMode.HALF_DOWN);
+								netoNuevo = vinculoDocumentos.getNeto() != null ? vinculoDocumentos.getNeto().setScale(4, RoundingMode.HALF_DOWN) : BigDecimal.ZERO;
+								descNuevo = vinculoDocumentos.getDescuentoPorc() != null ? vinculoDocumentos.getDescuentoPorc().setScale(4, RoundingMode.HALF_DOWN) : BigDecimal.ZERO;
 								ajuste = netoNuevo.subtract(netoViejo).setScale(4, RoundingMode.HALF_DOWN);
 							}
 
@@ -282,10 +293,20 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 							uy.com.tmwc.facturator.libra.entity.Documento factura = (uy.com.tmwc.facturator.libra.entity.Documento) this.em.find(uy.com.tmwc.facturator.libra.entity.Documento.class,
 									pk1);
 							BigDecimal viejoSaldo = factura.getSaldo().setScale(4, RoundingMode.HALF_DOWN);
+							
 							BigDecimal nuevoSaldo = viejoSaldo.subtract(ajuste);
 							String moneda = factura.getMoneda().getCodigo();
 
 							nuevoSaldo = ajustarSaldo(moneda, nuevoSaldo);
+
+							/*
+							if (!aster) {
+								BigDecimal montoCancela = netoNuevo.divide(BigDecimal.ONE.subtract(descNuevo.divide(new BigDecimal(100))));
+								if (montoCancela.compareTo(nuevoSaldo.add(BigDecimal.ONE)) > 0) {
+									throw new RuntimeException("El monto a cancelar en factura " + factura.getSerie() + factura.getNumero().toString() + " es superior al saldo(" + montoCancela + " > " +  nuevoSaldo + ") .");
+								}
+								
+							}*/
 
 							if (nuevoSaldo.compareTo(BigDecimal.ZERO) < 0) {
 								throw new RuntimeException("Monto incorrecto documento " + factura.getSerie() + factura.getNumero().toString() + "(" + viejoSaldo + " < " + ajuste + ")");
@@ -310,6 +331,10 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						}
 					}
 					if (!found) { // Se borra el vínculo.
+						//libraDoc.getRecibosVinculados().remove(vinDoc);
+						libraDoc.getFacturasVinculadas().remove(vinDoc);
+												
+						// Ajusto el saldo de la factura
 						DocumentoPK pk1 = new DocumentoPK();
 						pk1.setDocId(Integer.parseInt(vinDoc.getFactura().getDocId()));
 						pk1.setEmpId(getEmpId());
@@ -340,7 +365,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 								+ "Saldo actual:   \t\t" + simbolo + formatter.format(nuevoSaldo.doubleValue()) + "\n");
 
 						audits.put(factura.getDocId(), audit);
-
 					}
 				}
 
@@ -353,7 +377,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						if (docIdVinA == docIdVinB) {
 							found = true;
 						}
-					}
+					} 
 					if (!found) { // Se agrega el vínculo
 						DocumentoPK pk1 = new DocumentoPK();
 						pk1.setDocId(Integer.parseInt(vinDoc.getFactura().getDocId()));
@@ -363,9 +387,17 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 						BigDecimal monto = vinDoc.getMonto().setScale(4, RoundingMode.HALF_EVEN);
 						BigDecimal neto = vinDoc.getNeto().setScale(4, RoundingMode.HALF_EVEN);
+						BigDecimal descto = vinDoc.getDescuentoPorc().setScale(4, RoundingMode.HALF_EVEN);
 						BigDecimal viejoSaldo = factura.getSaldo().setScale(4, RoundingMode.HALF_EVEN);
 						String moneda = factura.getMoneda().getCodigo();
 
+						/*if (!aster) {
+							BigDecimal montoCancela = neto.divide(BigDecimal.ONE.subtract(descto.divide(new BigDecimal(100))));
+							if (montoCancela.compareTo(viejoSaldo.add(BigDecimal.ONE)) > 0) {
+								throw new RuntimeException("El monto a cancelar en factura " + factura.getSerie() + factura.getNumero().toString() + " es superior al saldo (" + montoCancela + " > " +  viejoSaldo + ").");
+							}
+						}*/
+						
 						BigDecimal nuevoSaldo;
 						if (aster) {
 							nuevoSaldo = viejoSaldo.subtract(monto).setScale(4, RoundingMode.HALF_EVEN);
@@ -411,9 +443,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			// Ajustar el stock. Pueden variar las lineas, y los depositos.
 			// Nunca el comprobante.
 			int signoStock = doc.getComprobante().isDevolucion() ? -1 : 1;
-			ajustarStockLineas(current, -signoStock); // Esto es un borrar, los
-														// signos estan
-														// cambiados
+			ajustarStockLineas(current, -signoStock); // Esto es un borrar, los signos estan cambiados
 			ajustarStockLineas(libraDoc, signoStock);
 			ajustarLineas(libraDoc, doc.getComprobante().isGasto());
 		}
@@ -529,7 +559,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			}
 			List result = this.em.createNamedQuery(queryName).setParameter("empId", getEmpId()).setParameter("serie", serie).setParameter("numero", numero).getResultList();
 			if ((result.size() > 0) && ((doc.getId() == null) || (doc.getId().getDocId() != ((DummyDocumento) result.get(0)).getId().getDocId())))
-				throw new IllegalArgumentException("Serie y número en uso");
+				throw new IllegalArgumentException("Serie y nï¿½mero en uso");
 		}
 	}
 
@@ -756,7 +786,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 			return MappingUtils.map(LineaDocumento.class, list, mapper);
 		} else {
-			throw new PermisosException("El usuario no tiene permiso para ver los antecedentes del artículo");
+			throw new PermisosException("El usuario no tiene permiso para ver los antecedentes del artï¿½culo");
 		}
 
 	}
@@ -1409,7 +1439,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		Stockactual stockActual = getStockActual(articulo, deposito);
 		// El registro de stock para el art/deposito puede no existir, las
-		// líneas que quedarian en 0 son borrados por libra.
+		// lï¿½neas que quedarian en 0 son borrados por libra.
 		if (stockActual == null) {
 			stockActual = new Stockactual();
 			StockactualPK pk = getStockActualPK();

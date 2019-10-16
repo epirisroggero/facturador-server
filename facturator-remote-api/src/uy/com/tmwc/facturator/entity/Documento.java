@@ -119,10 +119,10 @@ public class Documento extends DocumentoBase implements Serializable {
 	private String concepto;
 	
 	private String centroCostosId;
+	private String docCenCostosId;
 	private String referencia;
 	
 	private CentrosCosto centroCostos;
-
 
 	public Documento() {
 		this.comisiones = new ComisionesDocumento(this);
@@ -183,6 +183,7 @@ public class Documento extends DocumentoBase implements Serializable {
 					
 		doc.setUsuIdAut(usuIdAut);
 		doc.setCentroCostosId(centroCostosId);
+		doc.setDocCenCostosId(docCenCostosId);
 		doc.setReferencia(referencia);
 		doc.setNotas(notas);
 		
@@ -190,7 +191,7 @@ public class Documento extends DocumentoBase implements Serializable {
 		doc.setIva(_iva);
 		doc.setTotal(total);
 		doc.setCosto(_costo);
-		
+
 		doc.setLineas(lineas);
 		doc.getLineas().setDocumento(doc);
 		for (LineaDocumento linea : lineas.getLineas()) {
@@ -1188,6 +1189,14 @@ public class Documento extends DocumentoBase implements Serializable {
 
 	public void setReferencia(String referencia) {
 		this.referencia = referencia;
+	}
+
+	public String getDocCenCostosId() {
+		return docCenCostosId;
+	}
+
+	public void setDocCenCostosId(String docCenCostosId) {
+		this.docCenCostosId = docCenCostosId;
 	}
 
 }

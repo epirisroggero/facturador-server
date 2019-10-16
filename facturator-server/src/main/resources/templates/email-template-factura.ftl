@@ -40,7 +40,7 @@
 	        </tr>
 	        <tr>
 				<td bgcolor="#efefef" style="padding: 10px 30px 10px 30px; border:solid 1px #cfcfcf; border-top:none; border-bottom:none;">
-					<img src="cid:documento" width="750" height="676"/>
+					<img src="cid:documento" />
 				</td>
 			</tr>	        
 	        <tr style="background-color:#FFFFFF;">
