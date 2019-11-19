@@ -67,7 +67,7 @@
 			    					<tr>
 			    						<td style="font-size:0.9em; font-weight:normal; color:#000000;">
 			    							<span>Celular:</span>
-			    							<a href="https://api.whatsapp.com/send?phone=59892153629" target="_blank">${usuario.usuCelular!""}</a>
+			    							<a href="https://api.whatsapp.com/send?phone=59899681586" target="_blank">${usuario.usuCelular!""}</a>
 			    						</td>
 			    					</tr>
 			    					</#if>

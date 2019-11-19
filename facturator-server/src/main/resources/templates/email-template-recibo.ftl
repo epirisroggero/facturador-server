@@ -65,7 +65,7 @@
             					<tr>
             						<td style="font-size:1.0em; font-weight:normal; color:#000000;">
             							<span>WhatsApp:</span>
-            							<a href="https://api.whatsapp.com/send?phone=59892153629" target="_blank">092.153.629</a>
+            							<a href="https://api.whatsapp.com/send?phone=59899681586" target="_blank">099.681.586</a>
             						</td>
             					</tr>
             					<tr>

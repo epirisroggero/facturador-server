@@ -31,7 +31,7 @@
 	                
 	                <p>Estimado cliente:</p>
 	                
-	                <p>Por este medio le estamos enviando el detalle de facturas pendientes de pago, si ya ha iniciado una coordinación de pago o ha efectuado una transferencia bancaria le pedimos las disculpas del caso y le solicitamos tenga a bien enviarnos copia del comprobante de pago via whatsapp al 092 153 629, de forma de registrar  el recibo de pago correspondiente y hacérselo llegar a la brevedad posible.</p>
+	                <p>Por este medio le estamos enviando el detalle de facturas pendientes de pago, si ya ha iniciado una coordinación de pago o ha efectuado una transferencia bancaria le pedimos las disculpas del caso y le solicitamos tenga a bien enviarnos copia del comprobante de pago via whatsapp al 099 681 586, de forma de registrar  el recibo de pago correspondiente y hacérselo llegar a la brevedad posible.</p>
 					
 					<p>${bodyText}</p>
 					
@@ -77,7 +77,7 @@
 			    					<tr>
 			    						<td style="font-size:0.9em; font-weight:normal; color:#000000;">
 			    							<span>Celular:</span>
-			    							<a href="https://api.whatsapp.com/send?phone=59892153629" target="_blank">${usuario.usuCelular!""}</a>
+			    							<a href="https://api.whatsapp.com/send?phone=59899681586" target="_blank">${usuario.usuCelular!""}</a>
 			    						</td>
 			    					</tr>
 			    					</#if>
