@@ -74,9 +74,10 @@ public class EFacturaServiceImpl implements EFacturaService {
 	private Logger LOGGER = Logger.getLogger(EFacturaServiceImpl.class);
 	
 	private static int MAX_CHECK_REPEAT = 120;
-	
-	
+		
 	private Boolean modeDevelop = false;
+	
+	private Boolean usarPuestoTrabajo = false;
 
 	@EJB
 	DocumentoDAOService documentoDAOService;
@@ -179,11 +180,17 @@ public class EFacturaServiceImpl implements EFacturaService {
 	
 	public EFacturaResult generarEfactura(Documento doc) throws PermisosException, IOException {
 		Documento current = this.documentoDAOService.findDocumento(doc.getDocId());
+		if (current != null) {
+			current.setPuntoVentaId(doc.getPuntoVentaId());
+		}
 		
 		String mode_develop = System.getProperty("facturador.mode.develop");
 		if (mode_develop != null) {
 			modeDevelop = mode_develop.equals("true");
-		}
+		}		
+		
+		String usar_puesto_trabajo = System.getProperty("facturador.eFactura.usarPuestoTrabajo");
+		usarPuestoTrabajo = usar_puesto_trabajo != null && usar_puesto_trabajo.equals("true");
 
 		Integer nroSobre = 0;
 		if (current.getDocCFEId() != null && current.getDocCFEId() > 0) {
@@ -249,11 +256,18 @@ public class EFacturaServiceImpl implements EFacturaService {
 				bw.write(referencias);
 				bw.newLine();
 			}
+			
 			String addenda = getAddenda(current);
 			if (addenda != null && addenda.length() > 0) {
 				bw.write(addenda);
 				bw.newLine();
 			}
+			
+			if (usarPuestoTrabajo) {
+				bw.write(getIdPuntoVenta(current));
+				bw.newLine();
+			}
+
 		} finally {
 			bw.close();
 		}
@@ -841,6 +855,24 @@ public class EFacturaServiceImpl implements EFacturaService {
 		return "10|" + addenda.toString();
 	}
 
+	/**
+	 * Identificación Punto de Venta
+	 * 
+	 * Esta identificación, que es una cadena alfanumérica de hasta 30 caracteres, se utilizará para identificar las transacciones recibidas de cada puesto de trabajo (punto de venta o caja). 
+	 * Será un código que el integrador deberá proporcionar y crear de la manera que crea conveniente.  
+	 * 
+	 * Sintaxis: 13|idPuntoVenta
+	 * 
+	 * Ejemplo: 13|00001
+	 * 
+	 * @param doc
+	 * @return Linea Identificación Punto de Venta
+	 */
+	private String getIdPuntoVenta(Documento doc) {
+		String id_punto_venta = doc.getPuntoVentaId() != null && doc.getPuntoVentaId().length() > 0 ? doc.getPuntoVentaId() : "00001";
+		return "13|" + id_punto_venta;
+	}
+	
 	private String getMonedaCEF(String moneda) {
 		if (moneda.equals(Moneda.CODIGO_MONEDA_PESOS)) {
 			return "UYU";
@@ -936,8 +968,6 @@ public class EFacturaServiceImpl implements EFacturaService {
 		}
 		return "";
 	}
-	
-
 
 	private String getUnidadMedida(String unidadId) {
 		if (unidadId.equals("A")) {
@@ -953,7 +983,6 @@ public class EFacturaServiceImpl implements EFacturaService {
 		}
 
 	}
-	
 	
 	public ArrayList<String> obtenerDuplicados(Date desde, Date hasta) {
 		File folder = new File("C:\\eFactura\\input\\");
@@ -1061,6 +1090,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 					e.printStackTrace();
 				}
 			}
+			
 		}
 		
 		String duplicadosMsg = buffer1.toString();
