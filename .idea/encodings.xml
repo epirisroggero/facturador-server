@@ -2,5 +2,6 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/Documento.java" charset="ISO-8859-1" />
+    <file url="file://$PROJECT_DIR$/facturator-server/src/main/resources/templates/email-template-pendientes.ftl" charset="UTF-8" />
   </component>
 </project>

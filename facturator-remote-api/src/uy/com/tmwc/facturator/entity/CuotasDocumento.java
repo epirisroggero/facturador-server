@@ -184,12 +184,12 @@ public class CuotasDocumento implements Serializable {
 		for (int i = primerCuotaSinCancelar; i < this.cuotas.size(); i++) {
 			CuotaDocumento cuota = (CuotaDocumento) this.cuotas.get(i);
 			BigDecimal importe = cuota.getImporte().subtract(favorable);
-			int retraso = cuota.getRetrasoDias(today);
-			if (retraso > 0) {
+			result.retraso = cuota.getRetrasoDias(today);
+			if (result.retraso > 0) {
 				result.tieneCuotaVencida = true;
 			}
 			//this.documento.getComprobante().getDescuentoPrometido(retraso, categoriaCliente);
-			BigDecimal importeConDto = this.documento.getComprobante().aplicarDescuentoPrometido(importe, retraso, categoriaCliente);
+			BigDecimal importeConDto = this.documento.getComprobante().aplicarDescuentoPrometido(importe, result.retraso, categoriaCliente);
 			deuda = deuda.add(importeConDto);
 
 			favorable = BigDecimal.ZERO;
@@ -200,9 +200,27 @@ public class CuotasDocumento implements Serializable {
 	}
 
 	public boolean isTieneCuotaVencida(Date today, BigDecimal cancelado) {
-		return calcularDeudaFull(today, cancelado, null /* don't care */).tieneCuotaVencida;
+		return calcularDeudaFull(today, cancelado, null).tieneCuotaVencida;
 	}
 
+	public int getDiasRetraso(Date today, BigDecimal cancelado) {
+		int primerCuotaSinCancelar = getCuotasCubiertas(cancelado);
+
+		if (primerCuotaSinCancelar > this.cuotas.size()) {
+			return 0;
+		}
+		CalculoDeudaResult result = new CalculoDeudaResult();
+		for (int i = primerCuotaSinCancelar; i < this.cuotas.size(); i++) {
+			CuotaDocumento cuota = (CuotaDocumento) this.cuotas.get(i);
+			result.retraso = cuota.getRetrasoDias(today);
+			if (result.retraso > 0) {
+				return result.retraso;
+			}
+		}
+		return 0;
+	}
+
+	
 	public Documento getDocumento() {
 		return this.documento;
 	}
@@ -214,5 +232,6 @@ public class CuotasDocumento implements Serializable {
 	private static class CalculoDeudaResult {
 		public boolean tieneCuotaVencida;
 		public BigDecimal deuda;
+		public int retraso;
 	}
 }

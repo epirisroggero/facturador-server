@@ -109,6 +109,7 @@ public class ReportesDAOImpl extends ServiceBase implements ReportesDAO {
     	
     	sb.append(" where a.empId = ").append('\'').append(getEmpId()).append('\'');
     	sb.append(" and a.artActivo = \'S\' ");
+    	sb.append(" and a.artListaPrecios = \'S\' ");
     	String decision;
 		if ("Familia".equals(tipoFiltro)) {
 			decision = "a.familiaId";

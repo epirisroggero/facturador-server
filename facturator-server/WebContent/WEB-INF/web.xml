@@ -22,7 +22,7 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     
-         <!-- Scheaduler Servlet -->
+    <!-- Scheaduler Servlet -->
     <servlet>       
        <servlet-name>StartupScheduler</servlet-name>
 	   <display-name>StartupScheduler</display-name>
@@ -36,7 +36,7 @@
 	   <url-pattern>/StartupScheduler</url-pattern>
 	 </servlet-mapping>
 
-    
+
 <!-- begin rds
 
     <servlet>

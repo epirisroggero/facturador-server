@@ -1,9 +1,14 @@
 package uy.com.tmwc.facturator.libra.ejb;
 
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
@@ -15,6 +20,7 @@ import javax.persistence.PersistenceContext;
 
 import org.dozer.DozerBeanMapper;
 
+import uy.com.tmwc.facturator.deudores.DocumentoDeudor;
 import uy.com.tmwc.facturator.dto.AgendaTareaDTO;
 import uy.com.tmwc.facturator.entity.AgendaTarea;
 import uy.com.tmwc.facturator.entity.Cliente;
@@ -38,11 +44,16 @@ public class TareasDAOServiceImpl extends ServiceBase implements TareasDAOServic
 	@EJB
 	CatalogService catalogService;
 	
+	@EJB
+	DozerMappingsService mapService;
+
 	@PersistenceContext
 	EntityManager em;
 
-	@EJB
-	DozerMappingsService mapService;
+	
+	private SimpleDateFormat dt1 = new SimpleDateFormat("dd-MM-yyyy");
+	private SimpleDateFormat dt2 = new SimpleDateFormat("dd/MM/yyyy");
+
 
 	public void persist(AgendaTarea e) {
 		Number nextAgeId = (Number) em.createNamedQuery("Agendatarea.nextAgeId").setParameter("empId", getEmpId()).getSingleResult();
@@ -65,7 +76,7 @@ public class TareasDAOServiceImpl extends ServiceBase implements TareasDAOServic
 		
 		libraTarea.setId(agendatareaPK);
 
-		em.persist(libraTarea);
+		this.em.persist(libraTarea);
 		this.em.flush();
 		
 	}
@@ -107,7 +118,7 @@ public class TareasDAOServiceImpl extends ServiceBase implements TareasDAOServic
 		
 	}
 
-	public List<AgendaTareaDTO> queryAgendaTareas(AgendaTareaQuery query) {
+	public List<AgendaTareaDTO> queryAgendaTareas(AgendaTareaQuery query, boolean checkPermision) {
 		String state = query.getState();
 		
 		String[] values = new String[6]; 
@@ -160,50 +171,50 @@ public class TareasDAOServiceImpl extends ServiceBase implements TareasDAOServic
 				.setParameter("capituloId", query.getCapituloId()).setMaxResults(500)
 				.getResultList();
 		
-		
-		
-		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
-		String permisoId = usuarioLogin.getPermisoId();
-		
-		if (permisoId.equals(Usuario.USUARIO_ALIADOS_COMERCIALES)) {
-			List<AgendaTareaDTO> result =  new ArrayList<AgendaTareaDTO>();
-
-			String vendedorId = usuarioLogin.getVenId();
+		if (checkPermision) {
+			Usuario usuarioLogin = usuariosService.getUsuarioLogin();
+			String permisoId = usuarioLogin.getPermisoId();
 			
-			for (AgendaTareaDTO agendaTareaDTO : tareasLibra) {
-				String idUsuarioAsignado = Short.valueOf(agendaTareaDTO.getIdUsuAsignado()).toString();
-				if (idUsuarioAsignado.equals(usuarioLogin.getCodigo())) {
-					result.add(agendaTareaDTO);
-					continue;
-				}
-				String idUsuarioSolicitante = agendaTareaDTO.getUsuSolicitante();
-				if (idUsuarioSolicitante != null && idUsuarioSolicitante.equals(usuarioLogin.getNombre())) {
-					result.add(agendaTareaDTO);
-					continue;
-				}
-				
-				String contactoId = agendaTareaDTO.getCtoId();
-				if (contactoId != null) {					
-					Cliente cliente = catalogService.findCatalogEntity("Cliente", contactoId);
-					if (cliente == null) {
-						continue;
-					}
-					
-					String encargadoCuenta = cliente.getEncargadoCuenta();
-					if (encargadoCuenta != null && encargadoCuenta.equals(vendedorId)) {
-						result.add(agendaTareaDTO);
-						continue;
-					}
-					
-					String vendedorCliente = cliente.getVendedor() != null ? cliente.getVendedor().getCodigo() : null;
-					if (vendedorCliente != null && vendedorCliente.equals(vendedorId)) {
-						result.add(agendaTareaDTO);
-						continue;
-					}
-				}
-			}
+			if (permisoId.equals(Usuario.USUARIO_ALIADOS_COMERCIALES)) {
+				List<AgendaTareaDTO> result =  new ArrayList<AgendaTareaDTO>();
 
-			return result;
+				String vendedorId = usuarioLogin.getVenId();
+				
+				for (AgendaTareaDTO agendaTareaDTO : tareasLibra) {
+					String idUsuarioAsignado = Short.valueOf(agendaTareaDTO.getIdUsuAsignado()).toString();
+					if (idUsuarioAsignado.equals(usuarioLogin.getCodigo())) {
+						result.add(agendaTareaDTO);
+						continue;
+					}
+					String idUsuarioSolicitante = agendaTareaDTO.getUsuSolicitante();
+					if (idUsuarioSolicitante != null && idUsuarioSolicitante.equals(usuarioLogin.getNombre())) {
+						result.add(agendaTareaDTO);
+						continue;
+					}
+					
+					String contactoId = agendaTareaDTO.getCtoId();
+					if (contactoId != null) {					
+						Cliente cliente = catalogService.findCatalogEntity("Cliente", contactoId);
+						if (cliente == null) {
+							continue;
+						}
+						
+						String encargadoCuenta = cliente.getEncargadoCuenta();
+						if (encargadoCuenta != null && encargadoCuenta.equals(vendedorId)) {
+							result.add(agendaTareaDTO);
+							continue;
+						}
+						
+						String vendedorCliente = cliente.getVendedor() != null ? cliente.getVendedor().getCodigo() : null;
+						if (vendedorCliente != null && vendedorCliente.equals(vendedorId)) {
+							result.add(agendaTareaDTO);
+							continue;
+						}
+					}
+				}
+
+				return result;
+			}
 		}
 
 		return tareasLibra;
@@ -335,6 +346,81 @@ public class TareasDAOServiceImpl extends ServiceBase implements TareasDAOServic
 		DozerBeanMapper mapper = mapService.getDozerBeanMapper();		
 		AgendaTarea mapped = mapper.map(tarea, AgendaTarea.class);
 		return mapped;
+	}
+
+	
+	public void notificacionPorFacturaVencida(HashMap<String, List<DocumentoDeudor>> vencimientos) {
+		ArrayList<String> tareas = new ArrayList<String>();
+		tareas.add("030");
+
+		NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("es"));
+		formatter.setMinimumFractionDigits(2);
+		formatter.setMaximumFractionDigits(2);
+
+		Iterator<String> iter = vencimientos.keySet().iterator();
+		while (iter.hasNext()) {
+			String contactoCode = iter.next();
+
+			AgendaTareaQuery query = new AgendaTareaQuery();
+			query.setContacto(contactoCode);
+			query.setTareas(tareas);
+			query.setState("P");
+			query.setLimit(10);
+
+			List<AgendaTareaDTO> agendadas = queryAgendaTareas(query, false);
+
+			// Si no se encontró entonces creo una nueva tarea.
+			if (agendadas != null && agendadas.size() == 0) {
+				Number nextAgeId = (Number) em.createNamedQuery("Agendatarea.nextAgeId").setParameter("empId", getEmpId()).getSingleResult();
+				if (nextAgeId == null) {
+					nextAgeId = 1;
+				}
+				Agendatarea agendaTarea = new Agendatarea();
+				agendaTarea.setEstado("P");
+				agendaTarea.setTareaId("030");
+				agendaTarea.setPrioridad("M");
+				agendaTarea.setUsuIdAge1((short)28);
+				agendaTarea.setUsuIdAge2((short)28);
+				agendaTarea.setLocIdAge((short)0);
+				agendaTarea.setNotas(String.format("[%s] Autogenerada por vencimiento", dt2.format(new Date())));
+				
+		   		Calendar calendarDate = Calendar.getInstance();
+				calendarDate.setTime(new Date());
+		   		calendarDate.set(Calendar.HOUR, 8);
+		   		calendarDate.set(Calendar.MINUTE, 0);
+		   		calendarDate.set(Calendar.SECOND, 0);	    		
+
+				agendaTarea.setFechaHora(calendarDate.getTime());
+				agendaTarea.setCtoIdAge(contactoCode);
+				
+				AgendatareaPK agendatareaPK = new AgendatareaPK();
+				agendatareaPK.setAgeId(nextAgeId.intValue());
+				agendatareaPK.setEmpId(getEmpId());
+				
+				agendaTarea.setId(agendatareaPK);
+
+				StringBuilder sb = new StringBuilder("Documentos con deuda:\n");
+
+				List<DocumentoDeudor> documentoDeudor = vencimientos.get(contactoCode);
+				for (DocumentoDeudor documentoDeudor2 : documentoDeudor) {
+					String serie = documentoDeudor2.getSerie() != null ? documentoDeudor2.getSerie() : "";
+					String numero = String.valueOf(documentoDeudor2.getNumero());
+					String fecha = documentoDeudor2.getFecha();
+					String fechaVencimiento = documentoDeudor2.getFechaVencimiento() != null ? dt1.format(documentoDeudor2.getFechaVencimiento()) : "1-1-1000";
+					String moneda = documentoDeudor2.getMoneda() != null ? documentoDeudor2.getMoneda().getNombre() : "";
+					String facturado = formatter.format(documentoDeudor2.getFacturado());
+					String cancelado = formatter.format(documentoDeudor2.getCancelado());
+
+					sb.append(String.format("El comprobante %s%s con fecha %s y vencimiento %s esta pendiente de pago.\n" + "Moneda %s, Facturado: %s, Cancelado: %s\n", serie, numero, fecha,
+							fechaVencimiento, moneda.toUpperCase(), facturado, cancelado));
+
+				}
+				agendaTarea.setDescripcion(sb.toString());
+
+				this.em.persist(agendaTarea);
+				this.em.flush();
+			}
+		}
 	}
 
 

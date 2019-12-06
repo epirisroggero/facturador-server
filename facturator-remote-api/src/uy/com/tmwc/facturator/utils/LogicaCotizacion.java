@@ -142,8 +142,13 @@ public class LogicaCotizacion {
 		public BigDecimal getTipoCambio(String monedaOrigen, Date fecha) {
 			TreeMap<Date, TipoCambio> treeEntry = index.get(monedaOrigen);
 			if (treeEntry != null) {
+				if (fecha == null) {
+					fecha = new Date();
+				}
+				/*System.out.println("Fecha :: " + fecha);*/
+
 				java.util.Map.Entry<Date, TipoCambio> entry = treeEntry.floorEntry(fecha);
-				if (entry != null) {
+				if (entry != null) { 
 					return entry.getValue().getComercial();
 				}
 			}

@@ -218,8 +218,7 @@ public class Linea extends PersistentEntity<LineaPK> implements Serializable, Ha
 
 	public void setArticulo(Articulo articulo) {
 		this.articulo = articulo;
-		this.articuloId = (articulo == null ? null : articulo.getId().getArtId());
-		//setIvaArticulo(articulo == null ? null : articulo.getIva());
+		this.articuloId = (articulo == null ? null : articulo.getId().getArtId().trim());
 	}
 
 	public void setDepositoDestino(Deposito depositoDestino) {

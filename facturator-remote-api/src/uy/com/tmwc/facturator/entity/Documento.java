@@ -108,8 +108,6 @@ public class Documento extends DocumentoBase implements Serializable {
 	private String CAEserie;
 	private Short tipoCFEid;
 
-	// private BigDecimal Neto;
-
 	private Moneda docRecMda;
 	private BigDecimal docRecNeto;
 	private BigDecimal docRenFin;
@@ -122,6 +120,9 @@ public class Documento extends DocumentoBase implements Serializable {
 	private String docCenCostosId;
 	private String referencia;
 	
+	private String puntoVentaId;
+	
+
 	private CentrosCosto centroCostos;
 
 	public Documento() {
@@ -399,6 +400,15 @@ public class Documento extends DocumentoBase implements Serializable {
 			return this.cuotasDocumento.isTieneCuotaVencida(today, getTotal().subtract(getSaldo()));
 		}
 	}
+	
+	public int getDiasRetraso(Date today) {
+		if (comprobante.getTipo() == Comprobante.NOTA_CREDITO) {
+			return 0;
+		} else {
+			return this.cuotasDocumento.getDiasRetraso(today, getTotal().subtract(getSaldo()));
+		}
+	}
+
 
 	public int getSigno() {
 		return aplicarSigno(BigDecimal.ONE).intValue();
@@ -1198,5 +1208,14 @@ public class Documento extends DocumentoBase implements Serializable {
 	public void setDocCenCostosId(String docCenCostosId) {
 		this.docCenCostosId = docCenCostosId;
 	}
+	
+	public String getPuntoVentaId() {
+		return puntoVentaId;
+	}
+
+	public void setPuntoVentaId(String puntoVentaId) {
+		this.puntoVentaId = puntoVentaId;
+	}
+
 
 }

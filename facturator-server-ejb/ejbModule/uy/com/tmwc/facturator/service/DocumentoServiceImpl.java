@@ -340,7 +340,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 			try {
 				usuarioId = Short.parseShort(ppal.getName());
 			} catch (NumberFormatException nfe) {
-				throw new ValidationException("Cï¿½digo de usuario inesperado: " + ppal.getName());
+				throw new ValidationException("Código de usuario inesperado: " + ppal.getName());
 			}
 		} else {
 			throw new ValidationException("No se pudo determinar el usuario");
@@ -462,7 +462,12 @@ public class DocumentoServiceImpl implements DocumentoService {
 	}
 
 	public List<AntecedentesArticulo> getAntecedentes(String articulo, String cliente, int limit, boolean venta) throws PermisosException {
-		List<LineaDocumento> lineas = this.documentoDAOService.getAntecedentes(articulo, cliente, limit, venta);
+		if (articulo == null) {
+			return new ArrayList<AntecedentesArticulo>();
+		}
+		
+		List<LineaDocumento> lineas = 
+			this.documentoDAOService.getAntecedentes(articulo.trim(), cliente, limit, venta);
 
 		ArrayList<AntecedentesArticulo> antecedentes = new ArrayList<AntecedentesArticulo>(lineas.size());
 
@@ -514,6 +519,10 @@ public class DocumentoServiceImpl implements DocumentoService {
 	}
 
 	public List<AntecedentesArticulo> getLineasCompraCliente(String cliId, Date fromDate, Date toDate, int limit) {
+		if (cliId == null) {
+			return new ArrayList<AntecedentesArticulo>();
+		}
+
 		List<LineaDocumento> lineas = this.documentoDAOService.getLineasCompraCliente(cliId, fromDate, toDate, limit);
 
 		ArrayList<AntecedentesArticulo> antecedentes = new ArrayList<AntecedentesArticulo>(lineas.size());

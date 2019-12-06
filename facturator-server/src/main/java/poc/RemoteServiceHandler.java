@@ -31,6 +31,9 @@ import javax.naming.NamingException;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.impl.StdSchedulerFactory;
 
 import uy.com.tmwc.facturador.mail.FreemarkerConfig;
 import uy.com.tmwc.facturator.deudores.Cuponera;
@@ -58,7 +61,6 @@ import uy.com.tmwc.facturator.entity.ArticuloCompraVentaCosto;
 import uy.com.tmwc.facturator.entity.ArticuloPrecio;
 import uy.com.tmwc.facturator.entity.ArticuloPrecioFabricaCosto;
 import uy.com.tmwc.facturator.entity.Auditoria;
-import uy.com.tmwc.facturator.entity.Caja;
 import uy.com.tmwc.facturator.entity.Cliente;
 import uy.com.tmwc.facturator.entity.CodigoNombreEntity;
 import uy.com.tmwc.facturator.entity.Comprobante;
@@ -295,6 +297,15 @@ public class RemoteServiceHandler {
 
 	public RemoteServiceHandler() {
 		// This is required for the Blaze DS to instantiate the class
+
+		try {
+			// Obtengo scheduler a partir de factory
+			Scheduler scheduler = new StdSchedulerFactory().getScheduler();
+			
+		} catch (SchedulerException e) {
+			System.out.println("Error al inicializar scheduler");
+			e.printStackTrace();
+		}
 
 	}
 
@@ -585,8 +596,8 @@ public class RemoteServiceHandler {
 			auditoria = new Auditoria();
 			auditoria.setAudFechaHora(new Date());
 			auditoria.setDocId(documento.getDocId());
-			auditoria.setNotas("Comprobante creado por un total de " + moneda + " " + total);
 			auditoria.setProblemas("Ninguno");
+			auditoria.setNotas(String.format("Comprobante creado por un total de %s %s", moneda, total));
 		}
 
 		if (documento.getComprobante().isGasto()) {
@@ -611,7 +622,7 @@ public class RemoteServiceHandler {
 		
 		String docId = getService().alta(documento, auditoria);
 
-		// Agregar vï¿½nculos de nota de crï¿½dito financiera.
+		// Agregar vinculos de nota de credito financiera.
 		if (documento.getComprobante().isNotaCreditoFinanciera()) {
 			Documento doc = getService().findDocumento(docId);
 
@@ -644,7 +655,7 @@ public class RemoteServiceHandler {
 				vinculos.add(vinculo);
 			}
 
-			// Vincular facturas en nota de crï¿½dito financiera.
+			// Vincular facturas en nota de crédito financiera.
 			doc.setFacturasVinculadas(vinculos);
 
 			HashMap<String, Documento> documentos = new HashMap<String, Documento>();
@@ -1397,7 +1408,7 @@ public class RemoteServiceHandler {
 			// Prï¿½ximo documento
 			Documento nextDoc = getDocumento(nextDocId);
 			if (nextDoc == null) {
-				throw new RuntimeException("No se encontrÃ³ el documento siguiente.\nEl mismo fuÃ© borrado o no existe.");
+				throw new RuntimeException("No se encontró el documento siguiente.\nEl mismo fué borrado o no existe.");
 			}
 
 			return nextDoc;
@@ -1424,10 +1435,10 @@ public class RemoteServiceHandler {
 
 			Documento prevDoc = getDocumento(prevDocId);
 			if (prevDoc == null) {
-				throw new RuntimeException("No se encontrÃ³ el documento anterior.\nEl mismo fuÃ© borrado o no existe.");
+				throw new RuntimeException("No se encontró el documento anterior.\nEl mismo fuÃ© borrado o no existe.");
 			}
 			if (prevDoc.getNextDocId() == null) {
-				throw new RuntimeException("Esta acciÃ³n esta disponible solo para procesos realizados con versiÃ³n Facturador-v1.6.630 o superior.");
+				throw new RuntimeException("Esta acción esta disponible solo para procesos realizados con versión Facturador-v1.6.630 o superior.");
 			}
 
 			prevDoc.setNextDocId(null);
@@ -1467,7 +1478,7 @@ public class RemoteServiceHandler {
 				if (documentoRBO != null) {
 					Boolean result = getService().updateNotaCreditoFinancieraEnRecibo(documentoRBO, documento.getDocId());
 					if (result) {
-						LOGGER.info("Se actualizÃ³ recibo: " + documentoRBO.getSerie() + documentoRBO.getNumero());
+						LOGGER.info("Se actualizó recibo: " + documentoRBO.getSerie() + documentoRBO.getNumero());
 					}
 				}					
 			}				
@@ -1476,7 +1487,7 @@ public class RemoteServiceHandler {
 		if (!monedaId.equals(Moneda.CODIGO_MONEDA_PESOS) && !monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
 			BigDecimal tcFiscal = getService().getTipoCambioFiscal(monedaId, new Date());
 			if (tcFiscal == null) {
-				throw new RuntimeException("No hay tipo de cambio fiscal definido para el dÃ­a de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
+				throw new RuntimeException("No hay tipo de cambio fiscal definido para el día de hoy.\nDefina el tipo de cambio fiscal para poder emitir.");
 			}
 		}
 		if (esContingencia(documento.getComprobante().getCodigo())) {
@@ -1484,7 +1495,7 @@ public class RemoteServiceHandler {
 				throw new RuntimeException("La serie en contingencias es requerido");
 			}
 			if (documento.getNumero() == null) {
-				throw new RuntimeException("El nÃºmero en contingencias es requerido");
+				throw new RuntimeException("El número en contingencias es requerido");
 			}
 		} else {
 			documento.setSerie(null);
@@ -1523,20 +1534,20 @@ public class RemoteServiceHandler {
 			if (guardar(documento)) {
 				return getService().findDocumento(documento.getDocId());
 			} else {
-				throw new RuntimeException("No fuÃ© posible grabar el gasto.");
+				throw new RuntimeException("No fue posible grabar el gasto.");
 			}		
 			
 		} catch (Exception e) {
 			e.printStackTrace();
 			
-			throw new RuntimeException("Error: No fuÃ© posible grabar el gasto.");
+			throw new RuntimeException("Error: No fue posible grabar el gasto.");
 		}
 		
 	}
 
 	public Documento guardarDocumento(Documento documento) throws ValidationException, PermisosException {
 		if (documento.getDocId() == null) {
-			throw new RuntimeException("No fuÃ© posible grabar el documento.");
+			throw new RuntimeException("No fue posible grabar el documento.");
 		}
 		return getService().guardar(documento);
 	}
@@ -1563,12 +1574,12 @@ public class RemoteServiceHandler {
 		}
 	}
 
-	// ////////////////
+	// ///////////////
 	// EXPEDICIONES //
-	// ////////////////
+	// ///////////////
 
 	public List<AgendaTareaDTO> queryTareas(AgendaTareaQuery query) {
-		return getAgendaTareaService().queryAgendaTareas(query);
+		return getAgendaTareaService().queryAgendaTareas(query, true);
 	}
 
 	public List<AgendaTareaDTO> queryTareasSupervisadas(AgendaTareaQuery query) {
@@ -1576,8 +1587,7 @@ public class RemoteServiceHandler {
 		return tareas;
 	}
 
-	// TODO seguridad: un usuario solo puede hacer tareas donde el es el
-	// asignador.
+	// TODO seguridad: un usuario solo puede hacer tareas donde el es el asignador.
 	public void alta(AgendaTarea tarea, Boolean matutino) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(tarea.getFechaHora());
@@ -1587,11 +1597,6 @@ public class RemoteServiceHandler {
 			calendar.set(Calendar.HOUR_OF_DAY, 16);
 		}
 		tarea.setFechaHora(calendar.getTime());
-
-		/*
-		 * String clientName = session.getUserPrincipal().getName();
-		 * System.out.println("client name :: " + clientName);
-		 */
 
 		getAgendaTareaService().persist(tarea);
 	}
@@ -2517,11 +2522,16 @@ public class RemoteServiceHandler {
 		return getAgendaTareaService().getAgendaTarea(tareaId);
 	}
 
+	public List<DocumentoDeudor> getDocumentosVencidos() {
+		return getLiquidacionService().getDocumentosVencidos(new Date());
+	}
+
 	public List<DocumentoDeudor> getDocumentosDeudores() {
 		List<DocumentoDeudor> deudores = getLiquidacionService().getDocumentosDeudores(new Date());
 		return deudores;
 	}
 
+	
 	public List<DocumentoDeudor> getDocumentosDeudoresCliente(String clienteId) {
 		List<DocumentoDeudor> deudores = getLiquidacionService().getDocumentosDeudoresCliente(new Date(), clienteId);
 		return deudores;

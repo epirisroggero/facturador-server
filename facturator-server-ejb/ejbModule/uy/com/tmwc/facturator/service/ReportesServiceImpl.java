@@ -431,7 +431,7 @@ public class ReportesServiceImpl implements ReportesService {
 					w.write(formatter.format(linea.getCantidad() != null ? linea.getCantidad() : 0));
 					w.write(linea.getConcepto());
 					
-					if ((linea.getArticulo() == null) && !("".equals(linea.getConceptoIdLin()))) { // No deberían haber documentos de gasto en los comprobantes de venta
+					if ((linea.getArticulo() == null) && !("".equals(linea.getConceptoIdLin()))) { // No deberï¿½an haber documentos de gasto en los comprobantes de venta
 						w.write(formatter.format(0));
 						w.write(formatter.format(0));
 						w.write(formatter.format(0));
@@ -791,7 +791,7 @@ public class ReportesServiceImpl implements ReportesService {
 			writer.write("Cliente nro.");
 			writer.write("Cliente nom.");
 			writer.write("Moneda");
-			writer.write("Cotización");
+			writer.write("Cotizaciï¿½n");
 			writer.write("Importe neto vendido");
 		}
 
@@ -833,10 +833,10 @@ public class ReportesServiceImpl implements ReportesService {
 		@Override
 		protected void subInicializar() throws IOException {
 			writer.write("Vendedor");
-			writer.write("Participación");
+			writer.write("Participaciï¿½n");
 			writer.write("Precios venta");
-			writer.write("% Comisión");
-			writer.write("Comisión a pagar al vendedor");
+			writer.write("% Comisiï¿½n");
+			writer.write("Comisiï¿½n a pagar al vendedor");
 		}
 		
 		@Override
@@ -874,8 +874,8 @@ public class ReportesServiceImpl implements ReportesService {
 		protected void subInicializar() throws IOException {
 			writer.write("Diferencia");
 			writer.write("Vendedor");
-			writer.write("Participación");
-			writer.write("Crédito al distribuidor");
+			writer.write("Participaciï¿½n");
+			writer.write("Crï¿½dito al distribuidor");
 		}
 		
 		@Override
@@ -918,8 +918,8 @@ public class ReportesServiceImpl implements ReportesService {
 		protected void subInicializar() throws IOException {
 			writer.write("Renta bruta");
 			writer.write("Vendedor");
-			writer.write("Participación");
-			writer.write("Crédito al vendedor");
+			writer.write("Participaciï¿½n");
+			writer.write("Crï¿½dito al vendedor");
 		}
 
 		@Override

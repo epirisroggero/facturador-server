@@ -40,17 +40,18 @@ public class QueueJob implements Job {
 
 
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		
 		Date fecha = new Date();
 		
+		System.out.println("=================================================================");
 		System.out.println(fecha.toString() + " :: Reagendando tareas");
+		System.out.println("=================================================================");
 		
 		Calendar calendar1 = Calendar.getInstance();
-		calendar1.setTime(new Date());    	
+		calendar1.setTime(fecha);    	
 		calendar1.add(Calendar.DAY_OF_MONTH, -7);
 
    		Calendar calendar2 = Calendar.getInstance();
-		calendar2.setTime(new Date());    	
+		calendar2.setTime(fecha);    	
 		calendar2.add(Calendar.DAY_OF_MONTH, -1);
 
 		Date fechaDesde = calendar1.getTime();
@@ -108,7 +109,6 @@ public class QueueJob implements Job {
 				return proxiedService.toString();
 			} else {
 				try {
-//					Method proxiedMethod = proxiedService.getClass().getMethod(name, method.getParameterTypes());
 					return method.invoke(proxiedService, args);
 				} catch (InvocationTargetException e) {
 					Throwable cause = e.getCause();

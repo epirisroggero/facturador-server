@@ -61,7 +61,7 @@ public class LineasDocumento implements Serializable {
 			}
 		}
 	}
-	
+		
 	public void actualizarPrecioLineas(BigDecimal coeficiente) {
 		if (lineas != null) {
 			for (LineaDocumento linea : lineas) {
@@ -69,7 +69,6 @@ public class LineasDocumento implements Serializable {
 					linea.setPrecio(linea.getPrecio().multiply(linea.getCoeficienteImp()));
 				} else {
 					linea.setPrecio(linea.getPrecio().multiply(coeficiente));
-					
 				}
 			}
 		}

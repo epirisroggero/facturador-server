@@ -15,8 +15,9 @@ public class LineaDocumento implements Serializable {
 	
 	private String concepto;
 	private String notas;
+	private String articuloId;
 	private String conceptoIdLin = "";
-
+	
 	private BigDecimal precio = BigDecimal.ZERO;
 	private BigDecimal costo = BigDecimal.ZERO;
 	private BigDecimal descuento = BigDecimal.ZERO;
@@ -148,7 +149,6 @@ public class LineaDocumento implements Serializable {
 		if (articulo != null && !articulo.getCodigo().equals("GASTOS VARIOS")) {
 			setIvaLin(articulo == null ? null : articulo.getIva());
 		}
-		
 	}
 	
 	public BigDecimal getPrecio() {
@@ -412,6 +412,16 @@ public class LineaDocumento implements Serializable {
 	public void setLinDto4(BigDecimal linDcto4) {
 		this.linDto4 = linDcto4;
 	}
+
+	public String getArticuloId() {
+		return articuloId;
+	}
+
+	public void setArticuloId(String articuloId) {
+		this.articuloId = articuloId;
+	}
+
+
 
 
 

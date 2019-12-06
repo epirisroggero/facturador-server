@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.7.213</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.213.air</url>
+	<versionNumber>1.7.222</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.222.air</url>
 	<description>
 	    <![CDATA[
-	    # Versión 1.7.213(13/10/2019)
+	    # Versión 1.7.222 (29/10/2019)
+	    	1.- eFactura: Identificación del puesto de venta en el envío de comprobantes.
+	    	2.- Mostrar vencimientos.
+
+	    # Versión 1.7.213 (13/10/2019)
 	    	1.- Recibos: Permitir borrar vínculos.
 
-	    # Versión 1.7.212(12/10/2019)
+	    # Versión 1.7.212 (12/10/2019)
 	    	1.- Pasaje de gastos: Corrige errores detectados en testeo.
 	    	2.- El centro de costo no se debe guardar en los movimientos de stock de proveedores.
 
-	    # Versión 1.7.210 
+	    # Versión 1.7.210 (02/10/2019)
 	    	1.- Impresion de facturas sin pre-impreso.
 
 	    # Versión 1.7.205 (30/09/2019)
@@ -98,26 +102,23 @@
 			2.- Ajustes al mostrar la cuponera.
 
 	    # Versión 1.7.000
-	    
-	    * Cuenta bancaria del proveedor.
-	    * Ajustes en pantallad de artículos, clientes y proveedores (Ajustar visualización en distintas resoluciones de pantalla).
-	    * Agragar campos en líneas para comprobantes de afilado.
-	    * Ayuda en línea de afilado la cual nos permitirá buscar una línea de un trabjo anterior (Ej: 8636-2 donde 8636 es el numero del combrobante 80 y el 2 es la línea). 
-		* Eliminar restricciones para los comprobantes cuyo importe sea superior a 40.000 UI. (Ya no son requeridos por DGI)	    
+		    * Cuenta bancaria del proveedor.
+		    * Ajustes en pantallad de artículos, clientes y proveedores (Ajustar visualización en distintas resoluciones de pantalla).
+		    * Agragar campos en líneas para comprobantes de afilado.
+		    * Ayuda en línea de afilado la cual nos permitirá buscar una línea de un trabjo anterior (Ej: 8636-2 donde 8636 es el numero del combrobante 80 y el 2 es la línea). 
+			* Eliminar restricciones para los comprobantes cuyo importe sea superior a 40.000 UI. (Ya no son requeridos por DGI)	    
 	    
 	    # Versión 1.6.638
-	    	    
-	    * Mostrar solos los articulos de afilado del cliente.
-	    * Agregar el comprobante 84 a los comprobantes de afilados.
-	    * Fecha costo vacia, cuando la fecha es inferior a 1900.
-	    * Quitar espacios vacios al final en texos del artículo.
+		    * Mostrar solos los articulos de afilado del cliente.
+		    * Agregar el comprobante 84 a los comprobantes de afilados.
+		    * Fecha costo vacia, cuando la fecha es inferior a 1900.
+		    * Quitar espacios vacios al final en texos del artículo.
 	    
 	    # Versión 1.6.636
-	    
-	    * Reporte de afilados.
-	    * Ingresar afilador en cada linea.
-	    * Mostrar nro. de item en listado.
-	    * Ordenar por afilador, fecha y  número de item.
+		    * Reporte de afilados.
+		    * Ingresar afilador en cada linea.
+		    * Mostrar nro. de item en listado.
+		    * Ordenar por afilador, fecha y  número de item.
 		]]>
 	</description>
 </update>

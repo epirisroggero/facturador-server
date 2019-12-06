@@ -1,7 +1,9 @@
 package uy.com.tmwc.facturator.rapi;
 
+import java.util.HashMap;
 import java.util.List;
 
+import uy.com.tmwc.facturator.deudores.DocumentoDeudor;
 import uy.com.tmwc.facturator.dto.AgendaTareaDTO;
 import uy.com.tmwc.facturator.entity.AgendaTarea;
 import uy.com.tmwc.facturator.expediciones.AgendaTareaQuery;
@@ -20,10 +22,11 @@ public abstract interface AgendaTareaService extends RemoteService {
 
 	 public abstract List<AgendaTareaDTO> getAgendaTareas(String usuario);
 
-	 public abstract List<AgendaTareaDTO> queryAgendaTareas(AgendaTareaQuery paramAgendaTareaQuery);
+	 public abstract List<AgendaTareaDTO> queryAgendaTareas(AgendaTareaQuery paramAgendaTareaQuery, boolean checkPermision);
 	 
 	 public abstract List<AgendaTareaDTO> queryAgendaTareasSupervisadas(AgendaTareaQuery query);
 	 
 	 public abstract AgendaTarea getAgendaTarea(String id);
 
+	 public abstract void notificacionPorFacturaVencida(HashMap<String, List<DocumentoDeudor>> vencimientos);
 }

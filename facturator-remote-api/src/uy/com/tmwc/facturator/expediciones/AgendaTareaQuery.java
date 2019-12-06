@@ -113,10 +113,8 @@ public class AgendaTareaQuery implements Serializable {
 		
 		this.fechaHasta = calendar2.getTime();
 		
-		System.out.println("# Obtener Tareas #");
-		System.out.println("# Fecha desde: " + fechaDesde.toString());
-		System.out.println("# Fecha hasta: " + fechaHasta.toString());
-
+		System.out.println(String.format("# Obtener Tareas entre el %s hasta %s", fechaDesde.toString(), fechaHasta.toString()));
+		
 	}
 
 	public String getUsuario() {

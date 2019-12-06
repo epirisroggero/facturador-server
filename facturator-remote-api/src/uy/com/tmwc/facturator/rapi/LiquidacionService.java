@@ -22,8 +22,14 @@ public abstract interface LiquidacionService /* extends RemoteService */
 
 	List<DocumentoDeudor> getDocumentosDeudores(Date fechaHoy);
 	
+	List<DocumentoDeudor> getDocumentosDeudoresSupervisor(Date fechaHoy);
+	
 	List<DocumentoDeudor> getDocumentosDeudoresCliente(Date fechaHoy, String clienteId);
 
 	//Calcula los costos operativos del mes, calcula valores nuevos de entrega, liquida.
 	byte[] generarLiquidacion(Date fechaDesde, Date fechaHasta, Date fechaCorte, BigDecimal gastosPeriodo);
+	
+	List<DocumentoDeudor> getDocumentosVencidos(Date fechaHoy);
+	
+	List<DocumentoDeudor> getDocumentosVencidosSupervisor(Date fechaHoy);
 }
