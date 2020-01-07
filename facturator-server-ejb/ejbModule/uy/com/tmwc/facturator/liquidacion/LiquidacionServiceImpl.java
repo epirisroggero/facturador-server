@@ -170,6 +170,9 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			if (documento.getComprobante().getTipo() == Comprobante.RECIBO_COBRO) {
 				continue;
 			}
+			if (!documento.isEmitido()) {
+				continue;
+			}
 			DocumentoDeudor pendiente = new DocumentoDeudor();
 			pendiente.setDocId(documento.getDocId());
 			pendiente.setDeudor(documento.getCliente());
@@ -183,7 +186,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 
 			pendiente.setDate(calendarDate.getTime());
 			pendiente.setMoneda(dtoCache.getFor(documento.getMoneda()));
-			pendiente.setComprobante(dtoCache.getFor(documento.getComprobante()));
+			pendiente.setComprobante(documento.getComprobante());
 			pendiente.setSerie(documento.getSerie() != null ? documento.getSerie() : "");
 			pendiente.setNumero(documento.getNumero() != null ? documento.getNumero() : 0);
 
@@ -242,7 +245,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				pendiente.setDeudor(documento.getCliente());
 				pendiente.setFecha(dt1.format(documento.getFecha()));
 				pendiente.setMoneda(dtoCache.getFor(documento.getMoneda()));
-				pendiente.setComprobante(dtoCache.getFor(documento.getComprobante()));
+				pendiente.setComprobante(documento.getComprobante());
 				pendiente.setNumero(documento.getNumero() != null ? documento.getNumero() : 0);
 
 				if (documento.getComprobante().getTipo() == Comprobante.RECIBO_COBRO) {
@@ -279,7 +282,10 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 		CodigoNombreFactory dtoCache = new CodigoNombreFactory();
 		List<Documento> documentos = documentoDAOService.getDocumentosDeudores();
 		ArrayList<DocumentoDeudor> result = new ArrayList<DocumentoDeudor>();
-		for (Documento documento : documentos) {			
+		for (Documento documento : documentos) {
+			if (!documento.isEmitido()) {
+				continue;
+			}
 			if (documento.getComprobante().getTipo() != Comprobante.RECIBO_COBRO && documento.isTieneCuotaVencida(fechaHoy)) {
 				DocumentoDeudor pendiente = new DocumentoDeudor();
 				pendiente.setDocId(documento.getDocId());
@@ -287,7 +293,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				pendiente.setFecha(dt1.format(documento.getFecha()));
 				pendiente.setDate(documento.getFecha());
 				pendiente.setMoneda(dtoCache.getFor(documento.getMoneda()));
-				pendiente.setComprobante(dtoCache.getFor(documento.getComprobante()));
+				pendiente.setComprobante(documento.getComprobante());
 				pendiente.setSerie(documento.getSerie() != null ? documento.getSerie() : "");
 				pendiente.setNumero(documento.getNumero() != null ? documento.getNumero() : 0);
 				
@@ -333,6 +339,9 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 		List<Documento> documentos = documentoDAOService.getDocumentosDeudores();
 		ArrayList<DocumentoDeudor> result = new ArrayList<DocumentoDeudor>();
 		for (Documento documento : documentos) {
+			if (!documento.isEmitido()) {
+				continue;
+			}
 			String vendedor = documento.getCliente().getVendedor() != null ? documento.getCliente().getVendedor().getCodigo() : "";
 			String encargadoCuenta = documento.getCliente().getEncargadoCuenta() != null ? documento.getCliente().getEncargadoCuenta() : "";
 			
@@ -347,7 +356,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				pendiente.setFecha(dt1.format(documento.getFecha()));
 				pendiente.setDate(documento.getFecha());
 				pendiente.setMoneda(dtoCache.getFor(documento.getMoneda()));
-				pendiente.setComprobante(dtoCache.getFor(documento.getComprobante()));
+				pendiente.setComprobante(documento.getComprobante());
 				pendiente.setSerie(documento.getSerie() != null ? documento.getSerie() : "");
 				pendiente.setNumero(documento.getNumero() != null ? documento.getNumero() : 0);
 				
@@ -406,7 +415,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				pendiente.setDeudor(documento.getCliente());
 				pendiente.setFecha(dt1.format(documento.getFecha()));
 				pendiente.setMoneda(dtoCache.getFor(documento.getMoneda()));
-				pendiente.setComprobante(dtoCache.getFor(documento.getComprobante()));
+				pendiente.setComprobante(documento.getComprobante());
 				pendiente.setNumero(documento.getNumero() != null ? documento.getNumero() : 0);
 
 				if (documento.getComprobante().getTipo() == Comprobante.RECIBO_COBRO) {

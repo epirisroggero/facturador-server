@@ -4,26 +4,19 @@
     <list default="true" id="b10f0b2f-466f-4ac4-8205-275267074ccf" name="Default" comment="Facturador v1.7.0000">
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/ejb/ReportesDAOImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/ejb/ReportesDAOImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/entity/Linea.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/entity/Linea.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/ejb/MonedasCotizacionesDAOServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/ejb/MonedasCotizacionesDAOServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/ejb/TareasDAOServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/ejb/TareasDAOServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/entity/Documento.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/entity/Documento.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/deudores/DocumentoDeudor.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/deudores/DocumentoDeudor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/CuotasDocumento.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/CuotasDocumento.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/Documento.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/Documento.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/LineaDocumento.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/LineaDocumento.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/LineasDocumento.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/LineasDocumento.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/expediciones/AgendaTareaQuery.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/expediciones/AgendaTareaQuery.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/rapi/AgendaTareaService.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/rapi/AgendaTareaService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/rapi/LiquidacionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/rapi/LiquidacionService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/utils/LogicaCotizacion.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/utils/LogicaCotizacion.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/rapi/CatalogService.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/rapi/CatalogService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/efactura/EFacturaServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/efactura/EFacturaServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/liquidacion/LiquidacionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/liquidacion/LiquidacionServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/service/AgendaTareaServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/service/AgendaTareaServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/service/DocumentoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/service/DocumentoServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/service/ReportesServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/service/ReportesServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server/WebContent/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server/WebContent/WEB-INF/web.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/facturator-server/WebContent/updates/updateDescriptor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server/WebContent/updates/updateDescriptor.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server/src/main/java/poc/RemoteServiceHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server/src/main/java/poc/RemoteServiceHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-server/src/main/java/uy/com/tmwc/facturador/scheduler/DeudoresJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server/src/main/java/uy/com/tmwc/facturador/scheduler/DeudoresJob.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/facturator-server/src/main/java/uy/com/tmwc/facturador/scheduler/QueueJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server/src/main/java/uy/com/tmwc/facturador/scheduler/QueueJob.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-spi/build/classes/uy/com/tmwc/facturator/spi/DocumentoDAOService.class" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-spi/build/classes/uy/com/tmwc/facturator/spi/DocumentoDAOService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-server/src/main/java/uy/com/tmwc/facturador/scheduler/StartupScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server/src/main/java/uy/com/tmwc/facturador/scheduler/StartupScheduler.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/facturator-figaro-ejb/build/classes/" />
     <ignored path="$PROJECT_DIR$/facturator-libra-ejb/build/classes/" />
@@ -47,24 +40,17 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/service/DocumentoServiceImpl.java">
+        <entry file="file://$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/liquidacion/LiquidacionServiceImpl.java">
           <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/facturator-spi/build/classes/uy/com/tmwc/facturator/spi/DocumentoDAOService.class">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <folding>
-                <element signature="e#0#4693#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/facturator-server/src/main/resources/templates/email-template-pendientes.ftl">
-          <provider selected="true" editor-type-id="text-editor" />
+        <entry file="file://$PROJECT_DIR$/facturator-server/src/main/java/uy/com/tmwc/facturador/scheduler/DeudoresJob.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="43" column="73" selection-start-line="43" selection-start-column="73" selection-end-line="43" selection-end-column="73" />
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -77,9 +63,25 @@
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/efactura/EFacturaServiceImpl.java">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="112" column="35" selection-start-line="112" selection-start-column="35" selection-end-line="112" selection-end-column="35" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/LineaDocumento.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="3383">
+              <caret line="227" column="4" selection-start-line="227" selection-start-column="4" selection-end-line="227" selection-end-column="4" />
+              <folding>
+                <element signature="e#6089#6090#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -103,8 +105,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/facturator-server/WebContent/updates/updateDescriptor.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" column="57" selection-start-line="15" selection-start-column="57" selection-end-line="15" selection-end-column="57" />
+            <state relative-caret-position="442">
+              <caret line="29" column="57" selection-start-line="29" selection-start-column="57" selection-end-line="29" selection-end-column="57" />
             </state>
           </provider>
         </entry>
@@ -131,6 +133,9 @@
         <option value="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/ejb/DocumentoDAOServiceImpl.java" />
         <option value="$PROJECT_DIR$/facturator-server/src/main/java/poc/RemoteServiceHandler.java" />
         <option value="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/service/ReportesServiceImpl.java" />
+        <option value="$PROJECT_DIR$/facturator-server/WebContent/WEB-INF/web.xml" />
+        <option value="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/ejb/MonedasCotizacionesDAOServiceImpl.java" />
+        <option value="$PROJECT_DIR$/facturator-server/src/main/java/uy/com/tmwc/facturador/scheduler/DeudoresJob.java" />
       </list>
     </option>
   </component>
@@ -140,11 +145,11 @@
       <select />
     </treeState>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="188" />
-    <option name="y" value="141" />
-    <option name="width" value="2275" />
-    <option name="height" value="1369" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="1912" />
+    <option name="y" value="-8" />
+    <option name="width" value="1456" />
+    <option name="height" value="876" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -174,6 +179,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -231,116 +238,21 @@
             </path>
             <path>
               <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-server-ejb" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-server-ejb" type="462c0819:PsiDirectoryNode" />
-              <item name="ejbModule" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-server-ejb" type="462c0819:PsiDirectoryNode" />
-              <item name="ejbModule" type="462c0819:PsiDirectoryNode" />
+              <item name="facturator-remote-api" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="facturator" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-server-ejb" type="462c0819:PsiDirectoryNode" />
-              <item name="ejbModule" type="462c0819:PsiDirectoryNode" />
-              <item name="facturator" type="462c0819:PsiDirectoryNode" />
-              <item name="efactura" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-server-ejb" type="462c0819:PsiDirectoryNode" />
-              <item name="ejbModule" type="462c0819:PsiDirectoryNode" />
-              <item name="facturator" type="462c0819:PsiDirectoryNode" />
-              <item name="service" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-spi" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-spi" type="462c0819:PsiDirectoryNode" />
-              <item name="build" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-spi" type="462c0819:PsiDirectoryNode" />
-              <item name="build" type="462c0819:PsiDirectoryNode" />
-              <item name="classes" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-spi" type="462c0819:PsiDirectoryNode" />
-              <item name="build" type="462c0819:PsiDirectoryNode" />
-              <item name="classes" type="462c0819:PsiDirectoryNode" />
-              <item name="uy" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-spi" type="462c0819:PsiDirectoryNode" />
-              <item name="build" type="462c0819:PsiDirectoryNode" />
-              <item name="classes" type="462c0819:PsiDirectoryNode" />
-              <item name="uy" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-spi" type="462c0819:PsiDirectoryNode" />
-              <item name="build" type="462c0819:PsiDirectoryNode" />
-              <item name="classes" type="462c0819:PsiDirectoryNode" />
-              <item name="uy" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="tmwc" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-spi" type="462c0819:PsiDirectoryNode" />
-              <item name="build" type="462c0819:PsiDirectoryNode" />
-              <item name="classes" type="462c0819:PsiDirectoryNode" />
-              <item name="uy" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="tmwc" type="462c0819:PsiDirectoryNode" />
-              <item name="facturator" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-spi" type="462c0819:PsiDirectoryNode" />
-              <item name="build" type="462c0819:PsiDirectoryNode" />
-              <item name="classes" type="462c0819:PsiDirectoryNode" />
-              <item name="uy" type="462c0819:PsiDirectoryNode" />
-              <item name="com" type="462c0819:PsiDirectoryNode" />
-              <item name="tmwc" type="462c0819:PsiDirectoryNode" />
-              <item name="facturator" type="462c0819:PsiDirectoryNode" />
-              <item name="spi" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-spi" type="462c0819:PsiDirectoryNode" />
-              <item name="ejbModule" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="facturador-server" type="b2602c69:ProjectViewProjectNode" />
-              <item name="facturator-spi" type="462c0819:PsiDirectoryNode" />
-              <item name="ejbModule" type="462c0819:PsiDirectoryNode" />
-              <item name="spi" type="462c0819:PsiDirectoryNode" />
+              <item name="rapi" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558396455232" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../facturador-fulltime" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
@@ -443,11 +355,11 @@
       <window_info id="Designer" order="1" />
       <window_info id="UI Designer" order="2" />
       <window_info id="Favorites" order="3" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="4" visible="true" weight="0.33094555" />
+      <window_info active="true" content_ui="combo" id="Project" order="4" visible="true" weight="0.3295129" />
       <window_info id="Structure" order="5" weight="0.25" />
       <window_info id="Image Layers" order="6" />
       <window_info anchor="bottom" id="Event Log" order="0" side_tool="true" />
-      <window_info active="true" anchor="bottom" id="Version Control" order="1" visible="true" weight="0.7644684" />
+      <window_info anchor="bottom" id="Version Control" order="1" visible="true" weight="0.47779274" />
       <window_info anchor="bottom" id="Terminal" order="2" weight="0.3286119" />
       <window_info anchor="bottom" id="Message" order="3" />
       <window_info anchor="bottom" id="Find" order="4" />
@@ -633,13 +545,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/LineaDocumento.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3791">
-          <caret line="227" column="5" selection-start-line="227" selection-start-column="5" selection-end-line="227" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/rapi/DocumentoService.java">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -660,9 +565,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/service/DocumentoServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/entity/Documento.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1020">
@@ -670,8 +572,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/service/DocumentoServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/facturator-server/src/main/resources/templates/email-template-pendientes.ftl">
       <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/facturator-spi/build/classes/uy/com/tmwc/facturator/spi/DocumentoDAOService.class">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/facturator-server/WebContent/WEB-INF/web.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/rapi/CatalogService.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/liquidacion/LiquidacionServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/facturator-server/src/main/java/uy/com/tmwc/facturador/scheduler/DeudoresJob.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="43" column="73" selection-start-line="43" selection-start-column="73" selection-end-line="43" selection-end-column="73" />
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/facturator-server/src/main/resources/templates/email-template-factura.ftl">
       <provider selected="true" editor-type-id="text-editor" />
@@ -679,8 +603,15 @@
     <entry file="file://$PROJECT_DIR$/facturator-server/src/main/resources/templates/email-template-recibo.ftl">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/efactura/EFacturaServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor" />
+    <entry file="file://$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/LineaDocumento.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3383">
+          <caret line="227" column="4" selection-start-line="227" selection-start-column="4" selection-end-line="227" selection-end-column="4" />
+          <folding>
+            <element signature="e#6089#6090#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/Documento.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -698,20 +629,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/facturator-server/WebContent/updates/updateDescriptor.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="57" selection-start-line="15" selection-start-column="57" selection-end-line="15" selection-end-column="57" />
+        <state relative-caret-position="442">
+          <caret line="29" column="57" selection-start-line="29" selection-start-column="57" selection-end-line="29" selection-end-column="57" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.idea/workspace.xml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/facturator-spi/build/classes/uy/com/tmwc/facturator/spi/DocumentoDAOService.class">
+    <entry file="file://$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/efactura/EFacturaServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#0#4693#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="153">
+          <caret line="112" column="35" selection-start-line="112" selection-start-column="35" selection-end-line="112" selection-end-column="35" />
         </state>
       </provider>
     </entry>

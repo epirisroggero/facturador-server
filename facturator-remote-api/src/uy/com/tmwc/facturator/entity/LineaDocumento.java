@@ -8,34 +8,34 @@ import uy.com.tmwc.facturator.utils.Maths;
 
 public class LineaDocumento implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private int numeroLinea;
 	private BigDecimal cantidad = BigDecimal.ZERO;
 	private Articulo articulo;
-	
+
 	private String concepto;
 	private String notas;
 	private String articuloId;
 	private String conceptoIdLin = "";
-	
+
 	private BigDecimal precio = BigDecimal.ZERO;
 	private BigDecimal costo = BigDecimal.ZERO;
 	private BigDecimal descuento = BigDecimal.ZERO;
 
 	private Short depositoDestinoId = 0;
 	private Short depositoOrigenId = 0;
-	
+
 	private Iva ivaLin;
-	//private Short ivaId;
+	// private Short ivaId;
 
 	private Documento documento;
-	
+
 	private BigDecimal precioDistribuidor;
 	private BigDecimal coeficienteImp;
-	
+
 	private String contactoId;
 	private Integer docRefId;
-	
+
 	private String rubIdlin;
 	private String afilador;
 
@@ -47,10 +47,9 @@ public class LineaDocumento implements Serializable {
 	private BigDecimal linDto2 = BigDecimal.ZERO;
 	private BigDecimal linDto3 = BigDecimal.ZERO;
 	private BigDecimal linDto4 = BigDecimal.ZERO;
-	
+
 	private String marca;
 
-	
 	public BigDecimal getTotal() {
 		return getSubTotal().add(getIva());
 	}
@@ -78,8 +77,7 @@ public class LineaDocumento implements Serializable {
 	}
 
 	public BigDecimal getNeto() {
-		return getPrecioUnitario().multiply(
-				BigDecimal.ONE.subtract(this.documento.getComprobante().getDescuentoPrometido().divide(Maths.ONE_HUNDRED)));
+		return getPrecioUnitario().multiply(BigDecimal.ONE.subtract(this.documento.getComprobante().getDescuentoPrometido().divide(Maths.ONE_HUNDRED)));
 	}
 
 	public BigDecimal getNetoTotal() {
@@ -102,9 +100,9 @@ public class LineaDocumento implements Serializable {
 	public BigDecimal getIva() {
 		return getSubTotal().multiply(getTasaIva()).divide(Maths.ONE_HUNDRED, 2, RoundingMode.HALF_UP);
 	}
-	
+
 	public Boolean comprobanteComputaIva() {
-		if (documento.getComprobante().getCodigo().equals("122") || documento.getComprobante().getCodigo().equals("124") ) {
+		if (documento.getComprobante().getCodigo().equals("122") || documento.getComprobante().getCodigo().equals("124")) {
 			return false;
 		}
 		return (articulo != null && !documento.getComprobante().getAster() && !documento.getComprobante().isExento());
@@ -119,7 +117,7 @@ public class LineaDocumento implements Serializable {
 		} else {
 			return articulo.getTasaIva();
 		}
-		
+
 	}
 
 	public BigDecimal getPesoDocumento() {
@@ -145,12 +143,12 @@ public class LineaDocumento implements Serializable {
 
 	public void setArticulo(Articulo articulo) {
 		this.articulo = articulo;
-		
+
 		if (articulo != null && !articulo.getCodigo().equals("GASTOS VARIOS")) {
 			setIvaLin(articulo == null ? null : articulo.getIva());
 		}
 	}
-	
+
 	public BigDecimal getPrecio() {
 		return this.precio;
 	}
@@ -200,14 +198,13 @@ public class LineaDocumento implements Serializable {
 			return null;
 		}
 		BigDecimal utilidad = getUtilidad();
-		return utilidad.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : new BigDecimal(utilidad.doubleValue() * 100.0D
-				/ neto.doubleValue());
+		return utilidad.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : new BigDecimal(utilidad.doubleValue() * 100.0D / neto.doubleValue());
 	}
 
 	public BigDecimal getUtilidad() {
 		BigDecimal neto = getNeto();
 		BigDecimal costo = getCosto();
-		
+
 		if (neto == null || costo == null) {
 			return BigDecimal.ZERO;
 		}
@@ -289,24 +286,32 @@ public class LineaDocumento implements Serializable {
 	public void setDepositoOrigenId(Short depositoOrigenId) {
 		this.depositoOrigenId = depositoOrigenId;
 	}
-	
+
 	public void setIvaLin(Iva ivaArticulo) {
 		this.ivaLin = ivaArticulo;
 	}
 
-	public Iva getIvaLin() {
-		return ivaLin;
+	public Iva getIvaArticulo() {		
+		return articulo != null ? articulo.getIva() : null;
+	}
+
+	public Iva getIvaLin() {		
+		if (documento != null && documento.getComprobante() != null && documento.getComprobante().isGasto()) {
+			return ivaLin;
+		} else {
+			return articulo != null ? articulo.getIva() : null;
+		}
 	}
 
 	public Short getIvaId() {
 		if (ivaLin != null) {
 			return new Short(ivaLin.getCodigo());
-		}		
+		}
 		return null;
 	}
 
 	public void setIvaId(Short ivaId) {
-		//this.ivaId = ivaId;
+		// this.ivaId = ivaId;
 	}
 
 	public BigDecimal getCoeficienteImp() {
@@ -340,7 +345,7 @@ public class LineaDocumento implements Serializable {
 	public void setRubIdlin(String rubIdlin) {
 		this.rubIdlin = rubIdlin;
 	}
-	
+
 	public String getAfilador() {
 		return afilador;
 	}
@@ -380,7 +385,7 @@ public class LineaDocumento implements Serializable {
 	public void setCascados(BigDecimal cascados) {
 		this.cascados = cascados;
 	}
-	
+
 	public BigDecimal getLinDto1() {
 		return linDto1;
 	}
@@ -420,9 +425,5 @@ public class LineaDocumento implements Serializable {
 	public void setArticuloId(String articuloId) {
 		this.articuloId = articuloId;
 	}
-
-
-
-
 
 }

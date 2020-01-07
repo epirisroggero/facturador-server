@@ -368,6 +368,13 @@ public class TareasDAOServiceImpl extends ServiceBase implements TareasDAOServic
 			query.setLimit(10);
 
 			List<AgendaTareaDTO> agendadas = queryAgendaTareas(query, false);
+			
+	   		Calendar calendarDate = Calendar.getInstance();
+			calendarDate.setTime(new Date());
+	   		calendarDate.set(Calendar.HOUR, 8);
+	   		calendarDate.set(Calendar.MINUTE, 0);
+	   		calendarDate.set(Calendar.SECOND, 0);	    		
+
 
 			// Si no se encontró entonces creo una nueva tarea.
 			if (agendadas != null && agendadas.size() == 0) {
@@ -384,22 +391,21 @@ public class TareasDAOServiceImpl extends ServiceBase implements TareasDAOServic
 				agendaTarea.setLocIdAge((short)0);
 				agendaTarea.setNotas(String.format("[%s] Autogenerada por vencimiento", dt2.format(new Date())));
 				
-		   		Calendar calendarDate = Calendar.getInstance();
-				calendarDate.setTime(new Date());
-		   		calendarDate.set(Calendar.HOUR, 8);
-		   		calendarDate.set(Calendar.MINUTE, 0);
-		   		calendarDate.set(Calendar.SECOND, 0);	    		
-
 				agendaTarea.setFechaHora(calendarDate.getTime());
-				agendaTarea.setCtoIdAge(contactoCode);
+				agendaTarea.setFechaInicio(calendarDate.getTime());
+				agendaTarea.setCtoIdAge(contactoCode); 
+				agendaTarea.setTipo("S");
+				agendaTarea.setPvIdAge(1);
+				agendaTarea.setNotify(false);
+				agendaTarea.setOrden(0);
 				
 				AgendatareaPK agendatareaPK = new AgendatareaPK();
 				agendatareaPK.setAgeId(nextAgeId.intValue());
-				agendatareaPK.setEmpId(getEmpId());
+				agendatareaPK.setEmpId(getEmpId());				
 				
 				agendaTarea.setId(agendatareaPK);
 
-				StringBuilder sb = new StringBuilder("Documentos con deuda:\n");
+				StringBuilder sb = new StringBuilder("DOCUMENTOS CON DEUDA:\n");
 
 				List<DocumentoDeudor> documentoDeudor = vencimientos.get(contactoCode);
 				for (DocumentoDeudor documentoDeudor2 : documentoDeudor) {
@@ -410,9 +416,15 @@ public class TareasDAOServiceImpl extends ServiceBase implements TareasDAOServic
 					String moneda = documentoDeudor2.getMoneda() != null ? documentoDeudor2.getMoneda().getNombre() : "";
 					String facturado = formatter.format(documentoDeudor2.getFacturado());
 					String cancelado = formatter.format(documentoDeudor2.getCancelado());
+					String adeudado = formatter.format(documentoDeudor2.getAdeudado());
+					String adeudadoNeto = formatter.format(documentoDeudor2.getAdeudadoNeto());
+					String descuento= formatter.format(documentoDeudor2.getDescuento());
+					String comprobante = documentoDeudor2.getComprobante().getNombre();
 
-					sb.append(String.format("El comprobante %s%s con fecha %s y vencimiento %s esta pendiente de pago.\n" + "Moneda %s, Facturado: %s, Cancelado: %s\n", serie, numero, fecha,
-							fechaVencimiento, moneda.toUpperCase(), facturado, cancelado));
+					sb.append("_________________________________________________________________________________\n\n");
+					sb.append(String.format("%s %s/%s con fecha %s y vencimiento %s esta pendiente de pago.\n\n" + 
+							"Moneda: %s|Facturado: %s|Cancelado: %s|Adeudado: %s|Dcto: %s|A.Neto: %s\n\n", 
+							comprobante, serie, numero, fecha, fechaVencimiento, moneda.toUpperCase(), facturado, cancelado, adeudado, descuento, adeudadoNeto));
 
 				}
 				agendaTarea.setDescripcion(sb.toString());

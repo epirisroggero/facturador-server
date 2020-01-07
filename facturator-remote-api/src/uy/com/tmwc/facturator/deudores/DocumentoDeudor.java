@@ -7,6 +7,7 @@ import java.util.Date;
 
 import uy.com.tmwc.facturator.dto.CodigoNombre;
 import uy.com.tmwc.facturator.entity.Cliente;
+import uy.com.tmwc.facturator.entity.Comprobante;
 import uy.com.tmwc.facturator.entity.Documento;
 
 @SuppressWarnings("serial")
@@ -18,7 +19,7 @@ public class DocumentoDeudor implements Serializable {
 	private Date fechaVencimiento;
 
 	private Cliente deudor;
-	private CodigoNombre comprobante;
+	private Comprobante comprobante;
 	private long numero;
 	private String serie;
 
@@ -55,11 +56,11 @@ public class DocumentoDeudor implements Serializable {
 		this.deudor = deudor;
 	}
 
-	public CodigoNombre getComprobante() {
+	public Comprobante getComprobante() {
 		return this.comprobante;
 	}
 
-	public void setComprobante(CodigoNombre comprobante) {
+	public void setComprobante(Comprobante comprobante) {
 		this.comprobante = comprobante;
 	}
 

@@ -57,7 +57,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 
 	private static Charset ISO_8859_1 = Charset.forName("ISO-8859-1");
 
-	public static final String COD_DGI_SUCURSAL = "5"; // Número otorgado por la DGI
+	public static final String COD_DGI_SUCURSAL = "5"; // N?mero otorgado por la DGI
 
 	public static final String RUT_EMISOR = "215002560012";
 
@@ -78,6 +78,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 	private Boolean modeDevelop = false;
 	
 	private Boolean usarPuestoTrabajo = false;
+	
 
 	@EJB
 	DocumentoDAOService documentoDAOService;
@@ -132,10 +133,17 @@ public class EFacturaServiceImpl implements EFacturaService {
 				Integer cAEdesde = new Integer(fields[3]);
 				Integer cAEhasta = new Integer(fields[4]);
 				
+				Date cAEvencimiento = null;
+				try {
+					cAEvencimiento = eFacturaDateFormat.parse(fields[5]);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}				
 				current.setCAEnro(cAEnro);
 				current.setCAEserie(cAEserie);
 				current.setCAEdesde(cAEdesde);
 				current.setCAEhasta(cAEhasta);
+				current.setCAEvencimiento(cAEvencimiento);
 			}
 			
 			final String codigoQR_path = rootOutput + doc.getDocCFEFileName() + ".png";
@@ -274,7 +282,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 
 		LOGGER.info("Emitiendo documento | docId = " + doc.getDocId() + " | sobre = " + nroSobre );
 
-		// Ejecutar .exe por líneas de comandos
+		// Ejecutar .exe por l?neas de comandos
 		ProcessBuilder processBuilder = new ProcessBuilder("C:\\Program Files (x86)\\eFactShell\\eFact.exe", pathInput, pathOutput);
 		if (!modeDevelop) {
 			processBuilder.start();
@@ -363,11 +371,20 @@ public class EFacturaServiceImpl implements EFacturaService {
 				String cAEserie = fields[2];
 				Integer cAEdesde = new Integer(fields[3]);
 				Integer cAEhasta = new Integer(fields[4]);
+				Date cAEvencimiento = null;
+				try {
+					cAEvencimiento = eFacturaDateFormat.parse(fields[5]);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}				
 				
 				current.setCAEnro(cAEnro);
 				current.setCAEserie(cAEserie);
 				current.setCAEdesde(cAEdesde);
 				current.setCAEhasta(cAEhasta);
+				current.setCAEvencimiento(cAEvencimiento);
+				
+
 			}
 			
 			final String codigoQR_path = rootOutput + fileName + ".png";
@@ -421,11 +438,11 @@ public class EFacturaServiceImpl implements EFacturaService {
 					// guardar el recibo 
 					documentoDAOService.merge(recibo, Boolean.FALSE);
 											
-					// Agregar linea de auditoría en el recibo
+					// Agregar linea de auditor?a en el recibo
 					Auditoria audit = new Auditoria();
 					audit.setAudFechaHora(new Date());
 					audit.setDocId(recibo.getDocId());
-					audit.setNotas("Se emitió una N/C36 PC X DTOS FINANCIEROS " + current.getSerie() + current.getNumero() + ".");
+					audit.setNotas("Se emiti? una N/C36 PC X DTOS FINANCIEROS " + current.getSerie() + current.getNumero() + ".");
 					audit.setProblemas("Ninguno");
 					
 					// guardar el documento con las facturas vinculadas.
@@ -500,14 +517,14 @@ public class EFacturaServiceImpl implements EFacturaService {
 	/**
 	 * Sobre:
 	 * 
-	 * Esta línea es la que contiene los datos que identifican al envio.
+	 * Esta l?nea es la que contiene los datos que identifican al envio.
 	 * 
 	 * Sintaxis: Tipo|RutEmisor|NroSobre|FechaSobre
 	 * 
 	 * Ejemplo: 1|216025790012|12|2014-02-13
 	 * 
 	 * @param doc
-	 * @return información del sobre
+	 * @return informaci?n del sobre
 	 */
 	private String getSobre(Documento doc) {
 		StringBuffer sobreData = new StringBuffer("1|");
@@ -521,7 +538,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 	/**
 	 * Encabezado
 	 * 
-	 * Esta línea es la que contiene los datos básicos del comprobante.
+	 * Esta l?nea es la que contiene los datos b?sicos del comprobante.
 	 * 
 	 * Sintaxis: Tipo|TipoCFE|Serie|Nro|FechaEmision|IndicadorMBruto|FormaPago|
 	 * FechaVencimiento
@@ -532,7 +549,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 	 * @return
 	 */
 	private String getEncabezado(Documento doc) {
-		String formaPagoCFE = !doc.getComprobante().isCredito() ? "1" : "2"; // Valores posibles: 1 = Contado / 2 = Crédito.
+		String formaPagoCFE = !doc.getComprobante().isCredito() ? "1" : "2"; // Valores posibles: 1 = Contado / 2 = Cr?dito.
 		
 		String tipoCFE = String.valueOf(getTipoCFEDoc(doc));
 
@@ -548,7 +565,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 			encabezadoData.append("|");
 		}
 		
-		// Número del comprobante, se debe asignar solo en los comprobantes de contingencia.
+		// N?mero del comprobante, se debe asignar solo en los comprobantes de contingencia.
 		if (doc.getNumero() != null) {
 			encabezadoData.append(doc.getNumero()).append("|"); 
 		} else {
@@ -559,7 +576,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 		
 		encabezadoData.append(eFacturaDateFormat.format(fecha)).append("|");
 		
-		// Valor = 1, de existir indica que las líneas de detalle del comprobante se expresan con IVA incluido (de lo contrario el valor debe ser nulo "||".
+		// Valor = 1, de existir indica que las l?neas de detalle del comprobante se expresan con IVA incluido (de lo contrario el valor debe ser nulo "||".
 		encabezadoData.append("").append("|"); 
 		encabezadoData.append(formaPagoCFE).append("|");
 
@@ -569,14 +586,14 @@ public class EFacturaServiceImpl implements EFacturaService {
 	/**
 	 * Emisor
 	 * 
-	 * Esta línea es la que contiene los datos del emisor electrónico, y de la
-	 * sucursal que envía el comprobante.
+	 * Esta l?nea es la que contiene los datos del emisor electr?nico, y de la
+	 * sucursal que env?a el comprobante.
 	 * 
 	 * Sintaxis:
 	 * Tipo|RutEmisor|RazonEmisor|CodDGISucursal|DireccionEmisor|CiudadEmisor
 	 * |DptoEmisor
 	 * 
-	 * Ejemplo: 3|21758958 0016|NERVUS SRL|1|Euskalerría esq. Rosa de los
+	 * Ejemplo: 3|21758958 0016|NERVUS SRL|1|Euskalerr?a esq. Rosa de los
 	 * Vientos - Villa Santa Rita|Punta delEste|Maldonado
 	 * 
 	 * @param doc
@@ -597,13 +614,13 @@ public class EFacturaServiceImpl implements EFacturaService {
 	/**
 	 * Receptor
 	 * 
-	 * Esta línea es la que contiene los datos correspondientes al cliente.
+	 * Esta l?nea es la que contiene los datos correspondientes al cliente.
 	 * 
 	 * Sintaxis:
 	 * Tipo|TipoDocReceptor|CodPaisReceptor|DocReceptor|RznSocReceptor|
 	 * DirReceptor|CiudadReceptor|DptoReceptor
 	 * 
-	 * Ejemplo Básico (eTicket sin receptor): 4|3|UY|0||||
+	 * Ejemplo B?sico (eTicket sin receptor): 4|3|UY|0||||
 	 * 
 	 * @param doc
 	 * @return
@@ -651,9 +668,9 @@ public class EFacturaServiceImpl implements EFacturaService {
 	 * Totales
 	 * 
 	 * Datos globales del comprobante, los montos totales, son calculados
-	 * automáticamente, por lo que no es necesario declararlos (solo existen los
+	 * autom?ticamente, por lo que no es necesario declararlos (solo existen los
 	 * campos por compatibilidad). Si el tipo de cambio es nulo, se toma la
-	 * cotización del sistema para la moneda indicada.
+	 * cotizaci?n del sistema para la moneda indicada.
 	 * 
 	 * Sintaxis:
 	 * Tipo|Moneda|TpoCambio|MntNoGrav|MntNetoIvaTasaMin|MntNetoIVATasaBasica
@@ -661,7 +678,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 	 * |ivaTasaBasica|MntIVATasaMin|MntIVATasaBasica|MntTotal|CantLinDet
 	 * |MontoNF|MntPagar
 	 * 
-	 * Ejemplo Básico: 5|UYU||||10|22||||||0
+	 * Ejemplo B?sico: 5|UYU||||10|22||||||0
 	 * 
 	 * @param doc
 	 * @return
@@ -677,14 +694,14 @@ public class EFacturaServiceImpl implements EFacturaService {
 		String moneda = getMonedaCEF(docMoneda); // Ver tabla monedas.
 		String tpoCambio = tipoCambio; // ##.000 Usar solo en el caso de moneda extranjera.
 		String mntNoGrav = "";  // Total Monto - No Gravado (Opcional, no se procesa, puede ser nulo)
-		String mntNetoIvaTasaMin = ""; // Total Monto Neto - IVA Tasa mínima (Opcional, no se procesa, puede ser nulo)
-		String mntNetoIVATasaBasica = ""; // Total Monto Neto - IVA Tasa básica (Opcional, no se procesa, puede ser nulo)
+		String mntNetoIvaTasaMin = ""; // Total Monto Neto - IVA Tasa m?nima (Opcional, no se procesa, puede ser nulo)
+		String mntNetoIVATasaBasica = ""; // Total Monto Neto - IVA Tasa b?sica (Opcional, no se procesa, puede ser nulo)
 		String ivaTasaMin = "10"; // Por defecto 10, no se admite otro valor OPCIONAL
 		String ivaTasaBasica = "22"; // Por defecto 22, no se admite otro valor OPCIONAL
-		String mntIVATasaMin = ""; // Total IVA, tasa mínima (Opcional, no se procesa, puede ser nulo)
-		String mntIVATasaBasica = ""; // Total IVA, tasa básica (Opcional, no se procesa, puede ser nulo)
+		String mntIVATasaMin = ""; // Total IVA, tasa m?nima (Opcional, no se procesa, puede ser nulo)
+		String mntIVATasaBasica = ""; // Total IVA, tasa b?sica (Opcional, no se procesa, puede ser nulo)
 		String mntTotal = ""; // Monto Total del comprobante (Opcional, no se procesa, puede ser nulo)
-		String cantLinDet = ""; // Cantidad de líneas de detalle (Opcional, no se procesa, puede ser nulo)
+		String cantLinDet = ""; // Cantidad de l?neas de detalle (Opcional, no se procesa, puede ser nulo)
 		String montoNF = ""; // Monto no Facturable (Opcional, no se procesa, puede ser nulo)
 		String mntPagar = ""; // Monto total a pagar (Opcional, no se procesa, puede ser nulo)
 
@@ -707,21 +724,21 @@ public class EFacturaServiceImpl implements EFacturaService {
 	}
 
 	/**
-	 * Líneas
+	 * L?neas
 	 * 
-	 * Cada línea representa un ítem del comprobante, se deberá generar una
-	 * línea tipo 6 por cada una del comprobante original. En el caso de que
-	 * deba aplicar redondeos al comprobante, debe hacerse a través de la
-	 * generación de una línea tipo 6 con el redondeo. Los números siempre deben
+	 * Cada l?nea representa un ?tem del comprobante, se deber? generar una
+	 * l?nea tipo 6 por cada una del comprobante original. En el caso de que
+	 * deba aplicar redondeos al comprobante, debe hacerse a trav?s de la
+	 * generaci?n de una l?nea tipo 6 con el redondeo. Los n?meros siempre deben
 	 * ser positivos, para redondeos positivos debe usarse indicador de
-	 * facturación 6 (Producto o servicio no facturable) y para los negativos 7
+	 * facturaci?n 6 (Producto o servicio no facturable) y para los negativos 7
 	 * (Producto o servicio facturable negativo).
 	 * 
 	 * Sintaxis:
 	 * Tipo|Nro|IndicadorFacturacion|DescArticulo|Cant|UniMed|PrecioUnitario
 	 * |DescPorc|DescMonto|RecPorc|RecMonto|MontoItem
 	 * 
-	 * Para precio = 0, el indicador de facturación debe ser 5.
+	 * Para precio = 0, el indicador de facturaci?n debe ser 5.
 	 * 
 	 * Ejemplo: 6|1|3|Producto 1|2.000|kg|55.00|||||110
 	 * 
@@ -733,14 +750,14 @@ public class EFacturaServiceImpl implements EFacturaService {
 		LineasDocumento lineas = doc.getLineas();
 		for (LineaDocumento linea : lineas.getLineas()) {
 			String concepto = linea.getConcepto();
-			if (concepto != null && concepto.length() > 0) {
+			if (concepto != null && concepto.length() > 0) { 
 				concepto = concepto.replace("<", "(").replace(">", ")").replace(System.getProperty("line.separator"), " ").replace("|", " ");
 			} else {
 				concepto = "";
 			}
 			StringBuffer lineasData = new StringBuffer("6|");
 			lineasData.append(linea.getNumeroLinea()).append("|");
-			lineasData.append(getIndDeFacturacionCFE(linea.getIvaLin() != null ? linea.getIvaLin().getCodigo() : "", linea.getPrecio())).append("|");
+			lineasData.append(getIndDeFacturacionCFE(linea.getIvaArticulo() != null ? linea.getIvaArticulo().getCodigo() : "", linea.getPrecio())).append("|");
 			lineasData.append(concepto).append("|");
 			lineasData.append(linea.getCantidad().setScale(3, RoundingMode.HALF_UP).toString()).append("|");
 			lineasData.append(getUnidadMedida(linea.getArticulo().getUnidadId() != null ? linea.getArticulo().getUnidadId() : "")).append("|");
@@ -762,14 +779,14 @@ public class EFacturaServiceImpl implements EFacturaService {
 	/**
 	 * Descuentos y Recargos
 	 * 
-	 * Pueden ser de 0 hasta 20 líneas. Estos aumentan o disminuyen la base del
+	 * Pueden ser de 0 hasta 20 l?neas. Estos aumentan o disminuyen la base del
 	 * impuesto. Estos descuentos o recargos tienen una glosa que especifica el
 	 * concepto. Por ejemplo, un descuento global aplicado a un determinado tipo
-	 * de producto o un descuento por pago contado que afecta a todos los ítems.
-	 * En caso que se apliquen descuentos o recargos globales y haya ítems
-	 * exentos, gravados a distintas tasas o no, deberá haber tantas líneas como
-	 * conceptos diferentes existan. Se deberá generar una línea para cada
-	 * indicador de facturación afectado.
+	 * de producto o un descuento por pago contado que afecta a todos los ?tems.
+	 * En caso que se apliquen descuentos o recargos globales y haya ?tems
+	 * exentos, gravados a distintas tasas o no, deber? haber tantas l?neas como
+	 * conceptos diferentes existan. Se deber? generar una l?nea para cada
+	 * indicador de facturaci?n afectado.
 	 * 
 	 * Sintaxis: Tipo|NroLin|TipoDR|Glosa|Valor|IndFact
 	 * 
@@ -786,10 +803,10 @@ public class EFacturaServiceImpl implements EFacturaService {
 	/**
 	 * Referencias
 	 * 
-	 * Cuando se emiten los llamados comprobantes de corrección (notas de
-	 * crédito y débito) es obligatorio indicar mediante referencias la
-	 * situación que se corrige. La referencia puede ser global (Ejemplo:
-	 * “Descuentos mes de Junio”) o específica, esto es, listando los
+	 * Cuando se emiten los llamados comprobantes de correcci?n (notas de
+	 * cr?dito y d?bito) es obligatorio indicar mediante referencias la
+	 * situaci?n que se corrige. La referencia puede ser global (Ejemplo:
+	 * ?Descuentos mes de Junio?) o espec?fica, esto es, listando los
 	 * comprobantes que se corrigen.
 	 * 
 	 * Sintaxis: Tipo|NroLin|IndGlobal|TipoCFERef|Serie|NroCFERef|Razon|
@@ -806,8 +823,8 @@ public class EFacturaServiceImpl implements EFacturaService {
 		String tipoCFERef = doc.getTipoCFERef() != null ? doc.getTipoCFERef() : "";	// Entero; Ver tabla TipoCFE
 		String serie = doc.getSerieCFERef() != null ? doc.getSerieCFERef() : ""; // Texto; Serie asignada al comprobante de referencia
 		String nroCFERef = doc.getNumCFERef() != null ? String.valueOf(doc.getNumCFERef()) : ""; // Entero; Nro. asignado al comprobante de referencia
-		String razon = indGlobal.equals("1") ? doc.getRazonCFERef() : ""; // Texto; Razón de la referencia
-		String fechaCFEReferencia = ""; // Fecha; Fecha de emisión del CFE Referenciado
+		String razon = indGlobal.equals("1") ? doc.getRazonCFERef() : ""; // Texto; Raz?n de la referencia
+		String fechaCFEReferencia = ""; // Fecha; Fecha de emisi?n del CFE Referenciado
 		if (doc.getFechaCFERef() != null) {
 			fechaCFEReferencia = eFacturaDateFormat.format(doc.getFechaCFERef());
 		} 
@@ -831,11 +848,11 @@ public class EFacturaServiceImpl implements EFacturaService {
 	 * 
 	 * Sintaxis: Tipo|Addenda
 	 * 
-	 * Ejemplo: 10| Presentando este comprobante en los próximos 7 días
+	 * Ejemplo: 10| Presentando este comprobante en los pr?ximos 7 d?as
 	 * descontaremos de su compra el 10% del valor
 	 * 
 	 * @param doc
-	 * @return Línea e addenda
+	 * @return L?nea e addenda
 	 */
 	private String getAddenda(Documento doc) {
 		String tpoDoc = doc.getComprobante().getNombre().toUpperCase();
@@ -856,17 +873,17 @@ public class EFacturaServiceImpl implements EFacturaService {
 	}
 
 	/**
-	 * Identificación Punto de Venta
+	 * Identificaci?n Punto de Venta
 	 * 
-	 * Esta identificación, que es una cadena alfanumérica de hasta 30 caracteres, se utilizará para identificar las transacciones recibidas de cada puesto de trabajo (punto de venta o caja). 
-	 * Será un código que el integrador deberá proporcionar y crear de la manera que crea conveniente.  
+	 * Esta identificaci?n, que es una cadena alfanum?rica de hasta 30 caracteres, se utilizar? para identificar las transacciones recibidas de cada puesto de trabajo (punto de venta o caja). 
+	 * Ser? un c?digo que el integrador deber? proporcionar y crear de la manera que crea conveniente.  
 	 * 
 	 * Sintaxis: 13|idPuntoVenta
 	 * 
 	 * Ejemplo: 13|00001
 	 * 
 	 * @param doc
-	 * @return Linea Identificación Punto de Venta
+	 * @return Linea Identificaci?n Punto de Venta
 	 */
 	private String getIdPuntoVenta(Documento doc) {
 		String id_punto_venta = doc.getPuntoVentaId() != null && doc.getPuntoVentaId().length() > 0 ? doc.getPuntoVentaId() : "00001";
@@ -889,9 +906,9 @@ public class EFacturaServiceImpl implements EFacturaService {
 			return "5";
 		}
 		if ("1".equals(tipo) || "3".equals(tipo)) {
-			return "3"; // Tasa básica 22%
+			return "3"; // Tasa b?sica 22%
 		} else if ("2".equals(tipo) || "4".equals(tipo)) {
-			return "2"; // Tasa mínima 10%
+			return "2"; // Tasa m?nima 10%
 		} else{
 			return "1"; // Excento de IVA
 		}
@@ -912,13 +929,13 @@ public class EFacturaServiceImpl implements EFacturaService {
 
 	private short getTipoCFE(Comprobante comprobante, int docReceptor) {
 		if (comprobante.isContingencia()) {
-			if (comprobante.getCodigo().equals("300") || comprobante.getCodigo().equals("302")) { // e-ticket contado, e-ticket crédito
+			if (comprobante.getCodigo().equals("300") || comprobante.getCodigo().equals("302")) { // e-ticket contado, e-ticket cr?dito
 				return 201;
-			} else if (comprobante.getCodigo().equals("304") || comprobante.getCodigo().equals("306")) { // e-factura contado, e-factura crédito
+			} else if (comprobante.getCodigo().equals("304") || comprobante.getCodigo().equals("306")) { // e-factura contado, e-factura cr?dito
 				return 211;
-			} else if (comprobante.getCodigo().equals("301") || comprobante.getCodigo().equals("303")) { // e-ticket nota de crédito
+			} else if (comprobante.getCodigo().equals("301") || comprobante.getCodigo().equals("303")) { // e-ticket nota de cr?dito
 				return 202;
-			} else if (comprobante.getCodigo().equals("305") || comprobante.getCodigo().equals("307")) { // e-factura nota de crédito
+			} else if (comprobante.getCodigo().equals("305") || comprobante.getCodigo().equals("307")) { // e-factura nota de cr?dito
 				return 212;
 			} 
 			return 0;

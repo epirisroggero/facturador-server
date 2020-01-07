@@ -107,6 +107,7 @@ public class Documento extends DocumentoBase implements Serializable {
 	private BigInteger CAEnro;
 	private String CAEserie;
 	private Short tipoCFEid;
+	private Date CAEvencimiento;
 
 	private Moneda docRecMda;
 	private BigDecimal docRecNeto;
@@ -1055,6 +1056,14 @@ public class Documento extends DocumentoBase implements Serializable {
 
 	public void setCAEhasta(Integer cAEhasta) {
 		CAEhasta = cAEhasta;
+	}
+	
+	public Date getCAEvencimiento() {
+		return CAEvencimiento;
+	}
+
+	public void setCAEvencimiento(Date cAEvencimiento) {
+		CAEvencimiento = cAEvencimiento;
 	}
 
 	public Short getTipoCFEid() {

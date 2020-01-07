@@ -19,6 +19,7 @@ import org.dozer.DozerBeanMapper;
 import uy.com.tmwc.facturator.entity.CotizacionesMonedas;
 import uy.com.tmwc.facturator.libra.entity.CotizacionesMonedasPK;
 import uy.com.tmwc.facturator.libra.util.DozerMappingsService;
+import uy.com.tmwc.facturator.mapper.Mapper;
 import uy.com.tmwc.facturator.spi.MonedasCotizacionesDAOService;
 import uy.com.tmwc.facturator.utils.MappingUtils;
 
@@ -84,9 +85,11 @@ public class MonedasCotizacionesDAOServiceImpl extends ServiceBase implements Mo
 
 		SimpleDateFormat df = new SimpleDateFormat();
 		//System.out.println("######### Fecha cotización >> " + df.format(fechaHasta));
-		CotizacionesMonedas mapped = (uy.com.tmwc.facturator.entity.CotizacionesMonedas) this.mapService.getDozerBeanMapper().map(doc, uy.com.tmwc.facturator.entity.CotizacionesMonedas.class);
+//		CotizacionesMonedas mapped = (uy.com.tmwc.facturator.entity.CotizacionesMonedas) this.mapService.getDozerBeanMapper().map(doc, uy.com.tmwc.facturator.entity.CotizacionesMonedas.class);
 
-		return mapped;
+		return new Mapper().map(doc, uy.com.tmwc.facturator.entity.CotizacionesMonedas.class);
+		
+		//return mapped;
 	}
 
 	

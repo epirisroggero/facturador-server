@@ -1,9 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.7.222</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.222.air</url>
+	<versionNumber>1.7.303</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.303.air</url>
 	<description>
 	    <![CDATA[
+	    # Versión 1.7.303 (07/01/2020)
+	    	1.- Corrige error al calcular el iva en la NCF.
+
+	    # Versión 1.7.301 (21/12/2019)
+	    	1.- Mostrar vencimiento en facturas oficiales.
+	    	2.- Mostrar facturas pendientes desde expediciones.
+
+	    # Versión 1.7.300 (11/12/2019)
+	    	1.- Agenda automática de tareas.
+	    	2.- Notifiación por mail por vencimiento de factura.
+
+	    # Versión 1.7.224 (11/11/2019)
+	    	1.- Permisos usuario distribuidor.
+
+	    # Versión 1.7.223 (08/11/2019)
+	    	1.- Corrige error por el que no se mostraban las facturas pendientes del clientes.
+
 	    # Versión 1.7.222 (29/10/2019)
 	    	1.- eFactura: Identificación del puesto de venta en el envío de comprobantes.
 	    	2.- Mostrar vencimientos.
@@ -91,34 +108,6 @@
 			7.- Corrige error en permisoss, usuarios generales con permiso supervisor, son supervisores. 
 			8.- Revisar error al calcular deuda del cliente. (Esta mal la fecha de la cuota o sea hay que recalcular las cuotas al emitir el documento)
 		
-	    # Versión 1.7.005
-			Artículos:
-			1.- Ajustar pantallas visualización del artículo (Ajustes en el layout, consultar a los usuarios de la aplicación si mejoró). 
-			2.- Permitir mostrar/editar marca del artículo.
-			3.- Permitir mostrar/editar categoría del artículo.
-			
-			Afilados:
-			1.- Calcular precios de forma automática.
-			2.- Ajustes al mostrar la cuponera.
-
-	    # Versión 1.7.000
-		    * Cuenta bancaria del proveedor.
-		    * Ajustes en pantallad de artículos, clientes y proveedores (Ajustar visualización en distintas resoluciones de pantalla).
-		    * Agragar campos en líneas para comprobantes de afilado.
-		    * Ayuda en línea de afilado la cual nos permitirá buscar una línea de un trabjo anterior (Ej: 8636-2 donde 8636 es el numero del combrobante 80 y el 2 es la línea). 
-			* Eliminar restricciones para los comprobantes cuyo importe sea superior a 40.000 UI. (Ya no son requeridos por DGI)	    
-	    
-	    # Versión 1.6.638
-		    * Mostrar solos los articulos de afilado del cliente.
-		    * Agregar el comprobante 84 a los comprobantes de afilados.
-		    * Fecha costo vacia, cuando la fecha es inferior a 1900.
-		    * Quitar espacios vacios al final en texos del artículo.
-	    
-	    # Versión 1.6.636
-		    * Reporte de afilados.
-		    * Ingresar afilador en cada linea.
-		    * Mostrar nro. de item en listado.
-		    * Ordenar por afilador, fecha y  número de item.
 		]]>
 	</description>
 </update>

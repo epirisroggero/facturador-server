@@ -17,6 +17,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public abstract interface CatalogService extends RemoteService
 {
   public static final Class<Vendedor> catalogVendedor = Vendedor.class;
+  
   public static final Class<Documento> catalogDocumento = Documento.class;
 
   public abstract <T extends CodigoNombreEntity> List<T> getCatalog(String paramString);

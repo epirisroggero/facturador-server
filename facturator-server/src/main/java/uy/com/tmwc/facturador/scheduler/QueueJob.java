@@ -42,9 +42,9 @@ public class QueueJob implements Job {
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		Date fecha = new Date();
 		
-		System.out.println("=================================================================");
-		System.out.println(fecha.toString() + " :: Reagendando tareas");
-		System.out.println("=================================================================");
+//		System.out.println("=================================================================");
+//		System.out.println(fecha.toString() + " :: Reagendando tareas".toUpperCase());
+//		System.out.println("=================================================================");
 		
 		Calendar calendar1 = Calendar.getInstance();
 		calendar1.setTime(fecha);    	

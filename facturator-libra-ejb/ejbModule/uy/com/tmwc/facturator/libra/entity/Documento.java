@@ -535,7 +535,10 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	@Column(table = "lfx_documentos", name = "DocCenIdTmp")
 	private String docCenCostosId = "";
 	
+	@Column(table = "lfx_documentos", name = "CAEvencimiento")
+	private Date CAEvencimiento;
 	
+
 	public Documento() {
 		this.estadoFecha = Constantes.DEFAULT_DATE;
 		this.docEntregaFecha = Constantes.DEFAULT_DATE;
@@ -1723,6 +1726,14 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 
 	public void setProcessId(String processId) {
 		this.processId = processId;
+	}
+	
+	public Date getCAEvencimiento() {
+		return CAEvencimiento;
+	}
+
+	public void setCAEvencimiento(Date cAEvencimiento) {
+		CAEvencimiento = cAEvencimiento;
 	}
 
 }
