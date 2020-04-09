@@ -2268,8 +2268,12 @@ public class RemoteServiceHandler {
 			Cliente cli = documento.getCliente();
 			Proveedor pro = documento.getProveedor();
 
+			boolean esCliente = cli != null;
+		
 			root.put("cliente", cli != null ? cli.getNombre().toUpperCase() : (pro != null ? pro.getNombre().toUpperCase() : ""));
+			root.put("esCliente", esCliente);
 			root.put("usuario", usuario);
+
 			htmlText = FreemarkerConfig.loadTemplate("templates/", "email-template-documento.ftl", root);
 
 		} else {

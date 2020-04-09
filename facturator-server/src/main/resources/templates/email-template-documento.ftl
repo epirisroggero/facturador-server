@@ -1,6 +1,7 @@
 <#ftl encoding='UTF-8'>
 
 <#-- @ftlvariable name="usuario" type="uy.com.tmwc.facturator.entity.Usuario" -->
+<#-- @ftlvariable name="esCliente" type="Boolean" -->
 
 
 <!DOCTYPE html>
@@ -28,9 +29,12 @@
 	        <tr>
 	            <td bgcolor="#efefef" style="padding: 40px 30px 40px 30px; border:solid 1px #cfcfcf; border-top:none; border-bottom:none;">
 	                <p>${cliente}</p>
-	                
-	                <p>Estimado cliente:</p>
- 
+		            <#if esCliente>
+		            <p>Estimado cliente:</p>
+		            <#else>
+		            <p>Estimado proveedor:</p>
+		            </#if>
+		             
 					<span style="font-size: .9em;"><p>Este es un correo no replay (modo No Responder) por lo que agradecemos que si desea comunicarse con nosotros, aplique un doble click en la dirección de e-mail  que luce al pie de la firma.</p></span>
 	                					
 					<p>${bodyText}</p>
@@ -38,7 +42,7 @@
 	        </tr>
 	        <tr>
 				<td bgcolor="#efefef" style="padding: 10px 30px 10px 30px; border:solid 1px #cfcfcf; border-top:none; border-bottom:none;">
-					<img src="cid:documento" width="750" height="676"/>
+					<img src="cid:documento" width="750" height="1024"/>
 				</td>
 			</tr>	        
 	        <tr style="background-color:#FFFFFF;" style="padding:0;">
@@ -75,7 +79,7 @@
 			    					<tr>
 			    						<td style="font-size:0.9em;font-weight:normal; color:#000000;">
 			    							<span>Correo:</span>
-			    							<a href="mailto:cobranzas@fulltimeuy.com">${usuario.usuEmail!""}</a>
+			    							<a href="mailto:vguevara@fulltimeuy.com">${usuario.usuEmail!""}</a>
 			    						</td>
 			    					</tr>
 			    					</#if>

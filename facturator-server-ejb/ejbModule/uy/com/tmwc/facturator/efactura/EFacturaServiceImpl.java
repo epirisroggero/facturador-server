@@ -57,7 +57,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 
 	private static Charset ISO_8859_1 = Charset.forName("ISO-8859-1");
 
-	public static final String COD_DGI_SUCURSAL = "5"; // N?mero otorgado por la DGI
+	public static final String COD_DGI_SUCURSAL = "5"; // Número otorgado por la DGI
 
 	public static final String RUT_EMISOR = "215002560012";
 

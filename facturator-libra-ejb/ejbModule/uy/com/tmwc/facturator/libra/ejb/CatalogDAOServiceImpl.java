@@ -98,19 +98,19 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 	}
 
 	public <T, D> List<D> getCatalog(Class<D> clazz) {
-		Class clazzA = getLibraEntity(clazz);
+		Class<?> clazzA = getLibraEntity(clazz);
 
 		return queryCatalog(clazzA, clazz, "", null);
 	}
 
 	public <T, D> List<D> getCatalog(Class<D> clazz, String query) {
-		Class clazzA = getLibraEntity(clazz);
+		Class<?> clazzA = getLibraEntity(clazz);
 
 		return queryCatalog(clazzA, clazz, query, null);
 	}
 
 	public <T, D> List<D> getCatalog(Class<D> clazz, String query, int limit) {
-		Class clazzA = getLibraEntity(clazz);
+		Class<?> clazzA = getLibraEntity(clazz);
 
 		return queryCatalog(clazzA, clazz, query, Integer.valueOf(limit));
 	}
@@ -158,6 +158,7 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 		return articuloPartidaModel;
 	}
 
+	@SuppressWarnings("unchecked")
 	public <D extends CodigoNombreEntity> D findCatalogEntity(Class<D> clazz, String codigo) {
 		Class<?> libraEntityClazz = getLibraEntity(clazz);
 		Object entity;
@@ -179,20 +180,21 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 	}
 
 	public Collection<Jefatura> getJefaturas() {
-		List list = this.entityManager.createNamedQuery("Jefatura.all").getResultList();
+		List<?> list = this.entityManager.createNamedQuery("Jefatura.all").getResultList();
 
 		Mapper mapper = new Mapper(jefaturasClassMapper);
 		return mapper.mapCollection(list, Jefatura.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public <D> List<D> queryCatalog(D example, int firstResult, int limit) {
 		Object converted = new Mapper().map(example, getLibraEntity(example.getClass()));
 
 		Session session = (Session) this.entityManager.getDelegate();
-		List list = session.createCriteria(converted.getClass()).add(createExampleCriteria(converted)).add(Expression.eq("id.empId", getEmpId())).setMaxResults(limit).setFirstResult(firstResult)
+		List<?> list = session.createCriteria(converted.getClass()).add(createExampleCriteria(converted)).add(Expression.eq("id.empId", getEmpId())).setMaxResults(limit).setFirstResult(firstResult)
 				.list();
 
-		return (List) new Mapper().mapCollection(list, example.getClass());
+		return (List<D>) new Mapper().mapCollection(list, example.getClass());
 	}
 
 	private Example createExampleCriteria(Object example) {
@@ -218,8 +220,8 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 		}
 		source.setCodigo(codigo);
 		DozerBeanMapper mapper = this.mapServ.getDozerBeanMapper();
-		Class libraEntityClazz = getLibraEntity(clazz);
-		HasId target = (HasId) mapper.map(source, libraEntityClazz);
+		Class<?> libraEntityClazz = getLibraEntity(clazz);
+		HasId<?> target =  (HasId<?>) mapper.map(source, libraEntityClazz);
 		Object id = target.getId();
 		return id;
 	}
@@ -252,7 +254,8 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 			q.setParameter("empId", getEmpId());
 		}
 
-		return (T) JPAUtils.getAtMostOne(q);
+		T atMostOne = JPAUtils.getAtMostOne(q);
+		return atMostOne;
 	}
 
 	private <T, D> List<D> queryCatalog(Class<T> clazzA, Class<D> clazzB, String query, Integer limit) {
@@ -282,13 +285,13 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 		if (limit != null) {
 			q.setMaxResults(limit.intValue() + 1);
 		}
-		List list = q.getResultList();
+		List<?> list = q.getResultList();
 
 		return map(clazzB, list);
 	}
 
 	private <D> Class<?> getLibraEntity(Class<D> clazz) {
-		Class clazzA = (Class) classMapping.get(clazz);
+		Class<?> clazzA = classMapping.get(clazz);
 		if (clazzA == null) {
 			throw new RuntimeException("Unknown catalog " + clazz.getSimpleName());
 		}
@@ -301,7 +304,7 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 	}
 
 	public ParametrosAdministracion getParametrosAdministracion() {
-		List list = this.entityManager.createNamedQuery("PatametrosAdministracion.fechatrabado").setParameter("empId", getEmpId()).setParameter("codigo", "1").getResultList();
+		List<?> list = this.entityManager.createNamedQuery("PatametrosAdministracion.fechatrabado").setParameter("empId", getEmpId()).setParameter("codigo", "1").getResultList();
 
 		DozerBeanMapper mapper = this.mapServ.getDozerBeanMapper();
 

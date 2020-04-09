@@ -157,7 +157,7 @@ Por el contrario si desea coordinar el pago le agradecemos comunicarse con la pe
 			    					<tr>
 			    						<td style="font-size:0.9em;font-weight:normal; color:#000000;">
 			    							<span>Correo:</span>
-			    							<a href="mailto:cobranzas@fulltimeuy.com">cobranzas@fulltimeuy.com</a>
+			    							<a href="mailto:vguevara@fulltimeuy.com">vguevara@fulltimeuy.com</a>
 			    						</td>
 			    					</tr>
 			    					<tr>

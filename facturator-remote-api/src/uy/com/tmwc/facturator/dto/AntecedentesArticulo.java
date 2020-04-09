@@ -8,22 +8,23 @@ import uy.com.tmwc.facturator.entity.Articulo;
 
 public class AntecedentesArticulo implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
 	private CodigoNombre comprobante;
 	private String documentoSerie;
 	private Long documentoNumero;
 	private Date fecha;
 	private CodigoNombre moneda;
 	private Articulo articulo;
-	
+
 	private BigDecimal cantidad;
 	private BigDecimal precioUnitario;
 	private BigDecimal neto;
 	private BigDecimal costo;
 	private BigDecimal renta;
 	private BigDecimal tipoCambio;
-	
+
 	private String concepto;
-	
+
 	private CodigoNombre cliente;
 
 	public Date getFecha() {

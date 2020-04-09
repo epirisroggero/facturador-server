@@ -206,7 +206,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		ajustarStockLineas(libraDoc, signoStock);
 		
 		ajustarLineas(libraDoc, doc.getComprobante().isGasto());
-		// ajustarPrecioFabricaCosto(doc);
 
 		this.em.persist(libraDoc);
 		this.em.flush();
@@ -253,8 +252,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			NumberFormat formatter = NumberFormat.getNumberInstance(new Locale("ES"));
 
 			if (doc.getComprobante().isRecibo()) {//
-				BigDecimal saldoRecibo = ajustarSaldo(libraDoc.getMoneda().getCodigo(), libraDoc.getSaldo());
-
 				if (libraDoc.getSaldo().doubleValue() < 0) {
 					throw new RuntimeException("Saldo menor que cero (" + libraDoc.getSaldo().toString() + " < 0.00)");
 				}
@@ -273,7 +270,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 							BigDecimal montoNuevo;
 							BigDecimal netoViejo;
 							BigDecimal netoNuevo = BigDecimal.ZERO;
-							BigDecimal descNuevo = BigDecimal.ZERO;
 							
 							if (aster) {
 								montoViejo = vinDoc.getMonto().setScale(4, RoundingMode.HALF_DOWN);
@@ -282,7 +278,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 							} else {
 								netoViejo = vinDoc.getNeto() != null ? vinDoc.getNeto().setScale(4, RoundingMode.HALF_DOWN) : vinDoc.getMonto().setScale(4, RoundingMode.HALF_DOWN);
 								netoNuevo = vinculoDocumentos.getNeto() != null ? vinculoDocumentos.getNeto().setScale(4, RoundingMode.HALF_DOWN) : BigDecimal.ZERO;
-								descNuevo = vinculoDocumentos.getDescuentoPorc() != null ? vinculoDocumentos.getDescuentoPorc().setScale(4, RoundingMode.HALF_DOWN) : BigDecimal.ZERO;
 								ajuste = netoNuevo.subtract(netoViejo).setScale(4, RoundingMode.HALF_DOWN);
 							}
 
@@ -298,15 +293,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 							String moneda = factura.getMoneda().getCodigo();
 
 							nuevoSaldo = ajustarSaldo(moneda, nuevoSaldo);
-
-							/*
-							if (!aster) {
-								BigDecimal montoCancela = netoNuevo.divide(BigDecimal.ONE.subtract(descNuevo.divide(new BigDecimal(100))));
-								if (montoCancela.compareTo(nuevoSaldo.add(BigDecimal.ONE)) > 0) {
-									throw new RuntimeException("El monto a cancelar en factura " + factura.getSerie() + factura.getNumero().toString() + " es superior al saldo(" + montoCancela + " > " +  nuevoSaldo + ") .");
-								}
-								
-							}*/
 
 							if (nuevoSaldo.compareTo(BigDecimal.ZERO) < 0) {
 								throw new RuntimeException("Monto incorrecto documento " + factura.getSerie() + factura.getNumero().toString() + "(" + viejoSaldo + " < " + ajuste + ")");
@@ -331,7 +317,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						}
 					}
 					if (!found) { // Se borra el vínculo.
-						//libraDoc.getRecibosVinculados().remove(vinDoc);
 						libraDoc.getFacturasVinculadas().remove(vinDoc);
 												
 						// Ajusto el saldo de la factura
@@ -387,17 +372,9 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 						BigDecimal monto = vinDoc.getMonto().setScale(4, RoundingMode.HALF_EVEN);
 						BigDecimal neto = vinDoc.getNeto().setScale(4, RoundingMode.HALF_EVEN);
-						BigDecimal descto = vinDoc.getDescuentoPorc().setScale(4, RoundingMode.HALF_EVEN);
 						BigDecimal viejoSaldo = factura.getSaldo().setScale(4, RoundingMode.HALF_EVEN);
 						String moneda = factura.getMoneda().getCodigo();
 
-						/*if (!aster) {
-							BigDecimal montoCancela = neto.divide(BigDecimal.ONE.subtract(descto.divide(new BigDecimal(100))));
-							if (montoCancela.compareTo(viejoSaldo.add(BigDecimal.ONE)) > 0) {
-								throw new RuntimeException("El monto a cancelar en factura " + factura.getSerie() + factura.getNumero().toString() + " es superior al saldo (" + montoCancela + " > " +  viejoSaldo + ").");
-							}
-						}*/
-						
 						BigDecimal nuevoSaldo;
 						if (aster) {
 							nuevoSaldo = viejoSaldo.subtract(monto).setScale(4, RoundingMode.HALF_EVEN);
@@ -487,8 +464,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			controlModificacionDocumento(docEntity);
 
 			int signoStock = doc.getComprobante().isDevolucion() ? -1 : 1;
-			ajustarStockLineas(docEntity, -signoStock); // Esto es un borrar,
-														// los signos estan cambiados
+			ajustarStockLineas(docEntity, -signoStock); // Esto es un borrar, los signos estan cambiados
 			if (docEntity != null) {
 				em.remove(docEntity);
 				em.flush();
@@ -559,7 +535,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			}
 			List result = this.em.createNamedQuery(queryName).setParameter("empId", getEmpId()).setParameter("serie", serie).setParameter("numero", numero).getResultList();
 			if ((result.size() > 0) && ((doc.getId() == null) || (doc.getId().getDocId() != ((DummyDocumento) result.get(0)).getId().getDocId())))
-				throw new IllegalArgumentException("Serie y nï¿½mero en uso");
+				throw new IllegalArgumentException("Serie y número en uso");
 		}
 	}
 
@@ -786,7 +762,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 			return MappingUtils.map(LineaDocumento.class, list, mapper);
 		} else {
-			throw new PermisosException("El usuario no tiene permiso para ver los antecedentes del artï¿½culo");
+			throw new PermisosException("El usuario no tiene permiso para ver los antecedentes del artículo");
 		}
 
 	}
@@ -1034,6 +1010,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	public uy.com.tmwc.facturator.entity.Documento findDocumento(String docId) throws PermisosException {
 		uy.com.tmwc.facturator.libra.entity.Documento doc = (uy.com.tmwc.facturator.libra.entity.Documento) this.em.find(uy.com.tmwc.facturator.libra.entity.Documento.class, new DocumentoPK(
 				getEmpId(), Integer.parseInt(docId)));
+		
 		if (doc == null) {
 			return null;
 		}
@@ -1149,6 +1126,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void fetchLineas(List<ParticipacionVendedor> pvs) {
 		for (ParticipacionVendedor pv : pvs) {
 			Hibernate.initialize(pv.getDocumento().getLineas());
@@ -1366,6 +1344,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		Query queryFacturas = this.em.createQuery(queryStrFacturas);
 		queryFacturas.setParameter("empId", getEmpId());
 		queryFacturas.setParameter("clienteId", clienteId);
+		
 		@SuppressWarnings("unchecked")
 		List<uy.com.tmwc.facturator.libra.entity.Documento> ormResultFacturas = queryFacturas.getResultList();
 
@@ -1374,6 +1353,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		Query queryRecibos = em.createQuery(queryStrRecibos);
 		queryRecibos.setParameter("empId", getEmpId());
 		queryRecibos.setParameter("clienteId", clienteId);
+		
 		@SuppressWarnings("unchecked")
 		List<uy.com.tmwc.facturator.libra.entity.Documento> ormResultRecibos = queryRecibos.getResultList();
 
@@ -1388,7 +1368,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 
 	public List<Documento> getDocumentosDeudores() {
-
 		// Se hace un left join fetch de las cuotas de los documentos, de otro
 		// modo se generaria un problema de N+1. Para las otras entidades
 		// que hibernate trae (relaciones xToOne), no esta claro cuanto se gana,
@@ -1398,14 +1377,16 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		String where = "d.comprobante.tipo in (1,2) and d.saldo <> 0 and d.id.empId=:empId ";
 
-		String queryStrFacturas = "SELECT distinct d FROM Documento d left join fetch d.cuotas where " + where + " order by d.fecha, d.cliente.id.cliId, d.comprobante.id.cmpid, d.serie, d.numero";
+		String queryStrFacturas = "SELECT distinct d FROM Documento d left join fetch d.cuotas where " 
+			+ where + " order by d.fecha, d.cliente.id.cliId, d.comprobante.id.cmpid, d.serie, d.numero";
 		Query queryFacturas = this.em.createQuery(queryStrFacturas);
 		queryFacturas.setParameter("empId", getEmpId());
 		@SuppressWarnings("unchecked")
 		List<uy.com.tmwc.facturator.libra.entity.Documento> ormResultFacturas = queryFacturas.getResultList();
 
 		// recibos:
-		String queryStrRecibos = "SELECT distinct d FROM Documento d where d.comprobante.tipo = 5 and d.saldo <> 0 and d.id.empId=:empId";
+		String queryStrRecibos = "SELECT distinct d FROM Documento d " +
+				"where d.comprobante.tipo = 5 and d.saldo <> 0 and d.id.empId=:empId";
 		Query queryRecibos = em.createQuery(queryStrRecibos);
 		queryRecibos.setParameter("empId", getEmpId());
 		@SuppressWarnings("unchecked")
@@ -1421,12 +1402,16 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	}
 
 	private void ajustarStock(Articulo articulo, Deposito depositoDesde, Deposito depositoHasta, BigDecimal cantidad) {
-		if (depositoDesde != null) {
+		if (depositoDesde != null && depositoHasta != null) {
 			ajustarStock(articulo, depositoDesde, cantidad.negate());
-		} // else: una devolucion, viene de la nada
-		if (depositoHasta != null) {
 			ajustarStock(articulo, depositoHasta, cantidad);
-		} // else: una venta, va a la nada
+		} else {
+			if (depositoDesde != null && depositoHasta == null) { // una venta, va a la nada
+				ajustarStock(articulo, depositoDesde, cantidad.negate()); 
+			} else if (depositoDesde == null && depositoHasta != null) { // una devolución, viene de la nada
+				ajustarStock(articulo, depositoHasta, cantidad.negate());
+			} 
+		}		
 	}
 
 	private void ajustarStock(Articulo articulo, Deposito deposito, BigDecimal cantidad) {
@@ -1438,8 +1423,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		// StockActual)
 
 		Stockactual stockActual = getStockActual(articulo, deposito);
-		// El registro de stock para el art/deposito puede no existir, las
-		// lï¿½neas que quedarian en 0 son borrados por libra.
+		// El registro de stock para el art/deposito puede no existir, las líneas que quedarian en 0 son borrados por libra.
 		if (stockActual == null) {
 			stockActual = new Stockactual();
 			StockactualPK pk = getStockActualPK();
@@ -1474,7 +1458,10 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	}
 
 	public List<StockActual> getStockActual(String articuloId) {
-		List<?> ormResult = this.em.createNamedQuery("Stockactual.depositos").setParameter("empId", getEmpId()).setParameter("articuloId", articuloId).getResultList();
+		List<?> ormResult = this.em.createNamedQuery("Stockactual.depositos")
+			.setParameter("empId", getEmpId())
+			.setParameter("articuloId", articuloId)
+			.getResultList();
 
 		return new ArrayList<StockActual>(new Mapper().mapCollection(ormResult, StockActual.class));
 	}
@@ -1486,7 +1473,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			.getResultList();
 
 		return new ArrayList<StockActualDTO>(new Mapper().mapCollection(ormResult, StockActualDTO.class));
-
 	}
 
 	public BigDecimal getStock(String articulo, short deposito) {
@@ -1499,7 +1485,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	}
 
 	public List<Documento> getDocumentos(Date fechaDesde, Date fechaHasta, String moneda) {
-		List<?> ormResult = this.em.createNamedQuery("Documento.controlLineasVenta").setParameter("empId", getEmpId()).setParameter("fechaDesde", fechaDesde).setParameter("fechaHasta", fechaHasta)
+		List<?> ormResult = this.em.createNamedQuery("Documento.controlLineasVenta")
+		.setParameter("empId", getEmpId()).setParameter("fechaDesde", fechaDesde).setParameter("fechaHasta", fechaHasta)
 				.setParameter("moneda", moneda).getResultList();
 		return new ArrayList<Documento>(new Mapper().mapCollection(ormResult, Documento.class));
 	}
@@ -1511,8 +1498,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 	public void modificarArticuloPrecio(String codart, String minorista, String industria, String distribuidor) throws PermisosException {
 		// new RutinaModificarPrecios(codart, "2", new BigDecimal(minorista),
-		// new BigDecimal(industria), new BigDecimal(distribuidor), em,
-		// this).ejecutar();
+		// new BigDecimal(industria), new BigDecimal(distribuidor), em, this).ejecutar();
 	}
 
 	public Boolean finalizarCompra(Documento doc) throws PermisosException {
@@ -1523,8 +1509,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		controlModificacionDocumento(docEntity);
 
-		docEntity.setPendiente("N"); // lo marco como no pendiente, remuevo la
-										// reserva de articulos
+		docEntity.setPendiente("N"); // lo marco como no pendiente, remuevo la reserva de articulos
 
 		verifyUniqueSerieNumero(docEntity);
 
@@ -1589,7 +1574,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			} else if (monedaDestino.equals(Moneda.CODIGO_MONEDA_DOLAR)) {
 				return precio.setScale(SCALE, RoundingMode.HALF_UP).multiply(euroVenta).divide(dolarVenta, SCALE, RoundingMode.HALF_UP).setScale(SCALE, RoundingMode.HALF_UP);
 			}
-
 		}
 
 		return precio;
@@ -1832,8 +1816,11 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						String docNumero = keys[1];
 
 						@SuppressWarnings("unchecked")
-						List<uy.com.tmwc.facturator.libra.entity.Documento> ormResult = this.em.createNamedQuery("Documento.obtenerDocumentoClienteNumero").setParameter("empId", getEmpId())
-								.setParameter("docNro", new BigInteger(docNumero)).setParameter("clienteId", clienteId).getResultList();
+						List<uy.com.tmwc.facturator.libra.entity.Documento> ormResult = 
+							this.em.createNamedQuery("Documento.obtenerDocumentoClienteNumero")
+								.setParameter("empId", getEmpId())
+								.setParameter("docNro", new BigInteger(docNumero))
+								.setParameter("clienteId", clienteId).getResultList();
 
 						if (ormResult.size() > 0) {
 							uy.com.tmwc.facturator.libra.entity.Documento docEntity = (uy.com.tmwc.facturator.libra.entity.Documento) ormResult.get(0);

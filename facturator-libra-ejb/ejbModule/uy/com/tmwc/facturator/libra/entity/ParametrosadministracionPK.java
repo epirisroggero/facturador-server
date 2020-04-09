@@ -39,12 +39,10 @@ public class ParametrosadministracionPK implements Serializable {
 		}
 		ParametrosadministracionPK castOther = (ParametrosadministracionPK) other;
 
-		return (this.empId.equals(castOther.empId))
-				&& (this.parAdmId.equals(castOther.parAdmId));
+		return (this.empId.equals(castOther.empId)) && (this.parAdmId.equals(castOther.parAdmId));
 	}
 
 	public int hashCode() {
-		int prime = 31;
 		int hash = 17;
 		hash = hash * 31 + this.empId.hashCode();
 		hash = hash * 31 + this.parAdmId.hashCode();

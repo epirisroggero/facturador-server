@@ -398,13 +398,14 @@ public class ClientesDAOServiceImpl extends ServiceBase implements ClientesDAOSe
 	}
 
 	public List<ContactoDTO> queryContactos(ContactoQuery query) {
-		Query q = this.em.createQuery("select cto " + CONTACTOS_SUBQUERY + "order by " + "cto.codigo asc ");
+		Query q = this.em.createQuery("select cto " + CONTACTOS_SUBQUERY + " order by cto.codigo asc ");
 
 		q.setParameter("empId", getEmpId()).setParameter("giro", query.getGiro()).setParameter("activo", query.getActivo() == Boolean.TRUE ? "S" : null)
 				.setParameter("razonSocial", query.getRazonSocial()).setParameter("zona", query.getZona());
 
 		List<ContactoDTO> result = new ArrayList<ContactoDTO>();
 
+		@SuppressWarnings("unchecked")
 		List<uy.com.tmwc.facturator.libra.entity.Contacto> l = q.getResultList();
 		for (uy.com.tmwc.facturator.libra.entity.Contacto c : l) {
 			ContactoDTO contactoDTO = new ContactoDTO(c.getCodigo(), c.getNombre(), c.getCtoRSocial(), c.getCtoDireccion(), c.getCtoTelefono(), c.getCtoCelular(), c.getCtoEmail1(),
@@ -416,15 +417,15 @@ public class ClientesDAOServiceImpl extends ServiceBase implements ClientesDAOSe
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<ProveedorDTO> queryProveedores(ProveedoresQuery query) {
-		Query q = this.em.createQuery("select p " + PROVEEDORES_SUBQUERY + "order by " + "p.codigo asc ");
+		Query q = this.em.createQuery("select p " + PROVEEDORES_SUBQUERY + " order by p.codigo asc ");
 
 		q.setParameter("empId", getEmpId()).setParameter("categoria", query.getCategoria()).setParameter("giro", query.getGiro())
 				.setParameter("activo", query.getActivo() == Boolean.TRUE ? "S" : null).setParameter("razonSocial", query.getRazonSocial()).setParameter("zona", query.getZona());
 
 		List<ProveedorDTO> result = new ArrayList<ProveedorDTO>();
 
+		@SuppressWarnings("unchecked")
 		List<uy.com.tmwc.facturator.libra.entity.Proveedor> proveedores = q.getResultList();
 		for (uy.com.tmwc.facturator.libra.entity.Proveedor p : proveedores) {
 			ProveedorDTO proveedorDTO = new ProveedorDTO(p.getCodigo(), p.getNombre(), p.getContacto().getCtoRSocial(), p.getContacto().getCtoDireccion(), p.getContacto().getCtoTelefono(), p

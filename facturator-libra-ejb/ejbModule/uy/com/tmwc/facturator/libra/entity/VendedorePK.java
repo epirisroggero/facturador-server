@@ -1,6 +1,7 @@
 package uy.com.tmwc.facturator.libra.entity;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -43,7 +44,6 @@ public class VendedorePK implements Serializable {
 	}
 
 	public int hashCode() {
-		int prime = 31;
 		int hash = 17;
 		hash = hash * 31 + this.empId.hashCode();
 		hash = hash * 31 + this.venId.hashCode();

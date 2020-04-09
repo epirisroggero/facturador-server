@@ -5,49 +5,46 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class PlanpagoPK
-  implements Serializable
-{
-  private static final long serialVersionUID = 1L;
+public class PlanpagoPK implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-  @Column(name="EmpId")
-  private String empId;
-  private String PPid;
+	@Column(name = "EmpId")
+	private String empId;
+	private String PPid;
 
-  public String getEmpId()
-  {
-    return this.empId;
-  }
-  public void setEmpId(String empId) {
-    this.empId = empId;
-  }
-  public String getPPid() {
-    return this.PPid;
-  }
-  public void setPPid(String PPid) {
-    this.PPid = PPid;
-  }
+	public String getEmpId() {
+		return this.empId;
+	}
 
-  public boolean equals(Object other) {
-    if (this == other) {
-      return true;
-    }
-    if (!(other instanceof PlanpagoPK)) {
-      return false;
-    }
-    PlanpagoPK castOther = (PlanpagoPK)other;
+	public void setEmpId(String empId) {
+		this.empId = empId;
+	}
 
-    return (this.empId.equals(castOther.empId)) && 
-      (this.PPid.equals(castOther.PPid));
-  }
+	public String getPPid() {
+		return this.PPid;
+	}
 
-  public int hashCode()
-  {
-    int prime = 31;
-    int hash = 17;
-    hash = hash * 31 + this.empId.hashCode();
-    hash = hash * 31 + this.PPid.hashCode();
+	public void setPPid(String PPid) {
+		this.PPid = PPid;
+	}
 
-    return hash;
-  }
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		if (!(other instanceof PlanpagoPK)) {
+			return false;
+		}
+		PlanpagoPK castOther = (PlanpagoPK) other;
+
+		return (this.empId.equals(castOther.empId)) && (this.PPid.equals(castOther.PPid));
+	}
+
+	public int hashCode() {
+		int hash = 17;
+		hash = hash * 31 + this.empId.hashCode();
+		hash = hash * 31 + this.PPid.hashCode();
+
+		return hash;
+	}
 }

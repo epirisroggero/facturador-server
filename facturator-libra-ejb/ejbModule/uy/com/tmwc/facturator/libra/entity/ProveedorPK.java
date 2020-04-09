@@ -13,15 +13,14 @@ public class ProveedorPK implements Serializable {
 
 	@Column(name = "PrvId")
 	private String prvId;
-	
+
 	public ProveedorPK() {
 	}
-	
+
 	public ProveedorPK(String empId, String prvId) {
 		this.empId = empId;
 		this.prvId = prvId;
 	}
-
 
 	public String getEmpId() {
 		return this.empId;
@@ -48,12 +47,10 @@ public class ProveedorPK implements Serializable {
 		}
 		ProveedorPK castOther = (ProveedorPK) other;
 
-		return (this.empId.equals(castOther.empId))
-				&& (this.prvId.equals(castOther.prvId));
+		return (this.empId.equals(castOther.empId)) && (this.prvId.equals(castOther.prvId));
 	}
 
 	public int hashCode() {
-		int prime = 31;
 		int hash = 17;
 		hash = hash * 31 + this.empId.hashCode();
 		hash = hash * 31 + this.prvId.hashCode();

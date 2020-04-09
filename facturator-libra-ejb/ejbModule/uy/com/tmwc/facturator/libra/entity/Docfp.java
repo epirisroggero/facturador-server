@@ -31,6 +31,7 @@ public class Docfp extends PersistentEntity<DocfpPK> implements Serializable, Ha
 			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Formaspago formaPago;
 
+	@SuppressWarnings("unused")
 	@Column(name = "FormaPagoId")
 	private short formaPagoId;
 
@@ -98,5 +99,13 @@ public class Docfp extends PersistentEntity<DocfpPK> implements Serializable, Ha
 	public void setMoneda(Moneda moneda) {
 		this.moneda = moneda;
 		this.monedaId = (moneda == null ? 0 : moneda.getId().getMndId());
+	}
+
+	public short getMonedaId() {
+		return monedaId;
+	}
+
+	public void setMonedaId(short monedaId) {
+		this.monedaId = monedaId;
 	}
 }

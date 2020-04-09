@@ -48,6 +48,7 @@ public class Docruc extends PersistentEntity<DocrucPK> implements Serializable, 
 	@Column(name = "DocRutEmail")
 	private String docRutEmail;
 
+	@SuppressWarnings("unused")
 	@Column(name = "PaisIdRut")
 	private String paisIdRut;
 

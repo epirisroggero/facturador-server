@@ -7,5 +7,5 @@ public class ServiceBase {
 	protected String getEmpId() {
 		return Constantes.getEmpId();
 	}
-	
+
 }

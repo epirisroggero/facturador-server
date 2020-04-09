@@ -14,7 +14,7 @@ import uy.com.tmwc.utils.orm.CatalogEntity;
 @CatalogEntity
 public class Moneda extends PersistentEntity<MonedaPK> implements Serializable, ICodigoNombre, HasId<MonedaPK> {
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String CODIGO_MONEDA_PESOS = uy.com.tmwc.facturator.entity.Moneda.CODIGO_MONEDA_PESOS;
 	public static final String CODIGO_MONEDA_DOLAR = uy.com.tmwc.facturator.entity.Moneda.CODIGO_MONEDA_DOLAR;
 	public static final String CODIGO_MONEDA_EUROS = uy.com.tmwc.facturator.entity.Moneda.CODIGO_MONEDA_EUROS;
@@ -25,6 +25,7 @@ public class Moneda extends PersistentEntity<MonedaPK> implements Serializable, 
 	@EmbeddedId
 	private MonedaPK id;
 
+	@SuppressWarnings("unused")
 	@Column(name = "MndId", insertable = false, updatable = false)
 	private Short codigo;
 
@@ -80,7 +81,8 @@ public class Moneda extends PersistentEntity<MonedaPK> implements Serializable, 
 	}
 
 	public short getRedondeo() {
-		return this.redondeo != null ? redondeo : 0; //en libra, redondeo=null es 'Sin decimales'.
+		return this.redondeo != null ? redondeo : 0; // en libra, redondeo=null
+														// es 'Sin decimales'.
 	}
 
 	public void setRedondeo(short redondeo) {

@@ -17,10 +17,10 @@ public class CotizacionesMonedasPK implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "Cdia", unique = true, nullable = false)
 	private Date dia;
-	
+
 	public CotizacionesMonedasPK() {
 	}
-	
+
 	public CotizacionesMonedasPK(String empId, Date dia) {
 		this.empId = empId;
 		this.dia = dia;
@@ -51,16 +51,15 @@ public class CotizacionesMonedasPK implements Serializable {
 		}
 		CotizacionesMonedasPK castOther = (CotizacionesMonedasPK) other;
 
-		return (this.empId.equals(castOther.empId))
-				&& (this.dia.equals(castOther.dia));
+		return (this.empId.equals(castOther.empId)) && (this.dia.equals(castOther.dia));
 	}
 
 	public int hashCode() {
 		int prime = 31;
 		int hash = 17;
-		
-		hash = hash * 31 + this.empId.hashCode();
-		hash = hash * 31 + this.dia.hashCode();
+
+		hash = hash * prime + this.empId.hashCode();
+		hash = hash * prime + this.dia.hashCode();
 
 		return hash;
 	}

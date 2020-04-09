@@ -20,6 +20,7 @@ public class ComisionJefatura implements Serializable {
 	@EmbeddedId
 	private ComisionJefaturaPK id;
 
+
 	@ManyToOne(optional = false)
 	@JoinColumns({
 			@javax.persistence.JoinColumn(name = "jefaturaId", referencedColumnName = "jefaturaId", insertable = false, updatable = false),
@@ -36,6 +37,14 @@ public class ComisionJefatura implements Serializable {
 
 	@Column(precision = 5, scale = 2, nullable = false)
 	private BigDecimal comision;
+	
+	public ComisionJefaturaPK getId() {
+		return id;
+	}
+
+	public void setId(ComisionJefaturaPK id) {
+		this.id = id;
+	}
 
 	public Jefatura getJefatura() {
 		return this.jefatura;

@@ -5,51 +5,48 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class ListaPK
-  implements Serializable
-{
-  private static final long serialVersionUID = 1L;
+public class ListaPK implements Serializable {
+	private static final long serialVersionUID = 1L;
 
-  @Column(name="EmpId")
-  private String empId;
+	@Column(name = "EmpId")
+	private String empId;
 
-  @Column(name="ListaId")
-  private String listaId;
+	@Column(name = "ListaId")
+	private String listaId;
 
-  public String getEmpId()
-  {
-    return this.empId;
-  }
-  public void setEmpId(String empId) {
-    this.empId = empId;
-  }
-  public String getListaId() {
-    return this.listaId;
-  }
-  public void setListaId(String listaId) {
-    this.listaId = listaId;
-  }
+	public String getEmpId() {
+		return this.empId;
+	}
 
-  public boolean equals(Object other) {
-    if (this == other) {
-      return true;
-    }
-    if (!(other instanceof ListaPK)) {
-      return false;
-    }
-    ListaPK castOther = (ListaPK)other;
+	public void setEmpId(String empId) {
+		this.empId = empId;
+	}
 
-    return (this.empId.equals(castOther.empId)) && 
-      (this.listaId.equals(castOther.listaId));
-  }
+	public String getListaId() {
+		return this.listaId;
+	}
 
-  public int hashCode()
-  {
-    int prime = 31;
-    int hash = 17;
-    hash = hash * 31 + this.empId.hashCode();
-    hash = hash * 31 + this.listaId.hashCode();
+	public void setListaId(String listaId) {
+		this.listaId = listaId;
+	}
 
-    return hash;
-  }
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		if (!(other instanceof ListaPK)) {
+			return false;
+		}
+		ListaPK castOther = (ListaPK) other;
+
+		return (this.empId.equals(castOther.empId)) && (this.listaId.equals(castOther.listaId));
+	}
+
+	public int hashCode() {
+		int hash = 17;
+		hash = hash * 31 + this.empId.hashCode();
+		hash = hash * 31 + this.listaId.hashCode();
+
+		return hash;
+	}
 }

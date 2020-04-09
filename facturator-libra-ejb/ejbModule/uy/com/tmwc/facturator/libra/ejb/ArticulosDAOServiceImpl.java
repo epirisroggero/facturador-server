@@ -1,7 +1,6 @@
 package uy.com.tmwc.facturator.libra.ejb;
 
 import java.math.BigDecimal;
-import java.text.Format;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.dozer.DozerBeanMapper;
-import org.jboss.ejb.plugins.cmp.jdbc.SQLUtil;
 
 import uy.com.tmwc.facturator.dto.ArticuloDTO;
 import uy.com.tmwc.facturator.dto.ArticuloQuery;
@@ -146,6 +144,7 @@ public class ArticulosDAOServiceImpl extends ServiceBase implements ArticulosDAO
 		return true;		
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<ArticuloDTO> queryArticulos(ArticuloQuery query) {
     	final StringBuilder sb = new StringBuilder(
     			"SELECT new uy.com.tmwc.facturator.dto.ArticuloDTO(" +
@@ -163,22 +162,20 @@ public class ArticulosDAOServiceImpl extends ServiceBase implements ArticulosDAO
     		sb.append(" AND a.familiaId IN (").append(familias).append(") ");
     	}    	
     	sb.append(" order by a.nombre asc");
-
 	
 		Query q = this.em.createQuery(sb.toString());
 		
 		q.setParameter("empId", getEmpId());
 		if (query.getProveedor() != null) {
 			q.setParameter("cProveedor", query.getProveedor());
-		}
-		//BooleanDozerConverter.toString(query.getActivo())
+		}		
 		q.setParameter("activo", query.getActivo() == true ? "S" : null);
 		
 		List<ArticuloDTO> list = q.getResultList();
 		return list;
 
 	}
-
+ 
 
 	public List<ArticuloPrecio> queryArticuloPrecio(String articulo) {
     	final StringBuilder sb = new StringBuilder(
@@ -197,6 +194,7 @@ public class ArticulosDAOServiceImpl extends ServiceBase implements ArticulosDAO
 		q.setParameter("empId", getEmpId());
 		q.setParameter("artId", articulo);
 		
+		@SuppressWarnings("unchecked")
 		List<ArticuloPrecio> list = q.getResultList();
 		return list;
 	}

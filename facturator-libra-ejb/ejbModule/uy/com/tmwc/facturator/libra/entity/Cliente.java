@@ -117,11 +117,9 @@ public class Cliente extends PersistentEntity<ClientePK> implements Serializable
 	@Column(name = "MndIdCli")
 	private short mndIdCli;
 	
-	@SuppressWarnings("unused")
 	@Column(name = "PPidCli")
 	private String pPidCli;
 	
-	@SuppressWarnings("unused")
 	@Column(name = "VenIdCli")
 	private String venIdCli;
 
@@ -143,7 +141,6 @@ public class Cliente extends PersistentEntity<ClientePK> implements Serializable
 			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Moneda moneda;
 
-	@SuppressWarnings("unused")
 	@Column(name = "PrecioVentaIdCli")
 	private Short precioVentaIdCli;
 

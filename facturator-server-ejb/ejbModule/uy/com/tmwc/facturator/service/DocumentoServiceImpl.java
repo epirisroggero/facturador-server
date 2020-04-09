@@ -269,8 +269,6 @@ public class DocumentoServiceImpl implements DocumentoService {
 		return this.documentoDAOService.finalizarMovimientoStock(documento);
 	}
 	
-
-	
 	public Boolean finalizarCompra(Documento documento) throws PermisosException {
 		if (!documento.isPendiente()) {
 			throw new IllegalStateException("Esta compra ya ha sido finalizado");
@@ -432,7 +430,6 @@ public class DocumentoServiceImpl implements DocumentoService {
 			return this.catalogService.getPrecioArticulo(preciosVenta, articulo);
 		} else {
 			throw new PermisosException("'" + usuarioLogin.getNombre() + "' no tiene permisos.");
-
 		}
 
 	}
@@ -511,8 +508,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 					antecedente.setCliente(new CodigoNombre(documento.getProveedor()));
 				}				
 				antecedentes.add(antecedente);
-			}
-			
+			}			
 		}
 
 		return antecedentes;

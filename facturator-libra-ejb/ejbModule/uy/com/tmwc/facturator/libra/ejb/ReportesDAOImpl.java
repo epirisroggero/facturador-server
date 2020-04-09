@@ -145,7 +145,8 @@ public class ReportesDAOImpl extends ServiceBase implements ReportesDAO {
 		
 		
     	Session session = (Session)em.getDelegate();
-    	Connection conn = session.connection();
+    	@SuppressWarnings("deprecation")
+		Connection conn = session.connection();
     	
     	PreparedStatement stmt = null;
     	try {

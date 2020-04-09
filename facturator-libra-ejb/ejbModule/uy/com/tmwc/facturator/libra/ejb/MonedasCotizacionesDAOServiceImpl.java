@@ -1,6 +1,5 @@
 package uy.com.tmwc.facturator.libra.ejb;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -83,26 +82,19 @@ public class MonedasCotizacionesDAOServiceImpl extends ServiceBase implements Mo
 			}
 		}
 
-		SimpleDateFormat df = new SimpleDateFormat();
-		//System.out.println("######### Fecha cotización >> " + df.format(fechaHasta));
-//		CotizacionesMonedas mapped = (uy.com.tmwc.facturator.entity.CotizacionesMonedas) this.mapService.getDozerBeanMapper().map(doc, uy.com.tmwc.facturator.entity.CotizacionesMonedas.class);
-
 		return new Mapper().map(doc, uy.com.tmwc.facturator.entity.CotizacionesMonedas.class);
-		
-		//return mapped;
 	}
 
 	
-
 	public List<CotizacionesMonedas> getCotizacionesMonedas(Date fromDate) {
 		Query query = this.em.createNamedQuery("Cotizaciones.cotizacionesMonedasQuery").setParameter("empId", getEmpId()).setParameter("fromDate", fromDate);
 
+		@SuppressWarnings("unchecked")
 		List<CotizacionesMonedas> list = query.getResultList();
 		DozerBeanMapper mapper = this.mapService.getDozerBeanMapper();
-		List res = MappingUtils.map(uy.com.tmwc.facturator.entity.CotizacionesMonedas.class, list, mapper);
+		List<CotizacionesMonedas> res = MappingUtils.map(uy.com.tmwc.facturator.entity.CotizacionesMonedas.class, list, mapper);
 		
 		return res;
-
 	}
 
 }

@@ -82,7 +82,7 @@
 			    					<tr>
 			    						<td style="font-size:0.9em;font-weight:normal; color:#000000;">
 			    							<span>Correo:</span>
-			    							<a href="mailto:cobranzas@fulltimeuy.com">${usuario.usuEmail!""}</a>
+			    							<a href="mailto:vguevara@fulltimeuy.com">${usuario.usuEmail!""}</a>
 			    						</td>
 			    					</tr>
 			    					</#if>

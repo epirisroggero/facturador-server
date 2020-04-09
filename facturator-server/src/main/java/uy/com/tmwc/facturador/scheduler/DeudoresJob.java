@@ -166,7 +166,8 @@ public class DeudoresJob implements Job {
 		usuario.setCodigo("20");
 		usuario.setUsuCelular("598 99 681 586");
 		usuario.setUsuCargo("COBRANZA");
-		usuario.setUsuEmail("cobranzas@fulltimeuy.com");
+		usuario.setUsuEmail("vguevara@fulltimeuy.com");
+		
 		
 		root.put("usuario", usuario);		
 		
@@ -254,7 +255,6 @@ public class DeudoresJob implements Job {
 		}
 		return result;
 	}
-
 	
 	private BigDecimal aplicarSigno(Comprobante comprobante, BigDecimal abs) {
 		if (comprobante.getTipo() == Comprobante.NOTA_CREDITO) {

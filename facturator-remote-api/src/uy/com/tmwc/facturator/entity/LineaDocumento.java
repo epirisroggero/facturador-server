@@ -287,20 +287,12 @@ public class LineaDocumento implements Serializable {
 		this.depositoOrigenId = depositoOrigenId;
 	}
 
-	public void setIvaLin(Iva ivaArticulo) {
-		this.ivaLin = ivaArticulo;
-	}
-
-	public Iva getIvaArticulo() {		
-		return articulo != null ? articulo.getIva() : null;
-	}
-
 	public Iva getIvaLin() {		
-		if (documento != null && documento.getComprobante() != null && documento.getComprobante().isGasto()) {
-			return ivaLin;
-		} else {
-			return articulo != null ? articulo.getIva() : null;
-		}
+		return ivaLin;
+	}
+	
+	public void setIvaLin(Iva ivaLin) {
+		this.ivaLin = ivaLin;
 	}
 
 	public Short getIvaId() {
@@ -425,5 +417,12 @@ public class LineaDocumento implements Serializable {
 	public void setArticuloId(String articuloId) {
 		this.articuloId = articuloId;
 	}
+	
+	// Para E-Factura; retorna el iva del articulo. Se usa solo ahí
+	public Iva getIvaArticulo() {		
+		return articulo != null ? articulo.getIva() : null;
+	}
+
+
 
 }

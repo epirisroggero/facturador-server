@@ -43,7 +43,6 @@ public class FamiliaPK implements Serializable {
 	}
 
 	public int hashCode() {
-		int prime = 31;
 		int hash = 17;
 		hash = hash * 31 + this.empId.hashCode();
 		hash = hash * 31 + this.familiaId.hashCode();
