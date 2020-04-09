@@ -11,3 +11,4 @@
   <property name="hibernate.connection.provider_class">org.gjt.mm.mysql.Driver</property>
  </session-factory>
 </hibernate-configuration>
+
