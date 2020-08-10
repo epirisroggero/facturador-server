@@ -25,9 +25,10 @@ public class RutinaModificarCostos {
 	private BigDecimal tcd;
 	private EntityManager em;
 	private DocumentoDAOService documentoDAOService;
-	
+
 	public RutinaModificarCostos(String codart, Date dateDesde, Date dateHasta, RUTINA_MODIFCOSTO_ENUM costoAnterior,
-			BigDecimal valorCostoAnterior, BigDecimal costoNuevo, String monedaNuevoCosto, BigDecimal tcd, EntityManager em, DocumentoDAOService documentoDAOService) {
+			BigDecimal valorCostoAnterior, BigDecimal costoNuevo, String monedaNuevoCosto, BigDecimal tcd,
+			EntityManager em, DocumentoDAOService documentoDAOService) {
 		super();
 		this.codart = codart;
 		this.dateDesde = dateDesde;
@@ -40,32 +41,38 @@ public class RutinaModificarCostos {
 		this.em = em;
 		this.documentoDAOService = documentoDAOService;
 	}
-	
+
 	public int ejecutar() {
-        if (costoAnterior == RUTINA_MODIFCOSTO_ENUM.costoEspecifico ^ valorCostoAnterior != null) {
-        	throw new RuntimeException("el costo específico debe establecerse si y solo sí se especifica el valor numérico del costo");
-        }
-	    Query query = crearQuery();
-	    @SuppressWarnings("unchecked") List<Linea> list = query.getResultList();
-        return procesarLineas(list);
+		if (costoAnterior == RUTINA_MODIFCOSTO_ENUM.costoEspecifico ^ valorCostoAnterior != null) {
+			throw new RuntimeException(
+					"el costo especÃ­fico debe establecerse si y solo si se especifica el valor numÃ©rico del costo");
+		}
+		Query query = crearQuery();
+
+		@SuppressWarnings("unchecked")
+		List<Linea> list = query.getResultList();
+		return procesarLineas(list);
 	}
 
 	private Query crearQuery() {
-		String queryStr = "SELECT l from Linea l WHERE l.documento.comprobante.tipo in (" + Comprobante.DEVOLUCION_CONTADO + "," + Comprobante.NOTA_CREDITO + "," + Comprobante.VENTA_CONTADO + "," + Comprobante.VENTA_CREDITO + ") AND l.articulo.id.artId = :articulo " + 
-	                "       AND l.documento.fecha >= :fechaDesde " + (dateHasta == null ? "" : " AND l.documento.fecha <= :fechaHasta ");
-	    Query query = em.createQuery(queryStr);
-	    query.setParameter("articulo", codart);
-	    query.setParameter("fechaDesde", dateDesde);
-	    if (dateHasta != null) {
-	    	query.setParameter("fechaHasta", dateHasta);
-	    }
+		String queryStr = "SELECT l from Linea l WHERE l.documento.comprobante.tipo in ("
+				+ Comprobante.DEVOLUCION_CONTADO + "," + Comprobante.NOTA_CREDITO + "," + Comprobante.VENTA_CONTADO
+				+ "," + Comprobante.VENTA_CREDITO + ") AND l.articulo.id.artId = :articulo "
+				+ " AND l.documento.fecha >= :fechaDesde "
+				+ (dateHasta == null ? "" : " AND l.documento.fecha <= :fechaHasta ");
+		Query query = em.createQuery(queryStr);
+		query.setParameter("articulo", codart);
+		query.setParameter("fechaDesde", dateDesde);
+		if (dateHasta != null) {
+			query.setParameter("fechaHasta", dateHasta);
+		}
 		return query;
 	}
 
 	private int procesarLineas(List<Linea> list) {
 		int nruter = 0;
-	    for (Linea linea : list) {
-	    	boolean updateRow = false;
+		for (Linea linea : list) {
+			boolean updateRow = false;
 			if (costoAnterior == RUTINA_MODIFCOSTO_ENUM.costoCualquiera) {
 				updateRow = true;
 			} else if (costoAnterior == RUTINA_MODIFCOSTO_ENUM.costoNoEstablecido) {
@@ -76,19 +83,19 @@ public class RutinaModificarCostos {
 			if (updateRow) {
 				boolean procesada = procesarLinea(linea);
 				if (procesada) {
-					nruter ++;
+					nruter++;
 				}
 			}
 		}
-	    em.flush();
-	    return nruter;
+		em.flush();
+		return nruter;
 	}
 
 	private boolean procesarLinea(Linea linea) {
 		Moneda moneda = linea.getMonedaDocumento();
 		if (moneda != null) {
 			BigDecimal convertido = null;
-			if (moneda != null && ! moneda.getCodigo().equals(monedaNuevoCosto)) {
+			if (moneda != null && !moneda.getCodigo().equals(monedaNuevoCosto)) {
 				convertido = convertir(costoNuevo, monedaNuevoCosto, moneda.getCodigo(), tcd);
 			} else {
 				convertido = costoNuevo;
@@ -107,11 +114,12 @@ public class RutinaModificarCostos {
 	private BigDecimal getTipoCambio(String morigen, String modestino, BigDecimal tcd) {
 		morigen = uy.com.tmwc.facturator.entity.Moneda.getCodigoMonedaNoAster(morigen);
 		modestino = uy.com.tmwc.facturator.entity.Moneda.getCodigoMonedaNoAster(modestino);
-		return new LogicaCotizacion(Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_DOLAR).getTipoCambio(morigen, modestino, null, new LogicaCotizacion.GetTipoCambio() {
-			public BigDecimal getTipoCambio(String monedaOrigen, Date fecha) {
-				return documentoDAOService.getTipoCambio(monedaOrigen, fecha);
-			}
-		}, tcd);
+		return new LogicaCotizacion(Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_DOLAR).getTipoCambio(morigen,
+				modestino, null, new LogicaCotizacion.GetTipoCambio() {
+					public BigDecimal getTipoCambio(String monedaOrigen, Date fecha) {
+						return documentoDAOService.getTipoCambio(monedaOrigen, fecha);
+					}
+				}, tcd);
 
 	}
 }

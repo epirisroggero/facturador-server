@@ -7,17 +7,17 @@ import java.util.Date;
 
 public abstract class DocumentoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	protected String docId;
 	protected String serie;
 	protected Long numero;
-	
+
 	protected transient Date fecha;
 	protected transient Date fecha2;
 	protected String fechaStr;
 	protected String fechaEmisionStr;
 	protected String estado;
-	
+
 	protected BigDecimal docTCF = BigDecimal.ZERO;
 	protected BigDecimal docTCC = BigDecimal.ZERO;
 	protected BigDecimal coeficienteImp = BigDecimal.ONE;
@@ -30,7 +30,7 @@ public abstract class DocumentoBase implements Serializable {
 
 	protected String rut;
 	protected String telefono;
-	
+
 	protected String docVinculado;
 	protected String conciliado;
 
@@ -44,7 +44,6 @@ public abstract class DocumentoBase implements Serializable {
 
 	private byte[] docBlob;
 	private String docBlobExt;
-	
 
 	public DocumentoBase() {
 		this.docTCF = BigDecimal.ZERO;
@@ -53,8 +52,10 @@ public abstract class DocumentoBase implements Serializable {
 	}
 
 	public boolean isDatosClienteModificados() {
-		return (!stringEquals(this.razonSocial, this.cliente.getContacto().getCtoRSocial())) || (!stringEquals(this.telefono, this.cliente.getContacto().getCtoTelefono()))
-				|| (!stringEquals(this.direccion, this.cliente.getContacto().getCtoDireccion())) || (!stringEquals(this.rut, this.cliente.getContacto().getCtoRUT()));
+		return (!stringEquals(this.razonSocial, this.cliente.getContacto().getCtoRSocial()))
+				|| (!stringEquals(this.telefono, this.cliente.getContacto().getCtoTelefono()))
+				|| (!stringEquals(this.direccion, this.cliente.getContacto().getCtoDireccion()))
+				|| (!stringEquals(this.rut, this.cliente.getContacto().getCtoRUT()));
 	}
 
 	private static boolean stringEquals(String a, String b) {
@@ -93,20 +94,19 @@ public abstract class DocumentoBase implements Serializable {
 		return this.numero != null; // alcanza con mirar la presencia de un numero. Parece que hay Numeradores con serie null.
 	}
 
-	
 	public Date getFecha() {
 		return this.fecha;
 	}
 
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
-		
+
 		SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
 		if (fecha != null) {
 			fechaStr = dt1.format(fecha);
 		}
 	}
-	
+
 	public Date getFecha2() {
 		return fecha2;
 	}
@@ -117,7 +117,7 @@ public abstract class DocumentoBase implements Serializable {
 		SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
 		if (fecha2 != null) {
 			fechaEmisionStr = dt1.format(fecha2);
-		} 
+		}
 	}
 
 	public Cliente getCliente() {
@@ -159,7 +159,7 @@ public abstract class DocumentoBase implements Serializable {
 	public void setRut(String rut) {
 		this.rut = rut;
 	}
-	
+
 	public String getTelefono() {
 		return telefono;
 	}
@@ -226,14 +226,14 @@ public abstract class DocumentoBase implements Serializable {
 
 	public void setFechaStr(String fechaStr) {
 		this.fechaStr = fechaStr;
-		
+
 		try {
 			SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
-			fecha = dt1.parse(fechaStr);			
+			fecha = dt1.parse(fechaStr);
 		} catch (Exception e) {
 		}
 	}
-	
+
 	public String getFechaEmisionStr() {
 		if (fecha2 != null) {
 			SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
@@ -247,7 +247,7 @@ public abstract class DocumentoBase implements Serializable {
 
 		try {
 			SimpleDateFormat dt1 = new SimpleDateFormat("yyyy-MM-dd");
-			fecha2 = dt1.parse(fechaEmisionStr);			
+			fecha2 = dt1.parse(fechaEmisionStr);
 		} catch (Exception e) {
 		}
 	}
@@ -291,7 +291,7 @@ public abstract class DocumentoBase implements Serializable {
 	public void setDocTCC(BigDecimal docTCC) {
 		this.docTCC = docTCC;
 	}
-	
+
 	public BigDecimal getDocTCF() {
 		return this.docTCF;
 	}
@@ -303,19 +303,19 @@ public abstract class DocumentoBase implements Serializable {
 	public String getDocVinculado() {
 		return docVinculado;
 	}
-	
+
 	public void setDocVinculado(String docVinculado) {
 		this.docVinculado = docVinculado;
 	}
-	
+
 	public String getConciliado() {
 		return conciliado;
 	}
-	
+
 	public void setConciliado(String conciliado) {
 		this.conciliado = conciliado;
 	}
-	
+
 	public String getEstado() {
 		return estado;
 	}
@@ -323,7 +323,7 @@ public abstract class DocumentoBase implements Serializable {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
-	
+
 	public abstract BigDecimal getTotal();
 
 	public abstract void setTotal(BigDecimal total);

@@ -28,12 +28,11 @@ import uy.com.tmwc.facturator.rapi.PruebaService;
 @Local(PruebaService.class)
 public class PruebaServiceImpl implements PruebaService {
 
-	@EJB uy.com.tmwc.facturator.spi.CatalogDAOService catalogService;
-	
-//	uy.com.tmwc.facturator.spi.CatalogDAOService catalogService;
-	
-	private final static Map<String, Class<?>> simpleNameToClass = new HashMap<String, Class<?>>(); 
-	
+	@EJB
+	uy.com.tmwc.facturator.spi.CatalogDAOService catalogService;
+
+	private final static Map<String, Class<?>> simpleNameToClass = new HashMap<String, Class<?>>();
+
 	static {
 		add(Vendedor.class);
 		add(Cliente.class);
@@ -45,32 +44,32 @@ public class PruebaServiceImpl implements PruebaService {
 		add(Entrega.class);
 		add(PlanPagos.class);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog) {
 		Class<?> clazz = getCatalogClass(catalog);
-		
+
 		return (List<T>) catalogService.getCatalog(clazz);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog, String query) {
 		Class<?> clazz = getCatalogClass(catalog);
-		
+
 		return (List<T>) catalogService.getCatalog(clazz, query);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog, String query, int limit) {
 		Class<?> clazz = getCatalogClass(catalog);
-		
+
 		return (List<T>) catalogService.getCatalog(clazz, query, limit);
 	}
-	
+
 	private Class<?> getCatalogClass(String catalog) {
 		Class<?> clazz = simpleNameToClass.get(catalog);
 		if (clazz == null) {
-			throw new IllegalArgumentException("Invalid catalog " + catalog);
+			throw new IllegalArgumentException("Catálogo inválodo " + catalog);
 		}
 		return clazz;
 	}
@@ -80,7 +79,6 @@ public class PruebaServiceImpl implements PruebaService {
 	}
 
 	public Vendedor getVendedor() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

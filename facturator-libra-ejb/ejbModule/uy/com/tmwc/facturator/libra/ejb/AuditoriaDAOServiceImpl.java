@@ -24,59 +24,57 @@ import uy.com.tmwc.facturator.utils.MappingUtils;
 @Stateless
 @Local({ AuditoriaDAOService.class })
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-
 public class AuditoriaDAOServiceImpl extends ServiceBase implements AuditoriaDAOService {
 	@PersistenceContext
 	EntityManager em;
 
 	@EJB
 	DozerMappingsService mapService;
-	
+
 	@EJB
 	UsuariosService usuariosService;
 
-
 	public void persist(uy.com.tmwc.facturator.entity.Auditoria e) {
-		Number nextAudId = (Number) em.createNamedQuery("Auditoria.nextAudId").setParameter("empId", getEmpId()).getSingleResult();
+		Number nextAudId = (Number) em.createNamedQuery("Auditoria.nextAudId").setParameter("empId", getEmpId())
+				.getSingleResult();
 		if (nextAudId == null) {
 			nextAudId = 1;
 		}
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		e.setUsuId(usuarioLogin.getCodigo());
 		e.setUsuNom(usuarioLogin.getNombre());
-		
+
 		DozerBeanMapper mapper = this.mapService.getDozerBeanMapper();
 		Auditoria lineaAuditoria = mapper.map(e, Auditoria.class);
-		
+
 		AuditoriaPK auditoriaPK = new AuditoriaPK();
 		auditoriaPK.setAudId(nextAudId.intValue());
 		auditoriaPK.setEmpId(getEmpId());
 
 		lineaAuditoria.setId(auditoriaPK);
 		lineaAuditoria.setAudFechaHora(new Date());
-		
+
 		em.persist(lineaAuditoria);
 		this.em.flush();
 
 	}
-	
-	
+
 	public List<uy.com.tmwc.facturator.entity.Auditoria> getAuditoria(String docId) {
 		@SuppressWarnings("unchecked")
 		List<Auditoria> lineasAuditoriaDoc = this.em.createNamedQuery("Auditoria.auditoriaDocumento")
-			.setParameter("empId", getEmpId())
-			.setParameter("docId", docId).getResultList();
+				.setParameter("empId", getEmpId()).setParameter("docId", docId).getResultList();
 
 		DozerBeanMapper mapper = this.mapService.getDozerBeanMapper();
-		List<uy.com.tmwc.facturator.entity.Auditoria> res = MappingUtils.map(uy.com.tmwc.facturator.entity.Auditoria.class, lineasAuditoriaDoc, mapper);
-		
+		List<uy.com.tmwc.facturator.entity.Auditoria> res = MappingUtils.map(
+				uy.com.tmwc.facturator.entity.Auditoria.class, lineasAuditoriaDoc, mapper);
+
 		return res;
 
-	}	
+	}
 
 	public void merge(uy.com.tmwc.facturator.entity.Auditoria e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

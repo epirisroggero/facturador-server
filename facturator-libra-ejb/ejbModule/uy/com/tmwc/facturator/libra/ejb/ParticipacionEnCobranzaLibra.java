@@ -5,12 +5,13 @@ import uy.com.tmwc.facturator.libra.entity.ParticipacionVendedor;
 import uy.com.tmwc.facturator.libra.entity.Vinculosdoc;
 
 public class ParticipacionEnCobranzaLibra {
-	
+
 	private ParticipacionVendedor participacionVendedor;
 
 	private Vinculosdoc vinculo;
 
-	public ParticipacionEnCobranzaLibra(ParticipacionVendedor pv, Vinculosdoc vinculo, Documento factura, Documento recibo) {
+	public ParticipacionEnCobranzaLibra(ParticipacionVendedor pv, Vinculosdoc vinculo, Documento factura,
+			Documento recibo) {
 		this.participacionVendedor = pv;
 		this.vinculo = vinculo;
 	}

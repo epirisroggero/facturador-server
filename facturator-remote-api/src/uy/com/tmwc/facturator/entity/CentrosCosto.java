@@ -2,7 +2,7 @@ package uy.com.tmwc.facturator.entity;
 
 public class CentrosCosto extends CodigoNombreEntity {
 	private static final long serialVersionUID = 1L;
-	
+
 	public CentrosCosto() {
 		super();
 	}
@@ -25,7 +25,5 @@ public class CentrosCosto extends CodigoNombreEntity {
 		}
 		return (obj instanceof CentrosCosto);
 	}
-
-
 
 }

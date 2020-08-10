@@ -12,27 +12,28 @@ import uy.com.tmwc.facturator.utils.Maths;
 
 public class Comprobante extends CodigoNombreEntity {
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String COTIZACION = "1";
-	
+
 	public static final int VENTA_CREDITO = 1;
 	public static final int NOTA_CREDITO = 2;
 	public static final int VENTA_CONTADO = 3;
 	public static final int DEVOLUCION_CONTADO = 4;
 	public static final int RECIBO_COBRO = 5;
-	
+
 	public static final int COMPRA_CREDITO = 21;
 	public static final int NOTA_CREDITO_COMPRA = 22;
 	public static final int COMPRA_CONTADO = 23;
 	public static final int DEVOLUCION_COMPRA_CONTADO = 24;
-	
+
 	public static final int MOVIMIENTO_DE_STOCK_DE_PROVEEDORES = 31;
 	public static final int MOVIMIENTO_DE_STOCK_DE_CLIENTE = 32;
-	
+
 	private static final int[] comprobantesEmitibles = { 1, 2, 3, 4 };
-	
-	private static final String[] comprobantesGasto = { "110","111","112","113","114","115","116","212","213","214","215" };
-	
+
+	private static final String[] comprobantesGasto = { "110", "111", "112", "113", "114", "115", "116", "212", "213",
+			"214", "215" };
+
 	private Deposito depositoOrigen;
 	private Deposito depositoDestino;
 	private int tipo;
@@ -49,14 +50,13 @@ public class Comprobante extends CodigoNombreEntity {
 	private String cmpActivo;
 	private String cmpRemitoInterno;
 	private String cmpNotas;
-	
+
 	private String cmpiva;
-	
-	private List<DescuentoPrometidoComprobante> descuentosPrometidos; // ordenado por dias de retraso
+
+	private List<DescuentoPrometidoComprobante> descuentosPrometidos; // ordenado por días de retraso.
 	private boolean aster;
 	private boolean exento;
-	
-	
+
 	public String getCmpfifo() {
 		return cmpfifo;
 	}
@@ -72,30 +72,31 @@ public class Comprobante extends CodigoNombreEntity {
 	public void setCmptiponom(String cmptiponom) {
 		this.cmptiponom = cmptiponom;
 	}
-	
+
 	public boolean isNotaCreditoFinanciera() {
 		return getCodigo().equals("28");
 	}
 
-	public boolean isCredito() { 
+	public boolean isCredito() {
 		return this.tipo == VENTA_CREDITO || this.tipo == COMPRA_CREDITO;
 	}
-	
+
 	public boolean isMueveCaja() {
-		return (this.tipo == VENTA_CONTADO) || (this.tipo == COMPRA_CONTADO) ||  (this.tipo == DEVOLUCION_CONTADO) &&
-			!getCodigo().equals("1") && !getCodigo().equals("93") && !getCodigo().equals("94") && !getCodigo().equals("99");
+		return (this.tipo == VENTA_CONTADO) || (this.tipo == COMPRA_CONTADO) || (this.tipo == DEVOLUCION_CONTADO)
+				&& !getCodigo().equals("1") && !getCodigo().equals("93") && !getCodigo().equals("94")
+				&& !getCodigo().equals("99");
 	}
 
 	public boolean isVenta() {
 		return (this.tipo == VENTA_CONTADO) || (this.tipo == VENTA_CREDITO);
 	}
-	
+
 	public boolean isCompra() {
 		return (this.tipo == COMPRA_CONTADO) || (this.tipo == COMPRA_CREDITO);
 	}
 
 	public boolean isGasto() {
-		List<String> entityTypesList = Arrays.asList(comprobantesGasto);		
+		List<String> entityTypesList = Arrays.asList(comprobantesGasto);
 		return entityTypesList.contains(getCodigo());
 	}
 
@@ -108,7 +109,9 @@ public class Comprobante extends CodigoNombreEntity {
 	}
 
 	public boolean isContingencia() {
-		return getCodigo().equals("300") || getCodigo().equals("301") || getCodigo().equals("302") || getCodigo().equals("303") || getCodigo().equals("304") || getCodigo().equals("305") || getCodigo().equals("306") || getCodigo().equals("307");
+		return getCodigo().equals("300") || getCodigo().equals("301") || getCodigo().equals("302")
+				|| getCodigo().equals("303") || getCodigo().equals("304") || getCodigo().equals("305")
+				|| getCodigo().equals("306") || getCodigo().equals("307");
 	}
 
 	public BigDecimal getDescuentoPrometido() {
@@ -142,11 +145,11 @@ public class Comprobante extends CodigoNombreEntity {
 	private List<DescuentoPrometidoComprobante> getDescuentosParaCategoria(String categoriaCliente) {
 		ArrayList<DescuentoPrometidoComprobante> result = new ArrayList<DescuentoPrometidoComprobante>();
 		for (DescuentoPrometidoComprobante e : descuentosPrometidos) {
-			
+
 			String categCliente = e.getCategCliente() != null ? e.getCategCliente().getCodigo() : null;
-			
-			if (StringUtils.isEmpty(categoriaCliente) && StringUtils.isEmpty(categoriaCliente) || categoriaCliente != null
-					&& categoriaCliente.equals(categCliente)) {
+
+			if (StringUtils.isEmpty(categoriaCliente) && StringUtils.isEmpty(categoriaCliente)
+					|| categoriaCliente != null && categoriaCliente.equals(categCliente)) {
 				result.add(e);
 			}
 		}
@@ -187,10 +190,10 @@ public class Comprobante extends CodigoNombreEntity {
 
 	public void setTipo(int tipo) {
 		this.tipo = tipo;
-		
+
 		setAster(isAster());
 	}
-	
+
 	public boolean isAster() {
 		boolean flag = false;
 		String regex = System.getProperty("facturator.comprobantes.aster");
@@ -204,7 +207,6 @@ public class Comprobante extends CodigoNombreEntity {
 		}
 		return flag;
 	}
-
 
 	public List<DescuentoPrometidoComprobante> getDescuentosPrometidos() {
 		return this.descuentosPrometidos;
@@ -266,7 +268,5 @@ public class Comprobante extends CodigoNombreEntity {
 	public void setCmpiva(String cmpiva) {
 		this.cmpiva = cmpiva;
 	}
-	
-	
 
 }

@@ -3,23 +3,22 @@ package uy.com.tmwc.facturator.entity;
 import java.io.Serializable;
 
 @SuppressWarnings("serial")
-public abstract class CodigoNombreEntity implements Serializable, Cloneable, 
-		Comparable<CodigoNombreEntity> {
-	
+public abstract class CodigoNombreEntity implements Serializable, Cloneable, Comparable<CodigoNombreEntity> {
+
 	private String codigo;
 	private String nombre;
 
 	public CodigoNombreEntity() {
 	}
-	
+
 	public Object clone() {
-		CodigoNombreEntity obj=null;
-        try{
-            obj=(CodigoNombreEntity)super.clone();
-        } catch(CloneNotSupportedException ex){
-            System.out.println(" no se puede duplicar");
-        }
-        return obj;
+		CodigoNombreEntity obj = null;
+		try {
+			obj = (CodigoNombreEntity) super.clone();
+		} catch (CloneNotSupportedException ex) {
+			System.out.println("No se puede duplicar");
+		}
+		return obj;
 	}
 
 	public CodigoNombreEntity(String codigo, String nombre) {
@@ -48,7 +47,6 @@ public abstract class CodigoNombreEntity implements Serializable, Cloneable,
 	}
 
 	public int hashCode() {
-		int prime = 31;
 		int result = 1;
 		result = 31 * result + (this.codigo == null ? 0 : this.codigo.hashCode());
 		return result;

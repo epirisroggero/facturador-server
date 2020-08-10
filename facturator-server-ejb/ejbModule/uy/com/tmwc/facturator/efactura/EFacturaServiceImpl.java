@@ -57,7 +57,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 
 	private static Charset ISO_8859_1 = Charset.forName("ISO-8859-1");
 
-	public static final String COD_DGI_SUCURSAL = "5"; // N�mero otorgado por la DGI
+	public static final String COD_DGI_SUCURSAL = "5"; // Número otorgado por la DGI
 
 	public static final String RUT_EMISOR = "215002560012";
 
@@ -70,95 +70,94 @@ public class EFacturaServiceImpl implements EFacturaService {
 	public static final String DEPTO_EMISOR = "MONTEVIDEO";
 
 	private static final SimpleDateFormat eFacturaDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	
+
 	private Logger LOGGER = Logger.getLogger(EFacturaServiceImpl.class);
-	
+
 	private static int MAX_CHECK_REPEAT = 120;
-		
+
 	private Boolean modeDevelop = false;
-	
+
 	private Boolean usarPuestoTrabajo = false;
-	
 
 	@EJB
 	DocumentoDAOService documentoDAOService;
 
 	@EJB
 	EFacturaDAOService eFacturaDAOService;
-	
-	@EJB 
+
+	@EJB
 	AuditoriaService auditoriaService;
 
 	@EJB
 	CatalogService catalogService;
-	
-	
-	public Documento updateDocumento(Documento doc) throws PermisosException, ValidationException, IOException  {
+
+	public Documento updateDocumento(Documento doc) throws PermisosException, ValidationException, IOException {
 		Documento current = this.documentoDAOService.findDocumento(doc.getDocId());
-		
+
 		if (current.getDocCFEstatus().intValue() != 2) {
-			throw new ValidationException("Este documento no ha sido emitido en e-factura o no se disponen de los datos del mismo.");
-		}		
-		
+			throw new ValidationException(
+					"Este documento no ha sido emitido en e-factura o no se disponen de los datos del mismo.");
+		}
+
 		String rootOutput = "C:\\eFactura\\output\\";
-		
+
 		String resultPathData = rootOutput + doc.getDocCFEFileName() + ".txt";
-		
+
 		File f = new File(resultPathData);
-		
+
 		if (!f.exists() || !f.canRead()) {
 			return null;
 		}
 
 		String result = readFile(resultPathData);
 		String[] rows = result != null ? result.split(System.getProperty("line.separator")) : null;
-		
+
 		if (rows != null && !rows[0].contains("1|BE|")) {
 			if (rows[1].startsWith("2|")) {
 				String[] fields = rows[1].split("\\|");
 				String serie = fields[1];
 				String nro = fields[2];
 				String codSeguridadCFE = fields[3];
-				
+
 				current.setSerie(serie);
 				current.setNumero(new Long(nro));
 				current.setCodSeguridadCFE(codSeguridadCFE);
 			}
-			
-			if (rows[2].startsWith("3|")) {				
-				String[] fields = rows[2].split("\\|"); 
-				
+
+			if (rows[2].startsWith("3|")) {
+				String[] fields = rows[2].split("\\|");
+
 				BigInteger cAEnro = new BigInteger(fields[1]);
 				String cAEserie = fields[2];
 				Integer cAEdesde = new Integer(fields[3]);
 				Integer cAEhasta = new Integer(fields[4]);
-				
+
 				Date cAEvencimiento = null;
 				try {
 					cAEvencimiento = eFacturaDateFormat.parse(fields[5]);
 				} catch (ParseException e) {
 					e.printStackTrace();
-				}				
+				}
 				current.setCAEnro(cAEnro);
 				current.setCAEserie(cAEserie);
 				current.setCAEdesde(cAEdesde);
 				current.setCAEhasta(cAEhasta);
 				current.setCAEvencimiento(cAEvencimiento);
 			}
-			
+
 			final String codigoQR_path = rootOutput + doc.getDocCFEFileName() + ".png";
 
 			byte[] codigoQR = null;
 			if (!current.getComprobante().isContingencia()) {
 				File fileQR = new File(codigoQR_path);
-				codigoQR = fileQR.exists() || !fileQR.canRead() ? loadFile(codigoQR_path) : null;	 
+				codigoQR = fileQR.exists() || !fileQR.canRead() ? loadFile(codigoQR_path) : null;
 			}
 
 			Short tipoCFEdoc = getTipoCFEDoc(current);
-			
+
 			current.setTipoCFEid(tipoCFEdoc);
 			current.setCAEnom(getTipoCFENombre(tipoCFEdoc));
-			
+
 			current.setDocCFEstatus(Short.valueOf("1"));
 			current.setCodigoQR(codigoQR);
 			current.setEmitido(true);
@@ -166,37 +165,38 @@ public class EFacturaServiceImpl implements EFacturaService {
 			if (current.getComprobante().isNotaCreditoFinanciera()) {
 				// Obtener el recibo
 				String reciboId = current.getPrevDocId();
-				Documento recibo = reciboId != null && reciboId.length() > 0 ? documentoDAOService.findDocumento(reciboId) : null;
+				Documento recibo = reciboId != null && reciboId.length() > 0 ? documentoDAOService
+						.findDocumento(reciboId) : null;
 				if (recibo != null) {
 					recibo.setPrevDocId(current.getDocId());
-					recibo.setNotas(recibo.getNotas() + "\nSe emiti� una N/C36 PC X DTOS FINANCIEROS " + current.getSerie() + current.getNumero() + ".");
-					
-					// guardar el recibo 
+					recibo.setNotas(recibo.getNotas() + "\nSe emitió una N/C36 PC X DTOS FINANCIEROS "
+							+ current.getSerie() + current.getNumero() + ".");
+
+					// guardar el recibo
 					documentoDAOService.merge(recibo, Boolean.FALSE);
 				}
 			}
 			documentoDAOService.merge(current, Boolean.FALSE);
-			
+
 			return current;
 
-		} else {			
+		} else {
 			current.setDocCFEstatus(Short.valueOf("3"));
 			return null;
 		}
 	}
 
-	
 	public EFacturaResult generarEfactura(Documento doc) throws PermisosException, IOException {
 		Documento current = this.documentoDAOService.findDocumento(doc.getDocId());
 		if (current != null) {
 			current.setPuntoVentaId(doc.getPuntoVentaId());
 		}
-		
+
 		String mode_develop = System.getProperty("facturador.mode.develop");
 		if (mode_develop != null) {
 			modeDevelop = mode_develop.equals("true");
-		}		
-		
+		}
+
 		String usar_puesto_trabajo = System.getProperty("facturador.eFactura.usarPuestoTrabajo");
 		usarPuestoTrabajo = usar_puesto_trabajo != null && usar_puesto_trabajo.equals("true");
 
@@ -208,18 +208,18 @@ public class EFacturaServiceImpl implements EFacturaService {
 			nroSobre = serieNumero.getNumero().intValue();
 			current.setDocCFEId(nroSobre);
 		}
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-		
+
 		Date date = new Date();
 
-		String milliseconds = String.valueOf(date.getTime()); 
-		
+		String milliseconds = String.valueOf(date.getTime());
+
 		String rootInput = "C:\\eFactura\\input\\";
 
 		String rootOutput = "C:\\eFactura\\output\\";
 
-		String fileName; 
+		String fileName;
 		if (!modeDevelop) {
 			fileName = "eFacturaInfo_" + nroSobre + "_" + sdf.format(date) + "_" + milliseconds;
 		} else {
@@ -227,7 +227,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 		}
 
 		String pathInput = rootInput + fileName + ".txt";
-		
+
 		String pathOutput = rootOutput + fileName + ".pdf";
 
 		BufferedWriter bw = new BufferedWriter(new FileWriterWithEncoding(pathInput, ISO_8859_1));
@@ -259,18 +259,19 @@ public class EFacturaServiceImpl implements EFacturaService {
 			}
 			bw = writeLineas(bw, current);
 
-			if (doc.getComprobante().getTipo() == Comprobante.NOTA_CREDITO || doc.getComprobante().getTipo() == Comprobante.DEVOLUCION_CONTADO) {
+			if (doc.getComprobante().getTipo() == Comprobante.NOTA_CREDITO
+					|| doc.getComprobante().getTipo() == Comprobante.DEVOLUCION_CONTADO) {
 				String referencias = getReferencias(current);
 				bw.write(referencias);
 				bw.newLine();
 			}
-			
+
 			String addenda = getAddenda(current);
 			if (addenda != null && addenda.length() > 0) {
 				bw.write(addenda);
 				bw.newLine();
 			}
-			
+
 			if (usarPuestoTrabajo) {
 				bw.write(getIdPuntoVenta(current));
 				bw.newLine();
@@ -280,53 +281,55 @@ public class EFacturaServiceImpl implements EFacturaService {
 			bw.close();
 		}
 
-		LOGGER.info("Emitiendo documento | docId = " + doc.getDocId() + " | sobre = " + nroSobre );
+		LOGGER.info("Emitiendo documento | docId = " + doc.getDocId() + " | sobre = " + nroSobre);
 
-		// Ejecutar .exe por l?neas de comandos
-		ProcessBuilder processBuilder = new ProcessBuilder("C:\\Program Files (x86)\\eFactShell\\eFact.exe", pathInput, pathOutput);
+		// Ejecutar .exe por líneas de comandos
+		ProcessBuilder processBuilder = new ProcessBuilder("C:\\Program Files (x86)\\eFactShell\\eFact.exe", pathInput,
+				pathOutput);
 		if (!modeDevelop) {
 			processBuilder.start();
 		}
-				
+
 		final String resultPath = rootOutput + fileName + ".txt";
 
 		try {
-			Thread.sleep(2000);				
+			Thread.sleep(2000);
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
 
 		int i = 0;
 		File f = new File(resultPath);
-		do {			
+		do {
 			i++;
 			try {
-				Thread.sleep(1000);				
+				Thread.sleep(1000);
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			
+
 		} while ((!f.exists() || !f.canRead()) && i < MAX_CHECK_REPEAT);
-		
+
 		LOGGER.info("Se realizaron " + i + " intento/s para obtener el archivo de e-factura.");
-		
+
 		String result = f.exists() && f.canRead() ? readFile(resultPath) : null;
 		String[] rows = result != null ? result.split(System.getProperty("line.separator")) : null;
 
 		EFacturaResult resultEFactura = new EFacturaResult();
 		resultEFactura.setFileName(fileName + "_cliente");
-		resultEFactura.setFileResultData(result != null ? result : "Error: No se pudo obtener el archivo resultado. (docId: " + current.getDocId() + ")");
+		resultEFactura.setFileResultData(result != null ? result
+				: "Error: No se pudo obtener el archivo resultado. (docId: " + current.getDocId() + ")");
 		resultEFactura.setDocCFEId(nroSobre);
-						
+
 		Date nowDate = new Date();
-		
+
 		// Datos para uso posterior, en caso de actualizar el documento cuando no se emite correctamente.
 		current.setCAEemision(nowDate);
 		current.setFecha(nowDate);
 		current.setFecha2(nowDate);
 		current.setDocCFEId(nroSobre);
 		current.setDocCFEFileName(fileName);
-		
+
 		// Proceso los resultados en caso de tenerlos
 		BigDecimal tipoCambioF = documentoDAOService.getTipoCambioFiscal(doc.getMoneda().getCodigo(), new Date());
 		if (tipoCambioF != null) {
@@ -336,9 +339,9 @@ public class EFacturaServiceImpl implements EFacturaService {
 		if (result == null) {
 			resultEFactura.setFilePDFData(null);
 			resultEFactura.setEfacturaFail(Boolean.TRUE);
-			
+
 			current.setDocCFEstatus(Short.valueOf("2"));
-			
+
 			// Guardar el documento con el estado y el numero de sobre que tiene asignado.
 			documentoDAOService.merge(current, Boolean.FALSE);
 
@@ -349,7 +352,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 			} catch (InterruptedException e1) {
 				e1.printStackTrace();
 			}
-			return resultEFactura; 
+			return resultEFactura;
 		}
 
 		byte[] codigoQR = null;
@@ -359,14 +362,14 @@ public class EFacturaServiceImpl implements EFacturaService {
 				String serie = fields[1];
 				String nro = fields[2];
 				String codSeguridadCFE = fields[3];
-				
+
 				current.setSerie(serie);
 				current.setNumero(new Long(nro));
 				current.setCodSeguridadCFE(codSeguridadCFE);
-			}			
-			if (rows[2].startsWith("3|")) {				
-				String[] fields = rows[2].split("\\|"); 
-				
+			}
+			if (rows[2].startsWith("3|")) {
+				String[] fields = rows[2].split("\\|");
+
 				BigInteger cAEnro = new BigInteger(fields[1]);
 				String cAEserie = fields[2];
 				Integer cAEdesde = new Integer(fields[3]);
@@ -376,17 +379,16 @@ public class EFacturaServiceImpl implements EFacturaService {
 					cAEvencimiento = eFacturaDateFormat.parse(fields[5]);
 				} catch (ParseException e) {
 					e.printStackTrace();
-				}				
-				
+				}
+
 				current.setCAEnro(cAEnro);
 				current.setCAEserie(cAEserie);
 				current.setCAEdesde(cAEdesde);
 				current.setCAEhasta(cAEhasta);
 				current.setCAEvencimiento(cAEvencimiento);
-				
 
 			}
-			
+
 			final String codigoQR_path = rootOutput + fileName + ".png";
 
 			if (!current.getComprobante().isContingencia()) {
@@ -399,71 +401,74 @@ public class EFacturaServiceImpl implements EFacturaService {
 						e1.printStackTrace();
 					}
 					j++;
-					
-				} while((!fileQR.exists() || !fileQR.canRead()) && j < 10); 
-				
+
+				} while ((!fileQR.exists() || !fileQR.canRead()) && j < 10);
+
 				codigoQR = fileQR.exists() || !fileQR.canRead() ? loadFile(codigoQR_path) : null;
 
 				if (codigoQR != null) {
-					LOGGER.info("C�digo QR encontrado  '" + codigoQR_path + "'");
+					LOGGER.info("Código QR encontrado  '" + codigoQR_path + "'");
 				} else {
-					LOGGER.info("No se encontr� c�digo QR.");
+					LOGGER.info("No se encontró código QR.");
 				}
-			} 
+			}
 
 			Short tipoCFEdoc = getTipoCFEDoc(current);
-			
+
 			if (tipoCambioF != null) {
 				current.setDocTCF(tipoCambioF);
 			}
 			current.setTipoCFEid(tipoCFEdoc);
 			current.setCAEnom(getTipoCFENombre(tipoCFEdoc));
-			
+
 			current.setDocCFEstatus(Short.valueOf("1"));
 			current.setCodigoQR(codigoQR);
 			current.setDocCFEId(nroSobre);
 			current.setEmitido(true);
-			
+
 			resultEFactura.setFilePDFData(codigoQR);
 			resultEFactura.setEfacturaFail(Boolean.FALSE);
 
 			if (current.getComprobante().isNotaCreditoFinanciera()) {
 				// Obtener el recibo
 				String reciboId = current.getPrevDocId();
-				Documento recibo = reciboId != null && reciboId.length() > 0 ? documentoDAOService.findDocumento(reciboId) : null;
+				Documento recibo = reciboId != null && reciboId.length() > 0 ? documentoDAOService
+						.findDocumento(reciboId) : null;
 				if (recibo != null) {
 					recibo.setPrevDocId(current.getDocId());
-					recibo.setNotas(recibo.getNotas() + "\nSe emiti� una N/C36 PC X DTOS FINANCIEROS " + current.getSerie() + current.getNumero() + ".");
-					
-					// guardar el recibo 
+					recibo.setNotas(recibo.getNotas() + "\nSe emitió una N/C36 PC X DTOS FINANCIEROS "
+							+ current.getSerie() + current.getNumero() + ".");
+
+					// guardar el recibo
 					documentoDAOService.merge(recibo, Boolean.FALSE);
-											
-					// Agregar linea de auditor?a en el recibo
+
+					// Agregar linea de auditoría en el recibo
 					Auditoria audit = new Auditoria();
 					audit.setAudFechaHora(new Date());
 					audit.setDocId(recibo.getDocId());
-					audit.setNotas("Se emiti? una N/C36 PC X DTOS FINANCIEROS " + current.getSerie() + current.getNumero() + ".");
+					audit.setNotas("Se emitió una N/C36 PC X DTOS FINANCIEROS " + current.getSerie()
+							+ current.getNumero() + ".");
 					audit.setProblemas("Ninguno");
-					
+
 					// guardar el documento con las facturas vinculadas.
 					auditoriaService.alta(audit);
 				}
-			} 
+			}
 
 		} else {
 			resultEFactura.setFilePDFData(null);
-			resultEFactura.setEfacturaFail(Boolean.TRUE);			
-			
+			resultEFactura.setEfacturaFail(Boolean.TRUE);
+
 			current.setDocCFEstatus(Short.valueOf("3"));
 		}
 		documentoDAOService.merge(current, Boolean.FALSE);
-		
+
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		return resultEFactura;
 
 	}
@@ -540,8 +545,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 	 * 
 	 * Esta l?nea es la que contiene los datos b?sicos del comprobante.
 	 * 
-	 * Sintaxis: Tipo|TipoCFE|Serie|Nro|FechaEmision|IndicadorMBruto|FormaPago|
-	 * FechaVencimiento
+	 * Sintaxis: Tipo|TipoCFE|Serie|Nro|FechaEmision|IndicadorMBruto|FormaPago| FechaVencimiento
 	 * 
 	 * Ejemplo: 2|101|||2013-12-23|1|1|2013-12-23
 	 * 
@@ -549,35 +553,35 @@ public class EFacturaServiceImpl implements EFacturaService {
 	 * @return
 	 */
 	private String getEncabezado(Documento doc) {
-		String formaPagoCFE = !doc.getComprobante().isCredito() ? "1" : "2"; // Valores posibles: 1 = Contado / 2 = Cr?dito.
-		
+		String formaPagoCFE = !doc.getComprobante().isCredito() ? "1" : "2"; // Valores posibles: 1 = Contado / 2 = Crédito.
+
 		String tipoCFE = String.valueOf(getTipoCFEDoc(doc));
 
 		StringBuffer encabezadoData = new StringBuffer("2|");
-		
+
 		// Ver tabla Tipos CFE
-		encabezadoData.append(tipoCFE).append("|"); 
-		
+		encabezadoData.append(tipoCFE).append("|");
+
 		// Serie del comprobante, se debe asignar solo en los comprobantes de contingencia.
 		if (doc.getSerie() != null) {
-			encabezadoData.append(doc.getSerie()).append("|"); 
+			encabezadoData.append(doc.getSerie()).append("|");
 		} else {
 			encabezadoData.append("|");
 		}
-		
+
 		// N?mero del comprobante, se debe asignar solo en los comprobantes de contingencia.
 		if (doc.getNumero() != null) {
-			encabezadoData.append(doc.getNumero()).append("|"); 
+			encabezadoData.append(doc.getNumero()).append("|");
 		} else {
 			encabezadoData.append("|");
 		}
-		
-		Date fecha = new Date(); //La fecha en el cabezal siempre es la fecha de hoy.
-		
+
+		Date fecha = new Date(); // La fecha en el cabezal siempre es la fecha de hoy.
+
 		encabezadoData.append(eFacturaDateFormat.format(fecha)).append("|");
-		
+
 		// Valor = 1, de existir indica que las l?neas de detalle del comprobante se expresan con IVA incluido (de lo contrario el valor debe ser nulo "||".
-		encabezadoData.append("").append("|"); 
+		encabezadoData.append("").append("|");
 		encabezadoData.append(formaPagoCFE).append("|");
 
 		return encabezadoData.toString();
@@ -586,15 +590,11 @@ public class EFacturaServiceImpl implements EFacturaService {
 	/**
 	 * Emisor
 	 * 
-	 * Esta l?nea es la que contiene los datos del emisor electr?nico, y de la
-	 * sucursal que env?a el comprobante.
+	 * Esta l?nea es la que contiene los datos del emisor electr?nico, y de la sucursal que env?a el comprobante.
 	 * 
-	 * Sintaxis:
-	 * Tipo|RutEmisor|RazonEmisor|CodDGISucursal|DireccionEmisor|CiudadEmisor
-	 * |DptoEmisor
+	 * Sintaxis: Tipo|RutEmisor|RazonEmisor|CodDGISucursal|DireccionEmisor|CiudadEmisor |DptoEmisor
 	 * 
-	 * Ejemplo: 3|21758958 0016|NERVUS SRL|1|Euskalerr?a esq. Rosa de los
-	 * Vientos - Villa Santa Rita|Punta delEste|Maldonado
+	 * Ejemplo: 3|21758958 0016|NERVUS SRL|1|Euskalerr?a esq. Rosa de los Vientos - Villa Santa Rita|Punta delEste|Maldonado
 	 * 
 	 * @param doc
 	 * @return
@@ -607,7 +607,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 		emisorData.append(DIRECCION_EMISOR).append("|");
 		emisorData.append(CIUDAD_EMISOR).append("|");
 		emisorData.append(DEPTO_EMISOR);
-		
+
 		return emisorData.toString();
 	}
 
@@ -616,9 +616,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 	 * 
 	 * Esta l?nea es la que contiene los datos correspondientes al cliente.
 	 * 
-	 * Sintaxis:
-	 * Tipo|TipoDocReceptor|CodPaisReceptor|DocReceptor|RznSocReceptor|
-	 * DirReceptor|CiudadReceptor|DptoReceptor
+	 * Sintaxis: Tipo|TipoDocReceptor|CodPaisReceptor|DocReceptor|RznSocReceptor| DirReceptor|CiudadReceptor|DptoReceptor
 	 * 
 	 * Ejemplo B?sico (eTicket sin receptor): 4|3|UY|0||||
 	 * 
@@ -630,11 +628,12 @@ public class EFacturaServiceImpl implements EFacturaService {
 		Contacto contacto = cliente.getContacto();
 
 		Pais pais = catalogService.findCatalogEntity(Pais.class.getSimpleName(), contacto.getPaisIdCto());
-		Departamento depto = catalogService.findCatalogEntity(Departamento.class.getSimpleName(), contacto.getDeptoIdCto());
+		Departamento depto = catalogService.findCatalogEntity(Departamento.class.getSimpleName(),
+				contacto.getDeptoIdCto());
 
 		String tipoDocReceptor = (doc.getTipoDoc() != null && doc.getTipoDoc().equals("R")) ? "2" : "3"; // Entero Ver tabla Tipos de Documento
 
-		String docReceptor = doc.getRut() != null ? doc.getRut() : ""; 
+		String docReceptor = doc.getRut() != null ? doc.getRut() : "";
 		if (tipoDocReceptor.equals("3")) { // C.I.
 			docReceptor = docReceptor.replaceAll("\\D+", "");
 			if (docReceptor.length() != 8) {
@@ -647,9 +646,11 @@ public class EFacturaServiceImpl implements EFacturaService {
 			}
 		}
 
-		String codPaisReceptor = pais != null ? pais.getPaisISO() : "UY"; 
-		String rznSocReceptor = (doc.getRazonSocial() != null && doc.getRazonSocial().length() > 0) ? doc.getRazonSocial() : contacto.getCtoRSocial(); 
-		String dirReceptor = (doc.getDireccion() != null && doc.getDireccion().length() > 0) ? doc.getDireccion() : contacto.getCtoDireccion(); 
+		String codPaisReceptor = pais != null ? pais.getPaisISO() : "UY";
+		String rznSocReceptor = (doc.getRazonSocial() != null && doc.getRazonSocial().length() > 0) ? doc
+				.getRazonSocial() : contacto.getCtoRSocial();
+		String dirReceptor = (doc.getDireccion() != null && doc.getDireccion().length() > 0) ? doc.getDireccion()
+				: contacto.getCtoDireccion();
 		String deptoReceptor = depto != null ? (depto.getNombre() != null ? depto.getNombre().toUpperCase() : "") : "";
 
 		StringBuffer receptorData = new StringBuffer("4|");
@@ -667,15 +668,10 @@ public class EFacturaServiceImpl implements EFacturaService {
 	/**
 	 * Totales
 	 * 
-	 * Datos globales del comprobante, los montos totales, son calculados
-	 * autom?ticamente, por lo que no es necesario declararlos (solo existen los
-	 * campos por compatibilidad). Si el tipo de cambio es nulo, se toma la
-	 * cotizaci?n del sistema para la moneda indicada.
+	 * Datos globales del comprobante, los montos totales, son calculados autom?ticamente, por lo que no es necesario declararlos (solo existen los campos por compatibilidad). Si
+	 * el tipo de cambio es nulo, se toma la cotizaci?n del sistema para la moneda indicada.
 	 * 
-	 * Sintaxis:
-	 * Tipo|Moneda|TpoCambio|MntNoGrav|MntNetoIvaTasaMin|MntNetoIVATasaBasica
-	 * |ivaTasaMin
-	 * |ivaTasaBasica|MntIVATasaMin|MntIVATasaBasica|MntTotal|CantLinDet
+	 * Sintaxis: Tipo|Moneda|TpoCambio|MntNoGrav|MntNetoIvaTasaMin|MntNetoIVATasaBasica |ivaTasaMin |ivaTasaBasica|MntIVATasaMin|MntIVATasaBasica|MntTotal|CantLinDet
 	 * |MontoNF|MntPagar
 	 * 
 	 * Ejemplo B?sico: 5|UYU||||10|22||||||0
@@ -687,13 +683,13 @@ public class EFacturaServiceImpl implements EFacturaService {
 		String docMoneda = doc.getMoneda().getCodigo();
 
 		String tipoCambio = "";
-		/*if (doc.getMoneda() != null && !doc.getMoneda().getCodigo().equals("1")) {
-			tipoCambio = doc.getCotizacion().setScale(3, RoundingMode.HALF_UP).toString();
-		}*/
+		/*
+		 * if (doc.getMoneda() != null && !doc.getMoneda().getCodigo().equals("1")) { tipoCambio = doc.getCotizacion().setScale(3, RoundingMode.HALF_UP).toString(); }
+		 */
 
 		String moneda = getMonedaCEF(docMoneda); // Ver tabla monedas.
 		String tpoCambio = tipoCambio; // ##.000 Usar solo en el caso de moneda extranjera.
-		String mntNoGrav = "";  // Total Monto - No Gravado (Opcional, no se procesa, puede ser nulo)
+		String mntNoGrav = ""; // Total Monto - No Gravado (Opcional, no se procesa, puede ser nulo)
 		String mntNetoIvaTasaMin = ""; // Total Monto Neto - IVA Tasa m?nima (Opcional, no se procesa, puede ser nulo)
 		String mntNetoIVATasaBasica = ""; // Total Monto Neto - IVA Tasa b?sica (Opcional, no se procesa, puede ser nulo)
 		String ivaTasaMin = "10"; // Por defecto 10, no se admite otro valor OPCIONAL
@@ -726,17 +722,11 @@ public class EFacturaServiceImpl implements EFacturaService {
 	/**
 	 * L?neas
 	 * 
-	 * Cada l?nea representa un ?tem del comprobante, se deber? generar una
-	 * l?nea tipo 6 por cada una del comprobante original. En el caso de que
-	 * deba aplicar redondeos al comprobante, debe hacerse a trav?s de la
-	 * generaci?n de una l?nea tipo 6 con el redondeo. Los n?meros siempre deben
-	 * ser positivos, para redondeos positivos debe usarse indicador de
-	 * facturaci?n 6 (Producto o servicio no facturable) y para los negativos 7
-	 * (Producto o servicio facturable negativo).
+	 * Cada l?nea representa un ?tem del comprobante, se deber? generar una l?nea tipo 6 por cada una del comprobante original. En el caso de que deba aplicar redondeos al
+	 * comprobante, debe hacerse a trav?s de la generaci?n de una l?nea tipo 6 con el redondeo. Los n?meros siempre deben ser positivos, para redondeos positivos debe usarse
+	 * indicador de facturaci?n 6 (Producto o servicio no facturable) y para los negativos 7 (Producto o servicio facturable negativo).
 	 * 
-	 * Sintaxis:
-	 * Tipo|Nro|IndicadorFacturacion|DescArticulo|Cant|UniMed|PrecioUnitario
-	 * |DescPorc|DescMonto|RecPorc|RecMonto|MontoItem
+	 * Sintaxis: Tipo|Nro|IndicadorFacturacion|DescArticulo|Cant|UniMed|PrecioUnitario |DescPorc|DescMonto|RecPorc|RecMonto|MontoItem
 	 * 
 	 * Para precio = 0, el indicador de facturaci?n debe ser 5.
 	 * 
@@ -750,20 +740,30 @@ public class EFacturaServiceImpl implements EFacturaService {
 		LineasDocumento lineas = doc.getLineas();
 		for (LineaDocumento linea : lineas.getLineas()) {
 			String concepto = linea.getConcepto();
-			if (concepto != null && concepto.length() > 0) { 
-				concepto = concepto.replace("<", "(").replace(">", ")").replace(System.getProperty("line.separator"), " ").replace("|", " ");
+			if (concepto != null && concepto.length() > 0) {
+				concepto = concepto.replace("<", "(").replace(">", ")")
+						.replace(System.getProperty("line.separator"), " ").replace("|", " ");
 			} else {
 				concepto = "";
 			}
 			StringBuffer lineasData = new StringBuffer("6|");
 			lineasData.append(linea.getNumeroLinea()).append("|");
-			lineasData.append(getIndDeFacturacionCFE(linea.getIvaArticulo() != null ? linea.getIvaArticulo().getCodigo() : "", linea.getPrecio())).append("|");
+			lineasData.append(
+					getIndDeFacturacionCFE(linea.getIvaArticulo() != null ? linea.getIvaArticulo().getCodigo() : "",
+							linea.getPrecio())).append("|");
 			lineasData.append(concepto).append("|");
 			lineasData.append(linea.getCantidad().setScale(3, RoundingMode.HALF_UP).toString()).append("|");
-			lineasData.append(getUnidadMedida(linea.getArticulo().getUnidadId() != null ? linea.getArticulo().getUnidadId() : "")).append("|");
-			lineasData.append(linea.getPrecio() != null ? linea.getPrecio().setScale(6, RoundingMode.HALF_UP).toString() : "").append("|");
-			lineasData.append(linea.getDescuento() != null ? linea.getDescuento().setScale(3, RoundingMode.HALF_DOWN).toString() : "").append("|");
-			lineasData.append(linea.getImporteDescuentoTotal().setScale(2, RoundingMode.HALF_DOWN).toString()).append("|");
+			lineasData
+					.append(getUnidadMedida(linea.getArticulo().getUnidadId() != null ? linea.getArticulo()
+							.getUnidadId() : "")).append("|");
+			lineasData.append(
+					linea.getPrecio() != null ? linea.getPrecio().setScale(6, RoundingMode.HALF_UP).toString() : "")
+					.append("|");
+			lineasData.append(
+					linea.getDescuento() != null ? linea.getDescuento().setScale(3, RoundingMode.HALF_DOWN).toString()
+							: "").append("|");
+			lineasData.append(linea.getImporteDescuentoTotal().setScale(2, RoundingMode.HALF_DOWN).toString()).append(
+					"|");
 			lineasData.append("").append("|");
 			lineasData.append("").append("|");
 			lineasData.append("");
@@ -779,14 +779,10 @@ public class EFacturaServiceImpl implements EFacturaService {
 	/**
 	 * Descuentos y Recargos
 	 * 
-	 * Pueden ser de 0 hasta 20 l?neas. Estos aumentan o disminuyen la base del
-	 * impuesto. Estos descuentos o recargos tienen una glosa que especifica el
-	 * concepto. Por ejemplo, un descuento global aplicado a un determinado tipo
-	 * de producto o un descuento por pago contado que afecta a todos los ?tems.
-	 * En caso que se apliquen descuentos o recargos globales y haya ?tems
-	 * exentos, gravados a distintas tasas o no, deber? haber tantas l?neas como
-	 * conceptos diferentes existan. Se deber? generar una l?nea para cada
-	 * indicador de facturaci?n afectado.
+	 * Pueden ser de 0 hasta 20 l?neas. Estos aumentan o disminuyen la base del impuesto. Estos descuentos o recargos tienen una glosa que especifica el concepto. Por ejemplo, un
+	 * descuento global aplicado a un determinado tipo de producto o un descuento por pago contado que afecta a todos los ?tems. En caso que se apliquen descuentos o recargos
+	 * globales y haya ?tems exentos, gravados a distintas tasas o no, deber? haber tantas l?neas como conceptos diferentes existan. Se deber? generar una l?nea para cada indicador
+	 * de facturaci?n afectado.
 	 * 
 	 * Sintaxis: Tipo|NroLin|TipoDR|Glosa|Valor|IndFact
 	 * 
@@ -803,14 +799,10 @@ public class EFacturaServiceImpl implements EFacturaService {
 	/**
 	 * Referencias
 	 * 
-	 * Cuando se emiten los llamados comprobantes de correcci?n (notas de
-	 * cr?dito y d?bito) es obligatorio indicar mediante referencias la
-	 * situaci?n que se corrige. La referencia puede ser global (Ejemplo:
-	 * ?Descuentos mes de Junio?) o espec?fica, esto es, listando los
-	 * comprobantes que se corrigen.
+	 * Cuando se emiten los llamados comprobantes de correcci?n (notas de cr?dito y d?bito) es obligatorio indicar mediante referencias la situaci?n que se corrige. La referencia
+	 * puede ser global (Ejemplo: ?Descuentos mes de Junio?) o espec?fica, esto es, listando los comprobantes que se corrigen.
 	 * 
-	 * Sintaxis: Tipo|NroLin|IndGlobal|TipoCFERef|Serie|NroCFERef|Razon|
-	 * FechaCFEReferencia
+	 * Sintaxis: Tipo|NroLin|IndGlobal|TipoCFERef|Serie|NroCFERef|Razon| FechaCFEReferencia
 	 * 
 	 * Ejemplo de referencia: 8|1||101|A|2344||2014-02-13
 	 * 
@@ -819,15 +811,16 @@ public class EFacturaServiceImpl implements EFacturaService {
 	 */
 	private String getReferencias(Documento doc) {
 		String nroLinea = "1";
-		String indGlobal = (doc.getIndGlobalCFERef() != null && doc.getIndGlobalCFERef().equals("G")) ? "1" : "" ; // Entero; Se utiliza solo cuando no se pueden identificar los CFE de referencia. Valor = 1, de lo contrario debe ser nulo.
-		String tipoCFERef = doc.getTipoCFERef() != null ? doc.getTipoCFERef() : "";	// Entero; Ver tabla TipoCFE
+		String indGlobal = (doc.getIndGlobalCFERef() != null && doc.getIndGlobalCFERef().equals("G")) ? "1" : ""; // Entero; Se utiliza solo cuando no se pueden identificar los CFE
+																													// de referencia. Valor = 1, de lo contrario debe ser nulo.
+		String tipoCFERef = doc.getTipoCFERef() != null ? doc.getTipoCFERef() : ""; // Entero; Ver tabla TipoCFE
 		String serie = doc.getSerieCFERef() != null ? doc.getSerieCFERef() : ""; // Texto; Serie asignada al comprobante de referencia
 		String nroCFERef = doc.getNumCFERef() != null ? String.valueOf(doc.getNumCFERef()) : ""; // Entero; Nro. asignado al comprobante de referencia
-		String razon = indGlobal.equals("1") ? doc.getRazonCFERef() : ""; // Texto; Raz?n de la referencia
+		String razon = indGlobal.equals("1") ? doc.getRazonCFERef() : ""; // Texto; Razón de la referencia
 		String fechaCFEReferencia = ""; // Fecha; Fecha de emisi?n del CFE Referenciado
 		if (doc.getFechaCFERef() != null) {
 			fechaCFEReferencia = eFacturaDateFormat.format(doc.getFechaCFERef());
-		} 
+		}
 
 		StringBuffer lineasData = new StringBuffer("8|");
 		lineasData.append(nroLinea).append("|");
@@ -848,18 +841,17 @@ public class EFacturaServiceImpl implements EFacturaService {
 	 * 
 	 * Sintaxis: Tipo|Addenda
 	 * 
-	 * Ejemplo: 10| Presentando este comprobante en los pr?ximos 7 d?as
-	 * descontaremos de su compra el 10% del valor
+	 * Ejemplo: 10| Presentando este comprobante en los próximos 7 días descontaremos de su compra el 10% del valor
 	 * 
 	 * @param doc
-	 * @return L?nea e addenda
+	 * @return Línea e addenda
 	 */
 	private String getAddenda(Documento doc) {
 		String tpoDoc = doc.getComprobante().getNombre().toUpperCase();
 
 		StringBuffer addenda = new StringBuffer();
 		if (doc.getDocMensaje() != null) {
-			addenda.append(doc.getDocMensaje()).append("\n"); 
+			addenda.append(doc.getDocMensaje()).append("\n");
 		} else {
 			addenda.append("T.Doc: ").append(tpoDoc).append(" \n");
 			addenda.append(doc.getComprobante().getNombre().toUpperCase()).append(" \n");
@@ -875,8 +867,8 @@ public class EFacturaServiceImpl implements EFacturaService {
 	/**
 	 * Identificaci?n Punto de Venta
 	 * 
-	 * Esta identificaci?n, que es una cadena alfanum?rica de hasta 30 caracteres, se utilizar? para identificar las transacciones recibidas de cada puesto de trabajo (punto de venta o caja). 
-	 * Ser? un c?digo que el integrador deber? proporcionar y crear de la manera que crea conveniente.  
+	 * Esta identificación, que es una cadena alfanum?rica de hasta 30 caracteres, se utilizará para identificar las transacciones recibidas de cada puesto de trabajo (punto de
+	 * venta o caja). Será un código que el integrador deberá proporcionar y crear de la manera que crea conveniente.
 	 * 
 	 * Sintaxis: 13|idPuntoVenta
 	 * 
@@ -886,10 +878,11 @@ public class EFacturaServiceImpl implements EFacturaService {
 	 * @return Linea Identificaci?n Punto de Venta
 	 */
 	private String getIdPuntoVenta(Documento doc) {
-		String id_punto_venta = doc.getPuntoVentaId() != null && doc.getPuntoVentaId().length() > 0 ? doc.getPuntoVentaId() : "00001";
+		String id_punto_venta = doc.getPuntoVentaId() != null && doc.getPuntoVentaId().length() > 0 ? doc
+				.getPuntoVentaId() : "00001";
 		return "13|" + id_punto_venta;
 	}
-	
+
 	private String getMonedaCEF(String moneda) {
 		if (moneda.equals(Moneda.CODIGO_MONEDA_PESOS)) {
 			return "UYU";
@@ -906,25 +899,26 @@ public class EFacturaServiceImpl implements EFacturaService {
 			return "5";
 		}
 		if ("1".equals(tipo) || "3".equals(tipo)) {
-			return "3"; // Tasa b?sica 22%
+			return "3"; // Tasa básica 22%
 		} else if ("2".equals(tipo) || "4".equals(tipo)) {
-			return "2"; // Tasa m?nima 10%
-		} else{
+			return "2"; // Tasa mínima 10%
+		} else {
 			return "1"; // Excento de IVA
 		}
 	}
-	
-	private short getTipoCFEDoc(Documento doc) {
-		int tipoDocReceptor = (doc.getTipoDoc() != null && doc.getTipoDoc().equals("R")) ? 2 : 3; // Entero Ver tabla Tipos de Documento
 
-		String docReceptor = doc.getRut() != null ? doc.getRut() : ""; 
+	private short getTipoCFEDoc(Documento doc) {
+		// Entero Ver tabla Tipos de Documento
+		int tipoDocReceptor = (doc.getTipoDoc() != null && doc.getTipoDoc().equals("R")) ? 2 : 3; 
+
+		String docReceptor = doc.getRut() != null ? doc.getRut() : "";
 		if (tipoDocReceptor == 2) { // Is RUT
 			if (docReceptor.length() < 1) {
 				tipoDocReceptor = 3;
 			}
-		}		
+		}
 		return getTipoCFE(doc.getComprobante(), tipoDocReceptor);
-	
+
 	}
 
 	private short getTipoCFE(Comprobante comprobante, int docReceptor) {
@@ -937,9 +931,9 @@ public class EFacturaServiceImpl implements EFacturaService {
 				return 202;
 			} else if (comprobante.getCodigo().equals("305") || comprobante.getCodigo().equals("307")) { // e-factura nota de cr?dito
 				return 212;
-			} 
+			}
 			return 0;
-			
+
 		} else {
 			switch (comprobante.getTipo()) {
 			case Comprobante.VENTA_CONTADO:
@@ -960,20 +954,19 @@ public class EFacturaServiceImpl implements EFacturaService {
 				return 0;
 			}
 		}
-		
+
 	}
-	
-	
+
 	private String getTipoCFENombre(int tipo) {
 		switch (tipo) {
 		case 101:
 			return "e-Ticket";
-		case 102: 
-			return "Nota de Cr�dito de e-Ticket";
-		case 111: 
+		case 102:
+			return "Nota de Crédito de e-Ticket";
+		case 111:
 			return "e-Factura";
 		case 112:
-			return "Nota de Cr�dito de e-Factura";
+			return "Nota de Crédito de e-Factura";
 		case 201:
 			return "e-Ticket de Contingencia";
 		case 211:
@@ -1000,40 +993,40 @@ public class EFacturaServiceImpl implements EFacturaService {
 		}
 
 	}
-	
+
 	public ArrayList<String> obtenerDuplicados(Date desde, Date hasta) {
 		File folder = new File("C:\\eFactura\\input\\");
-	
+
 		ArrayList<String> sobres = new ArrayList<String>();
 		ArrayList<String> duplicados = new ArrayList<String>();
-		
+
 		HashMap<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
-		
+
 		listFilesForFolder(folder, sobres, duplicados, map, desde, hasta);
-		
-		StringBuffer buffer1 = new StringBuffer("");		
+
+		StringBuffer buffer1 = new StringBuffer("");
 		for (String sobre : duplicados) {
 			ArrayList<String> files = map.get(sobre);
-			
+
 			for (String fileEntry : files) {
-	    		try {
-	    			String result = readFile("C:\\eFactura\\input\\" + fileEntry);
-	    			String[] rows = result != null ? result.split(System.getProperty("line.separator")) : null;
-	    			String[] fields = rows[0].split("\\|");
-	    			
+				try {
+					String result = readFile("C:\\eFactura\\input\\" + fileEntry);
+					String[] rows = result != null ? result.split(System.getProperty("line.separator")) : null;
+					String[] fields = rows[0].split("\\|");
+
 					Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(fields[3]);
-					
-					if (date1.after(desde) && date1.before(hasta)) {						
+
+					if (date1.after(desde) && date1.before(hasta)) {
 						buffer1.append("# SOBRE #");
 						buffer1.append(System.getProperty("line.separator"));
 						buffer1.append(result);
-						
+
 						String filePath = "C:\\eFactura\\output\\" + fileEntry;
 						File file = new File(filePath);
 						if (file.exists()) {
 							buffer1.append("# RESULTADO #");
 							buffer1.append(System.getProperty("line.separator"));
-							buffer1.append(readFile(filePath));	
+							buffer1.append(readFile(filePath));
 
 						}
 						buffer1.append(System.getProperty("line.separator"));
@@ -1041,45 +1034,45 @@ public class EFacturaServiceImpl implements EFacturaService {
 						buffer1.append(System.getProperty("line.separator"));
 					}
 
-	    		} catch (ParseException e) {
-	    			e.printStackTrace();
-	    		} catch (IOException e) {
+				} catch (ParseException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		
+
 		StringBuffer buffer2 = new StringBuffer("");
 		StringBuffer buffer3 = new StringBuffer("");
 		for (String sobre : sobres) {
 			ArrayList<String> files = map.get(sobre);
-			
-			for (String fileEntry : files) {
-	    		try {
-	    			String result = readFile("C:\\eFactura\\input\\" + fileEntry);
-	    			String[] rows = result != null ? result.split(System.getProperty("line.separator")) : null;
-	    			String[] fields = rows[0].split("\\|");
-	    			
-	    			Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(fields[3]);
 
-	    			if (date1.after(desde) && date1.before(hasta)) {
+			for (String fileEntry : files) {
+				try {
+					String result = readFile("C:\\eFactura\\input\\" + fileEntry);
+					String[] rows = result != null ? result.split(System.getProperty("line.separator")) : null;
+					String[] fields = rows[0].split("\\|");
+
+					Date date1 = new SimpleDateFormat("yyyy-MM-dd").parse(fields[3]);
+
+					if (date1.after(desde) && date1.before(hasta)) {
 						buffer2.append("# SOBRE #");
 						buffer2.append(System.getProperty("line.separator"));
 						buffer2.append(result);
-					
+
 						String filePath = "C:\\eFactura\\output\\" + fileEntry;
-						
+
 						File file = new File(filePath);
 						if (file.exists()) {
 							buffer2.append("# RESULTADO #");
 							buffer2.append(System.getProperty("line.separator"));
-							
+
 							String r = readFile(filePath);
-							buffer2.append(r);	
-							
+							buffer2.append(r);
+
 							String[] rowsRes = r != null ? r.split(System.getProperty("line.separator")) : null;
 							String[] fieldsRes = rowsRes[0].split("\\|");
-							
+
 							if (fieldsRes[1].equals("BE")) {
 								buffer3.append("# SOBRE #");
 								buffer3.append(System.getProperty("line.separator"));
@@ -1094,63 +1087,62 @@ public class EFacturaServiceImpl implements EFacturaService {
 								buffer3.append(System.getProperty("line.separator"));
 							}
 						}
-												
-						
+
 						buffer2.append(System.getProperty("line.separator"));
 						buffer2.append("########################################################");
 						buffer2.append(System.getProperty("line.separator"));
 					}
 
-	    		} catch (ParseException e) {
-	    			e.printStackTrace();
-	    		} catch (IOException e) {
+				} catch (ParseException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
-			
+
 		}
-		
+
 		String duplicadosMsg = buffer1.toString();
 		String todosMsg = buffer2.toString();
 		String errorsMsg = buffer3.toString();
-				
-		
+
 		ArrayList<String> values = new ArrayList<String>();
 		values.add(todosMsg.length() > 0 ? todosMsg : "No hay documentos emitidos en eFactura en este rango de fechas.");
-		values.add(duplicadosMsg.length() > 0 ? duplicadosMsg : "No hay documentos emitidos en eFactura en este rango de fechas.");
-		values.add(errorsMsg.length() > 0 ? errorsMsg : "No hay documentos emitidos en eFactura con resultado de error.");
-		
+		values.add(duplicadosMsg.length() > 0 ? duplicadosMsg
+				: "No hay documentos emitidos en eFactura en este rango de fechas.");
+		values.add(errorsMsg.length() > 0 ? errorsMsg
+				: "No hay documentos emitidos en eFactura con resultado de error.");
+
 		return values;
 	}
-	
-	
-	private void listFilesForFolder(final File folder, ArrayList<String> sobres, ArrayList<String> duplicados, HashMap<String, ArrayList<String>> map, Date desde, Date hasta) {
-	    for (final File fileEntry : folder.listFiles()) {
-	        if (fileEntry.isDirectory()) {
-	            listFilesForFolder(fileEntry, sobres, duplicados, map, desde, hasta);
-	        } else {
-	        	String fileName = fileEntry.getName();
-	        	String sobre = fileName.split("_")[1];
-	        	
-	        	if (map.containsKey(sobre)) {
-	        		ArrayList<String> list = map.get(sobre);
-	        		list.add(fileName);
-	        	} else {
-	        		ArrayList<String> list = new ArrayList<String>();
-	        		list.add(fileName);
-	        		
-	        		map.put(sobre, list);
-	        	}
-	        	if (sobres.contains(sobre)) {
-        			if (!duplicados.contains(sobre)) {
-        				duplicados.add(sobre);
-        			}
-	        	} else {
-	        		sobres.add(sobre);
-	        	}
-	        }
-	    }
-	}
 
+	private void listFilesForFolder(final File folder, ArrayList<String> sobres, ArrayList<String> duplicados,
+			HashMap<String, ArrayList<String>> map, Date desde, Date hasta) {
+		for (final File fileEntry : folder.listFiles()) {
+			if (fileEntry.isDirectory()) {
+				listFilesForFolder(fileEntry, sobres, duplicados, map, desde, hasta);
+			} else {
+				String fileName = fileEntry.getName();
+				String sobre = fileName.split("_")[1];
+
+				if (map.containsKey(sobre)) {
+					ArrayList<String> list = map.get(sobre);
+					list.add(fileName);
+				} else {
+					ArrayList<String> list = new ArrayList<String>();
+					list.add(fileName);
+
+					map.put(sobre, list);
+				}
+				if (sobres.contains(sobre)) {
+					if (!duplicados.contains(sobre)) {
+						duplicados.add(sobre);
+					}
+				} else {
+					sobres.add(sobre);
+				}
+			}
+		}
+	}
 
 }
