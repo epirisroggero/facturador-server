@@ -1399,14 +1399,8 @@ public class RemoteServiceHandler {
 
 			if (!recibo.getComprobante().isAster() && result.isEmitido() && recibo.getProcessId() == null
 					&& !recibo.getSerie().equals("A") && recibo.getFacturasVinculadas().size() > 0) {
-<<<<<<< HEAD
 				Documento notaCreditoFin = emitir(crearNCF(recibo), "");
 				result.setNotaCreditoFinanciera(notaCreditoFin);
-=======
-				Documento notaCreditoFin = crearNCF(recibo);
-
-				emitir(notaCreditoFin, "");
->>>>>>> 5e2515e7c4475743c776557f75791c906ac11235
 			}
 
 			// guardar cambios en el recibo

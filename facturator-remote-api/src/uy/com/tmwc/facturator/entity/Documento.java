@@ -1245,7 +1245,6 @@ public class Documento extends DocumentoBase implements Serializable {
 		this.puntoVentaId = puntoVentaId;
 	}
 
-<<<<<<< HEAD
 	public Documento getNotaCreditoFinanciera() {
 		return notaCreditoFinanciera;
 	}
@@ -1253,7 +1252,7 @@ public class Documento extends DocumentoBase implements Serializable {
 	public void setNotaCreditoFinanciera(Documento notaCreditoFinanciera) {
 		this.notaCreditoFinanciera = notaCreditoFinanciera;
 	}
-=======
+
 	public String getTarjetaNro() {
 		return tarjetaNro;
 	}
@@ -1262,8 +1261,5 @@ public class Documento extends DocumentoBase implements Serializable {
 		this.tarjetaNro = tarjetaNro;
 	}
 	
-	
->>>>>>> 5e2515e7c4475743c776557f75791c906ac11235
-
 
 }

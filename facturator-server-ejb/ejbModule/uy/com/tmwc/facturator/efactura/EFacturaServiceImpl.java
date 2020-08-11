@@ -720,15 +720,15 @@ public class EFacturaServiceImpl implements EFacturaService {
 	}
 
 	/**
-	 * L?neas
+	 * Líneas
 	 * 
-	 * Cada l?nea representa un ?tem del comprobante, se deber? generar una l?nea tipo 6 por cada una del comprobante original. En el caso de que deba aplicar redondeos al
-	 * comprobante, debe hacerse a trav?s de la generaci?n de una l?nea tipo 6 con el redondeo. Los n?meros siempre deben ser positivos, para redondeos positivos debe usarse
-	 * indicador de facturaci?n 6 (Producto o servicio no facturable) y para los negativos 7 (Producto o servicio facturable negativo).
+	 * Cada línea representa un ?tem del comprobante, se deberá generar una línea tipo 6 por cada una del comprobante original. En el caso de que deba aplicar redondeos al
+	 * comprobante, debe hacerse a través de la generación de una l?nea tipo 6 con el redondeo. Los números siempre deben ser positivos, para redondeos positivos debe usarse
+	 * indicador de facturación 6 (Producto o servicio no facturable) y para los negativos 7 (Producto o servicio facturable negativo).
 	 * 
 	 * Sintaxis: Tipo|Nro|IndicadorFacturacion|DescArticulo|Cant|UniMed|PrecioUnitario |DescPorc|DescMonto|RecPorc|RecMonto|MontoItem
 	 * 
-	 * Para precio = 0, el indicador de facturaci?n debe ser 5.
+	 * Para precio = 0, el indicador de facturación debe ser 5.
 	 * 
 	 * Ejemplo: 6|1|3|Producto 1|2.000|kg|55.00|||||110
 	 * 
