@@ -58,25 +58,25 @@ public class DocumentoServiceImpl implements DocumentoService {
 
 	@EJB
 	CatalogService catalogService;
-	
+
 	@EJB
 	AuditoriaService auditoriaService;
 
 	@EJB
 	DTO2ModelMappingService dto2ModelMappingService;
-	
+
 	@EJB
 	UsuariosService usuariosService;
 
 	@EJB
 	EFacturaService efacturaService;
-	
+
 	public String alta(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
 		if (documento.getDocId() != null) {
 			throw new IllegalStateException("Usar el metodo modificar para documentos ya existentes");
 		}
 		documento = replaceReadonlyEntities(documento);
-		
+
 		preSaveDocumento(documento);
 
 		String docId = this.documentoDAOService.persist(documento);
@@ -93,17 +93,17 @@ public class DocumentoServiceImpl implements DocumentoService {
 	public Boolean borrar(Documento documento) throws ValidationException, PermisosException {
 		return borrar(documento, false);
 	}
-	
+
 	public Boolean borrar(Documento documento, Boolean force) throws ValidationException, PermisosException {
 		Documento current = this.documentoDAOService.findDocumento(documento.getDocId());
-		if (!force) {			
+		if (!force) {
 			verificarFecha(current, documento);
 
 			if (current.isEmitido()) {
 				throw new ValidationException("Este documento ya ha sido emitido por lo que no es posible borrarlo");
 			}
-			
-		} 
+
+		}
 		return this.documentoDAOService.remove(current);
 	}
 
@@ -124,49 +124,55 @@ public class DocumentoServiceImpl implements DocumentoService {
 	public Documento guardar(Documento documento) throws ValidationException, PermisosException {
 		return guardar(documento, null);
 	}
-	
+
 	public Documento guardar(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
 		Documento current = documentoDAOService.findDocumento(documento.getDocId());
-		
+
 		if (current == null) {
-			throw new ValidationException("No fué posible grabar el documento. El mismo no existe.");
+			throw new ValidationException("No fuÃ© posible grabar el documento. El mismo no existe.");
 		}
-		
+
 		verificarFecha(current, documento);
 
-		if (current.isEmitido()) { // Revisar si se cambiaron los importes de iva, total, sub-total post emisiï¿½n.
-			if (!documento.calcularIva().setScale(2, RoundingMode.HALF_EVEN).equals(current.calcularIva().setScale(2, RoundingMode.HALF_EVEN))) {
-				throw new ValidationException("Iva no válido");
+		if (current.isEmitido()) { 
+			// Revisar si se cambiaron los importes de iva, total, sub-total post emisiÃ³n.
+			if (!documento.calcularIva().setScale(2, RoundingMode.HALF_EVEN)
+					.equals(current.calcularIva().setScale(2, RoundingMode.HALF_EVEN))) {
+				throw new ValidationException("Iva no vÃ¡lido");
 			}
-			if (!documento.getTotal().setScale(2, RoundingMode.HALF_EVEN).equals(current.getTotal().setScale(2, RoundingMode.HALF_EVEN))) {
-				throw new ValidationException("Total no válido");
+			if (!documento.getTotal().setScale(2, RoundingMode.HALF_EVEN)
+					.equals(current.getTotal().setScale(2, RoundingMode.HALF_EVEN))) {
+				throw new ValidationException("Total no vÃ¡lido");
 			}
-			if (!documento.getSubTotal().setScale(2, RoundingMode.HALF_EVEN).equals(current.getSubTotal().setScale(2, RoundingMode.HALF_EVEN))) {
-				throw new ValidationException("Sub-Total no válido");
+			if (!documento.getSubTotal().setScale(2, RoundingMode.HALF_EVEN)
+					.equals(current.getSubTotal().setScale(2, RoundingMode.HALF_EVEN))) {
+				throw new ValidationException("Sub-Total no vÃ¡lido");
 			}
-			if (current.getComprobante().getCodigo().equals("122")) { // Es pro-forma de importaciï¿½n y ya esta emitida actualizo nacionalizaciï¿½n.
+			
+			// Es pro-forma de importaciÃ³n y ya esta emitida actualizo nacionalizaciÃ³n.
+			if (current.getComprobante().getCodigo().equals("122")) { 
 				BigDecimal coeficienteImp = documento.getCoeficienteImp();
-				
-				List<DocumentoDTO> documentsImp = null; 
+
+				List<DocumentoDTO> documentsImp = null;
 				if (documento.getPrevDocId() != null) {
 					documentsImp = this.documentoDAOService.getSolicitudImportacion(documento.getProcessId());
 				} else {
 					documentsImp = this.documentoDAOService.getSolicitudImportacion(documento.getDocId());
 				}
-				
+
 				if (documentsImp != null && documentsImp.size() > 0) {
 					DocumentoDTO docImp = documentsImp.get(0);
 					Documento document = this.documentoDAOService.findDocumento(docImp.getDocId());
-					
+
 					current.getLineas().actualizarPrecioLineas(coeficienteImp);
 					current.setTotal(null);
-					document.setLineas(current.getLineas());					
+					document.setLineas(current.getLineas());
 					document.setTotal(current.getTotal());
-					
+
 					this.documentoDAOService.merge(document);
-				}				
+				}
 			}
-		
+
 		}
 
 		documento = replaceReadonlyEntities(documento);
@@ -185,7 +191,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 			try {
 				usuarioId = Short.parseShort(ppal.getName());
 			} catch (NumberFormatException nfe) {
-				throw new ValidationException("Código de usuario inesperado: " + ppal.getName());
+				throw new ValidationException("CÃ³digo de usuario inesperado: " + ppal.getName());
 			}
 		} else {
 			throw new ValidationException("No se pudo determinar el usuario");
@@ -193,14 +199,14 @@ public class DocumentoServiceImpl implements DocumentoService {
 		documento.setUsuarioId(usuarioId);
 
 		documento.getLineas().fixNumerosLineas();
-		
+
 		if (auditoria != null) {
 			auditoria.setAudFechaHora(new Date());
 			auditoriaService.alta(auditoria);
 		}
 
 		this.documentoDAOService.merge(documento);
-	
+
 		Documento docGuardado = findDocumento(documento.getDocId());
 		return docGuardado;
 	}
@@ -209,11 +215,11 @@ public class DocumentoServiceImpl implements DocumentoService {
 		Documento current = this.documentoDAOService.findDocumento(documento.getDocId());
 
 		verificarFecha(current, documento);
-		
+
 		documento = replaceReadonlyEntities(documento);
 
 		if (documento.isEmitible() && documento.isEmitido()) {
-			throw new RuntimeException("El documento ya fué emitido y no se puede modificar.");
+			throw new RuntimeException("El documento ya fuÃ© emitido y no se puede modificar.");
 		}
 		preSaveDocumento(documento);
 
@@ -225,10 +231,10 @@ public class DocumentoServiceImpl implements DocumentoService {
 		}
 
 	}
-	
+
 	public SerieNumero emitir(Documento documento, String fanfoldId) throws ValidationException, PermisosException {
 		Documento current = this.documentoDAOService.findDocumento(documento.getDocId());
-		
+
 		verificarFecha(current, documento);
 
 		SerieNumero serieNumero = null;
@@ -239,7 +245,6 @@ public class DocumentoServiceImpl implements DocumentoService {
 			serieNumero = this.documentoDAOService.generarSerieNumero(current.getComprobante().getCodigo());
 			current.toEmitido(serieNumero);
 		}
-		
 
 		if (!documento.getComprobante().isMueveCaja()) {
 			current.setCajaId(null);
@@ -260,7 +265,8 @@ public class DocumentoServiceImpl implements DocumentoService {
 		if (!documento.isPendiente()) {
 			throw new IllegalStateException("Este Movimiento de Stock ya ha sido finalizado");
 		}
-		if (documento.getComprobante().getTipo() != Comprobante.MOVIMIENTO_DE_STOCK_DE_CLIENTE && documento.getComprobante().getTipo() != Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES) {
+		if (documento.getComprobante().getTipo() != Comprobante.MOVIMIENTO_DE_STOCK_DE_CLIENTE
+				&& documento.getComprobante().getTipo() != Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES) {
 			throw new IllegalStateException("Este Documento no es un Movimiento de Stock");
 		}
 		if (!documento.getComprobante().isMueveCaja()) {
@@ -268,7 +274,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 		}
 		return this.documentoDAOService.finalizarMovimientoStock(documento);
 	}
-	
+
 	public Boolean finalizarCompra(Documento documento) throws PermisosException {
 		if (!documento.isPendiente()) {
 			throw new IllegalStateException("Esta compra ya ha sido finalizado");
@@ -290,34 +296,36 @@ public class DocumentoServiceImpl implements DocumentoService {
 	}
 
 	public Boolean finalizarGasto(Documento documento) throws PermisosException {
-		if (documento.getComprobante().getTipo() == 31 || documento.getComprobante().getTipo() >= 21 && documento.getComprobante().getTipo() <= 24) {
+		if (documento.getComprobante().getTipo() == 31 || documento.getComprobante().getTipo() >= 21
+				&& documento.getComprobante().getTipo() <= 24) {
 			if (!documento.isPendiente()) {
 				throw new IllegalStateException("Este gasto ya ha sido finalizado");
 			}
 		}
-		
+
 		if (!documento.getComprobante().isMueveCaja()) {
 			documento.setCajaId(null);
 		}
 		return this.documentoDAOService.finalizarGasto(documento);
 	}
 
-
 	private Boolean verificarFecha(Documento current, Documento modificado) throws ValidationException {
 		if (current == null || modificado == null) {
 			return Boolean.TRUE;
-		} 
-		
+		}
+
 		Date currentDate = current.getRegistroFecha();
 		Date currentTime = current.getRegistroHora();
 
 		Date newDate = modificado.getRegistroFecha();
 		Date newTime = modificado.getRegistroHora();
-		
+
 		if (!currentDate.equals(newDate) || !currentTime.equals(newTime)) {
 			String msg;
 			if (current.getSerie() != null || current.getNumero() != null) {
-				msg = "El Documento " + (current.getSerie() != null ? current.getSerie() : "") + (current.getNumero() != null ? current.getNumero() : "") + " ha sido modificado por otro usuario.";
+				msg = "El Documento " + (current.getSerie() != null ? current.getSerie() : "")
+						+ (current.getNumero() != null ? current.getNumero() : "")
+						+ " ha sido modificado por otro usuario.";
 			} else {
 				msg = "El Documento ha sido modificado por otro usuario.";
 			}
@@ -338,7 +346,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 			try {
 				usuarioId = Short.parseShort(ppal.getName());
 			} catch (NumberFormatException nfe) {
-				throw new ValidationException("Código de usuario inesperado: " + ppal.getName());
+				throw new ValidationException("CÃ³digo de usuario inesperado: " + ppal.getName());
 			}
 		} else {
 			throw new ValidationException("No se pudo determinar el usuario");
@@ -349,29 +357,29 @@ public class DocumentoServiceImpl implements DocumentoService {
 		}
 		if (documento.getComprobante().isRecibo()) {
 			documento.setCajaId(new Short("1"));
-		}		
+		}
 		if (documento.getEstado() == null) {
 			documento.setEstado("");
 		}
-		
+
 		documento.setUsuarioId(usuarioId);
 
 		documento.establecerFormaPago();
 
 		documento.getLineas().fixNumerosLineas();
-		
+
 		documento.sanityCheck();
 
 		documento.validate();
 	}
-	
 
 	public BigDecimal getTipoCambio(String monedaOrigen, String monedaDestino, Date fecha) {
-		return new LogicaCotizacion(Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_DOLAR).getTipoCambio(monedaOrigen, monedaDestino, fecha, new LogicaCotizacion.GetTipoCambio() {
-			public BigDecimal getTipoCambio(String monedaOrigen, Date fecha) {
-				return documentoDAOService.getTipoCambio(monedaOrigen, fecha);
-			}
-		});
+		return new LogicaCotizacion(Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_DOLAR).getTipoCambio(monedaOrigen,
+				monedaDestino, fecha, new LogicaCotizacion.GetTipoCambio() {
+					public BigDecimal getTipoCambio(String monedaOrigen, Date fecha) {
+						return documentoDAOService.getTipoCambio(monedaOrigen, fecha);
+					}
+				});
 	}
 
 	public BigDecimal getTipoCambioFiscal(String monedaId, Date fecha) {
@@ -380,19 +388,21 @@ public class DocumentoServiceImpl implements DocumentoService {
 			tcFiscal = documentoDAOService.getTipoCambioFiscal(monedaId, null);
 		}
 		return tcFiscal;
-		
+
 	}
 
-	public int obtenerUltimoDiaMes (int anio, int mes) {
+	public int obtenerUltimoDiaMes(int anio, int mes) {
 		Calendar cal = Calendar.getInstance();
-		cal.set(anio, mes-1, 1);
-	
+		cal.set(anio, mes - 1, 1);
+
 		return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 	}
 
-	public BigDecimal getMontoMayorCotizacion(String articulo, Date fechaPrecio, String monedaPrecio, BigDecimal precio, String monedaFacturacion, Boolean esRemito, Cotizaciones oCotizaciones) {
+	public BigDecimal getMontoMayorCotizacion(String articulo, Date fechaPrecio, String monedaPrecio,
+			BigDecimal precio, String monedaFacturacion, Boolean esRemito, Cotizaciones oCotizaciones) {
 		monedaFacturacion = Moneda.getCodigoMonedaNoAster(monedaFacturacion);
-		return new LogicaCotizacion(Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_DOLAR).getMontoMayorCotizacion(fechaPrecio, monedaPrecio, precio, monedaFacturacion, oCotizaciones, esRemito,
+		return new LogicaCotizacion(Moneda.CODIGO_MONEDA_PESOS, Moneda.CODIGO_MONEDA_DOLAR).getMontoMayorCotizacion(
+				fechaPrecio, monedaPrecio, precio, monedaFacturacion, oCotizaciones, esRemito,
 				new LogicaCotizacion.GetTipoCambio() {
 					public BigDecimal getTipoCambio(String monedaOrigen, Date fecha) {
 						BigDecimal tipoCambio = documentoDAOService.getTipoCambio(monedaOrigen, fecha);
@@ -400,19 +410,19 @@ public class DocumentoServiceImpl implements DocumentoService {
 					}
 				});
 	}
-	
 
 	public ArticuloPrecio getArticuloPrecio(String articulo, String preciosVenta) throws PermisosException {
 		Articulo a = catalogService.findCatalogEntity("Articulo", articulo);
 		String familiaId = a.getFamiliaId();
-		
+
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
-		
-		Boolean hasPerm = esSupervisor || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) 
-			|| Usuario.USUARIO_FACTURACION.equals(permisoId) || Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId);
-		
+
+		Boolean hasPerm = esSupervisor || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId)
+				|| Usuario.USUARIO_FACTURACION.equals(permisoId)
+				|| Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR.equals(permisoId);
+
 		if (!hasPerm && permisoId.equals(Usuario.USUARIO_ALIADOS_COMERCIALES)) {
 			String regex = System.getProperty("facturator.aliadosComerciales.familias");
 			if (regex != null) {
@@ -434,7 +444,8 @@ public class DocumentoServiceImpl implements DocumentoService {
 
 	}
 
-	public BigDecimal getPrecioSugerido(String articulo, String preciosVenta, String monedaFacturacion, Cotizaciones oCotizaciones) {
+	public BigDecimal getPrecioSugerido(String articulo, String preciosVenta, String monedaFacturacion,
+			Cotizaciones oCotizaciones) {
 		ArticuloPrecio precio = this.catalogService.getPrecioArticulo(preciosVenta, articulo);
 		if (precio == null) {
 			return BigDecimal.ZERO;
@@ -449,32 +460,33 @@ public class DocumentoServiceImpl implements DocumentoService {
 		if (precio.getMoneda() == null) {
 			return BigDecimal.ZERO;
 		}
-		
+
 		Date fechaCosto = art.getFechaCosto();
 		if (fechaCosto == null) {
 			fechaCosto = new Date();
 		}
 
-		return getMontoMayorCotizacion(articulo, fechaCosto, precio.getMoneda().getCodigo(), precioSinIva, monedaFacturacion, Boolean.FALSE, oCotizaciones);
+		return getMontoMayorCotizacion(articulo, fechaCosto, precio.getMoneda().getCodigo(), precioSinIva,
+				monedaFacturacion, Boolean.FALSE, oCotizaciones);
 	}
 
-	public List<AntecedentesArticulo> getAntecedentes(String articulo, String cliente, int limit, boolean venta) throws PermisosException {
+	public List<AntecedentesArticulo> getAntecedentes(String articulo, String cliente, int limit, boolean venta)
+			throws PermisosException {
 		if (articulo == null) {
 			return new ArrayList<AntecedentesArticulo>();
 		}
-		
-		List<LineaDocumento> lineas = 
-			this.documentoDAOService.getAntecedentes(articulo.trim(), cliente, limit, venta);
+
+		List<LineaDocumento> lineas = this.documentoDAOService.getAntecedentes(articulo.trim(), cliente, limit, venta);
 
 		ArrayList<AntecedentesArticulo> antecedentes = new ArrayList<AntecedentesArticulo>(lineas.size());
 
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
 		String usuarioVend = usuarioLogin.getVenId();
-		
+
 		for (LineaDocumento linea : lineas) {
-			Documento documento = linea.getDocumento();			
-			
+			Documento documento = linea.getDocumento();
+
 			AntecedentesArticulo antecedente = new AntecedentesArticulo();
 			antecedente.setCantidad(linea.getCantidad());
 			antecedente.setFecha(documento.getFecha());
@@ -485,7 +497,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 			antecedente.setTipoCambio(documento.getDocTCC());
 			antecedente.setDocumentoSerie(documento.getSerie());
 			antecedente.setDocumentoNumero(documento.getNumero());
-			
+
 			if (documento.getComprobante() != null) {
 				antecedente.setComprobante(new CodigoNombre(documento.getComprobante()));
 			}
@@ -497,18 +509,18 @@ public class DocumentoServiceImpl implements DocumentoService {
 				Cliente c = documento.getCliente();
 				String vendedor = c.getVendedor() != null ? c.getVendedor().getCodigo() : "";
 				String encargadoCuenta = c.getEncargadoCuenta();
-				
+
 				if (vendedor.equals(usuarioVend) || vendedor.equals(encargadoCuenta)) {
 					antecedentes.add(antecedente);
-				} 
+				}
 			} else {
 				if (documento.getCliente() != null) {
 					antecedente.setCliente(new CodigoNombre(documento.getCliente()));
 				} else if (documento.getProveedor() != null) {
 					antecedente.setCliente(new CodigoNombre(documento.getProveedor()));
-				}				
+				}
 				antecedentes.add(antecedente);
-			}			
+			}
 		}
 
 		return antecedentes;
@@ -552,7 +564,8 @@ public class DocumentoServiceImpl implements DocumentoService {
 		return antecedentes;
 	}
 
-	public List<LineaDocumento> getLineasCotizadas(String cliId, String artId, String cmpId, Date fromDate, Date toDate, int limit) {
+	public List<LineaDocumento> getLineasCotizadas(String cliId, String artId, String cmpId, Date fromDate,
+			Date toDate, int limit) {
 		return this.documentoDAOService.getLineasCotizadas(cliId, artId, cmpId, fromDate, toDate, limit);
 	}
 
@@ -584,31 +597,33 @@ public class DocumentoServiceImpl implements DocumentoService {
 		return documentoDAOService.generarSerieNumero(comprobanteId);
 	}
 
-	public void modificarArticuloPrecio(String codart, String pminorista, String pindustria, String pdistribuidor) throws PermisosException {
+	public void modificarArticuloPrecio(String codart, String pminorista, String pindustria, String pdistribuidor)
+			throws PermisosException {
 		documentoDAOService.modificarArticuloPrecio(codart, pminorista, pindustria, pdistribuidor);
 	}
 
-	public int modificarCostos(String codart, Date dateDesde, Date dateHasta, RUTINA_MODIFCOSTO_ENUM costoAnterior, BigDecimal valorCostoAnterior, BigDecimal costoNuevo, String monedaNuevoCosto,
-			BigDecimal tcd) {
-		return documentoDAOService.modificarCostos(codart, dateDesde, dateHasta, costoAnterior, valorCostoAnterior, costoNuevo, monedaNuevoCosto, tcd);
+	public int modificarCostos(String codart, Date dateDesde, Date dateHasta, RUTINA_MODIFCOSTO_ENUM costoAnterior,
+			BigDecimal valorCostoAnterior, BigDecimal costoNuevo, String monedaNuevoCosto, BigDecimal tcd) {
+		return documentoDAOService.modificarCostos(codart, dateDesde, dateHasta, costoAnterior, valorCostoAnterior,
+				costoNuevo, monedaNuevoCosto, tcd);
 	}
-	
+
 	public List<ArticuloPrecioFabricaCosto> getPreciosArticuloDocumento(uy.com.tmwc.facturator.entity.Documento doc) {
 		return documentoDAOService.getPreciosArticuloDocumento(doc);
 	}
-	
+
 	public void updateArticulosPrecios(List<ArticuloPrecioFabricaCosto> lista, Boolean updateCosto) {
 		documentoDAOService.updateArticulosPrecios(lista, updateCosto);
 	}
-	
+
 	public List<ArticuloPrecioFabricaCosto> getCostosArticulos(uy.com.tmwc.facturator.entity.Documento doc) {
 		return documentoDAOService.getCostoArticulos(doc);
 	}
-	
+
 	public void updateArticulosCostos(List<ArticuloPrecioFabricaCosto> lista) {
 		documentoDAOService.updateArticulosCostos(lista);
 	}
-	
+
 	public List<ArticuloCompraVentaCosto> getCompraVentaCostos(uy.com.tmwc.facturator.entity.Documento doc) {
 		return documentoDAOService.getCompraVentaCostos(doc);
 	}
@@ -616,19 +631,19 @@ public class DocumentoServiceImpl implements DocumentoService {
 	public List<StockActual> getStockActual(String articuloId) {
 		return this.documentoDAOService.getStockActual(articuloId);
 	}
-	
+
 	public List<ArticuloCompraVentaCosto> getComprasPlazaCostos(Date fechaDesde, Date fechaHasta, Boolean mostrarTodas) {
 		return this.documentoDAOService.getComprasPlazaCostos(fechaDesde, fechaHasta, mostrarTodas);
 	}
-	
+
 	public void updateCostosArticuloDocumentos(List<ArticuloCompraVentaCosto> lista) throws PermisosException {
-		this.documentoDAOService.updateCostosArticuloDocumentos(lista); 
+		this.documentoDAOService.updateCostosArticuloDocumentos(lista);
 	}
-	
+
 	private Documento replaceReadonlyEntities(Documento documento) {
 		return (Documento) this.dto2ModelMappingService.getDozerBeanMapper().map(documento, Documento.class);
 	}
-	
+
 	public Boolean updateNotaCreditoFinancieraEnRecibo(Documento documento, String ncfId) throws PermisosException {
 		return this.documentoDAOService.updateNotaCreditoFinancieraEnRecibo(documento, ncfId);
 	}
@@ -637,7 +652,4 @@ public class DocumentoServiceImpl implements DocumentoService {
 		return this.documentoDAOService.getStockActualEnDeposito(depositoId);
 	}
 
-
-
-	
 }

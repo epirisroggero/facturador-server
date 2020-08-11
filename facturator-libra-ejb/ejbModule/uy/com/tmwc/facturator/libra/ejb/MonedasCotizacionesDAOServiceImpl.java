@@ -35,7 +35,8 @@ public class MonedasCotizacionesDAOServiceImpl extends ServiceBase implements Mo
 	public void persist(CotizacionesMonedas e) {
 		DozerBeanMapper mapper = this.mapService.getDozerBeanMapper();
 
-		uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas cotizacionlibra = mapper.map(e, uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas.class);
+		uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas cotizacionlibra = mapper.map(e,
+				uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas.class);
 
 		CotizacionesMonedasPK CotizacionesMonedasPK = new CotizacionesMonedasPK();
 		CotizacionesMonedasPK.setEmpId(getEmpId());
@@ -49,35 +50,39 @@ public class MonedasCotizacionesDAOServiceImpl extends ServiceBase implements Mo
 
 	public void merge(CotizacionesMonedas e) {
 		DozerBeanMapper mapper = mapService.getDozerBeanMapper();
-		uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas CotizacionesMonedas = mapper.map(e, uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas.class);
+		uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas CotizacionesMonedas = mapper.map(e,
+				uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas.class);
 
 		this.em.merge(CotizacionesMonedas);
 		this.em.flush();
 	}
 
 	public CotizacionesMonedas getCotizacion(Date fecha) {
-		uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas doc = (uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas) this.em.find(
-				uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas.class, new CotizacionesMonedasPK(getEmpId(), fecha));
+		uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas doc = (uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas) this.em
+				.find(uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas.class, new CotizacionesMonedasPK(
+						getEmpId(), fecha));
 		if (doc == null) {
 			return null;
 		}
-		CotizacionesMonedas mapped = (uy.com.tmwc.facturator.entity.CotizacionesMonedas) this.mapService.getDozerBeanMapper().map(doc, uy.com.tmwc.facturator.entity.CotizacionesMonedas.class);
+		CotizacionesMonedas mapped = (uy.com.tmwc.facturator.entity.CotizacionesMonedas) this.mapService
+				.getDozerBeanMapper().map(doc, uy.com.tmwc.facturator.entity.CotizacionesMonedas.class);
 
 		return mapped;
 	}
-	
+
 	public CotizacionesMonedas getUltimaCotizacion(Date fechaHasta) {
 		uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas doc = null;
-		
+
 		while (doc == null) {
 			doc = (uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas) this.em.find(
-					uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas.class, new CotizacionesMonedasPK(getEmpId(), fechaHasta));
-			
+					uy.com.tmwc.facturator.libra.entity.CotizacionesMonedas.class, new CotizacionesMonedasPK(
+							getEmpId(), fechaHasta));
+
 			if (doc == null) {
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(fechaHasta);
 				cal.add(Calendar.DATE, -1);
-				
+
 				fechaHasta = cal.getTime();
 			}
 		}
@@ -85,15 +90,16 @@ public class MonedasCotizacionesDAOServiceImpl extends ServiceBase implements Mo
 		return new Mapper().map(doc, uy.com.tmwc.facturator.entity.CotizacionesMonedas.class);
 	}
 
-	
 	public List<CotizacionesMonedas> getCotizacionesMonedas(Date fromDate) {
-		Query query = this.em.createNamedQuery("Cotizaciones.cotizacionesMonedasQuery").setParameter("empId", getEmpId()).setParameter("fromDate", fromDate);
+		Query query = this.em.createNamedQuery("Cotizaciones.cotizacionesMonedasQuery")
+				.setParameter("empId", getEmpId()).setParameter("fromDate", fromDate);
 
 		@SuppressWarnings("unchecked")
 		List<CotizacionesMonedas> list = query.getResultList();
 		DozerBeanMapper mapper = this.mapService.getDozerBeanMapper();
-		List<CotizacionesMonedas> res = MappingUtils.map(uy.com.tmwc.facturator.entity.CotizacionesMonedas.class, list, mapper);
-		
+		List<CotizacionesMonedas> res = MappingUtils.map(uy.com.tmwc.facturator.entity.CotizacionesMonedas.class, list,
+				mapper);
+
 		return res;
 	}
 

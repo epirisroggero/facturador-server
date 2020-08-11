@@ -52,8 +52,10 @@ public abstract class DocumentoBase implements Serializable {
 	}
 
 	public boolean isDatosClienteModificados() {
-		return (!stringEquals(this.razonSocial, this.cliente.getContacto().getCtoRSocial())) || (!stringEquals(this.telefono, this.cliente.getContacto().getCtoTelefono()))
-				|| (!stringEquals(this.direccion, this.cliente.getContacto().getCtoDireccion())) || (!stringEquals(this.rut, this.cliente.getContacto().getCtoRUT()));
+		return (!stringEquals(this.razonSocial, this.cliente.getContacto().getCtoRSocial()))
+				|| (!stringEquals(this.telefono, this.cliente.getContacto().getCtoTelefono()))
+				|| (!stringEquals(this.direccion, this.cliente.getContacto().getCtoDireccion()))
+				|| (!stringEquals(this.rut, this.cliente.getContacto().getCtoRUT()));
 	}
 
 	private static boolean stringEquals(String a, String b) {

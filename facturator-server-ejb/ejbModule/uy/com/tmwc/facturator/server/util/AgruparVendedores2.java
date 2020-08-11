@@ -17,7 +17,7 @@ public class AgruparVendedores2 extends CorteControlTemplate<ParticipacionVended
 
   protected void first(ParticipacionVendedor item)
   {
-    this.participacionesVendedorActual = new ArrayList();
+    this.participacionesVendedorActual = new ArrayList<ParticipacionVendedor>();
     this.participacionesPorVendedor.put(item.getVendedor(), this.participacionesVendedorActual);
   }
 

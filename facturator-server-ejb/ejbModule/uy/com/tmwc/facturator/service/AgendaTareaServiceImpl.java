@@ -28,7 +28,6 @@ public class AgendaTareaServiceImpl implements AgendaTareaService {
 	@EJB
 	CatalogService catalogService;
 
-
 	public void persist(AgendaTarea e) {
 		tareasDAOService.persist(e);
 	}
@@ -56,10 +55,9 @@ public class AgendaTareaServiceImpl implements AgendaTareaService {
 	public AgendaTarea getAgendaTarea(String id) {
 		return tareasDAOService.getAgendaTarea(id);
 	}
-	
+
 	public void notificacionPorFacturaVencida(HashMap<String, List<DocumentoDeudor>> vencimientos) {
 		tareasDAOService.notificacionPorFacturaVencida(vencimientos);
 	}
-	
 
 }

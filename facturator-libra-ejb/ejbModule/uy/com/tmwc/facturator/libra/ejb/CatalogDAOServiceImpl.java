@@ -50,51 +50,81 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 	private static final SimpleClassMapper jefaturasClassMapper;
 
 	static {
-		classMapping.put(uy.com.tmwc.facturator.entity.Articulo.class, uy.com.tmwc.facturator.libra.entity.Articulo.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.ArticuloPartida.class, uy.com.tmwc.facturator.libra.entity.ArticuloPartida.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Cliente.class, uy.com.tmwc.facturator.libra.entity.Cliente.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Contacto.class, uy.com.tmwc.facturator.libra.entity.Contacto.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Comprobante.class, uy.com.tmwc.facturator.libra.entity.Comprobante.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Deposito.class, uy.com.tmwc.facturator.libra.entity.Deposito.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Entrega.class, uy.com.tmwc.facturator.libra.entity.Entrega.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.FormaPago.class, uy.com.tmwc.facturator.libra.entity.Formaspago.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Articulo.class,
+				uy.com.tmwc.facturator.libra.entity.Articulo.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.ArticuloPartida.class,
+				uy.com.tmwc.facturator.libra.entity.ArticuloPartida.class);
+		classMapping
+				.put(uy.com.tmwc.facturator.entity.Cliente.class, uy.com.tmwc.facturator.libra.entity.Cliente.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Contacto.class,
+				uy.com.tmwc.facturator.libra.entity.Contacto.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Comprobante.class,
+				uy.com.tmwc.facturator.libra.entity.Comprobante.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Deposito.class,
+				uy.com.tmwc.facturator.libra.entity.Deposito.class);
+		classMapping
+				.put(uy.com.tmwc.facturator.entity.Entrega.class, uy.com.tmwc.facturator.libra.entity.Entrega.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.FormaPago.class,
+				uy.com.tmwc.facturator.libra.entity.Formaspago.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Banco.class, uy.com.tmwc.facturator.libra.entity.Banco.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.GrupoContacto.class, uy.com.tmwc.facturator.libra.entity.Gruposcontacto.class);		
+		classMapping.put(uy.com.tmwc.facturator.entity.GrupoContacto.class,
+				uy.com.tmwc.facturator.libra.entity.Gruposcontacto.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Iva.class, uy.com.tmwc.facturator.libra.entity.Iva.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Moneda.class, uy.com.tmwc.facturator.libra.entity.Moneda.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.PlanPagos.class, uy.com.tmwc.facturator.libra.entity.Planpago.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.PreciosVenta.class, uy.com.tmwc.facturator.libra.entity.Preciosventa.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Vendedor.class, uy.com.tmwc.facturator.libra.entity.Vendedore.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Usuario.class, uy.com.tmwc.facturator.libra.entity.Usuario.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.PlanPagos.class,
+				uy.com.tmwc.facturator.libra.entity.Planpago.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.PreciosVenta.class,
+				uy.com.tmwc.facturator.libra.entity.Preciosventa.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Vendedor.class,
+				uy.com.tmwc.facturator.libra.entity.Vendedore.class);
+		classMapping
+				.put(uy.com.tmwc.facturator.entity.Usuario.class, uy.com.tmwc.facturator.libra.entity.Usuario.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Tarea.class, uy.com.tmwc.facturator.libra.entity.Tarea.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Proveedor.class, uy.com.tmwc.facturator.libra.entity.Proveedor.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Numerador.class, uy.com.tmwc.facturator.libra.entity.Numerador.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Proveedor.class,
+				uy.com.tmwc.facturator.libra.entity.Proveedor.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Numerador.class,
+				uy.com.tmwc.facturator.libra.entity.Numerador.class);
 
 		classMapping.put(uy.com.tmwc.facturator.entity.Zona.class, uy.com.tmwc.facturator.libra.entity.Zona.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Iva.class, uy.com.tmwc.facturator.libra.entity.Iva.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Pais.class, uy.com.tmwc.facturator.libra.entity.Pais.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Caja.class, uy.com.tmwc.facturator.libra.entity.Caja.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Fanfold.class, uy.com.tmwc.facturator.libra.entity.Fanfold.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Localescomerciale.class, uy.com.tmwc.facturator.libra.entity.Localescomerciale.class);
+		classMapping
+				.put(uy.com.tmwc.facturator.entity.Fanfold.class, uy.com.tmwc.facturator.libra.entity.Fanfold.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Localescomerciale.class,
+				uy.com.tmwc.facturator.libra.entity.Localescomerciale.class);
 
 		classMapping.put(uy.com.tmwc.facturator.entity.Giro.class, uy.com.tmwc.facturator.libra.entity.Giro.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Departamento.class, uy.com.tmwc.facturator.libra.entity.Departamento.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.CategoriasClientes.class, uy.com.tmwc.facturator.libra.entity.Categoriasclientes.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Capitulo.class, uy.com.tmwc.facturator.libra.entity.Capitulo.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.FamiliaArticulos.class, uy.com.tmwc.facturator.libra.entity.Familia.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.ParametrosAdministracion.class, uy.com.tmwc.facturator.libra.entity.Parametrosadministracion.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Departamento.class,
+				uy.com.tmwc.facturator.libra.entity.Departamento.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.CategoriasClientes.class,
+				uy.com.tmwc.facturator.libra.entity.Categoriasclientes.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Capitulo.class,
+				uy.com.tmwc.facturator.libra.entity.Capitulo.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.FamiliaArticulos.class,
+				uy.com.tmwc.facturator.libra.entity.Familia.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.ParametrosAdministracion.class,
+				uy.com.tmwc.facturator.libra.entity.Parametrosadministracion.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Rubro.class, uy.com.tmwc.facturator.libra.entity.Rubro.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.CentrosCosto.class, uy.com.tmwc.facturator.libra.entity.Centroscosto.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Concepto.class, uy.com.tmwc.facturator.libra.entity.Concepto.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.CentrosCosto.class,
+				uy.com.tmwc.facturator.libra.entity.Centroscosto.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Concepto.class,
+				uy.com.tmwc.facturator.libra.entity.Concepto.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Marca.class, uy.com.tmwc.facturator.libra.entity.Marca.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.CategoriasArticulos.class, uy.com.tmwc.facturator.libra.entity.Categoriasarticulo.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Referencia.class, uy.com.tmwc.facturator.libra.entity.Referencia.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.UnidadesStock.class, uy.com.tmwc.facturator.libra.entity.Unidadesstock.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.CategoriasArticulos.class,
+				uy.com.tmwc.facturator.libra.entity.Categoriasarticulo.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Referencia.class,
+				uy.com.tmwc.facturator.libra.entity.Referencia.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.UnidadesStock.class,
+				uy.com.tmwc.facturator.libra.entity.Unidadesstock.class);
 
 		jefaturasClassMapper = new SimpleClassMapper();
-		jefaturasClassMapper.add(uy.com.tmwc.facturator.libra.entity.JefaturaArticulo.class, uy.com.tmwc.facturator.entity.JefaturaArticulo.class);
-		jefaturasClassMapper.add(uy.com.tmwc.facturator.libra.entity.JefaturaFamiliaArticulos.class, uy.com.tmwc.facturator.entity.JefaturaFamiliaArticulos.class);
-		jefaturasClassMapper.add(uy.com.tmwc.facturator.libra.entity.JefaturaProveedor.class, uy.com.tmwc.facturator.entity.JefaturaProveedor.class);
+		jefaturasClassMapper.add(uy.com.tmwc.facturator.libra.entity.JefaturaArticulo.class,
+				uy.com.tmwc.facturator.entity.JefaturaArticulo.class);
+		jefaturasClassMapper.add(uy.com.tmwc.facturator.libra.entity.JefaturaFamiliaArticulos.class,
+				uy.com.tmwc.facturator.entity.JefaturaFamiliaArticulos.class);
+		jefaturasClassMapper.add(uy.com.tmwc.facturator.libra.entity.JefaturaProveedor.class,
+				uy.com.tmwc.facturator.entity.JefaturaProveedor.class);
 	}
 
 	public <T, D> List<D> getCatalog(Class<D> clazz) {
@@ -116,8 +146,10 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 	}
 
 	public ArticuloPrecio getPrecioArticulo(String preciosVenta, String articulo) {
-		Query query = this.entityManager.createNamedQuery("ArticuloPrecio.precioArticuloParaPrecioVenta").setParameter("empId", getEmpId())
-				.setParameter("preciosVenta", Short.valueOf(Short.parseShort(preciosVenta))).setParameter("articulo", articulo);
+		Query query = this.entityManager.createNamedQuery("ArticuloPrecio.precioArticuloParaPrecioVenta")
+				.setParameter("empId", getEmpId())
+				.setParameter("preciosVenta", Short.valueOf(Short.parseShort(preciosVenta)))
+				.setParameter("articulo", articulo);
 
 		Object[] result = JPAUtils.getAtMostOne(query);
 		if (result == null)
@@ -135,7 +167,8 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 		BigDecimal costoUtilidad = articuloPrecio.getArticulo().getCostoUtilidad();
 		BigDecimal precioVentaPorcentaje = precioVenta.getPrecioVentaPorcentaje();
 
-		BigDecimal precio = Preciosventa.calcularPrecio(precioBase, sumarUtilidadArticulo, costoUtilidad, precioVentaPorcentaje);
+		BigDecimal precio = Preciosventa.calcularPrecio(precioBase, sumarUtilidadArticulo, costoUtilidad,
+				precioVentaPorcentaje);
 
 		// El modelo del facturador no tiene el doble concepto de preciobase/precioventa, asi que consolidamos todo en uno.
 		ArticuloPrecio articuloPrecioModel = (ArticuloPrecio) map(articuloPrecio, ArticuloPrecio.class);
@@ -145,7 +178,8 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 	}
 
 	public ArticuloPartida getArticuloPartida(String partidaId, String articuloId) {
-		Query query = this.entityManager.createNamedQuery("ArticuloPartida.queryArticuloPartida").setParameter("empId", getEmpId()).setParameter("partidaId", partidaId)
+		Query query = this.entityManager.createNamedQuery("ArticuloPartida.queryArticuloPartida")
+				.setParameter("empId", getEmpId()).setParameter("partidaId", partidaId)
 				.setParameter("articuloId", articuloId);
 
 		Object[] result = JPAUtils.getAtMostOne(query);
@@ -191,8 +225,8 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 		Object converted = new Mapper().map(example, getLibraEntity(example.getClass()));
 
 		Session session = (Session) this.entityManager.getDelegate();
-		List<?> list = session.createCriteria(converted.getClass()).add(createExampleCriteria(converted)).add(Expression.eq("id.empId", getEmpId())).setMaxResults(limit).setFirstResult(firstResult)
-				.list();
+		List<?> list = session.createCriteria(converted.getClass()).add(createExampleCriteria(converted))
+				.add(Expression.eq("id.empId", getEmpId())).setMaxResults(limit).setFirstResult(firstResult).list();
 
 		return (List<D>) new Mapper().mapCollection(list, example.getClass());
 	}
@@ -204,7 +238,8 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 	public <D> long queryCatalogCount(D example) {
 		Object converted = this.mapServ.getDozerBeanMapper().map(example, getLibraEntity(example.getClass()));
 		Session session = (Session) this.entityManager.getDelegate();
-		Object count = session.createCriteria(converted.getClass()).add(createExampleCriteria(converted)).setProjection(Projections.rowCount()).uniqueResult();
+		Object count = session.createCriteria(converted.getClass()).add(createExampleCriteria(converted))
+				.setProjection(Projections.rowCount()).uniqueResult();
 
 		return count == null ? 0L : ((Integer) count).longValue();
 	}
@@ -221,7 +256,7 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 		source.setCodigo(codigo);
 		DozerBeanMapper mapper = this.mapServ.getDozerBeanMapper();
 		Class<?> libraEntityClazz = getLibraEntity(clazz);
-		HasId<?> target =  (HasId<?>) mapper.map(source, libraEntityClazz);
+		HasId<?> target = (HasId<?>) mapper.map(source, libraEntityClazz);
 		Object id = target.getId();
 		return id;
 	}
@@ -262,7 +297,8 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 		CatalogEntity annotation = (CatalogEntity) clazzA.getAnnotation(CatalogEntity.class);
 		Query q;
 		if (annotation.useNamedQuery()) {
-			q = this.entityManager.createNamedQuery(clazzA.getSimpleName() + "." + "query").setParameter("query", "%" + query + "%");
+			q = this.entityManager.createNamedQuery(clazzA.getSimpleName() + "." + "query").setParameter("query",
+					"%" + query + "%");
 		} else {
 			String nomField = annotation.prefix() + (annotation.abreviated() ? "Nom" : "Nombre");
 			if (annotation.prefix().equals("")) {
@@ -304,7 +340,8 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 	}
 
 	public ParametrosAdministracion getParametrosAdministracion() {
-		List<?> list = this.entityManager.createNamedQuery("PatametrosAdministracion.fechatrabado").setParameter("empId", getEmpId()).setParameter("codigo", "1").getResultList();
+		List<?> list = this.entityManager.createNamedQuery("PatametrosAdministracion.fechatrabado")
+				.setParameter("empId", getEmpId()).setParameter("codigo", "1").getResultList();
 
 		DozerBeanMapper mapper = this.mapServ.getDozerBeanMapper();
 

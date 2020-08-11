@@ -1,8 +1,6 @@
 package uy.com.tmwc.facturator.test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
 
 import javax.naming.Context;
@@ -12,13 +10,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
-import uy.com.tmwc.facturator.deudores.DocumentoDeudor;
-import uy.com.tmwc.facturator.entity.Articulo;
-import uy.com.tmwc.facturator.entity.Documento;
-import uy.com.tmwc.facturator.entity.LineaDocumento;
 import uy.com.tmwc.facturator.rapi.DocumentoService;
-import uy.com.tmwc.facturator.rapi.LiquidacionService;
-import uy.com.tmwc.facturator.utils.Dates;
 
 public class TestDocumento extends TestCase {
 

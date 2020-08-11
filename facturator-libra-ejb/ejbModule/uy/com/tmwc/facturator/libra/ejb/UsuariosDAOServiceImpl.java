@@ -13,7 +13,6 @@ import uy.com.tmwc.facturator.libra.entity.UsuarioPK;
 import uy.com.tmwc.facturator.libra.util.DozerMappingsService;
 import uy.com.tmwc.facturator.spi.UsuariosDAOService;
 
-
 @Stateless
 @Local({ UsuariosDAOService.class })
 @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -26,8 +25,9 @@ public class UsuariosDAOServiceImpl extends ServiceBase implements UsuariosDAOSe
 	DozerMappingsService mapService;
 
 	public void updateClaveSup(String usuId, String clave) {
-		uy.com.tmwc.facturator.libra.entity.Usuario current = (uy.com.tmwc.facturator.libra.entity.Usuario) this.em.find(
-				uy.com.tmwc.facturator.libra.entity.Usuario.class, new UsuarioPK(getEmpId(), Short.parseShort(usuId)));
+		uy.com.tmwc.facturator.libra.entity.Usuario current = (uy.com.tmwc.facturator.libra.entity.Usuario) this.em
+				.find(uy.com.tmwc.facturator.libra.entity.Usuario.class,
+						new UsuarioPK(getEmpId(), Short.parseShort(usuId)));
 
 		current.setClaveSup(clave);
 
@@ -36,30 +36,31 @@ public class UsuariosDAOServiceImpl extends ServiceBase implements UsuariosDAOSe
 	}
 
 	public void updateEmail(String usuId, String email) {
-		uy.com.tmwc.facturator.libra.entity.Usuario current = (uy.com.tmwc.facturator.libra.entity.Usuario) this.em.find(
-				uy.com.tmwc.facturator.libra.entity.Usuario.class, new UsuarioPK(getEmpId(), Short.parseShort(usuId)));
+		uy.com.tmwc.facturator.libra.entity.Usuario current = (uy.com.tmwc.facturator.libra.entity.Usuario) this.em
+				.find(uy.com.tmwc.facturator.libra.entity.Usuario.class,
+						new UsuarioPK(getEmpId(), Short.parseShort(usuId)));
 
 		current.setUsuEmail(email);
 
 		this.em.merge(current);
-		this.em.flush();		
+		this.em.flush();
 	}
-	
+
 	public void update(Usuario usuario) {
-		uy.com.tmwc.facturator.libra.entity.Usuario current = (uy.com.tmwc.facturator.libra.entity.Usuario) this.em.find(
-				uy.com.tmwc.facturator.libra.entity.Usuario.class, new UsuarioPK(getEmpId(), Short.parseShort(usuario.getCodigo())));
+		uy.com.tmwc.facturator.libra.entity.Usuario current = (uy.com.tmwc.facturator.libra.entity.Usuario) this.em
+				.find(uy.com.tmwc.facturator.libra.entity.Usuario.class,
+						new UsuarioPK(getEmpId(), Short.parseShort(usuario.getCodigo())));
 
 		current.setNombre(usuario.getNombre());
 		current.setUsuEmail(usuario.getUsuEmail());
 		current.setUsuNotas(usuario.getUsuNotas());
 		current.setUsuTipo(usuario.getUsuTipo());
 		current.setPermisoId(usuario.getPermisoId());
-		current.setVenId(usuario.getVenId());
+		current.setVenId(usuario.getVenId());		
 		current.setUsuBlob(usuario.getUsuBlob());
 
 		this.em.merge(current);
 		this.em.flush();
 	}
-
 
 }

@@ -74,7 +74,7 @@ public class Documento extends DocumentoBase implements Serializable {
 	private String numCmpId;
 	private String docMensaje;
 
-	// FACTURA ELECTRÓNICA
+	// FACTURA ELECTRï¿½NICA
 
 	private String docCFEetapa;
 	private Integer docCFEId;
@@ -218,7 +218,7 @@ public class Documento extends DocumentoBase implements Serializable {
 		if (this.moneda == null) {
 			return null;
 		}
-		return exacto.setScale(this.moneda.getRedondeo(), 4);
+		return exacto.setScale(this.moneda.getRedondeo(), BigDecimal.ROUND_HALF_UP);
 	}
 
 	public BigDecimal getTotalExacto() {
@@ -254,6 +254,24 @@ public class Documento extends DocumentoBase implements Serializable {
 		return sum;
 	}
 
+	public BigDecimal getCostoTotal() {
+		return calcularCostoTotal();
+	}
+	
+	private BigDecimal calcularCostoTotal() {
+		if (comprobante.isGasto()) {
+			return BigDecimal.ZERO;
+		}		
+		BigDecimal sum = BigDecimal.ZERO;
+		for (LineaDocumento lineaDocumento : lineas.getLineas()) {
+			if (lineaDocumento.getArticulo() == null) {
+				continue;
+			}
+			sum = sum.add(lineaDocumento.getCostoTotal());
+		}
+		return sum;
+	}	
+	
 	public Boolean comprobanteComputaIva() {
 		if (comprobante.getCodigo().equals("122") || comprobante.getCodigo().equals("124")) {
 			return false;
@@ -331,7 +349,7 @@ public class Documento extends DocumentoBase implements Serializable {
 			throw new RuntimeException("El comprobante no acepta cuotificacion");
 		}
 
-		// Sacar el chequeo provisoriamente para el comprobantes cotización que esta mal definido como venta...
+		// Sacar el chequeo provisoriamente para el comprobantes cotizaciï¿½n que esta mal definido como venta...
 		if (!this.comprobante.getCodigo().equals("1") && !this.comprobante.isRecibo()) {
 			boolean mueveCaja = this.comprobante.isMueveCaja();
 			boolean tieneFP = (this.pagos != null) && (this.pagos.size() > 0);
@@ -343,13 +361,13 @@ public class Documento extends DocumentoBase implements Serializable {
 	public void validate() throws ValidationException {
 		if (this.comprobante.isCredito()) {
 			if (planPagos == null) {
-				throw new ValidationException("La condición (plan de pagos) es obligatoria");
+				throw new ValidationException("La condiciï¿½n (plan de pagos) es obligatoria");
 			}
 			this.cuotasDocumento.validate();
 		}
 		for (LineaDocumento linea : this.lineas.getLineas())
 			if (linea.getArticulo() == null)
-				throw new ValidationException("La línea " + linea.getNumeroLinea() + " no especifica artículo.");
+				throw new ValidationException("La lï¿½nea " + linea.getNumeroLinea() + " no especifica artï¿½culo.");
 
 		if (this.comprobante.isVenta() || this.comprobante.getCodigo().equals(System.getProperty("facturator.comprobantes.ordenVenta"))) {
 			if (entrega == null) {
@@ -452,7 +470,7 @@ public class Documento extends DocumentoBase implements Serializable {
 	public void toEmitido() {
 		checkEmitido();
 		if (!isTieneSerieNumero()) {
-			throw new RuntimeException("Se intento emitir el documento " + this.docId + " sin asignarle una serie y numero");
+			throw new RuntimeException("Se intento emitir el documento " + this.docId + " sin asignarle una serie y nÃºmero");
 		}
 		this.emitido = true;
 	}

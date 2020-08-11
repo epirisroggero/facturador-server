@@ -25,47 +25,65 @@ import uy.com.tmwc.facturator.spi.UsuariosDAOService;
 @Local(UsuariosService.class)
 @Remote(UsuariosService.class)
 public class UsuariosServiceImpl implements UsuariosService {
-	
+
 	private static final int LISTA_PRECIO_REVENTA = 4;
 	private static final int LISTA_PRECIO_INDUSTRIA = 2;
 	private static final int LISTA_PRECIO_MINORISTA = 3;
 	private static final int LISTA_PRECIO_MINIMO_VENTA = 5;
 	private static final int LISTA_PRECIO_DISTRIBUIDOR = 1;
+
 	private static HashMap<String, Collection<Integer>> permisoUsuario2ListasPrecio;
-	
+
 	private static HashMap<String, Collection<Integer>> permisoUsuario2Comprobantes;
-	
+
 	@EJB
 	UsuariosDAOService usuariosDAOService;
 
 	static {
 		HashMap<String, Collection<Integer>> listasPorUsuario = new HashMap<String, Collection<Integer>>();
-		listasPorUsuario.put(Usuario.USUARIO_SUPERVISOR, Arrays.asList(new Integer[] {LISTA_PRECIO_MINIMO_VENTA, LISTA_PRECIO_DISTRIBUIDOR, LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA}));
-		listasPorUsuario.put(Usuario.USUARIO_VENDEDOR_JUNIOR, Arrays.asList(new Integer[] {LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA}));
-		listasPorUsuario.put(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR, Arrays.asList(new Integer[] {LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA, LISTA_PRECIO_DISTRIBUIDOR, LISTA_PRECIO_REVENTA}));
-		listasPorUsuario.put(Usuario.USUARIO_VENDEDOR_SENIOR, Arrays.asList(new Integer[] {LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA}));
-		listasPorUsuario.put(Usuario.USUARIO_ADMINISTRADOR, Arrays.asList(new Integer[] {LISTA_PRECIO_MINIMO_VENTA, LISTA_PRECIO_DISTRIBUIDOR, LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA})); //TODO: Revisar con Mauro
-		listasPorUsuario.put(Usuario.USUARIO_FACTURACION, Arrays.asList(new Integer[] {LISTA_PRECIO_MINIMO_VENTA, LISTA_PRECIO_DISTRIBUIDOR, LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA})); //TODO: Revisar con Mauro
-		listasPorUsuario.put(Usuario.USUARIO_TITO, Arrays.asList(new Integer[] {LISTA_PRECIO_MINORISTA}));
-		listasPorUsuario.put(Usuario.USUARIO_ALIADOS_COMERCIALES, Arrays.asList(new Integer[] {LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA}));
+		listasPorUsuario.put(
+				Usuario.USUARIO_SUPERVISOR,
+				Arrays.asList(new Integer[] { LISTA_PRECIO_MINIMO_VENTA, LISTA_PRECIO_DISTRIBUIDOR,
+						LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA }));
+		listasPorUsuario.put(Usuario.USUARIO_VENDEDOR_JUNIOR,
+				Arrays.asList(new Integer[] { LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA }));
+		listasPorUsuario.put(
+				Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR,
+				Arrays.asList(new Integer[] { LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA,
+						LISTA_PRECIO_DISTRIBUIDOR, LISTA_PRECIO_REVENTA }));
+		listasPorUsuario.put(Usuario.USUARIO_VENDEDOR_SENIOR,
+				Arrays.asList(new Integer[] { LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA }));
+		listasPorUsuario.put(
+				Usuario.USUARIO_ADMINISTRADOR,
+				Arrays.asList(new Integer[] { LISTA_PRECIO_MINIMO_VENTA, LISTA_PRECIO_DISTRIBUIDOR,
+						LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA })); // TODO: Revisar con Mauro
+		listasPorUsuario.put(
+				Usuario.USUARIO_FACTURACION,
+				Arrays.asList(new Integer[] { LISTA_PRECIO_MINIMO_VENTA, LISTA_PRECIO_DISTRIBUIDOR,
+						LISTA_PRECIO_REVENTA, LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA })); // TODO: Revisar con Mauro
+		listasPorUsuario.put(Usuario.USUARIO_TITO, Arrays.asList(new Integer[] { LISTA_PRECIO_MINORISTA }));
+		listasPorUsuario.put(Usuario.USUARIO_ALIADOS_COMERCIALES,
+				Arrays.asList(new Integer[] { LISTA_PRECIO_INDUSTRIA, LISTA_PRECIO_MINORISTA }));
 		permisoUsuario2ListasPrecio = listasPorUsuario;
-		
-		HashMap<String, Collection<Integer>> map = new HashMap<String, Collection<Integer>>();
-		map.put(Usuario.USUARIO_TITO, Arrays.asList(new Integer[] {70, 71, 72, 73, 80, 81, 82, 90, 91, 92, 100, 110, 120, 130, 131, 132})); 
-		
-		List<Integer> comprobantesComerciales = Arrays.asList(new Integer[] {70, 80, 90, 1 /* cotizacion */, 10 /* orden de venta */, 11 /* solicitud nota de credito */, 100, 110, 120, 130});
 
-		map.put(Usuario.USUARIO_SUPERVISOR, Arrays.asList(new Integer[] {Integer.MAX_VALUE}));
+		HashMap<String, Collection<Integer>> map = new HashMap<String, Collection<Integer>>();
+		map.put(Usuario.USUARIO_TITO,
+				Arrays.asList(new Integer[] { 70, 71, 72, 73, 80, 81, 82, 90, 91, 92, 100, 110, 120, 130, 131, 132 }));
+
+		List<Integer> comprobantesComerciales = Arrays.asList(new Integer[] { 70, 80, 90, 1 /* cotizacion */,
+				10 /* orden de venta */, 11 /* solicitud nota de credito */, 100, 110, 120, 130 });
+
+		map.put(Usuario.USUARIO_SUPERVISOR, Arrays.asList(new Integer[] { Integer.MAX_VALUE }));
 		map.put(Usuario.USUARIO_VENDEDOR_JUNIOR, comprobantesComerciales);
-		map.put(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR, comprobantesComerciales); 
-		map.put(Usuario.USUARIO_VENDEDOR_SENIOR, comprobantesComerciales); 
-		map.put(Usuario.USUARIO_ALIADOS_COMERCIALES, comprobantesComerciales); 
-		map.put(Usuario.USUARIO_ADMINISTRADOR, Arrays.asList(new Integer[] {Integer.MAX_VALUE})); 
-		map.put(Usuario.USUARIO_FACTURACION, Arrays.asList(new Integer[] {Integer.MAX_VALUE})); 
-		map.put(Usuario.USUARIO_ALIADOS_COMERCIALES, comprobantesComerciales); 
+		map.put(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR, comprobantesComerciales);
+		map.put(Usuario.USUARIO_VENDEDOR_SENIOR, comprobantesComerciales);
+		map.put(Usuario.USUARIO_ALIADOS_COMERCIALES, comprobantesComerciales);
+		map.put(Usuario.USUARIO_ADMINISTRADOR, Arrays.asList(new Integer[] { Integer.MAX_VALUE }));
+		map.put(Usuario.USUARIO_FACTURACION, Arrays.asList(new Integer[] { Integer.MAX_VALUE }));
+		map.put(Usuario.USUARIO_ALIADOS_COMERCIALES, comprobantesComerciales);
 		permisoUsuario2Comprobantes = map;
 	}
-	
+
 	@EJB
 	CatalogService catalogService;
 
@@ -75,7 +93,8 @@ public class UsuariosServiceImpl implements UsuariosService {
 		String permisoId = usuarioLogin.getPermisoId();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
 
-		Collection<Integer> filterList = permisoUsuario2ListasPrecio.get(esSupervisor ? Usuario.USUARIO_SUPERVISOR : permisoId);
+		Collection<Integer> filterList = permisoUsuario2ListasPrecio.get(esSupervisor ? Usuario.USUARIO_SUPERVISOR
+				: permisoId);
 		ArrayList<PreciosVenta> filtered = new ArrayList<PreciosVenta>();
 		if (filterList == null) {
 			return filtered;
@@ -88,9 +107,9 @@ public class UsuariosServiceImpl implements UsuariosService {
 		}
 		return filtered;
 	}
-		
+
 	public Usuario getUsuarioLogin() {
-		Principal userPpal = UserPrincipalLocator.userPrincipalTL.get();	
+		Principal userPpal = UserPrincipalLocator.userPrincipalTL.get();
 		if (userPpal == null) {
 			return null;
 		}
@@ -104,7 +123,8 @@ public class UsuariosServiceImpl implements UsuariosService {
 		String permisoId = usuarioLogin.getPermisoId();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
 
-		Collection<Integer> filterList = permisoUsuario2Comprobantes.get(esSupervisor ? Usuario.USUARIO_SUPERVISOR : permisoId);
+		Collection<Integer> filterList = permisoUsuario2Comprobantes.get(esSupervisor ? Usuario.USUARIO_SUPERVISOR
+				: permisoId);
 		ArrayList<Comprobante> filtered = new ArrayList<Comprobante>();
 		if (filterList == null) {
 			return filtered;
@@ -118,9 +138,9 @@ public class UsuariosServiceImpl implements UsuariosService {
 				filtered.add(c);
 			}
 		}
-		return filtered;		
+		return filtered;
 	}
-	
+
 	public Collection<Integer> getCodigosComprobantesPermitidosUsuario() {
 		Usuario usuarioLogin = getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
@@ -128,18 +148,18 @@ public class UsuariosServiceImpl implements UsuariosService {
 
 		return permisoUsuario2Comprobantes.get(esSupervisor ? Usuario.USUARIO_SUPERVISOR : permisoId);
 	}
-	
+
 	public void updateClaveSup(String userId, String clave) throws PermisosException {
 		Usuario usuarioLogin = getUsuarioLogin();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
-		
+
 		if (esSupervisor) {
 			this.usuariosDAOService.updateClaveSup(userId, clave);
 		} else {
 			throw new PermisosException("No tiene permisos.");
 		}
 	}
-	
+
 	public void updateEmail(String userId, String email) {
 		this.usuariosDAOService.updateEmail(userId, email);
 	}
