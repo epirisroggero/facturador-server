@@ -40,11 +40,13 @@
 					<p>${bodyText}</p>
 	            </td>
 	        </tr>
+	        
 	        <tr>
 				<td bgcolor="#efefef" style="padding: 10px 30px 10px 30px; border:solid 1px #cfcfcf; border-top:none; border-bottom:none;">
-					<img src="cid:documento" width="750" height="1024"/>
+					<img src="cid:documento" width="750"/>
 				</td>
 			</tr>	        
+    
 	        <tr style="background-color:#FFFFFF;" style="padding:0;">
 	            <td align="center" style="padding: 0px 0px 0px 0px; border:solid 1px #cfcfcf; border-top:none;"">
                     <table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">

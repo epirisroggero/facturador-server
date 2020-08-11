@@ -8,9 +8,6 @@ import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import com.google.gwt.rpc.client.impl.EscapeUtil;
-
-import uy.com.tmwc.facturator.entity.VendedoresUsuario;
 import uy.com.tmwc.facturator.rapi.UsuariosService;
 
 /**
@@ -54,6 +51,8 @@ public class Usuario extends CodigoNombreEntity implements Serializable {
 	private String usuCargo;
 	
 	private String usuCelular;
+	
+	private byte[] usuBlob;
 	
 	private PermisosDocumentoUsuario permisosDocumentoUsuario;
 	
@@ -226,6 +225,14 @@ public class Usuario extends CodigoNombreEntity implements Serializable {
 
 	public void setUsuCelular(String usuCelular) {
 		this.usuCelular = usuCelular;
+	}
+
+	public byte[] getUsuBlob() {
+		return usuBlob;
+	}
+
+	public void setUsuBlob(byte[] usuBlob) {
+		this.usuBlob = usuBlob;
 	}
 	
 }

@@ -43,16 +43,16 @@
 	        </tr>
 	        <tr>
 				<td bgcolor="#efefef" style="padding: 10px 30px 10px 30px; border:solid 1px #cfcfcf; border-top:none; border-bottom:none;">
-					<img src="cid:pendientes"/>
+					<img src="cid:pendientes" width="750"/>
 				</td>
 			</tr>	        
 	        <tr style="background-color:#FFFFFF;">
-	            <td align="center" style="padding: 0px 0px 0px 0px; border:solid 1px #cfcfcf; border-top:none;"">
+	            <td align="center" style="padding: 0px 0px 0px 0px; border:solid 1px #cfcfcf; border-top:none;">
 	            	<img src="cid:formasPago" />
 	            </td>
 	        </tr>
 	        <tr style="background-color:#FFFFFF;" style="padding:0;">
-	            <td align="center" style="padding: 0px 0px 0px 0px; border:solid 1px #cfcfcf; border-top:none;"">
+	            <td align="center" style="padding: 0px 0px 0px 0px; border:solid 1px #cfcfcf; border-top:none;">
                     <table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
 	            		<tr>
 	            			<td align="left" style="padding: 0;" bgcolor="#FFFFFF" style="border:solid 2px #cfcfcf">

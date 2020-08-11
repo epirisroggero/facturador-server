@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.7.303</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.303.air</url>
+	<versionNumber>1.7.6</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.6.air</url>
 	<description>
 	    <![CDATA[
+	    # Versión 1.7.6 (11/07/2020)
+	     	1.- Ajustar stock en compras.
+	     	2.- Impresión, mantener la imagen en el cuerpo del mensaje además del pdf.
+	     	3.- No permitir guardar comprobantes comprobantes emitidos y/o finalizados en los que se modifique el total o IVA. 
+	     	
+	     # Versión 1.7.500 (04/07/2020)
+	     	1.- Impresiín de gastos.
+	     	2.- Impresión de recibos (nuevo diseño).
+	     	3.- Guardar foto en ABM de usuario. 
+	     	4.- Ajustes en visualización de clientes, artículos, proveedores.
+	     	5.- No generar CFE para comprobantes de gira. 	     		    
+
+	     # Versión 1.7.400 (08/06/2020)
+	     	1.- Impresión de recibos. (Falta re-definir el diseño)
+	     	2.- Cambiar de destinatario de cobranza predeterminado en el envío de correo automático.
+	     	3.- Enviar mail con PDF adjunto. (Por ahora un PDF con una imagen, hay que ver si se va a mandar un PDF real por ejemplo en listado de deudores).
+	     	4.- Revisar cambio de moneda en proceso de importaciones (al cambiar la moneda del documento hay que actualizar TCC y TCF).
+	     		    
 	    # Versión 1.7.303 (07/01/2020)
 	    	1.- Corrige error al calcular el iva en la NCF.
 

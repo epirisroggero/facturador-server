@@ -257,7 +257,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	private short tipo;
 
 	@Column(name = "DocTitular")
-	private String titular = "";
+	private String titular;
 
 	@Column(name = "DocTotal")
 	private BigDecimal total;

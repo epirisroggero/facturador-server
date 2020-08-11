@@ -54,7 +54,7 @@ public class Usuario extends PersistentEntity<UsuarioPK> implements Serializable
 
 	@Lob
 	@Column(name = "UsuNotas")
-	private String usuNotas;
+	private String usuNotas; 
 
 	@Column(name = "UsuPassword")
 	private String usuPassword;
@@ -70,6 +70,10 @@ public class Usuario extends PersistentEntity<UsuarioPK> implements Serializable
 
 	@Column(name = "UsuActivo")
 	private String usuActivo;
+	
+	@Lob
+	@Column(table = "lfx_usuarios", name = "UsuBlob", nullable = true, length = 2147483647)
+	private byte[] usuBlob;
 
 	@OneToMany(mappedBy = "usuario")
 	private List<VendedoresUsuario> vendedoresUsuario;
@@ -270,6 +274,14 @@ public class Usuario extends PersistentEntity<UsuarioPK> implements Serializable
 
 	public void setUsuCelular(String usuCelular) {
 		this.usuCelular = usuCelular;
+	}
+
+	public byte[] getUsuBlob() {
+		return usuBlob;
+	}
+
+	public void setUsuBlob(byte[] usuBlob) {
+		this.usuBlob = usuBlob;
 	}
 
 }

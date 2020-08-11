@@ -846,7 +846,13 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 		CsvWriter w = new CsvWriter(fileName);
 				
 		try {
+			HashMap<String, BigDecimal> cotizaciones = new HashMap<String, BigDecimal>(); 
 			SimpleDateFormat dt1 = new SimpleDateFormat("dd-MM-yyyy");
+			
+			List<CotizacionesMonedas> tiposCambio =  tipoCambioService.getCotizacionesMonedas(fechaDesde);
+			for (CotizacionesMonedas cotizacionesMonedas : tiposCambio) {
+				cotizaciones.put(dt1.format(cotizacionesMonedas.getDia()), cotizacionesMonedas.getDolarVenta());
+			}
 			
 			Vendedor vendedor = catalogService.findCatalogEntity("Vendedor", vendedorId);
 			
@@ -875,8 +881,10 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			w.write("MONEDA");
 			w.write("IMP. FACTURA CON IVA");
 			w.write("RENTA DE VENTA");
-			if (vendedorDist) 
+
+			if (vendedorDist) {
 				w.write("RENTA DISTRIBUIDOR");
+			}
 			w.write("PARTICIPACIÓN");
 			w.write(vendedorDist ? "RTA. AL DIST." : "RTA. AL VEND.");
 			w.write("MONTO CANCELADO"); // TODO: Revisar
@@ -970,9 +978,11 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				String codigoMoneda = factura.getMoneda().getCodigo();
 				BigDecimal rentaDolarizada = BigDecimal.ZERO;
 				
-				BigDecimal cotizacion = factura.getDocTCC(); // TODO: Revisar
-				if (cotizacion == null) {
-					cotizacion = BigDecimal.ZERO;
+				BigDecimal cotizacionDolar = cotizaciones.get(dt1.format(factura.getFecha())); // TODO: Revisar
+				if (cotizacionDolar == null) {
+					CotizacionesMonedas ultimaCotizacion = tipoCambioService.getUltimaCotizacion(fechaDesde);
+					cotizacionDolar = ultimaCotizacion.getDolarVenta();
+					cotizaciones.put(dt1.format(factura.getFecha()), cotizacionDolar);
 				}
 				
 				Boolean esDevolucion = Boolean.FALSE;
@@ -988,8 +998,8 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 					w.write(crc); // RENTA COBRADA AL VENDEDOR
 					
 					if (codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS) || codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
-						if (cotizacion.compareTo(BigDecimal.ZERO) == 1) {
-							rentaDolarizada = cuotaparteRentaComercial.divide(cotizacion, 2);
+						if (cotizacionDolar.compareTo(BigDecimal.ZERO) == 1) {
+							rentaDolarizada = cuotaparteRentaComercial.divide(cotizacionDolar, 2);
 						} else {
 							rentaDolarizada = BigDecimal.ZERO;
 						}
@@ -1010,7 +1020,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 					}
 
 					if (codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS) || codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
-						w.write(formatter.format(cotizacion));
+						w.write(formatter.format(cotizacionDolar));
 					} else {
 						w.write("");
 					}
@@ -1027,8 +1037,8 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 					w.write(rc); // RENTA COBRADA AL VENDEDOR
 				
 					if (codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS) || codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
-						if (cotizacion.compareTo(BigDecimal.ZERO) == 1) {
-							rentaDolarizada = rentaACobrar.divide(cotizacion, 2);
+						if (cotizacionDolar.compareTo(BigDecimal.ZERO) == 1) {
+							rentaDolarizada = rentaACobrar.divide(cotizacionDolar, 2);
 						} else {
 							rentaDolarizada = BigDecimal.ZERO;
 						}
@@ -1046,7 +1056,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 						rentaTotal = rentaTotal.add(rentaDolarizada.setScale(2, RoundingMode.HALF_DOWN));
 					}
 					if (codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS) || codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
-						w.write(formatter.format(cotizacion));
+						w.write(formatter.format(cotizacionDolar));
 					} else {
 						w.write("");
 					}

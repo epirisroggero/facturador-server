@@ -120,6 +120,7 @@ public class Documento extends DocumentoBase implements Serializable {
 	private String centroCostosId;
 	private String docCenCostosId;
 	private String referencia;
+	private String tarjetaNro;
 	
 	private String puntoVentaId;
 	
@@ -1126,8 +1127,8 @@ public class Documento extends DocumentoBase implements Serializable {
 		return titular;
 	}
 
-	public void setDocTitular(String docTitular) {
-		this.titular = docTitular;
+	public void setTitular(String titular) {
+		this.titular = titular;
 	}
 
 	public String getBancoIdDoc() {
@@ -1225,6 +1226,16 @@ public class Documento extends DocumentoBase implements Serializable {
 	public void setPuntoVentaId(String puntoVentaId) {
 		this.puntoVentaId = puntoVentaId;
 	}
+
+	public String getTarjetaNro() {
+		return tarjetaNro;
+	}
+
+	public void setTarjetaNro(String tarjetaNro) {
+		this.tarjetaNro = tarjetaNro;
+	}
+	
+	
 
 
 }

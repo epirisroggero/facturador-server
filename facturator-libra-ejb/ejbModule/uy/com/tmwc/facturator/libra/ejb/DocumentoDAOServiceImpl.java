@@ -201,10 +201,13 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		verifyUniqueSerieNumero(libraDoc);
 
 		controlModificacionDocumento(libraDoc);
-
-		int signoStock = doc.getComprobante().isDevolucion() ? -1 : 1;
-		ajustarStockLineas(libraDoc, signoStock);
 		
+		if (doc.getComprobante().isCompra()|| doc.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES) {
+			ajustarStockLineasCompra(libraDoc, 1);
+		} else {
+			int signoStock = doc.getComprobante().isDevolucion() ? -1 : 1;
+			ajustarStockLineasVenta(libraDoc, signoStock);	
+		}
 		ajustarLineas(libraDoc, doc.getComprobante().isGasto());
 
 		this.em.persist(libraDoc);
@@ -419,9 +422,15 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 			// Ajustar el stock. Pueden variar las lineas, y los depositos.
 			// Nunca el comprobante.
-			int signoStock = doc.getComprobante().isDevolucion() ? -1 : 1;
-			ajustarStockLineas(current, -signoStock); // Esto es un borrar, los signos estan cambiados
-			ajustarStockLineas(libraDoc, signoStock);
+			if (doc.getComprobante().isCompra()|| doc.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES) {
+				ajustarStockLineasCompra(current, -1);
+				ajustarStockLineasCompra(libraDoc, 1);
+			} else {
+				int signoStock = doc.getComprobante().isDevolucion() ? -1 : 1;
+				ajustarStockLineasVenta(current, -signoStock); // Esto es un borrar, los signos estan cambiados
+				ajustarStockLineasVenta(libraDoc, signoStock);
+			}
+
 			ajustarLineas(libraDoc, doc.getComprobante().isGasto());
 		}
 
@@ -464,7 +473,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			controlModificacionDocumento(docEntity);
 
 			int signoStock = doc.getComprobante().isDevolucion() ? -1 : 1;
-			ajustarStockLineas(docEntity, -signoStock); // Esto es un borrar, los signos estan cambiados
+			ajustarStockLineasVenta(docEntity, -signoStock); // Esto es un borrar, los signos estan cambiados
 			if (docEntity != null) {
 				em.remove(docEntity);
 				em.flush();
@@ -512,7 +521,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		}
 	}
 
-	private void ajustarStockLineas(uy.com.tmwc.facturator.libra.entity.Documento libraDoc, int signoStock) {
+	private void ajustarStockLineasVenta(uy.com.tmwc.facturator.libra.entity.Documento libraDoc, int signoStock) {
 		List<Linea> lineas = libraDoc.getLineas();
 		for (Linea linea : lineas) {
 			if (linea.getArticulo() != null && linea.getArticulo().getInventario()) {
@@ -521,6 +530,16 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		}
 	}
 
+	private void ajustarStockLineasCompra(uy.com.tmwc.facturator.libra.entity.Documento libraDoc, int signoStock) {
+		List<Linea> lineas = libraDoc.getLineas();
+		for (Linea linea : lineas) {
+			if (linea.getArticulo() != null && linea.getArticulo().getInventario()) {
+				ajustarStockCompra(linea.getArticulo(), libraDoc.getDepositoOrigen(), libraDoc.getDepositoDestino(), linea.getCantidad().multiply(new BigDecimal(signoStock)));
+			}
+		}
+	}
+
+	
 	@SuppressWarnings("rawtypes")
 	private void verifyUniqueSerieNumero(uy.com.tmwc.facturator.libra.entity.Documento doc) {
 		String serie = doc.getSerie();
@@ -1414,6 +1433,15 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		}		
 	}
 
+	private void ajustarStockCompra(Articulo articulo, Deposito depositoDesde, Deposito depositoHasta, BigDecimal cantidad) {
+		if (depositoDesde != null) {
+			ajustarStock(articulo, depositoDesde, cantidad.negate());
+		} 
+		if (depositoHasta != null) {
+			ajustarStock(articulo, depositoHasta, cantidad);
+		}
+	}
+	
 	private void ajustarStock(Articulo articulo, Deposito deposito, BigDecimal cantidad) {
 		if (cantidad.compareTo(BigDecimal.ZERO) == 0)
 			return;
@@ -1905,8 +1933,17 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		List<Linea> lineas = libraDoc.getLineas();
 		for (Linea linea : lineas) {
 			ArticuloPrecio precioFabrica = catalogService.getPrecioArticulo("7", linea.getArticulo().getCodigo());
+			
 			if (precioFabrica == null) {
-				precioFabrica = new ArticuloPrecio(linea.getArticulo().getCodigo(), "01", BigDecimal.ZERO, Short.valueOf("2"), "N");
+				//precioFabrica = new ArticuloPrecio(linea.getArticulo().getCodigo(), "01", BigDecimal.ZERO, Short.valueOf("2"), "N");
+				precioFabrica = new ArticuloPrecio(linea.getArticulo().getCodigo(), "01", BigDecimal.ZERO, Short.valueOf(nuevaMonedaId), "N");
+			}
+
+			// Si el precio cambia de moneda hay que ajustarlo
+			if (precioFabrica.getMoneda().getCodigo().equals(nuevaMonedaId)) {
+				BigDecimal nuevoPrecioFabrica = convertPrecio(precioFabrica.getPrecio(), precioFabrica.getMoneda().getCodigo(), nuevaMonedaId);
+				precioFabrica.setPrecio(nuevoPrecioFabrica);
+				precioFabrica.setMoneda(doc.getMoneda());
 			}
 
 			ArticuloPrecioFabricaCosto preciosArticulo = new ArticuloPrecioFabricaCosto();
