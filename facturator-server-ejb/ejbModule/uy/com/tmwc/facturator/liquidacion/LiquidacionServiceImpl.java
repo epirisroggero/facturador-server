@@ -1050,8 +1050,8 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 
 					if (codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS)
 							|| codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
-						if (cotizacion.compareTo(BigDecimal.ZERO) == 1) {
-							rentaDolarizada = cuotaparteRentaComercial.divide(cotizacion, 2);
+						if (cotizacionDolar.compareTo(BigDecimal.ZERO) == 1) {
+							rentaDolarizada = cuotaparteRentaComercial.divide(cotizacionDolar, 2);
 						} else {
 							rentaDolarizada = BigDecimal.ZERO;
 						}
@@ -1073,7 +1073,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 
 					if (codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS)
 							|| codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
-						w.write(formatter.format(cotizacion));
+						w.write(formatter.format(cotizacionDolar));
 					} else {
 						w.write("");
 					}
@@ -1092,8 +1092,8 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 
 					if (codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS)
 							|| codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
-						if (cotizacion.compareTo(BigDecimal.ZERO) == 1) {
-							rentaDolarizada = rentaACobrar.divide(cotizacion, 2);
+						if (cotizacionDolar.compareTo(BigDecimal.ZERO) == 1) {
+							rentaDolarizada = rentaACobrar.divide(cotizacionDolar, 2);
 						} else {
 							rentaDolarizada = BigDecimal.ZERO;
 						}
@@ -1112,7 +1112,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 					}
 					if (codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS)
 							|| codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
-						w.write(formatter.format(cotizacion));
+						w.write(formatter.format(cotizacionDolar));
 					} else {
 						w.write("");
 					}

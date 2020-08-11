@@ -2094,8 +2094,6 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		List<Linea> lineas = libraDoc.getLineas();
 		for (Linea linea : lineas) {
-			ArticuloPrecio precioFabrica = catalogService.getPrecioArticulo("7", linea.getArticulo().getCodigo());
-
 			if (linea.getArticulo() == null) {
 				continue;
 			}

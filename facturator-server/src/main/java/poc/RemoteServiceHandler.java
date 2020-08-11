@@ -527,17 +527,6 @@ public class RemoteServiceHandler {
 		}
 		return doc;
 	}
-
-	public Documento altaRecibo(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
-		try {
-			String docId = alta(documento, auditoria);		
-			return getService().findDocumento(docId);
-			
-		} catch (Exception exc) {
-			throw new RuntimeException(exc.getMessage());
-		}		
-	}
-
 	
 	public String alta(Documento documento) throws ValidationException, PermisosException {
 		return alta(documento, null);
