@@ -35,8 +35,8 @@ public class MonedasCotizacionesServiceImpl implements MonedasCotizacionesServic
 		return monedasCotizacionesDAOService.getCotizacionesMonedas(fromDate);
 	}
 
-	public CotizacionesMonedas getUltimaCotizacion(Date fecha) {
-		return monedasCotizacionesDAOService.getUltimaCotizacion(fecha);
+	public CotizacionesMonedas getUltimaCotizacion(Date fechaHasta) {
+		return monedasCotizacionesDAOService.getUltimaCotizacion(fechaHasta);
 		
 	}
 

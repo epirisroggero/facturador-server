@@ -20,35 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b10f0b2f-466f-4ac4-8205-275267074ccf" name="Default" comment="Facturador v1.7.0000">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Servers/JBoss 4.2 Runtime Server.server" beforeDir="false" afterPath="$PROJECT_DIR$/Servers/JBoss 4.2 Runtime Server.server" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Servers/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Servers/hibernate.cfg.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-figaro-ejb/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-figaro-ejb/.classpath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-figaro-ejb/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-figaro-ejb/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-libra-ejb/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-libra-ejb/.classpath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-remote-api/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/.classpath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-ear/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ear/hibernate.cfg.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-ear/resources/facturator-server-ds.xml" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ear/resources/facturator-server-ds.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-ear/resources/libra-ds.xml" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ear/resources/libra-ds.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-ejb/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ejb/.classpath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/liquidacion/LiquidacionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/liquidacion/LiquidacionServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/server/util/AgruparVendedores2.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/server/util/AgruparVendedores2.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-tester/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-tester/.classpath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-tester/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-tester/.settings/org.eclipse.wst.common.project.facet.core.xml" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-tester/.settings/org.eclipse.wst.common.project.facet.core.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-tester/appClientModule/uy/com/tmwc/facturator/test/TestDocumento.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-tester/appClientModule/uy/com/tmwc/facturator/test/TestDocumento.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-tester/appClientModule/uy/com/tmwc/facturator/test/TestLiquidacion.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-tester/build/classes/uy/com/tmwc/facturator/test/TestControlPlus.class" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-tester/build/classes/uy/com/tmwc/facturator/test/TestControlPlus.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-tester/build/classes/uy/com/tmwc/facturator/test/TestDeudores.class" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-tester/build/classes/uy/com/tmwc/facturator/test/TestDeudores.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-tester/build/classes/uy/com/tmwc/facturator/test/TestDocumento.class" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-tester/build/classes/uy/com/tmwc/facturator/test/TestDocumento.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server-tester/build/classes/uy/com/tmwc/facturator/test/TestLiquidacion.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server/.classpath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-server/src/main/java/uy/com/tmwc/facturador/scheduler/DeudoresJob.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server/src/main/java/uy/com/tmwc/facturador/scheduler/DeudoresJob.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/facturator-spi/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-spi/.classpath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/twmc-utils/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/twmc-utils/.classpath" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/Documento.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/Documento.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-server/src/main/java/poc/RemoteServiceHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server/src/main/java/poc/RemoteServiceHandler.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -223,10 +196,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Facturador v1.7.500" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="93" y="93" width="1350" height="638" key="DiffContextDialog" timestamp="1596674014780">
+    <state x="93" y="93" width="1350" height="638" maximized="true" key="DiffContextDialog" timestamp="1597114233881">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="93" y="93" width="1350" height="638" key="DiffContextDialog/0.0.1536.824/-1440.0.1440.860@0.0.1536.824" timestamp="1596674014780" />
+    <state x="93" y="93" width="1350" height="638" maximized="true" key="DiffContextDialog/0.0.1536.824/-1440.0.1440.860@0.0.1536.824" timestamp="1597114233881" />
   </component>
   <component name="masterDetails">
     <states>

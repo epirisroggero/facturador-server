@@ -91,7 +91,9 @@ public abstract class DocumentoBase implements Serializable {
 	}
 
 	public boolean isTieneSerieNumero() {
-		return this.numero != null; // alcanza con mirar la presencia de un numero. Parece que hay Numeradores con serie null.
+		return this.numero != null; // alcanza con mirar la presencia de un
+									// numero. Parece que hay Numeradores con
+									// serie null.
 	}
 
 	public Date getFecha() {

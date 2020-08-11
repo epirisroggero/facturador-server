@@ -18,7 +18,7 @@
     </style>
 </head>
 <body style="margin: 0; padding: 0;">
-    <table align="center" border="0" cellpadding="0" cellspacing="0" width="450" border-collapse: collapse;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="450" style="border-collapse: collapse;">
         <tr bgcolor="#efefef">
             <td align="right" bgcolor="#FDFDFD" style="padding: 10px 0 10px 0; border:solid 1px #cfcfcf; border-bottom:none;">
                 <img src="cid:header" width="800" height="162"/>
@@ -37,17 +37,19 @@
 				
             </td>
         </tr>
+        
         <tr>
-            <td bgcolor="#efefef" style="padding: 10px 30px 10px 30px; border:solid 1px #cfcfcf; border-top:none; border-bottom:none;">
-            	<img src="cid:documento" width="750" height="676"/>
-            </td>
-        </tr>
+			<td bgcolor="#efefef" style="padding: 10px 30px 10px 30px; border:solid 1px #cfcfcf; border-top:none; border-bottom:none;">
+				<img src="cid:documento" />
+			</td>
+		</tr>	        
+
         <tr bgcolor="#fdfdfd">
-            <td bgcolor="#FDFDFD" align="right" style="padding: 10px 0px 10px 0px; border:solid 1px #cfcfcf; border-top:none;"">
+            <td bgcolor="#fdfdfd" align="right" style="padding: 10px 0px 10px 0px; border:solid 1px #cfcfcf; border-top:none;">
             	<table align="center" border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
             		<tr>
             			<td align="left" style="padding: 0;" bgcolor="#FFFFFF">
-                            <img src="cid:photo" />
+                            <img src="cid:photo"  width="132" height="132"/>
             			</td>	
             			<td align="left" style="padding: 0px 10px 0px 20px;" bgcolor="#FFFFFF">
             				<table width="220px" style="border-left:solid 2px #cfcfcf; padding-left: 10px;" >
