@@ -354,8 +354,15 @@ public class RemoteServiceHandler {
 			Comprobante comprobante = documento.getComprobante();
 			comprobante.setAster(esComprobanteAster(comprobante.getCodigo()));
 			documento.setComprobante(comprobante);
-
+			
+			if (comprobante.isRecibo()) {
+				if (documento.getProcessId() != null && documento.getProcessId().length() > 0) {
+					Documento notaCreditoFinanciera = service.findDocumento(documento.getProcessId());
+					documento.setNotaCreditoFinanciera(notaCreditoFinanciera);
+				}
+			}
 			return documento;
+			
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 			throw e;
@@ -1393,9 +1400,8 @@ public class RemoteServiceHandler {
 
 			if (!recibo.getComprobante().isAster() && result.isEmitido() && recibo.getProcessId() == null
 					&& !recibo.getSerie().equals("A") && recibo.getFacturasVinculadas().size() > 0) {
-				Documento notaCreditoFin = crearNCF(recibo);
-				
-				emitir(notaCreditoFin, "");
+				Documento notaCreditoFin = emitir(crearNCF(recibo), "");
+				result.setNotaCreditoFinanciera(notaCreditoFin);
 			}
 
 			// guardar cambios en el recibo

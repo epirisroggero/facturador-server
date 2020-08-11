@@ -122,9 +122,9 @@ public class Documento extends DocumentoBase implements Serializable {
 	private String referencia;
 	
 	private String puntoVentaId;
-	
-
 	private CentrosCosto centroCostos;
+	
+	private Documento notaCreditoFinanciera;
 
 	public Documento() {
 		this.comisiones = new ComisionesDocumento(this);
@@ -1242,6 +1242,14 @@ public class Documento extends DocumentoBase implements Serializable {
 
 	public void setPuntoVentaId(String puntoVentaId) {
 		this.puntoVentaId = puntoVentaId;
+	}
+
+	public Documento getNotaCreditoFinanciera() {
+		return notaCreditoFinanciera;
+	}
+
+	public void setNotaCreditoFinanciera(Documento notaCreditoFinanciera) {
+		this.notaCreditoFinanciera = notaCreditoFinanciera;
 	}
 
 
