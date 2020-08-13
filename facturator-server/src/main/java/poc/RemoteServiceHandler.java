@@ -1400,22 +1400,31 @@ public class RemoteServiceHandler {
 					&& !recibo.getSerie().equals("A") && recibo.getFacturasVinculadas().size() > 0) {
 				Documento notaCreditoFinanciera = crearNCF(recibo);
 				
-				String ncf_Id = alta(notaCreditoFinanciera); 
-				
+				String ncf_Id = null; 
+				try {
+					ncf_Id = alta(notaCreditoFinanciera); 					
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new RuntimeException("Error al crear \"Nota de Crédito Financiera\"");		
+				}				
 				Documento doc_ncf = getService().findDocumento(ncf_Id);
-				
-				EFacturaResult generateResult = generateCFE(doc_ncf);
-				
-				if (!generateResult.getEfacturaFail()) {
-					recibo.setNotaCreditoFinanciera(doc_ncf);
-				}
+				try {
+					EFacturaResult generateResult = generateCFE(doc_ncf);				
+//					if (!generateResult.getEfacturaFail()) {
+//						recibo.setNotaCreditoFinanciera(doc_ncf);
+//					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new RuntimeException("Error al emitir \"Nota de Crédito Financiera\"");		
+				}				
 			}
 
 			// retornar el recibo
-			return recibo;
+			return getDocumento(recibo.getDocId());
 
 		} catch (Exception e) {
-			throw new RuntimeException(e.getMessage());
+			e.printStackTrace();
+			throw new RuntimeException("Ha ocurrido un error al emitir, contacte al administrador del sistema");
 		}
 	}
 

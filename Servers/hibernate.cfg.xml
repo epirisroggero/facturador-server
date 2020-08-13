@@ -5,9 +5,9 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">org.gjt.mm.mysql.Driver</property>
-        <property name="hibernate.connection.password">root</property>
-        <property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/libra?useSSL=false</property>
+        <property name="hibernate.connection.url">jdbc:mysql://127.0.0.1:3306/libra?useSSL=false&amp;autoReconnect=true</property>
         <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">root</property>
         <property name="hibernate.default_schema">libra</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL5InnoDBDialect</property>
     </session-factory>
