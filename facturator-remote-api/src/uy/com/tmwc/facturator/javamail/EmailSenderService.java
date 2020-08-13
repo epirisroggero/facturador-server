@@ -1,6 +1,5 @@
 package uy.com.tmwc.facturator.javamail;
 
-import java.io.File;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -51,7 +50,8 @@ public class EmailSenderService {
 	private String serieNro;
 	
 	private String  tipoDocumento;
-
+	
+	private String imagesPath;
 
 
 	public void sendEmail() throws MessagingException {
@@ -72,9 +72,10 @@ public class EmailSenderService {
 
 		// Una MultiParte para agrupar texto e imagen.
 		MimeMultipart multiParte = new MimeMultipart();
+		
 
 		// Obtener el data source de la imagen
-		DataSource fds = new FileDataSource("C:/Fulltime/resources/templates/images/header-mail-1.jpg");
+		DataSource fds = new FileDataSource(imagesPath + "header-mail-1.jpg");
 
 		// Se compone la parte del texto
 		BodyPart messageBodyPart = new MimeBodyPart();
@@ -90,7 +91,7 @@ public class EmailSenderService {
 		}
 
 		// Obtener el data source de la imagen
-		DataSource fds2 = new FileDataSource("C:/Fulltime/resources/templates/images/footer-mail-2.jpg");
+		DataSource fds2 = new FileDataSource(imagesPath + "footer-mail-2.jpg");
 		messageBodyPart = new MimeBodyPart();
 		messageBodyPart.setDataHandler(new DataHandler(fds2));
 		if (!isEsExpedicion()) {
@@ -109,7 +110,7 @@ public class EmailSenderService {
 			messageBodyPart.setDataHandler(new DataHandler(dataSource));
 
 		} else {
-			fds3 = new FileDataSource("C:/Fulltime/resources/templates/images/Logo.jpg");
+			fds3 = new FileDataSource(imagesPath + "Logo.jpg");
 			messageBodyPart.setDataHandler(new DataHandler(fds3));
 		}  
 		messageBodyPart.setFileName("Foto.jpg");
@@ -120,7 +121,7 @@ public class EmailSenderService {
 		}
 
 		if (esFactura || esListadoDeudores) {
-			DataSource fds4 = new FileDataSource("C:/Fulltime/resources/templates/images/formas_de_pago.jpg");
+			DataSource fds4 = new FileDataSource(imagesPath + "formas_de_pago.jpg");
 			messageBodyPart = new MimeBodyPart();
 			messageBodyPart.setDataHandler(new DataHandler(fds4));
 			messageBodyPart.setHeader("Content-ID", "<formasPago>");
@@ -287,6 +288,14 @@ public class EmailSenderService {
 
 	public void setTipoDocumento(String tipoDocumento) {
 		this.tipoDocumento = tipoDocumento;
+	}
+	
+	public String getImagesPath() {
+		return imagesPath;
+	}
+
+	public void setImagesPath(String imagesPath) {
+		this.imagesPath = imagesPath;
 	}
 
 

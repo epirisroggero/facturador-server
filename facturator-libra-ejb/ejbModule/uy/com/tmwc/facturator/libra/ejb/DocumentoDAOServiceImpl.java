@@ -1872,10 +1872,9 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 				ArticuloCompraVentaCosto cvcArticulo = new ArticuloCompraVentaCosto();
 				cvcArticulo.setCodigo(articulo.getCodigo());
 				cvcArticulo.setNombre(articulo.getNombre());
-				cvcArticulo.setFichaMonedaId(articulo.getMonedaCosto() != null ? articulo.getMonedaCosto().getCodigo()
-						: "2");
+				cvcArticulo.setFichaMonedaId(
+						articulo.getMonedaCosto() != null ? articulo.getMonedaCosto().getCodigo() : "2");
 				cvcArticulo.setCosto(articulo.getMonedaCosto() != null ? articulo.getCosto() : BigDecimal.ZERO);
-
 				cvcArticulo.setDocCompraId(doc.getDocId());
 				cvcArticulo.setCompraMonedaId(doc.getMoneda().getCodigo());
 				cvcArticulo.setCostoCompraDescuento(descuentos);
@@ -1976,7 +1975,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			ArticuloCompraVentaCosto cvcArticulo = new ArticuloCompraVentaCosto();
 			cvcArticulo.setCodigo(articulo.getCodigo());
 			cvcArticulo.setNombre(articulo.getNombre());
-			cvcArticulo.setFichaMonedaId(articulo.getMonedaCosto().getCodigo());
+			cvcArticulo.setFichaMonedaId(
+					articulo.getMonedaCosto() != null ? articulo.getMonedaCosto().getCodigo() : "2");
 			cvcArticulo.setCosto(articulo.getCosto());
 
 			cvcArticulo.setDocCompraId(doc.getDocId());
@@ -2001,10 +2001,11 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						@SuppressWarnings("unchecked")
 						List<uy.com.tmwc.facturator.libra.entity.Documento> ormResult = this.em
 								.createNamedQuery("Documento.obtenerDocumentoClienteNumero")
-								.setParameter("empId", getEmpId()).setParameter("docNro", new BigInteger(docNumero))
+								.setParameter("empId", getEmpId())
+								.setParameter("docNro", new BigInteger(docNumero))
 								.setParameter("clienteId", clienteId).getResultList();
 
-						if (ormResult.size() > 0) {
+						if (ormResult != null && ormResult.size() > 0) {
 							uy.com.tmwc.facturator.libra.entity.Documento docEntity = (uy.com.tmwc.facturator.libra.entity.Documento) ormResult
 									.get(0);
 							for (Linea l : docEntity.getLineas()) {
@@ -2101,15 +2102,14 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 			ArticuloPrecio precioFabrica = catalogService.getPrecioArticulo("7", articulo.getCodigo());
 			if (precioFabrica == null) {
-				precioFabrica = new ArticuloPrecio(linea.getArticulo().getCodigo(), "01", BigDecimal.ZERO, Short.valueOf(nuevaMonedaId), "N");
+				precioFabrica = new ArticuloPrecio(articulo.getCodigo(), "01", BigDecimal.ZERO, Short.valueOf(nuevaMonedaId), "N");
 			}
 
 			// Si el precio cambia de moneda hay que ajustarlo
-			if (precioFabrica.getMoneda().getCodigo().equals(nuevaMonedaId)) {
+			if (nuevaMonedaId.equals(precioFabrica.getMndIdPrecio())) {
 				BigDecimal nuevoPrecioFabrica = convertPrecio(precioFabrica.getPrecio(), precioFabrica.getMoneda().getCodigo(), nuevaMonedaId);
 				precioFabrica.setPrecio(nuevoPrecioFabrica);
 				precioFabrica.setMoneda(doc.getMoneda());
-				precioFabrica = new ArticuloPrecio(articulo.getCodigo(), "01", BigDecimal.ZERO, Short.valueOf("2"), "N");
 			}
 
 			ArticuloPrecioFabricaCosto preciosArticulo = new ArticuloPrecioFabricaCosto();

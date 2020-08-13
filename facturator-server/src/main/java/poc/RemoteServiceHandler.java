@@ -1122,7 +1122,6 @@ public class RemoteServiceHandler {
 		for (ArticuloPrecio articuloPrecio : precios) {
 			getArticulosService().updateArticuloPrecio(articuloPrecio);
 		}
-
 	}
 
 	// ///////////
@@ -1384,7 +1383,7 @@ public class RemoteServiceHandler {
 		Usuario usuarioLogin = getUsuarioLogin();
 
 		try {
-			// Guardar por quien fué emitido.
+			// Guardar por quien fue emitido.
 			recibo.setEmitidoPor(usuarioLogin.getCodigo());
 
 			// Setear el tipo de cambio.
@@ -1394,17 +1393,26 @@ public class RemoteServiceHandler {
 			}
 			// Resetear datos del documento
 			recibo = preSaveRecibo(recibo);
+			
+			recibo = emitir(recibo, "");
 
-			Documento result = modificar(recibo);
-
-			if (!recibo.getComprobante().isAster() && result.isEmitido() && recibo.getProcessId() == null
+			if (!recibo.getComprobante().isAster() && recibo.getProcessId() == null 
 					&& !recibo.getSerie().equals("A") && recibo.getFacturasVinculadas().size() > 0) {
-				Documento notaCreditoFin = emitir(crearNCF(recibo), "");
-				result.setNotaCreditoFinanciera(notaCreditoFin);
+				Documento notaCreditoFinanciera = crearNCF(recibo);
+				
+				String ncf_Id = alta(notaCreditoFinanciera); 
+				
+				Documento doc_ncf = getService().findDocumento(ncf_Id);
+				
+				EFacturaResult generateResult = generateCFE(doc_ncf);
+				
+				if (!generateResult.getEfacturaFail()) {
+					recibo.setNotaCreditoFinanciera(doc_ncf);
+				}
 			}
 
-			// guardar cambios en el recibo
-			return result;
+			// retornar el recibo
+			return recibo;
 
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
@@ -1413,7 +1421,7 @@ public class RemoteServiceHandler {
 
 	private Documento crearNCF(Documento recibo) {
 		try {
-			Comprobante cmp = findCatalogEntity("Comprobante", recibo.getComprobante().getCodigo());
+			Comprobante cmp = findCatalogEntity("Comprobante", "28");
 			Articulo art = findCatalogEntity("Articulo", "DESCUENTO");
 			Iva iva = findCatalogEntity("Iva", "1");
 
@@ -1503,14 +1511,17 @@ public class RemoteServiceHandler {
 			notaCredFin.setDocTCC(recibo.getDocTCC());
 			notaCredFin.setDocTCF(getService().getTipoCambioFiscal(notaCredFin.getMoneda().getCodigo(), notaCredFin.getFecha()));
 
-			CuotasDocumento cuotasDocumento = new CuotasDocumento();
+			notaCredFin.setCajaId((short)1); 
+			
+			CuotasDocumento cuotasDocumento = new CuotasDocumento(notaCredFin);
 			cuotasDocumento.inicializarCuotas();
-
 			notaCredFin.setCuotasDocumento(cuotasDocumento);
-
+			
 			return notaCredFin;
 
 		} catch (Exception e) {
+			e.printStackTrace();
+			
 			throw new RuntimeException(e.getMessage());
 		} finally {
 
@@ -1686,7 +1697,7 @@ public class RemoteServiceHandler {
 		if (documento.getComprobante().isAster() || documento.getComprobante().getCodigo().equals("17")) {
 			return null;
 		}
-		// Guardar el processId en caso de guardar una nota de credito
+		// Guardar el processId en caso de guardar una nota de crédito
 		// financiera automática.
 		if (documento.getComprobante().isNotaCreditoFinanciera()) {
 			if (documento.getProcessId() != null) {
@@ -2494,11 +2505,15 @@ public class RemoteServiceHandler {
 		NumberFormat numberFormat = NumberFormat.getInstance(new Locale("es", "ES"));
 		numberFormat.setMinimumFractionDigits(2);
 		numberFormat.setMaximumFractionDigits(2);
-
+		
+		//String imagesPath = this.getClass().getResource("/").getPath() + "/images/";
+		String imagesPath = "C:/Fulltime/resources/templates/images/";
+		//String imagesPath = "file://" + this.getClass().getResource("/").getPath() + "/images/";
+		
 		Usuario usuario = getUsuarioLogin();
 
 		HashMap<String, Object> root = new HashMap<String, Object>();
-		root.put("bodyText", body);
+		root.put("bodyText", body); 
 
 		EmailSenderService eMailSender = new EmailSenderService();
 		eMailSender.setSubjectText(subject);
@@ -2507,6 +2522,7 @@ public class RemoteServiceHandler {
 		eMailSender.setAttachmentDataPdf(attachmentDataPdf);
 		eMailSender.setUsuario(usuario);
 		eMailSender.setSerieNro(documento != null ? documento.getSerie() + documento.getNumero() : "");
+		eMailSender.setImagesPath(imagesPath);
 
 		String htmlText;
 
@@ -2632,7 +2648,6 @@ public class RemoteServiceHandler {
 			articuloCosto = getArticuloCosto(codigo);
 		} catch (PermisosException ex) {
 			articuloCosto = null;
-			;
 		}
 
 		ArrayList<ArticuloPrecio> result = new ArrayList<ArticuloPrecio>();
