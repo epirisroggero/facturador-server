@@ -245,6 +245,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 			serieNumero = this.documentoDAOService.generarSerieNumero(current.getComprobante().getCodigo());
 			current.toEmitido(serieNumero);
 		}
+		current.setNextDocId(documento.getNextDocId());
 
 		if (!documento.getComprobante().isMueveCaja()) {
 			current.setCajaId(null);

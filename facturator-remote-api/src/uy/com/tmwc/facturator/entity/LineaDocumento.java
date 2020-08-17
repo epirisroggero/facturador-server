@@ -303,7 +303,6 @@ public class LineaDocumento implements Serializable {
 	}
 
 	public void setIvaId(Short ivaId) {
-		// this.ivaId = ivaId;
 	}
 
 	public BigDecimal getCoeficienteImp() {
@@ -418,7 +417,7 @@ public class LineaDocumento implements Serializable {
 		this.articuloId = articuloId;
 	}
 	
-	// Para E-Factura; retorna el iva del articulo. Se usa solo ahí
+	// Para E-Factura; retorna el iva del articulo. Se usa solo ahï¿½
 	public Iva getIvaArticulo() {		
 		return articulo != null ? articulo.getIva() : null;
 	}

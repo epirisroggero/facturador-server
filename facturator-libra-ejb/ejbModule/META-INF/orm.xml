@@ -242,15 +242,15 @@
 		<named-query name="Articulo.query">
 			<query>
 				select 
-					new uy.com.tmwc.facturator.libra.entity.Articulo(e.id.artId, e.nombre, e.familiaId, e.marcaId, e.codigoOrigen, 
-						e.prvIdArt, e.activo, fam, marca, prov)
+					new uy.com.tmwc.facturator.libra.entity.Articulo(a.id.artId, a.nombre, a.familiaId, a.marcaId, a.codigoOrigen, 
+						a.prvIdArt, a.activo, a.familia, a.marca, a.proveedor)
 				from
-					Articulo e join e.familia fam left join e.proveedor prov left join e.marca marca
+					Articulo a
 				where 
-					e.nombre like :query
-					and e.id.empId = :empId
+					a.nombre like :query
+					and a.id.empId = :empId
 				order by
-					e.nombre
+					a.nombre
 			</query>
 		</named-query>
 	</entity>
@@ -261,8 +261,7 @@
 				select 
 					a, pv 
 				from 
-					ArticuloPrecio a, 
-					Preciosventa pv
+					ArticuloPrecio a, Preciosventa pv
 				where 
 					a.id.artId = :articulo
 					and a.id.empId = :empId
@@ -295,13 +294,13 @@
 		<named-query name="Cliente.query">
 			<query>
 				select 
-					new uy.com.tmwc.facturator.libra.entity.Cliente(e, cto)
+					new uy.com.tmwc.facturator.libra.entity.Cliente(e, e.contacto)
 				from
-					Cliente e join e.contacto cto 
+					Cliente e
 				where 
 					e.nombre like :query
 					and e.id.empId = :empId
-					and cto.ctoActivo = 'S'
+					and e.contacto.ctoActivo = 'S'
 				order by
 					e.nombre
 			</query>
@@ -323,13 +322,13 @@
 		<named-query name="Proveedor.query">
 			<query>
 				select 
-					new uy.com.tmwc.facturator.libra.entity.Proveedor(p.codigo, p.nombre, cto.ctoTelefono, cto.ctoDireccion, cto.ctoRSocial, cto.paisIdCto, cto.ctoRUT)
+					new uy.com.tmwc.facturator.libra.entity.Proveedor(p.codigo, p.nombre, p.contacto.ctoTelefono, p.contacto.ctoDireccion, p.contacto.ctoRSocial, p.contacto.paisIdCto, p.contacto.ctoRUT)
 				from
-					Proveedor p join p.contacto cto
+					Proveedor p
 				where 
 					p.nombre like :query
 					and p.id.empId = :empId
-					and cto.ctoActivo = 'S'
+					and p.contacto.ctoActivo = 'S'
 				order by
 					p.nombre
 			</query>

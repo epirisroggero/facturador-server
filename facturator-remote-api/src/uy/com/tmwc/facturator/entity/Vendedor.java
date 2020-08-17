@@ -7,9 +7,9 @@ import java.util.List;
 public class Vendedor extends CodigoNombreEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private List<VendedorComision> comisiones;
-	
 	private VendedoresUsuario vendedoresUsuario;
+
+	private List<VendedorComision> comisiones;
 	
 	public Vendedor() {
 	}

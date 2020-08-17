@@ -20,9 +20,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b10f0b2f-466f-4ac4-8205-275267074ccf" name="Default" comment="Facturador v1.7.0000">
-      <change beforePath="$PROJECT_DIR$/Servers/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Servers/hibernate.cfg.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/META-INF/orm.xml" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/META-INF/orm.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/dozerMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/dozerMappings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/ejb/DocumentoDAOServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/ejb/DocumentoDAOServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/util/DozerMappingsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/util/DozerMappingsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/util/DozerMappingsServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/util/DozerMappingsServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/util/EmpIdDozerListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-libra-ejb/ejbModule/uy/com/tmwc/facturator/libra/util/EmpIdDozerListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/Documento.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/Documento.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/DocumentoBase.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/DocumentoBase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/LineaDocumento.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/LineaDocumento.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/LineasDocumento.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/LineasDocumento.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/Vendedor.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/Vendedor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/VinculoDocumentos.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/entity/VinculoDocumentos.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/javamail/EmailSenderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-remote-api/src/uy/com/tmwc/facturator/javamail/EmailSenderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/META-INF/persistence.xml_" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/server/util/DTO2ModelMappingService.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/server/util/DTO2ModelMappingService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/server/util/DTO2ModelMappingServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/server/util/DTO2ModelMappingServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/service/DocumentoServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server-ejb/ejbModule/uy/com/tmwc/facturator/service/DocumentoServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-server/WebContent/updates/updateDescriptor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server/WebContent/updates/updateDescriptor.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/facturator-server/src/main/java/poc/RemoteServiceHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server/src/main/java/poc/RemoteServiceHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/facturator-server/src/main/resources/templates/email-template-recibo.ftl" beforeDir="false" afterPath="$PROJECT_DIR$/facturator-server/src/main/resources/templates/email-template-recibo.ftl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -197,18 +215,30 @@
     <option name="LAST_COMMIT_MESSAGE" value="Facturador v1.7.500" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="93" y="93" width="1350" height="638" maximized="true" key="DiffContextDialog" timestamp="1597273558057">
+    <state x="574" y="119" key="#com.intellij.ide.util.MemberChooser" timestamp="1597368734747">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="93" y="93" width="1350" height="638" maximized="true" key="DiffContextDialog/0.0.1536.824/-1440.0.1440.860@0.0.1536.824" timestamp="1597273558057" />
-    <state x="478" y="145" width="579" height="534" key="find.popup" timestamp="1597197774474">
+    <state x="574" y="119" key="#com.intellij.ide.util.MemberChooser/0.0.1536.824/-1440.0.1440.860@0.0.1536.824" timestamp="1597368734747" />
+    <state x="93" y="93" width="1350" height="638" maximized="true" key="DiffContextDialog" timestamp="1597368977348">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="478" y="145" width="579" height="534" key="find.popup/0.0.1536.824/-1440.0.1440.860@0.0.1536.824" timestamp="1597197774474" />
-    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1597197760192">
+    <state x="93" y="93" width="1350" height="638" maximized="true" key="DiffContextDialog/0.0.1536.824/-1440.0.1440.860@0.0.1536.824" timestamp="1597368977348" />
+    <state x="549" y="167" key="FileChooserDialogImpl" timestamp="1597354305256">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824/-1440.0.1440.860@0.0.1536.824" timestamp="1597197760192" />
+    <state x="549" y="167" key="FileChooserDialogImpl/0.0.1536.824/-1440.0.1440.860@0.0.1536.824" timestamp="1597354305256" />
+    <state x="490" y="154" width="540" height="524" key="StructurePopup" timestamp="1597368747298">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="490" y="154" width="540" height="524" key="StructurePopup/0.0.1536.824/-1440.0.1440.860@0.0.1536.824" timestamp="1597368747298" />
+    <state x="478" y="145" width="579" height="592" key="find.popup" timestamp="1597368782416">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="478" y="145" width="579" height="592" key="find.popup/0.0.1536.824/-1440.0.1440.860@0.0.1536.824" timestamp="1597368782416" />
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup" timestamp="1597368788855">
+      <screen x="0" y="0" width="1536" height="824" />
+    </state>
+    <state x="431" y="145" width="672" height="678" key="search.everywhere.popup/0.0.1536.824/-1440.0.1440.860@0.0.1536.824" timestamp="1597368788855" />
   </component>
   <component name="masterDetails">
     <states>

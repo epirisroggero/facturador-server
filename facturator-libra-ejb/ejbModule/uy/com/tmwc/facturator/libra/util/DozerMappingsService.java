@@ -5,6 +5,4 @@ import org.dozer.DozerBeanMapper;
 public abstract interface DozerMappingsService
 {
   public abstract DozerBeanMapper getDozerBeanMapper();
-
-  public abstract DozerBeanMapper getLightmapper();
 }

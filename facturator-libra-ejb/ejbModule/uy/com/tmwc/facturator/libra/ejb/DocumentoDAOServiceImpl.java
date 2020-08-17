@@ -111,74 +111,79 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 	private static final int SCALE = 2;
 
-	private static final String ULTIMOS_FACTURADOS_SUBQUERY_CONCEPTO = "FROM Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r left join d.lineas l left join c.vendedor v left join v.vendedoresUsuario vu left join vu.usuario u "
+	private static final String ULTIMOS_FACTURADOS_SUBQUERY_CONCEPTO = "FROM Documento d left join d.lineas l "
 			+ "WHERE d.comprobante.tipo IN (1,2,3,4,32) "
-			+ "AND d.id.empId = :empId "
-			+ "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
-			+ "AND (m.codigo = :moneda OR :moneda IS NULL) "
+			+ "AND (d.id.empId = :empId) "
+			+ "AND (d.clienteId = :cliente OR :cliente IS NULL) "
+			+ "AND (d.monedaId = :moneda OR :moneda IS NULL) "
 			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
 			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
 			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) "
 			+ "AND (d.pendiente = :pendiente OR d.pendiente = '' OR :pendiente is null OR d.comprobante.tipo != 32) "
 			+ "AND (d.emitido = :emitido OR d.emitido is null OR d.emitido = '' OR :emitido is null OR d.comprobante.tipo = 32) "
 			+ "AND (d.saldo > 0 OR :tieneSaldo is NULL) "
-			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
-			+ "AND (d.estado is null or d.estado != 'A') " + "AND (:concepto IS NULL OR l.concepto LIKE :concepto)";
+			+ "AND (d.comprobante.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
+			+ "AND (d.estado is null or d.estado != 'A') " 
+			+ "AND (:concepto IS NULL OR l.concepto LIKE :concepto)";
 
-	private static final String ULTIMOS_FACTURADOS_SUBQUERY = "FROM Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r left join c.vendedor v left join v.vendedoresUsuario vu left join vu.usuario u "
+	private static final String ULTIMOS_FACTURADOS_SUBQUERY = "FROM Documento d "
 			+ "WHERE d.comprobante.tipo IN (1,2,3,4,32) "
-			+ "AND d.id.empId = :empId "
-			+ "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
-			+ "AND (m.codigo = :moneda OR :moneda IS NULL) "
+			+ "AND (d.id.empId = :empId) " 
+			+ "AND (d.clienteId = :cliente OR :cliente IS NULL) "
+			+ "AND (d.monedaId = :moneda OR :moneda IS NULL) "
 			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
 			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
 			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) "
 			+ "AND (d.pendiente = :pendiente OR d.pendiente = '' OR :pendiente IS null OR d.comprobante.tipo != 32) "
 			+ "AND (d.emitido = :emitido OR :emitido is null OR d.emitido is null OR d.emitido = '' OR d.comprobante.tipo = 32) "
 			+ "AND (d.saldo > 0 OR :tieneSaldo is NULL) "
-			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
-			+ "AND (d.estado is null or d.estado != 'A') ";
+			+ "AND (d.comprobante.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
+			+ "AND (d.estado is null OR d.estado != 'A') ";
 
-	private static final String ULTIMOS_FACTURADOS_SUBQUERY_ARTICULO = "FROM Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r left join d.lineas l left join c.vendedor v left join v.vendedoresUsuario vu left join vu.usuario u "
+	
+	private static final String ULTIMOS_FACTURADOS_SUBQUERY_ARTICULO = "FROM Documento d join left join d.lineas l "
 			+ "WHERE d.comprobante.tipo IN (1,2,3,4,32) "
-			+ "AND d.id.empId = :empId "
-			+ "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
-			+ "AND (m.codigo = :moneda OR :moneda IS NULL) "
+			+ "AND (d.id.empId = :empId) "
+			+ "AND (d.clienteId = :cliente OR :cliente IS NULL) "
+			+ "AND (d.monedaId = :moneda OR :moneda IS NULL) "
 			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
 			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
 			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) "
 			+ "AND (d.pendiente = :pendiente OR :pendiente IS null OR d.comprobante.tipo != 32) "
 			+ "AND (d.emitido = :emitido OR d.emitido is null OR d.emitido = '' OR :emitido is null OR d.comprobante.tipo = 32) "
 			+ "AND (d.estado is null OR d.estado != 'A') "
-			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
+			+ "AND (d.comprobante.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
 			+ "AND (:concepto IS NULL OR :concepto LIKE l.concepto) "
-			+ "AND (m.codigo = :moneda OR :moneda IS NULL) "
-			+ "AND (d.saldo > 0 OR :tieneSaldo is NULL) " + "AND (:articulo IS NULL OR l.articuloId = :articulo) ";
+			+ "AND (d.saldo > 0 OR :tieneSaldo is NULL) " 
+			+ "AND (:articulo IS NULL OR l.articuloId = :articulo) ";
 
-	private static final String ULTIMAS_SOLICITUDES_SUBQUERY = "FROM "
-			+ "Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r "
+	private static final String ULTIMAS_SOLICITUDES_SUBQUERY = "FROM Documento d "
 			+ "WHERE d.comprobante.tipo IN (21,22,23,31) "
-			+ "AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) "
-			+ "AND (cmp.id.cmpid NOT IN ('110','111','116')) "
+			+ "AND (d.id.empId = :empId) " 
+			+ "AND (d.comprobante.id.cmpid NOT IN ('110','111','116')) "
+			+ "AND (d.proveedor.id.prvId = :proveedor OR :proveedor IS NULL) "
 			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
 			+ "AND (d.numero = :numero OR :numero IS NULL) AND (d.serie = :serie OR :serie IS NULL) "
 			+ "AND (d.pendiente = :pendiente OR :pendiente is null) "
-			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
+			+ "AND (d.comprobante.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
 			+ "AND (d.estado is null or d.estado != 'A') ";
 
-	private static final String ULTIMAS_SOLICITUDES_SUBQUERY_CONCEPTO = "FROM Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r left join d.lineas l "
-			+ "WHERE d.comprobante.tipo IN (5,21,22,23,31) AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) "
+	private static final String ULTIMAS_SOLICITUDES_SUBQUERY_CONCEPTO = "FROM Documento d left join d.lineas l "
+			+ "WHERE d.comprobante.tipo IN (5,21,22,23,31) "
+			+ "AND (d.id.empId = :empId) " 
+			+ "AND (d.proveedor.id.prvId = :proveedor OR :proveedor IS NULL) "
+			+ "AND (d.comprobante.id.cmpid NOT IN ('110','111','116')) "
+			+ "AND (d.comprobante.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
 			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
-			+ "AND (cmp.id.cmpid NOT IN ('110','111','116')) "
 			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) AND (d.numero = :numero OR :numero IS NULL) "
 			+ "AND (d.serie = :serie OR :serie IS NULL) "
 			+ "AND (d.pendiente = :pendiente OR :pendiente is null) "
-			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
 			+ "AND (d.estado is null or d.estado != 'A') " + "AND (:concepto IS NULL OR l.concepto LIKE :concepto) ";
 
-	private static final String ULTIMOS_GASTOS_SUBQUERY = "FROM Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r "
+	private static final String ULTIMOS_GASTOS_SUBQUERY = "FROM Documento d "
 			+ "WHERE  d.comprobante.tipo IN (21,22,23,24,31) "
-			+ "AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) "
+			+ "AND (d.id.empId = :empId) " 
+			+ "AND (d.proveedor.id.prvId = :proveedor OR :proveedor IS NULL) "
 			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
 			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
 			+ "AND (d.numero = :numero OR :numero IS NULL) "
@@ -186,9 +191,10 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			+ "AND (d.serie = :serie OR :serie IS NULL) "
 			+ "AND (d.estado is null or d.estado != 'A') ";
 
-	private static final String ULTIMOS_GASTOS_SUBQUERY_CONCEPTO = "FROM Documento d join d.moneda m join d.proveedor p join d.comprobante cmp left join d.docruc r left join d.lineas l "
+	private static final String ULTIMOS_GASTOS_SUBQUERY_CONCEPTO = "FROM Documento d left join d.lineas l "
 			+ "WHERE  d.comprobante.tipo IN (21,22,23,24,31) "
-			+ "AND (d.id.empId = :empId) AND (p.id.prvId = :proveedor OR :proveedor IS NULL) "
+			+ "AND (d.id.empId = :empId) " 
+			+ "AND (d.proveedor.id.prvId = :proveedor OR :proveedor IS NULL) "
 			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
 			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
 			+ "AND (d.numero = :numero OR :numero IS NULL) "
@@ -196,27 +202,29 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			+ "AND (d.serie = :serie OR :serie IS NULL) "
 			+ "AND (d.estado is null or d.estado != 'A') " + "AND (:concepto IS NULL OR l.concepto LIKE :concepto) ";
 
-	private static final String ULTIMOS_RECIBOS_SUBQUERY = "FROM "
-			+ "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r "
+	private static final String ULTIMOS_RECIBOS_SUBQUERY = "FROM Documento d "
 			+ "WHERE d.comprobante.tipo = 5 "
 			+ "AND (d.id.empId = :empId) "
 			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
 			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
 			+ "AND (d.numero = :numero OR :numero IS NULL) "
 			+ "AND (d.serie = :serie OR :serie IS NULL) "
-			+ "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
+			+ "AND (d.clienteId = :cliente OR :cliente IS NULL) "
 			+ "AND (d.emitido = :emitido OR :emitido IS NULL OR (d.emitido is null AND 'N' = :emitido) OR ('N' = :emitido AND d.emitido = '')) "
 			+ "AND (d.saldo > 0 OR :tieneSaldo is NULL) "
-			+ "AND (cmp.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
-			+ "AND (m.codigo = :moneda OR :moneda IS NULL) " + "AND (d.estado is null or d.estado != 'A') ";
+			+ "AND (d.comprobante.id.cmpid = :tipoComprobante OR :tipoComprobante IS NULL) "
+			+ "AND (d.monedaId = :moneda OR :moneda IS NULL) " 
+			+ "AND (d.estado is null OR d.estado != 'A') ";
 
-	private static final String ULTIMOS_CHEQHES_SUBQUERY = "FROM "
-			+ "Documento d join d.moneda m join d.cliente c join d.comprobante cmp left join d.docruc r " + "WHERE "
-			+ "d.comprobante.tipo = 43 " + "AND (d.id.empId = :empId) "
+	private static final String ULTIMOS_CHEQHES_SUBQUERY = "FROM Documento d "
+			+ "WHERE d.comprobante.tipo = 43 " 
+			+ "AND (d.id.empId = :empId) "
 			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
-			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " + "AND (d.numero = :numero OR :numero IS NULL) "
-			+ "AND (d.serie = :serie OR :serie IS NULL) " + "AND (c.id.cliId = :cliente OR :cliente IS NULL) "
-			+ "AND (m.codigo = :moneda OR :moneda IS NULL) ";
+			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) " 
+			+ "AND (d.numero = :numero OR :numero IS NULL) "
+			+ "AND (d.serie = :serie OR :serie IS NULL) " 
+			+ "AND (d.clienteId  = :cliente OR :cliente IS NULL) "
+			+ "AND (d.monedaId = :moneda OR :moneda IS NULL) ";
 
 	public String persist(uy.com.tmwc.facturator.entity.Documento doc) throws PermisosException {
 		int docId = generateDocId();
@@ -856,13 +864,13 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		final StringBuilder sb = new StringBuilder("");
 
 		if (query.getEsCheque()) {
-			sb.append("SELECT new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, cmp.id.cmpid, cmp.cmpNom, d.serie, d.numero, d.bancoIdDoc, d.fecha, "
-					+ "d.emitido, d.titular, m.id.mndId, m.nombre, d.total, d.clienteId, c.nombre, d.fecha2) ");
+			sb.append("SELECT new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, d.comprobante.id.cmpid, d.comprobante.cmpNom, d.serie, d.numero, d.bancoIdDoc, d.fecha, "
+					+ "d.emitido, d.titular, d.monedaId, d.moneda.nombre, d.total, d.clienteId, d.cliente.nombre, d.fecha2) ");
 
 		} else if (query.getEsGasto()) {
 			sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO( " + "d.id.docId, " + "d.serie, "
-					+ "d.numero, " + "d.fecha, " + "d.CAEnom, " + "p.id.prvId, " + "p.nombre, "
-					+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
+					+ "d.numero, " + "d.fecha, " + "d.CAEnom, " + "d.proveedor.id.prvId, " + "d.proveedor.nombre, "
+					+ "d.proveedor.contacto.ctoRSocial, d.monedaId, d.moneda.nombre, d.comprobanteId, d.comprobante.cmpNom, ");
 
 			if (esSupervisor) {
 				sb.append("d.costo, ");
@@ -872,16 +880,15 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		} else {
 			if (query.getEsSolicitud() == null || !query.getEsSolicitud()) {
 				if (query.getArticulo() == null || query.getArticulo() == "") {
-					sb.append("SELECT new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, d.serie, d.numero, d.fecha, d.CAEnom, d.clienteId, c.nombre, "
-							+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
+					sb.append("SELECT new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, d.serie, d.numero, d.fecha, d.CAEnom, d.clienteId, d.cliente.nombre, "
+							+ "d.cliente.contacto.ctoRSocial, d.monedaId, d.moneda.nombre, d.comprobanteId, d.comprobante.cmpNom, ");
 				} else {
-					sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, d.serie, d.numero, d.fecha, d.CAEnom, d.clienteId, c.nombre, "
-							+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
+					sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, d.serie, d.numero, d.fecha, d.CAEnom, d.clienteId, d.cliente.nombre, "
+							+ "d.cliente.contacto.ctoRSocial, d.monedaId, d.moneda.nombre, d.comprobanteId, d.comprobante.cmpNom, ");
 				}
 			} else {
-				sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO( " + "d.id.docId, "
-						+ "d.serie, " + "d.numero, " + "d.fecha, " + "d.CAEnom, " + "p.id.prvId, " + "p.nombre, "
-						+ "r.nombre, m.id.mndId, m.nombre, cmp.id.cmpid, cmp.cmpNom, ");
+				sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, d.serie, d.numero, d.fecha, d.CAEnom, d.proveedorId, " + 
+						"d.proveedor.nombre, d.proveedor.contacto.ctoRSocial, d.monedaId, d.moneda.nombre, d.comprobanteId, d.comprobante.cmpNom, ");
 			}
 
 			if (esSupervisor) {
@@ -910,7 +917,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		String comprobantes = query.getComprobantes();
 		if (comprobantes != null && comprobantes.length() > 0) {
-			sb.append(" AND cmp.id.cmpid IN (").append(comprobantes).append(") ");
+			sb.append(" AND d.comprobante.id.cmpid IN (").append(comprobantes).append(") ");
 		}
 		if (!query.getEsSolicitud()) {
 			sb.append(filtroUsuario);
@@ -932,17 +939,15 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		String permisoId = usuarioLogin.getPermisoId();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
-
-		if (esSupervisor || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId)
-				|| Usuario.USUARIO_FACTURACION.equals(permisoId)) {
+		
+		if (esSupervisor || Usuario.USUARIO_ADMINISTRADOR.equals(permisoId) || Usuario.USUARIO_FACTURACION.equals(permisoId)) {
 			return "";
 		} else {
 			String codigoUsuario = usuarioLogin.getCodigo();
-			return " AND (" + "(d.usuarioId = " + codigoUsuario + ") OR (u.codigo = " + codigoUsuario + ") OR ("
-					+ codigoUsuario
-					+ " IN (SELECT p.vendedor.vendedoresUsuario.usuario.codigo FROM d.participaciones p)) OR " + "(('"
-					+ permisoId + "'='5') AND (cmp.id.cmpid IN (70,71,72,73,80,81,82,83,90,91,92,93,130,131,132,133)))"
-					+ ") ";
+			return " AND ((d.usuarioId = " + codigoUsuario + ") " +
+					" OR (d.cliente.vendedor.vendedoresUsuario.usuario.codigo = " + codigoUsuario + ") " +
+					" OR (" + codigoUsuario + " IN (SELECT d.proveedor.vendedor.vendedoresUsuario.usuario.codigo FROM d.participaciones p)) " +
+					" OR (('" + permisoId + "'='5') AND (d.comprobante.id.cmpid IN (70,71,72,73,80,81,82,83,90,91,92,93,130,131,132,133)))) ";
 		}
 	}
 
@@ -1066,15 +1071,17 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			} else {
 				sb.append(ULTIMAS_SOLICITUDES_SUBQUERY);
 			}
-		}
+		} 
 
 		String comprobantes = query.getComprobantes();
 		if (comprobantes != null && comprobantes.length() > 0) {
-			sb.append(" AND cmp.id.cmpid IN (").append(comprobantes).append(") ");
+			sb.append(" AND d.comprobante.id.cmpid IN (").append(comprobantes).append(") ");
 		}
-		if (!query.getEsSolicitud() && !query.getEsRecibo()) {
+		if (!query.getEsSolicitud() && !query.getEsRecibo() && !query.getEsGasto()) {
 			sb.append(getFiltroUsuario());
 		}
+		
+		System.out.println(sb.toString());
 		Query q = this.em.createQuery(sb.toString());
 
 		setUltimosDocumentosSubqueryParameters(q, query);
@@ -1115,15 +1122,15 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 	public uy.com.tmwc.facturator.entity.Documento findDocumento(String docId) throws PermisosException {
 		uy.com.tmwc.facturator.libra.entity.Documento doc = (uy.com.tmwc.facturator.libra.entity.Documento) this.em
-				.find(uy.com.tmwc.facturator.libra.entity.Documento.class,
-						new DocumentoPK(getEmpId(), Integer.parseInt(docId)));
+			.find(uy.com.tmwc.facturator.libra.entity.Documento.class,
+				new DocumentoPK(getEmpId(), Integer.parseInt(docId)));
 
 		if (doc == null) {
 			return null;
 		}
-
-		Documento mapped = (uy.com.tmwc.facturator.entity.Documento) this.mapService.getDozerBeanMapper().map(doc,
-				uy.com.tmwc.facturator.entity.Documento.class);
+		
+		DozerBeanMapper mapper = this.mapService.getDozerBeanMapper();
+		Documento mapped = (uy.com.tmwc.facturator.entity.Documento) mapper.map(doc, Documento.class);
 
 		PermisosDocumentoUsuario pdu = new PermisosDocumentoUsuario();
 		mapped.setPermisosDocumentoUsuario(pdu);
@@ -1133,6 +1140,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		} catch (PermisosException e) {
 			pdu.setEdicion(false);
 		}
+		
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 		String usuarioPermisoId = usuarioLogin.getPermisoId();
 		boolean esSupervisor = usuarioLogin.isSupervisor();
@@ -1147,7 +1155,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 						usuarioPermisoId)
 				|| (usuarioPermisoId.equals(Usuario.USUARIO_VENDEDOR_DISTRIBUIDOR) && doc
 						.usuarioInvolucrado(usuarioLogin.getCodigo())));
-		return mapped;
+		
+		return mapped; 
 	}
 
 	private void controlModificacionDocumento(uy.com.tmwc.facturator.libra.entity.Documento doc)
@@ -1977,7 +1986,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			cvcArticulo.setNombre(articulo.getNombre());
 			cvcArticulo.setFichaMonedaId(
 					articulo.getMonedaCosto() != null ? articulo.getMonedaCosto().getCodigo() : "2");
-			cvcArticulo.setCosto(articulo.getCosto());
+			cvcArticulo.setCosto(articulo.getCosto() != null ? articulo.getCosto() : BigDecimal.ZERO);
 
 			cvcArticulo.setDocCompraId(doc.getDocId());
 			cvcArticulo.setCostoCompraDescuento(descuentos);
@@ -2051,7 +2060,11 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			ArticuloPrecioFabricaCosto costoArticulo = new ArticuloPrecioFabricaCosto();
 			costoArticulo.setCodigo(articulo.getCodigo());
 			costoArticulo.setNombre(articulo.getNombre());
-			costoArticulo.setViejaMonedaId(String.valueOf(articulo.getMonedaCosto().getId().getMndId()));
+			if (articulo.getMonedaCosto() != null && articulo.getMonedaCosto().getId() != null) {
+				costoArticulo.setViejaMonedaId(String.valueOf(articulo.getMonedaCosto().getId().getMndId()));
+			} else {
+				costoArticulo.setViejaMonedaId(nuevaMonedaId);
+			}
 			costoArticulo.setNuevaMonedaId(nuevaMonedaId);
 
 			BigDecimal viejoCosto = articulo.getCosto().setScale(SCALE, RoundingMode.HALF_UP);
@@ -2107,7 +2120,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 			// Si el precio cambia de moneda hay que ajustarlo
 			if (nuevaMonedaId.equals(precioFabrica.getMndIdPrecio())) {
-				BigDecimal nuevoPrecioFabrica = convertPrecio(precioFabrica.getPrecio(), precioFabrica.getMoneda().getCodigo(), nuevaMonedaId);
+				BigDecimal nuevoPrecioFabrica = convertPrecio(precioFabrica.getPrecio(), precioFabrica.getMndIdPrecio(), nuevaMonedaId);
 				precioFabrica.setPrecio(nuevoPrecioFabrica);
 				precioFabrica.setMoneda(doc.getMoneda());
 			}

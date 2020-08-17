@@ -45,6 +45,8 @@ public class EmailSenderService {
 
 	private byte[] attachmentData;
 	
+	private byte[] notaCreditoFinanciera;
+	
 	private byte[] attachmentDataPdf;
 	
 	private String serieNro;
@@ -146,7 +148,18 @@ public class EmailSenderService {
 			
 			multiParte.addBodyPart(messageBodyPart);
 		}
-		
+
+		if (notaCreditoFinanciera != null) {
+			messageBodyPart = new MimeBodyPart();
+			DataHandler dh = new DataHandler(notaCreditoFinanciera, "image/png");
+			messageBodyPart.setDataHandler(dh);
+
+			messageBodyPart.setFileName("NotaCredito.png");
+			messageBodyPart.setHeader("Content-ID", "<notaCredito>");
+			
+			multiParte.addBodyPart(messageBodyPart);
+		}
+
 		if (attachmentDataPdf != null) {
 			MimeBodyPart attachment= new MimeBodyPart();
 		    ByteArrayDataSource ds = new ByteArrayDataSource(attachmentDataPdf, "application/pdf"); 
@@ -297,6 +310,16 @@ public class EmailSenderService {
 	public void setImagesPath(String imagesPath) {
 		this.imagesPath = imagesPath;
 	}
+	
+	public byte[] getNotaCreditoFinanciera() {
+		return notaCreditoFinanciera;
+	}
+
+	public void setNotaCreditoFinanciera(byte[] notaCreditoFinanciera) {
+		this.notaCreditoFinanciera = notaCreditoFinanciera;
+	}
+
+
 
 
 }

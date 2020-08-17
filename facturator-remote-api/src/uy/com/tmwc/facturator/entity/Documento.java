@@ -12,7 +12,14 @@ import uy.com.tmwc.facturator.utils.Maths;
 
 public class Documento extends DocumentoBase implements Serializable {
 	private static final long serialVersionUID = 1L;
+
 	private Vendedor vendedor;
+
+	private LineasDocumento lineas;
+
+	private CuotasDocumento cuotasDocumento;
+	
+	private CentrosCosto centroCostos;
 
 	private Short cajaId;
 
@@ -21,10 +28,9 @@ public class Documento extends DocumentoBase implements Serializable {
 	private Deposito depositoDestino;
 	private Entrega entrega;
 	private ComisionesDocumento comisiones;
-	private LineasDocumento lineas;
 	private PlanPagos planPagos;
 	private PlanPagos condicion;
-	private CuotasDocumento cuotasDocumento;
+	
 	private BigDecimal saldo;
 	private Set<VinculoDocumentos> recibosVinculados;
 	private Set<VinculoDocumentos> facturasVinculadas;
@@ -33,7 +39,6 @@ public class Documento extends DocumentoBase implements Serializable {
 	private BigDecimal costoOperativo;
 
 	private BigDecimal _iva;
-	//private BigDecimal _subTotal;
 	private BigDecimal _costo;
 
 	private boolean emitido = false;
@@ -123,7 +128,7 @@ public class Documento extends DocumentoBase implements Serializable {
 	private String tarjetaNro;
 	
 	private String puntoVentaId;
-	private CentrosCosto centroCostos;
+	
 	
 	private Documento notaCreditoFinanciera;
 
@@ -557,7 +562,7 @@ public class Documento extends DocumentoBase implements Serializable {
 	}
 
 	public void setCondicion(PlanPagos condicion) {
-		this.condicion = condicion;
+		this.condicion = condicion; 
 	}
 
 	public LineasDocumento getLineas() {

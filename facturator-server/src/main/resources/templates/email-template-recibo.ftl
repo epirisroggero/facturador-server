@@ -43,6 +43,14 @@
 				<img src="cid:documento" />
 			</td>
 		</tr>	        
+		
+		<#if tieneNCF??>
+		    <tr>
+				<td bgcolor="#efefef" style="padding: 10px 30px 10px 30px; border:solid 1px #cfcfcf; border-top:none; border-bottom:none;">
+					<img src="cid:notaCredito" />
+				</td>
+			</tr>	      
+		</#if>  
 
         <tr bgcolor="#fdfdfd">
             <td bgcolor="#fdfdfd" align="right" style="padding: 10px 0px 10px 0px; border:solid 1px #cfcfcf; border-top:none;">

@@ -349,20 +349,23 @@ public class RemoteServiceHandler {
 			if (id == null) {
 				return null;
 			}
+			//long startTime = new Date().getTime();			
 			Documento documento = service.findDocumento(id);
-
+			 
 			Comprobante comprobante = documento.getComprobante();
 			comprobante.setAster(esComprobanteAster(comprobante.getCodigo()));
-			documento.setComprobante(comprobante);
+			documento.setComprobante(comprobante); 
 			
-			if (comprobante.isRecibo()) {
+			if (comprobante.isRecibo()) { 
 				if (documento.getProcessId() != null && documento.getProcessId().length() > 0) {
 					Documento notaCreditoFinanciera = service.findDocumento(documento.getProcessId());
 					documento.setNotaCreditoFinanciera(notaCreditoFinanciera);
 				}
 			}
+			//System.out.println(">> " + (new Date().getTime() - startTime) + " ms");
+			//System.out.println("==================================");
 			return documento;
-			
+
 		} catch (RuntimeException e) {
 			e.printStackTrace();
 			throw e;
@@ -515,7 +518,12 @@ public class RemoteServiceHandler {
 		if (query.getTipoComprobante().toString().equals("0")) {
 			query.setTipoComprobante(null);
 		}
-		return getService().queryDocumentos(query);
+
+		double startTime = new Date().getTime();
+		List<DocumentoDTO> result = getService().queryDocumentos(query);
+		//System.out.println("queryDomcumentos >> " + (new Date().getTime() - startTime) + " ms");
+
+		return result;
 	}
 
 	public long countDocumentos(DocumentoQuery query) {
@@ -534,7 +542,7 @@ public class RemoteServiceHandler {
 		}
 		return doc;
 	}
-	
+
 	public String alta(Documento documento) throws ValidationException, PermisosException {
 		return alta(documento, null);
 	}
@@ -1284,7 +1292,8 @@ public class RemoteServiceHandler {
 			oldDoc.setNextDocId(nextDocId);
 
 			// Finalizar documento convertido
-			if (oldDoc.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES || oldDoc.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_CLIENTE) {
+			if (oldDoc.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES
+					|| oldDoc.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_CLIENTE) {
 				if (oldDoc.isPendiente()) {
 					finalizarMovimientoStock(oldDoc);
 				}
@@ -1393,30 +1402,27 @@ public class RemoteServiceHandler {
 			}
 			// Resetear datos del documento
 			recibo = preSaveRecibo(recibo);
-			
+
 			recibo = emitir(recibo, "");
 
-			if (!recibo.getComprobante().isAster() && recibo.getProcessId() == null 
-					&& !recibo.getSerie().equals("A") && recibo.getFacturasVinculadas().size() > 0) {
+			if (!recibo.getComprobante().isAster() && recibo.getProcessId() == null && !recibo.getSerie().equals("A")
+					&& recibo.getFacturasVinculadas().size() > 0) {
 				Documento notaCreditoFinanciera = crearNCF(recibo);
-				
-				String ncf_Id = null; 
+
+				String ncf_Id = null;
 				try {
-					ncf_Id = alta(notaCreditoFinanciera); 					
+					ncf_Id = alta(notaCreditoFinanciera);
 				} catch (Exception e) {
 					e.printStackTrace();
-					throw new RuntimeException("Error al crear \"Nota de Crédito Financiera\"");		
-				}				
+					throw new RuntimeException("Error al crear \"Nota de Crédito Financiera\"");
+				}
 				Documento doc_ncf = getService().findDocumento(ncf_Id);
 				try {
-					EFacturaResult generateResult = generateCFE(doc_ncf);				
-//					if (!generateResult.getEfacturaFail()) {
-//						recibo.setNotaCreditoFinanciera(doc_ncf);
-//					}
+					generateCFE(doc_ncf);
 				} catch (Exception e) {
 					e.printStackTrace();
-					throw new RuntimeException("Error al emitir \"Nota de Crédito Financiera\"");		
-				}				
+					throw new RuntimeException("Error al emitir \"Nota de Crédito Financiera\"");
+				}
 			}
 
 			// retornar el recibo
@@ -1466,8 +1472,9 @@ public class RemoteServiceHandler {
 				razonCFERef.append(vinculo.getFactura().getNumero()).append(System.getProperty("line.separator"));
 				if (vinculo.getMonto() != null && vinculo.getMonto().compareTo(BigDecimal.ZERO) != 0) {
 					BigDecimal precio = montoLinea.divide(new BigDecimal("1.22"), 4, RoundingMode.HALF_EVEN);
-					String concepto = recibo.getSerie() + recibo.getNumero() + ", dto:" + descuento.setScale(2).toString()
-							+ "% en factura " + vinculo.getFactura().getSerie() + vinculo.getFactura().getNumero();
+					String concepto = recibo.getSerie() + recibo.getNumero() + ", dto:"
+							+ descuento.setScale(2).toString() + "% en factura " + vinculo.getFactura().getSerie()
+							+ vinculo.getFactura().getNumero();
 
 					concepto = concepto.substring(0, Math.min(50, concepto.length()));
 
@@ -1518,19 +1525,20 @@ public class RemoteServiceHandler {
 			notaCredFin.setIva(notaCredFin.calcularIva());
 			notaCredFin.setTotal(notaCredFin.getTotal());
 			notaCredFin.setDocTCC(recibo.getDocTCC());
-			notaCredFin.setDocTCF(getService().getTipoCambioFiscal(notaCredFin.getMoneda().getCodigo(), notaCredFin.getFecha()));
+			notaCredFin.setDocTCF(getService().getTipoCambioFiscal(notaCredFin.getMoneda().getCodigo(),
+					notaCredFin.getFecha()));
 
-			notaCredFin.setCajaId((short)1); 
-			
+			notaCredFin.setCajaId((short) 1);
+
 			CuotasDocumento cuotasDocumento = new CuotasDocumento(notaCredFin);
 			cuotasDocumento.inicializarCuotas();
 			notaCredFin.setCuotasDocumento(cuotasDocumento);
-			
+
 			return notaCredFin;
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			
+
 			throw new RuntimeException(e.getMessage());
 		} finally {
 
@@ -1788,7 +1796,8 @@ public class RemoteServiceHandler {
 	public Documento guardarDocumento(Documento documento) throws ValidationException, PermisosException {
 
 		if (documento.isEmitido()
-				|| (!documento.isPendiente() && (documento.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_CLIENTE || documento.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES))) {
+				|| (!documento.isPendiente() && (documento.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_CLIENTE || documento
+						.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES))) {
 
 			Documento original = getDocumento(documento.getDocId());
 
@@ -1796,8 +1805,10 @@ public class RemoteServiceHandler {
 			BigDecimal total = original.getTotal() != null ? original.getTotal() : BigDecimal.ZERO;
 
 			if (iva.compareTo(documento.getIva()) != 0 || total.compareTo(documento.getTotal()) != 0) {
-				throw new RuntimeException("El 'Total' e 'IVA' no se puede modificar en documentos emitidos." + "\nTotal = [antes:" + total + ",  después:"
-						+ documento.getTotal().setScale(2, RoundingMode.UNNECESSARY) + "]" + "\nIva   = [antes:" + iva + ", despu�s:" + documento.getIva().setScale(2, RoundingMode.UNNECESSARY) + "]");
+				throw new RuntimeException("El 'Total' e 'IVA' no se puede modificar en documentos emitidos."
+						+ "\nTotal = [antes:" + total + ",  después:"
+						+ documento.getTotal().setScale(2, RoundingMode.UNNECESSARY) + "]" + "\nIva   = [antes:" + iva
+						+ ", despu�s:" + documento.getIva().setScale(2, RoundingMode.UNNECESSARY) + "]");
 			}
 		}
 
@@ -2506,23 +2517,30 @@ public class RemoteServiceHandler {
 		return this.sendEmail(addresses, subject, body, attachmentData, documento, null, null);
 	}
 
-	public String sendEmail(String[] addresses, String subject, String body, byte[] attachmentData, Documento documento, Cliente cliente) {
+	public String sendEmail(String[] addresses, String subject, String body, byte[] attachmentData,
+			Documento documento, Cliente cliente) {
 		return this.sendEmail(addresses, subject, body, attachmentData, documento, cliente, null);
 	}
 
-	public String sendEmail(String[] addresses, String subject, String body, byte[] attachmentData, Documento documento, Cliente cliente, byte[] attachmentDataPdf) {
+	public String sendEmail(String[] addresses, String subject, String body, byte[] attachmentData,
+			Documento documento, Cliente cliente, byte[] attachmentDataPdf) {
+		return this.sendEmail(addresses, subject, body, attachmentData, documento, cliente, attachmentDataPdf, null);
+	}
+
+	public String sendEmail(String[] addresses, String subject, String body, byte[] attachmentData,
+			Documento documento, Cliente cliente, byte[] attachmentDataPdf, byte[] attachmentData2) {
 		NumberFormat numberFormat = NumberFormat.getInstance(new Locale("es", "ES"));
 		numberFormat.setMinimumFractionDigits(2);
 		numberFormat.setMaximumFractionDigits(2);
-		
-		//String imagesPath = this.getClass().getResource("/").getPath() + "/images/";
+
+		// String imagesPath = this.getClass().getResource("/").getPath() + "/images/";
 		String imagesPath = "C:/Fulltime/resources/templates/images/";
-		//String imagesPath = "file://" + this.getClass().getResource("/").getPath() + "/images/";
-		
+		// String imagesPath = "file://" + this.getClass().getResource("/").getPath() + "/images/";
+
 		Usuario usuario = getUsuarioLogin();
 
 		HashMap<String, Object> root = new HashMap<String, Object>();
-		root.put("bodyText", body); 
+		root.put("bodyText", body);
 
 		EmailSenderService eMailSender = new EmailSenderService();
 		eMailSender.setSubjectText(subject);
@@ -2531,6 +2549,7 @@ public class RemoteServiceHandler {
 		eMailSender.setAttachmentDataPdf(attachmentDataPdf);
 		eMailSender.setUsuario(usuario);
 		eMailSender.setSerieNro(documento != null ? documento.getSerie() + documento.getNumero() : "");
+		eMailSender.setNotaCreditoFinanciera(attachmentData2);
 		eMailSender.setImagesPath(imagesPath);
 
 		String htmlText;
@@ -2553,6 +2572,7 @@ public class RemoteServiceHandler {
 			root.put("serieNro", documento.getSerie() + documento.getNumero());
 			root.put("total", numberFormat.format(documento.getTotal()) + " " + documento.getMoneda().getNombre());
 			root.put("usuario", usuario);
+			root.put("tieneNCF", attachmentData2 != null);
 			htmlText = FreemarkerConfig.loadTemplate("templates/", "email-template-recibo.ftl", root);
 
 		} else if (documento != null) {

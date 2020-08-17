@@ -13,15 +13,15 @@ public class VinculoDocumentos implements Serializable {
 
 	private int docIdVin2;
 	
-	private Documento factura;
+	private Documento factura; 
 	
 	private Documento recibo;
 	
-	private BigDecimal monto;
-	
-	private BigDecimal neto = BigDecimal.ZERO;
+	private BigDecimal monto; 
 	
 	private BigDecimal descuentoPorc = BigDecimal.ZERO;
+
+	private BigDecimal neto = BigDecimal.ZERO;
 	
 	private BigDecimal vinRtaFin = BigDecimal.ZERO;
 

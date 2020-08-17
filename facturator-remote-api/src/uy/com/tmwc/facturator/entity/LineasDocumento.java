@@ -19,8 +19,8 @@ public class LineasDocumento implements Serializable {
 
 	public void add(LineaDocumento linea) {
 		linea.setNumeroLinea(this.lineas.size() + 1);
-		this.lineas.add(linea);
 		linea.setDocumento(this.documento);
+		this.lineas.add(linea);
 	}
 
 	public void remove(int numero) {

@@ -72,13 +72,6 @@ public class DTO2ModelMappingServiceImpl implements DTO2ModelMappingService {
 
 		private void setField(Object object, String fieldName, Object value) {
 			try {
-				/*
-				System.out.println("Class: " + object.getClass());
-				System.out.println("Field Name: " + fieldName);
-				System.out.println("Field Value: " + value);
-				System.out.println("=========================================================");
-				*/
-				
 				Field field = MappingUtils.getField(object.getClass(), fieldName);
 				field.setAccessible(true);
 				field.set(object, value);
@@ -89,7 +82,6 @@ public class DTO2ModelMappingServiceImpl implements DTO2ModelMappingService {
 			} catch (IllegalAccessException e) {
 				throw new RuntimeException(e);
 			}
-			// Field field;
 		}
 
 		public void preWritingDestinationValue(DozerEvent event) {

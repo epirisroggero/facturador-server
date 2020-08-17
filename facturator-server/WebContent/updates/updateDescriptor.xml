@@ -1,10 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.7.6</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.6.air</url>
+	<versionNumber>1.7.700</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.700.air</url>
 	<description>
 	    <![CDATA[
-	    # Versión 1.7.6 (11/07/2020)
+	    # Versión 1.7.700 (18/08/2020)
+	     	1.- Recibos - Generar nota de crédito en caso se requiera al emitir.
+	     	2.- Recibos - Enviar nota de crédito por correo en caso de tenerla.
+	     	3.- Recibos - Envío automático de correo.
+	     	4.- Corrige error al generar reporte de liquidación (Comprobantes en pesos no tienen tipo de cambio seteado).
+	     	5.- Corrige error en proceso de afilados; cuando paso a factura oficial no se computa el iva.
+	     	6.- Al convertir documento copiar el tipo de documento (CI, RUT?)
+	     	7.- Optimización de consultas SQL, esta tardando mucho en listar documentos o al abrirlos.
+
+	    # Versión 1.7.600 (11/07/2020)
 	     	1.- Ajustar stock en compras.
 	     	2.- Impresión, mantener la imagen en el cuerpo del mensaje además del pdf.
 	     	3.- No permitir guardar comprobantes comprobantes emitidos y/o finalizados en los que se modifique el total o IVA. 

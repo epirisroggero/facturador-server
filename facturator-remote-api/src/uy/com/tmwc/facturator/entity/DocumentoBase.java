@@ -18,12 +18,15 @@ public abstract class DocumentoBase implements Serializable {
 	protected String fechaEmisionStr;
 	protected String estado;
 
-	protected BigDecimal docTCF = BigDecimal.ZERO;
-	protected BigDecimal docTCC = BigDecimal.ZERO;
-	protected BigDecimal coeficienteImp = BigDecimal.ONE;
 	protected Cliente cliente;
 	protected Proveedor proveedor;
 	protected Moneda moneda;
+	protected Comprobante comprobante;
+	
+	protected BigDecimal docTCF = BigDecimal.ZERO;
+	protected BigDecimal docTCC = BigDecimal.ZERO;
+	protected BigDecimal coeficienteImp = BigDecimal.ONE;
+
 	protected String razonSocial;
 	protected String direccion;
 	protected String tipoDoc = "R";
@@ -34,7 +37,6 @@ public abstract class DocumentoBase implements Serializable {
 	protected String docVinculado;
 	protected String conciliado;
 
-	protected Comprobante comprobante;
 	protected String notas;
 	protected Date registroFecha;
 	protected Date registroHora;

@@ -272,7 +272,7 @@
 		<a>docruc.telefono</a>
 		<b>telefono</b>
 	</field>
-	
+
 	<field>
 		<a>docruc.nombre</a>
 		<b>razonSocial</b>
@@ -545,6 +545,11 @@
       <a>id.docIdVin2</a>
       <b>docIdVin2</b>
     </field>
+	<field-exclude> 
+		<a>recibo</a> 
+		<b>recibo</b> 
+	</field-exclude> 
+    
   </mapping>
 
   <mapping>
