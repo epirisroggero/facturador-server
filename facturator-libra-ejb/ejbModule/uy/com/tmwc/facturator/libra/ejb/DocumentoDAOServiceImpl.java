@@ -141,7 +141,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			+ "AND (d.estado is null OR d.estado != 'A') ";
 
 	
-	private static final String ULTIMOS_FACTURADOS_SUBQUERY_ARTICULO = "FROM Documento d join left join d.lineas l "
+	private static final String ULTIMOS_FACTURADOS_SUBQUERY_ARTICULO = "FROM Documento d left join d.lineas l "
 			+ "WHERE d.comprobante.tipo IN (1,2,3,4,32) "
 			+ "AND (d.id.empId = :empId) "
 			+ "AND (d.clienteId = :cliente OR :cliente IS NULL) "
@@ -256,8 +256,9 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		}
 
 		Boolean isRecibo = doc.getComprobante() != null && doc.getComprobante().isRecibo();
+		Boolean isFormaPago= doc.getComprobante() != null && doc.getComprobante().isFormaPago();
 
-		if (cfeStatus.equals(new Short("1")) || isRecibo) {
+		if (cfeStatus.equals(new Short("1")) || isRecibo || isFormaPago) {
 			merge(doc, Boolean.FALSE);
 		} else {
 			merge(doc, Boolean.TRUE);
@@ -274,6 +275,16 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 				.find(uy.com.tmwc.facturator.libra.entity.Documento.class, pk);
 		uy.com.tmwc.facturator.libra.entity.Documento libraDoc = toLibraDocumento(doc, current);
 
+		boolean isFormaPago = doc.getComprobante() != null && doc.getComprobante().isFormaPago();
+
+		// En caso de ser forma de pago no se verifica.
+		if (isFormaPago) {
+			this.em.merge(libraDoc);
+			this.em.flush();
+			
+			return;
+		}		
+		
 		controlModificacionDocumento(current);
 
 		if (current != null) {
@@ -359,7 +370,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 							break;
 						}
 					}
-					if (!found) { // Se borra el v�nculo.
+					if (!found) { // Se borra el vínculo.
 						libraDoc.getFacturasVinculadas().remove(vinDoc);
 
 						// Ajusto el saldo de la factura
@@ -434,8 +445,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 						if (nuevoSaldo.compareTo(BigDecimal.ZERO) < 0) {
 							throw new RuntimeException("Monto incorrecto documento " + factura.getSerie()
-									+ factura.getNumero().toString() + " saldo < 0 (" + nuevoSaldo + " < " + monto
-									+ ")");
+									+ factura.getNumero().toString() + " saldo < 0 (" + nuevoSaldo + " < " + monto + ")");
 						} else {
 							factura.setSaldo(nuevoSaldo);
 							facturasModificadas.add(factura);
@@ -448,7 +458,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 							audit.setNotas("Saldo modificado, factura adicionada en recibo " + current.getSerie()
 									+ current.getNumero() + ".\n");
 							audit.setProblemas("Factura vinculada al recibo " + current.getSerie()
-									+ current.getNumero() + ".\n" + "Monto cancelado:\t" + simbolo
+									+ current.getNumero() + ".\n" 
+									+ "Monto cancelado:\t" + simbolo
 									+ formatter.format(aster ? monto.doubleValue() : neto.doubleValue()) + "\n"
 									+ "Saldo anterior:\t\t" + simbolo + formatter.format(viejoSaldo.doubleValue())
 									+ "\n" + "Saldo actual:\t\t" + simbolo + formatter.format(nuevoSaldo.doubleValue())
@@ -472,7 +483,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 			}
 
-			// Ajustar el stock. Pueden variar las lineas, y los depositos.
+			// Ajustar el stock. Pueden variar las líneas, y los depositos.
 			// Nunca el comprobante.
 			if (doc.getComprobante().isCompra()|| doc.getComprobante().getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_PROVEEDORES) {
 				ajustarStockLineasCompra(current, -1);
@@ -630,7 +641,10 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		libraDoc.provideId(getEmpId(), docId);
 		libraDoc.setLocalId(Short.parseShort("1"));
 
-		libraDoc.setFecha2(doc.getFecha());
+		// En caso no sea cheque
+		if (!doc.getComprobante().isFormaPago()) {
+			libraDoc.setFecha2(doc.getFecha());
+		}
 
 		if (doc.getComprobante().getTipo() == Comprobante.COMPRA_CREDITO) {
 			if (current != null) {
@@ -946,8 +960,9 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			String codigoUsuario = usuarioLogin.getCodigo();
 			return " AND ((d.usuarioId = " + codigoUsuario + ") " +
 					" OR (d.cliente.vendedor.vendedoresUsuario.usuario.codigo = " + codigoUsuario + ") " +
-					" OR (" + codigoUsuario + " IN (SELECT d.proveedor.vendedor.vendedoresUsuario.usuario.codigo FROM d.participaciones p)) " +
-					" OR (('" + permisoId + "'='5') AND (d.comprobante.id.cmpid IN (70,71,72,73,80,81,82,83,90,91,92,93,130,131,132,133)))) ";
+					" OR (" + codigoUsuario + " IN (SELECT p.vendedor.vendedoresUsuario.usuario.codigo FROM d.participaciones p)) " +
+					" OR (('" + permisoId + "'='5') " +
+					" AND (d.comprobante.id.cmpid IN (70,71,72,73,80,81,82,83,90,91,92,93,130,131,132,133)))) ";
 		}
 	}
 
@@ -1081,7 +1096,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			sb.append(getFiltroUsuario());
 		}
 		
-		System.out.println(sb.toString());
+		//System.out.println(sb.toString());
 		Query q = this.em.createQuery(sb.toString());
 
 		setUltimosDocumentosSubqueryParameters(q, query);
@@ -1435,15 +1450,18 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public List<uy.com.tmwc.facturator.entity.ParticipacionVendedor> getParticipacionesEnContados(Date fechaDesde,
 			Date fechaHasta, Date fechaCorte) {
-		@SuppressWarnings("unused")
-		List dummy = this.em.createNamedQuery("Documento.participacionesEnContadosIntervaloFechas.aux")
-				.setParameter("empId", getEmpId()).setParameter("fechaDesde", fechaDesde)
-				.setParameter("fechaHasta", fechaHasta).setParameter("fechaCorte", fechaCorte).getResultList();
+//		long startTime = new Date().getTime();			
+//		List<uy.com.tmwc.facturator.libra.entity.Documento> dummy = this.em.createNamedQuery("Documento.participacionesEnContadosIntervaloFechas.aux")
+//				.setParameter("empId", getEmpId()).setParameter("fechaDesde", fechaDesde)
+//				.setParameter("fechaHasta", fechaHasta).setParameter("fechaCorte", fechaCorte).getResultList();
+//		System.out.println(">> " + (new Date().getTime() - startTime) + " ms");
 
 		List<uy.com.tmwc.facturator.libra.entity.Documento> docs = this.em
 				.createNamedQuery("Documento.participacionesEnContadosIntervaloFechas")
-				.setParameter("empId", getEmpId()).setParameter("fechaDesde", fechaDesde)
-				.setParameter("fechaHasta", fechaHasta).setParameter("fechaCorte", fechaCorte).getResultList();
+				.setParameter("empId", getEmpId())
+				.setParameter("fechaDesde", fechaDesde)
+				.setParameter("fechaHasta", fechaHasta)
+				.setParameter("fechaCorte", fechaCorte).getResultList();
 
 		ArrayList result2map = new ArrayList();
 		for (uy.com.tmwc.facturator.libra.entity.Documento doc : docs) {
@@ -1453,15 +1471,18 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			public int compare(uy.com.tmwc.facturator.libra.entity.ParticipacionVendedor o1,
 					uy.com.tmwc.facturator.libra.entity.ParticipacionVendedor o2) {
 				int c = o1.getVendedor().getId().getVenId().compareTo(o2.getVendedor().getId().getVenId());
-				if (c != 0)
+				if (c != 0) {
 					return c;
+				}
 				c = new Long(o1.getDocumento().getComprobante().getId().getCmpid()).compareTo(Long.valueOf(o2
 						.getDocumento().getComprobante().getId().getCmpid()));
-				if (c != 0)
+				if (c != 0) {
 					return c;
+				}
 				c = o1.getDocumento().getSerie().compareTo(o2.getDocumento().getSerie());
-				if (c != 0)
+				if (c != 0) {
 					return c;
+				}
 				c = o1.getDocumento().getNumero().compareTo(o2.getDocumento().getNumero());
 				return c;
 			}

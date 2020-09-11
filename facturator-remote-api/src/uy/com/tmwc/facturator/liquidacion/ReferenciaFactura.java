@@ -6,6 +6,7 @@ import uy.com.tmwc.facturator.entity.VinculoDocumentos;
 
 public class ReferenciaFactura implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
 	private Recibo recibo;
 	private Factura factura;
 	private BigDecimal pago;

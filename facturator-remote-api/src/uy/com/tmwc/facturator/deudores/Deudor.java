@@ -6,6 +6,7 @@ import uy.com.tmwc.facturator.entity.Cliente;
 
 public class Deudor implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
 	private String codigo;
 	private String nombre;
 	private String razonSocial;
@@ -18,11 +19,11 @@ public class Deudor implements Serializable {
 
 	public Deudor() {
 	}
-	
+
 	public Deudor(Cliente cliente) {
 		codigo = cliente.getCodigo();
 		nombre = cliente.getNombre();
-		
+
 	}
 
 	public String getCodigo() {

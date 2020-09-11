@@ -89,6 +89,7 @@ import uy.com.tmwc.facturator.entity.Usuario;
 import uy.com.tmwc.facturator.entity.ValidationException;
 import uy.com.tmwc.facturator.entity.Vendedor;
 import uy.com.tmwc.facturator.entity.VinculoDocumentos;
+import uy.com.tmwc.facturator.entity.VinculosFP;
 import uy.com.tmwc.facturator.expediciones.AgendaTareaQuery;
 import uy.com.tmwc.facturator.javamail.EmailSenderService;
 import uy.com.tmwc.facturator.rapi.AgendaTareaService;
@@ -349,21 +350,21 @@ public class RemoteServiceHandler {
 			if (id == null) {
 				return null;
 			}
-			//long startTime = new Date().getTime();			
+			// long startTime = new Date().getTime();
 			Documento documento = service.findDocumento(id);
-			 
+
 			Comprobante comprobante = documento.getComprobante();
 			comprobante.setAster(esComprobanteAster(comprobante.getCodigo()));
-			documento.setComprobante(comprobante); 
-			
-			if (comprobante.isRecibo()) { 
+			documento.setComprobante(comprobante);
+
+			if (comprobante.isRecibo()) {
 				if (documento.getProcessId() != null && documento.getProcessId().length() > 0) {
 					Documento notaCreditoFinanciera = service.findDocumento(documento.getProcessId());
 					documento.setNotaCreditoFinanciera(notaCreditoFinanciera);
 				}
 			}
-			//System.out.println(">> " + (new Date().getTime() - startTime) + " ms");
-			//System.out.println("==================================");
+			// System.out.println(">> " + (new Date().getTime() - startTime) + " ms");
+			// System.out.println("==================================");
 			return documento;
 
 		} catch (RuntimeException e) {
@@ -519,9 +520,9 @@ public class RemoteServiceHandler {
 			query.setTipoComprobante(null);
 		}
 
-		double startTime = new Date().getTime();
+		// double startTime = new Date().getTime();
 		List<DocumentoDTO> result = getService().queryDocumentos(query);
-		//System.out.println("queryDomcumentos >> " + (new Date().getTime() - startTime) + " ms");
+		// System.out.println("queryDomcumentos >> " + (new Date().getTime() - startTime) + " ms");
 
 		return result;
 	}
@@ -609,7 +610,7 @@ public class RemoteServiceHandler {
 			Auditoria auditoria = new Auditoria();
 			auditoria.setAudFechaHora(new Date());
 			auditoria.setDocId(documento.getDocId());
-			auditoria.setNotas("Comprobante creado por un total de " + moneda + " " + total);
+			auditoria.setNotas(String.format("Comprobante creado por un total de %s %s", moneda, total));
 			auditoria.setProblemas("Ninguno");
 
 			String docId = getService().alta(documento, auditoria);
@@ -620,6 +621,42 @@ public class RemoteServiceHandler {
 			throw new RuntimeException(e.getMessage());
 		}
 
+	}
+
+	public Documento altaDocValores(Documento documento, String reciboId) throws ValidationException, PermisosException {
+		try {
+			// obtener recibo
+			Documento recibo = getService().findDocumento(reciboId);
+
+			// Dar de alta la forma de pago
+			Documento formaPago = getService().altaDocFP(documento);
+
+			// Obtener formas de pago
+			Set<VinculosFP> vinculosFP = recibo.getVinculosfp();
+
+			// Crear nueva forma de pago en caso el alta sea dada de forma correcta.
+			VinculosFP vinculofp = new VinculosFP();
+			vinculofp.setDocIdFP1(Integer.valueOf(reciboId));
+			vinculofp.setDocIdFP2(Integer.valueOf(formaPago.getDocId()));
+			vinculofp.setVinFPTipo(Short.valueOf(String.valueOf(formaPago.getComprobante().getTipo())));
+			vinculofp.setVinIE("I");
+
+			vinculosFP.add(vinculofp);
+
+			// Guardar recibo
+			getService().modificar(recibo, null);
+
+			// Marcar la forma de pago
+			formaPago.setDocVinculado("S");
+
+			// Guardar forma pago
+			getService().modificarFP(formaPago);
+
+			return getService().findDocumento(reciboId);
+
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
 	}
 
 	public String alta(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
@@ -1002,9 +1039,7 @@ public class RemoteServiceHandler {
 
 		getService().modificar(documento, auditoria);
 
-		Documento result = getService().findDocumento(documento.getDocId());
-
-		return result;
+		return getService().findDocumento(documento.getDocId());
 	}
 
 	public int modificarCostos(String codart, Date dateDesde, Date dateHasta, RUTINA_MODIFCOSTO_ENUM costoAnterior,
@@ -1023,7 +1058,23 @@ public class RemoteServiceHandler {
 	}
 
 	public Boolean baja(Documento documento) throws ValidationException, PermisosException {
-		return getService().borrar(documento);
+		if (documento.getComprobante().isRecibo()) {
+			return borrarRecibo(documento);
+		} else {
+			return getService().borrar(documento);
+		}
+	}
+
+	public Boolean borrarRecibo(Documento recibo) throws ValidationException, PermisosException {
+		if (recibo.getFacturasVinculadas() != null && recibo.getFacturasVinculadas().size() > 0) {
+			recibo.setPlanPagos(null);
+			recibo.getCuotasDocumento().getCuotas().clear();
+			recibo.getLineas().getLineas().clear();
+			recibo.setSaldo(recibo.getDocRecNeto());
+			recibo.getFacturasVinculadas().clear();
+			recibo = modificar(recibo);
+		}
+		return getService().borrar(recibo);
 	}
 
 	public Boolean borrarCotizaciones(String cotizaciones) throws ValidationException, PermisosException {
@@ -1381,20 +1432,16 @@ public class RemoteServiceHandler {
 			recibo.setDocTCF(recibo.getDocTCC());
 
 			String docId = alta(recibo, auditoria);
+
 			return getService().findDocumento(docId);
 
 		} catch (Exception exc) {
-			throw new RuntimeException(exc.getMessage());
+			throw new RuntimeException(exc.getCause().getMessage(), exc);
 		}
 	}
 
 	public Documento emitirRecibo(Documento recibo) throws ValidationException, PermisosException {
-		Usuario usuarioLogin = getUsuarioLogin();
-
 		try {
-			// Guardar por quien fue emitido.
-			recibo.setEmitidoPor(usuarioLogin.getCodigo());
-
 			// Setear el tipo de cambio.
 			String monedaId = recibo.getMoneda().getCodigo();
 			if (monedaId.equals(Moneda.CODIGO_MONEDA_PESOS) || monedaId.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
@@ -1403,38 +1450,21 @@ public class RemoteServiceHandler {
 			// Resetear datos del documento
 			recibo = preSaveRecibo(recibo);
 
+			// Guardar recibo
+			recibo = modificar(recibo);
+
+			// Emitir recibo
 			recibo = emitir(recibo, "");
 
-			if (!recibo.getComprobante().isAster() && recibo.getProcessId() == null && !recibo.getSerie().equals("A")
-					&& recibo.getFacturasVinculadas().size() > 0) {
-				Documento notaCreditoFinanciera = crearNCF(recibo);
-
-				String ncf_Id = null;
-				try {
-					ncf_Id = alta(notaCreditoFinanciera);
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new RuntimeException("Error al crear \"Nota de Crédito Financiera\"");
-				}
-				Documento doc_ncf = getService().findDocumento(ncf_Id);
-				try {
-					generateCFE(doc_ncf);
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new RuntimeException("Error al emitir \"Nota de Crédito Financiera\"");
-				}
-			}
-
 			// retornar el recibo
-			return getDocumento(recibo.getDocId());
+			return recibo;
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException("Ha ocurrido un error al emitir, contacte al administrador del sistema");
+			throw new RuntimeException("Ha ocurrido un error al emitir, contacte al administrador del sistema", e);
 		}
 	}
 
-	private Documento crearNCF(Documento recibo) {
+	public Documento crearNCF(Documento recibo) {
 		try {
 			Comprobante cmp = findCatalogEntity("Comprobante", "28");
 			Articulo art = findCatalogEntity("Articulo", "DESCUENTO");
@@ -1469,7 +1499,7 @@ public class RemoteServiceHandler {
 					montoLinea = monto.multiply(descuento).divide(Maths.ONE_HUNDRED.subtract(descuento), 4,
 							RoundingMode.HALF_EVEN);
 				}
-				razonCFERef.append(vinculo.getFactura().getNumero()).append(System.getProperty("line.separator"));
+				razonCFERef.append(vinculo.getFactura().getNumero()).append("\n");
 				if (vinculo.getMonto() != null && vinculo.getMonto().compareTo(BigDecimal.ZERO) != 0) {
 					BigDecimal precio = montoLinea.divide(new BigDecimal("1.22"), 4, RoundingMode.HALF_EVEN);
 					String concepto = recibo.getSerie() + recibo.getNumero() + ", dto:"
@@ -1502,7 +1532,28 @@ public class RemoteServiceHandler {
 				}
 			}
 
-			Cliente cliente = recibo.getCliente();
+			ParametrosAdministracion parametrosAdmin = getParametrosAdministracion();
+
+			Cliente cliente = findCatalogEntity("Cliente", recibo.getCliente().getCodigo());
+
+			List<PreciosVenta> pvu = getPreciosVentaUsuario();
+			if (cliente != null && cliente.getPreciosVenta() != null) {
+				for (PreciosVenta preciosVenta : pvu) {
+					if (preciosVenta.equals(cliente.getPreciosVenta().getCodigo())) {
+						notaCredFin.setPreciosVenta(preciosVenta);
+						break;
+					}
+				}
+				if (notaCredFin.getPreciosVenta() == null) {
+					String precioVentaId = String.valueOf(parametrosAdmin.getPrecioVentaIdParAdm());
+					for (PreciosVenta preciosVenta : pvu) {
+						if (preciosVenta.getCodigo().equals(precioVentaId)) {
+							notaCredFin.setPreciosVenta(preciosVenta);
+							break;
+						}
+					}
+				}
+			}
 
 			if (cliente != null && cliente.getVendedor() != null) {
 				notaCredFin.setVendedor(cliente.getVendedor());
@@ -1510,38 +1561,44 @@ public class RemoteServiceHandler {
 				Vendedor vendedor = findCatalogEntity("Vendedor", "99");
 				notaCredFin.setVendedor(vendedor);
 			}
+
 			ParticipacionVendedor participacionVendedor = new ParticipacionVendedor();
 			participacionVendedor.setVendedor(notaCredFin.getVendedor());
 			participacionVendedor.setPorcentaje(new BigDecimal(100));
+
+			notaCredFin.setIndGlobalCFERef("G");
+			notaCredFin.setRazonCFERef(razonCFERef.toString());
 
 			notaCredFin.getComisiones().getParticipaciones().add(participacionVendedor);
 			notaCredFin.setMoneda(recibo.getMoneda());
 			notaCredFin.setLineas(lineas);
 			notaCredFin.setCliente(cliente);
-			notaCredFin.setIndGlobalCFERef("G");
-			notaCredFin.setRazonCFERef(razonCFERef.toString());
+			notaCredFin.tomarCamposDelCliente();
 
 			notaCredFin.setSubTotal(notaCredFin.getSubTotal());
 			notaCredFin.setIva(notaCredFin.calcularIva());
 			notaCredFin.setTotal(notaCredFin.getTotal());
 			notaCredFin.setDocTCC(recibo.getDocTCC());
-			notaCredFin.setDocTCF(getService().getTipoCambioFiscal(notaCredFin.getMoneda().getCodigo(),
-					notaCredFin.getFecha()));
+			if (existeTCFiscal(notaCredFin.getMoneda().getCodigo())) {
+				notaCredFin.setDocTCF(getService().getTipoCambioFiscal(notaCredFin.getMoneda().getCodigo(),
+						notaCredFin.getFecha()));
+			} else {
+				throw new RuntimeException(
+						"No hay tipo de cambio fiscal definido para el día de hoy.\nDebe definir el tipo de cambio fiscal para poder emitir.");
+			}
 
 			notaCredFin.setCajaId((short) 1);
 
-			CuotasDocumento cuotasDocumento = new CuotasDocumento(notaCredFin);
-			cuotasDocumento.inicializarCuotas();
-			notaCredFin.setCuotasDocumento(cuotasDocumento);
+			notaCredFin.setPlanPagos(null);
+
+			notaCredFin.setCuotasDocumento(new CuotasDocumento(notaCredFin));
 
 			return notaCredFin;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage(), e);
 
-			throw new RuntimeException(e.getMessage());
 		} finally {
-
 		}
 	}
 
@@ -1554,24 +1611,37 @@ public class RemoteServiceHandler {
 		if (recibo.getDocId() != null) {
 			recibo.establecerFormaPago();
 		}
-		if (recibo.getSaldo() != null) {
+		if (recibo.getSaldo() == null) {
 			recibo.setSaldo(recibo.getDocRecNeto());
 		}
 
 		Set<VinculoDocumentos> aux = new HashSet<VinculoDocumentos>();
+
 		// Actualizar vínculos
 		Set<VinculoDocumentos> facturasVinculadas = recibo.getFacturasVinculadas();
 		for (VinculoDocumentos vinculo : facturasVinculadas) {
 			if (vinculo.getDocIdVin1() > 0 && vinculo.getDocIdVin2() > 0) {
-				if (recibo.getComprobante().isAster())
+				if (!recibo.getComprobante().isAster()) {
 					vinculo.setMonto(vinculo.getNeto());
+				}
+				aux.add(vinculo);
 			}
-			aux.add(vinculo);
 		}
+
 		recibo.setFacturasVinculadas(aux);
 
 		return recibo;
 
+	}
+
+	public Documento guardarDocFP(Documento docFormaPago) {
+		try {
+			return getService().altaDocFP(docFormaPago);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+		}
+		return null;
 	}
 
 	public Documento emitir(String docId, String fanfoldId) throws ValidationException, PermisosException {
@@ -2422,11 +2492,14 @@ public class RemoteServiceHandler {
 			Boolean nueva) {
 		Usuario usuario = getUsuarioLogin();
 
+		String imagesPath = "C:/Fulltime/resources/templates/images/";
+
 		EmailSenderService eMailSender = new EmailSenderService();
 		eMailSender.setSubjectText(subject);
 		eMailSender.setAddresses(addresses);
 		eMailSender.setUsuario(usuario);
 		eMailSender.setEsExpedicion(true);
+		eMailSender.setImagesPath(imagesPath);
 
 		SimpleDateFormat dt1 = new SimpleDateFormat("dd-MM-yyyy");
 

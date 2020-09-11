@@ -9,7 +9,7 @@ public class RedistribucionRentaLinea {
 	private LineaDocumento linea;
 	private IAportaRenta aportadorRenta;
 	private Jefatura jefatura;
-	private HashMap<Vendedor, BigDecimal> pagaVendedorMap = new HashMap();
+	private HashMap<Vendedor, BigDecimal> pagaVendedorMap = new HashMap<Vendedor, BigDecimal>();
 	private BigDecimal cobraJefe;
 
 	public RedistribucionRentaLinea(LineaDocumento linea, IAportaRenta aportadorRenta, Jefatura jefatura) {

@@ -123,7 +123,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	private Deposito depositoDestino;
 
 	@Column(name = "DepIdDocDestino")
-	private Short depositoDestinoId;
+	private Short depositoDestinoId = 0;
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
@@ -132,7 +132,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	private Deposito depositoOrigen;
 
 	@Column(name = "DepIdDocOrigen")
-	private Short depositoOrigenId;
+	private Short depositoOrigenId = 0;
 
 	@Column(name = "DocArtId")
 	private String artId = "";
@@ -321,7 +321,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 
 	@SuppressWarnings("unused")
 	@Column(name = "PrecioVentaIdDoc")
-	private Short preciosVentaId;
+	private Short preciosVentaId = 0;
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne
@@ -401,13 +401,13 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	private Short cAEiddDoc;
 
 	@Column(name = "DocIncoterm")
-	private String docIncoterm;
+	private String docIncoterm = "";
 
 	@Column(name = "DocExpTransporte")
-	private Short docExpTransporte;
+	private Short docExpTransporte = 0;
 
 	@Column(name = "DocModExp")
-	private Short docModExp;
+	private Short docModExp = 0;
 
 	@Column(name = "ConceptoIdDoc")
 	private String conceptoIdDoc = "";

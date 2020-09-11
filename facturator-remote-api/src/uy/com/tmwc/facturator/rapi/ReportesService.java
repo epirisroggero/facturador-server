@@ -14,10 +14,12 @@ public interface ReportesService {
 	TableReportResult getReporteStockPrecios(ReportParameters parameters);
 
 	List<Moneda> getMonedasReporte();
-	
-	byte[] generarListadoControlLineasVenta(Date fechaDesde, Date fechaHasta, BigDecimal rentaMinima, BigDecimal rentaMaxima);
 
-	byte[] generarLiquidacionVendedores(Date desde, Date hasta, String[] compsIncluidos, String[] compsExcluidos) throws IOException;
-	
+	byte[] generarListadoControlLineasVenta(Date fechaDesde, Date fechaHasta, BigDecimal rentaMinima,
+			BigDecimal rentaMaxima);
+
+	byte[] generarLiquidacionVendedores(Date desde, Date hasta, String[] compsIncluidos, String[] compsExcluidos)
+			throws IOException;
+
 	byte[] generarLiquidacionAfilados(Date desde, Date hasta, BigDecimal value) throws IOException;
 }

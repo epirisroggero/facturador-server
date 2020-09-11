@@ -171,12 +171,14 @@ public class DeudoresJob implements Job {
 		
 		
 		root.put("usuario", usuario);		
+
+		String imagesPath = "C:/Fulltime/resources/templates/images/";
 		
 		EmailSenderService eMailSender = new EmailSenderService();
 		eMailSender.setSubjectText(subject);
 		eMailSender.setAddresses(addresses);
 		eMailSender.setUsuario(usuario);
-
+		eMailSender.setImagesPath(imagesPath);
 		eMailSender.setEsFactura(true);
 		
 		String htmlText = FreemarkerConfig.loadTemplate("templates/", "email-template-vencimientos.ftl", root);

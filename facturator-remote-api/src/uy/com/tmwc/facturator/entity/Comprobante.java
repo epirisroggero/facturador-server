@@ -20,6 +20,12 @@ public class Comprobante extends CodigoNombreEntity {
 	public static final int VENTA_CONTADO = 3;
 	public static final int DEVOLUCION_CONTADO = 4;
 	public static final int RECIBO_COBRO = 5;
+	
+	public static final int CHEQUE_RECIBIDO = 43;
+	public static final int TARJETA_RECIBIDA = 44;
+	public static final int CONFORMES_A_COBRAR = 45;
+	public static final int CREDITO_BANCARIO = 51;	
+	
 
 	public static final int COMPRA_CREDITO = 21;
 	public static final int NOTA_CREDITO_COMPRA = 22;
@@ -42,7 +48,7 @@ public class Comprobante extends CodigoNombreEntity {
 	private String formatoidcmp;
 	private String cmpgastos;
 	private String numCmpId;
-
+/*
 	private String cmpContingencia;
 	private String cmpExportacion;
 	private String cmpNotaDebito;
@@ -50,7 +56,7 @@ public class Comprobante extends CodigoNombreEntity {
 	private String cmpActivo;
 	private String cmpRemitoInterno;
 	private String cmpNotas;
-
+*/
 	private String cmpiva;
 
 	private List<DescuentoPrometidoComprobante> descuentosPrometidos; // ordenado por días de retraso.
@@ -82,7 +88,7 @@ public class Comprobante extends CodigoNombreEntity {
 	}
 
 	public boolean isMueveCaja() {
-		return (this.tipo == VENTA_CONTADO) || (this.tipo == COMPRA_CONTADO) || (this.tipo == DEVOLUCION_CONTADO)
+		return (this.tipo == VENTA_CONTADO || this.tipo == COMPRA_CONTADO || this.tipo == DEVOLUCION_CONTADO || this.tipo == RECIBO_COBRO)
 				&& !getCodigo().equals("1") && !getCodigo().equals("93") && !getCodigo().equals("94")
 				&& !getCodigo().equals("99");
 	}
@@ -112,6 +118,10 @@ public class Comprobante extends CodigoNombreEntity {
 		return getCodigo().equals("300") || getCodigo().equals("301") || getCodigo().equals("302")
 				|| getCodigo().equals("303") || getCodigo().equals("304") || getCodigo().equals("305")
 				|| getCodigo().equals("306") || getCodigo().equals("307");
+	}
+	
+	public boolean isFormaPago() {
+		return (this.tipo == CHEQUE_RECIBIDO || this.tipo == TARJETA_RECIBIDA || this.tipo == CREDITO_BANCARIO || this.tipo == CONFORMES_A_COBRAR);
 	}
 
 	public BigDecimal getDescuentoPrometido() {

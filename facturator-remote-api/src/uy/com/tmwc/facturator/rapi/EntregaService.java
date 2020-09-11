@@ -7,10 +7,10 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("remote/entregaService")
 public abstract interface EntregaService extends RemoteService {
-	 public abstract String persist(Entrega e);
-	 
-	 public abstract void merge(Entrega e);
-	 
-	 public abstract Boolean remove(Entrega e);
+	public abstract String persist(Entrega e);
+
+	public abstract void merge(Entrega e);
+
+	public abstract Boolean remove(Entrega e);
 
 }

@@ -237,8 +237,25 @@
 
 
 	</entity>
-
+	
 	<entity class="uy.com.tmwc.facturator.libra.entity.Articulo">
+		<named-query name="Articulo.query">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.libra.entity.Articulo(e.id.artId, e.nombre, e.familiaId, e.marcaId, e.codigoOrigen, 
+						e.prvIdArt, e.activo, fam, marca, prov)
+				from
+					Articulo e join e.familia fam left join e.proveedor prov left join e.marca marca
+				where 
+					e.nombre like :query
+					and e.id.empId = :empId
+				order by
+					e.nombre
+			</query>
+		</named-query>
+	</entity>
+	
+	<!--  entity class="uy.com.tmwc.facturator.libra.entity.Articulo">
 		<named-query name="Articulo.query">
 			<query>
 				select 
@@ -253,7 +270,7 @@
 					a.nombre
 			</query>
 		</named-query>
-	</entity>
+	</entity> -->
 
 	<entity class="uy.com.tmwc.facturator.libra.entity.ArticuloPrecio">
 		<named-query name="ArticuloPrecio.precioArticuloParaPrecioVenta">
@@ -289,9 +306,24 @@
 
 	<entity class="uy.com.tmwc.facturator.libra.entity.Asiento" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Asientos1" />
-
+	
 	<entity class="uy.com.tmwc.facturator.libra.entity.Cliente">
+	
 		<named-query name="Cliente.query">
+			<query>
+				select 
+					new uy.com.tmwc.facturator.libra.entity.Cliente(e, cto)
+				from
+					Cliente e join e.contacto cto 
+				where 
+					e.nombre like :query
+					and e.id.empId = :empId
+					and cto.ctoActivo = 'S'
+				order by
+					e.nombre
+			</query>
+		</named-query>
+		<!-- named-query name="Cliente.query">
 			<query>
 				select 
 					new uy.com.tmwc.facturator.libra.entity.Cliente(e, e.contacto)
@@ -304,7 +336,7 @@
 				order by
 					e.nombre
 			</query>
-		</named-query>
+		</named-query> -->
 
 		<named-query name="Clientes.nextId">
 			<query>
@@ -322,6 +354,21 @@
 		<named-query name="Proveedor.query">
 			<query>
 				select 
+					new uy.com.tmwc.facturator.libra.entity.Proveedor(p.codigo, p.nombre, cto.ctoTelefono, cto.ctoDireccion, cto.ctoRSocial, cto.paisIdCto, cto.ctoRUT)
+				from
+					Proveedor p join p.contacto cto
+				where 
+					p.nombre like :query
+					and p.id.empId = :empId
+					and cto.ctoActivo = 'S'
+				order by
+					p.nombre
+			</query>
+		</named-query>
+	
+		<!-- named-query name="Proveedor.query">
+			<query>
+				select 
 					new uy.com.tmwc.facturator.libra.entity.Proveedor(p.codigo, p.nombre, p.contacto.ctoTelefono, p.contacto.ctoDireccion, p.contacto.ctoRSocial, p.contacto.paisIdCto, p.contacto.ctoRUT)
 				from
 					Proveedor p
@@ -332,8 +379,8 @@
 				order by
 					p.nombre
 			</query>
-		</named-query>
-	</entity>
+		</named-query>-->
+	</entity> 
 
 	<entity class="uy.com.tmwc.facturator.libra.entity.Contacto">
 		<named-query name="Contacto.query">
@@ -404,7 +451,7 @@
 					cm.id.empId = :empId
 					and (
 						:fromDate is null
-						or id.dia &lt;= :fromDate
+						or id.dia &gt;= :fromDate
 					) 
 				order by id.dia DESC
 			</query>
@@ -579,7 +626,7 @@
 					Comprobante c left join fetch c.descuentosPrometidos
 				where
 					c.id.empId = :empId
-					and c.tipo in (1,2,3,4,5,31,32,21,22,23,24)
+					and c.tipo in (1,2,3,4,5,31,32,21,22,23,24,43,44,45,51)
 					and c.cmpNom like :query
 				order by
 					c.cmpNom
@@ -945,12 +992,11 @@
 	      		select 
 	      			distinct d
 	      		from 
-	      			Documento d
-	      			join fetch d.participaciones
+	      			Documento d join fetch d.participaciones
 	      		where
-					(d.comprobante.tipo in (3,4) or d.comprobante.id.cmpid = '98')
-					and d.id.empId = :empId
-					and d.fecha between :fechaDesde and :fechaHasta
+	      			d.id.empId = :empId
+					and (d.comprobante.tipo in (3,4) or d.comprobante.id.cmpid = '98') 
+					and (d.fecha between :fechaDesde and :fechaHasta)
 					and ((d.emitido = 'S') or (d.comprobante.id.cmpid = '98' and d.pendiente = 'N'))
 	      			and d.fecha > :fechaCorte
       		</query>
@@ -959,30 +1005,26 @@
 		<named-query name="Documento.participacionesEnContadosIntervaloFechas.aux">
 			<!-- SINCRONIZAR CON CAMBIOS EN Documento.participacionesEnContadosIntervaloFechas -->
 			<query>
-	      		select 
-	      			d1
-	      		from 
-	      			Documento d1 join fetch d1.lineas  
-	      		where
-	      			exists (
-			      		select 
-			      			d.id.docId
-			      		from 
-			      			ParticipacionVendedor p 
-			      			join p.documento d
-			      		where
-			      			d1.id.empId = d.id.empId
-			      			and d1.id.docId = d.id.docId
-			      			and
+	      		SELECT d1
+	      		FROM Documento d1 JOIN FETCH d1.lineas  
+	      		WHERE
+	      			d1.fecha between :fechaDesde and :fechaHasta
+	      			AND d1.emitido = 'S' 
+	      			AND d1.comprobante.tipo IN (3,4)
+	      			AND EXISTS (
+			      		SELECT p.documento.id.docId
+			      		FROM ParticipacionVendedor p 
+			      		WHERE d1.id.empId = p.documento.id.empId
+			      			AND d1.id.docId = p.documento.id.docId
+			      			AND
 			      			(
-								d.comprobante.tipo in (3,4)
-								and d.id.empId = :empId
-								and d.fecha between :fechaDesde and :fechaHasta
-								and d.emitido = 'S'
-					      		and d.fecha > :fechaCorte
-					      		<!--  and f.fecha > '2016-12-31 00:00:00' -->
+								p.documento.comprobante.tipo IN (3,4)
+								AND p.documento.id.empId = :empId
+								AND p.documento.fecha between :fechaDesde and :fechaHasta
+								AND p.documento.emitido = 'S'
+					      		AND p.documento.fecha > :fechaCorte
 							)
-	      			)
+	      			) 
       		</query>
 		</named-query>
 

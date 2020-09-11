@@ -81,8 +81,8 @@ public class AgendaTarea implements Serializable, Cloneable {
     		}
     	    
 
-        }catch(CloneNotSupportedException ex){
-            System.out.println(" no se puede duplicar");
+        } catch(CloneNotSupportedException ex){
+        	ex.printStackTrace();
         }
         
         

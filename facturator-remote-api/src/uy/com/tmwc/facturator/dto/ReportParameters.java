@@ -13,5 +13,5 @@ public class ReportParameters {
 	public void setParameters(HashMap<String, Object> parameters) {
 		this.parameters = parameters;
 	}
-	
+
 }

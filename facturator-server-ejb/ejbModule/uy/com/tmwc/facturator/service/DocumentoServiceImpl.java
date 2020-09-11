@@ -13,6 +13,7 @@ import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
 
+import org.apache.log4j.Logger;
 import org.jboss.seam.annotations.Name;
 
 import uy.com.tmwc.facturator.dto.AntecedentesArticulo;
@@ -70,7 +71,76 @@ public class DocumentoServiceImpl implements DocumentoService {
 
 	@EJB
 	EFacturaService efacturaService;
+	
+	
+	private Logger LOGGER = Logger.getLogger(DocumentoServiceImpl.class);
+	
 
+	public Documento altaDocFP(Documento documento) throws ValidationException, PermisosException {
+		if (documento.getDocId() != null) {
+			throw new IllegalStateException("Usar el metodo modificar para documentos ya existentes");
+		}
+		documento = replaceReadonlyEntities(documento);
+		
+		Date now = new Date();
+		documento.setRegistroFecha(now);
+		documento.setRegistroHora(now);
+		Principal ppal = UserPrincipalLocator.userPrincipalTL.get();
+		
+		short usuarioId;
+		if (ppal != null && ppal.getName() != null) {
+			try {
+				usuarioId = Short.parseShort(ppal.getName());
+			} catch (NumberFormatException nfe) {
+				throw new ValidationException("Código de usuario inesperado: " + ppal.getName());
+			}
+		} else {
+			throw new ValidationException("No se pudo determinar el usuario");
+		}
+		
+		if (documento.getEstado() == null) {
+			documento.setEstado("");
+		}
+		documento.setUsuarioId(usuarioId);
+		documento.setPendiente("");
+		documento.setDocCFEetapa("");
+		documento.setDocMensaje("");
+		documento.setDocVinculado("");
+		documento.setDocTCF(BigDecimal.ZERO);
+		documento.setCentroCostosId("");
+		documento.setReferencia("");
+		documento.setDocBlob(new byte[0]);
+		
+		String docId = this.documentoDAOService.persist(documento);
+		
+		return findDocumento(docId);
+	}
+	
+
+	public void modificarFP(Documento documento) throws ValidationException, PermisosException {
+		documento = replaceReadonlyEntities(documento);
+
+		Date now = new Date();
+		documento.setRegistroFecha(now);
+		documento.setRegistroHora(now);
+		Principal ppal = UserPrincipalLocator.userPrincipalTL.get();
+		
+		short usuarioId;
+		if (ppal != null && ppal.getName() != null) {
+			try {
+				usuarioId = Short.parseShort(ppal.getName());
+			} catch (NumberFormatException nfe) {
+				throw new ValidationException("Código de usuario inesperado: " + ppal.getName());
+			}
+		} else {
+			throw new ValidationException("No se pudo determinar el usuario");
+		}
+		
+		documento.setUsuarioId(usuarioId);
+		
+		this.documentoDAOService.merge(documento);
+	}
+	
 	public String alta(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
 		if (documento.getDocId() != null) {
 			throw new IllegalStateException("Usar el metodo modificar para documentos ya existentes");
@@ -236,6 +306,8 @@ public class DocumentoServiceImpl implements DocumentoService {
 		Documento current = this.documentoDAOService.findDocumento(documento.getDocId());
 
 		verificarFecha(current, documento);
+		
+		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
 
 		SerieNumero serieNumero = null;
 		if (current.isTieneSerieNumero()) {
@@ -250,7 +322,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 		if (!documento.getComprobante().isMueveCaja()) {
 			current.setCajaId(null);
 		}
-		current.setEmitidoPor(documento.getEmitidoPor());
+		current.setEmitidoPor(usuarioLogin.getCodigo());
 
 		Short cfeStatus = documento.getDocCFEstatus();
 		if (cfeStatus.equals(new Short("1"))) {
@@ -330,6 +402,8 @@ public class DocumentoServiceImpl implements DocumentoService {
 			} else {
 				msg = "El Documento ha sido modificado por otro usuario.";
 			}
+			LOGGER.error(msg);
+			
 			throw new RuntimeException(msg);
 		}
 
@@ -496,6 +570,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 			antecedente.setNeto(linea.getNeto());
 			antecedente.setRenta(linea.getPorcentajeUtilidad());
 			antecedente.setTipoCambio(documento.getDocTCC());
+			antecedente.setDocId(documento.getDocId());
 			antecedente.setDocumentoSerie(documento.getSerie());
 			antecedente.setDocumentoNumero(documento.getNumero());
 
@@ -545,6 +620,7 @@ public class DocumentoServiceImpl implements DocumentoService {
 			antecedente.setFecha(documento.getFecha());
 			antecedente.setArticulo(linea.getArticulo());
 			antecedente.setConcepto(linea.getConcepto());
+			antecedente.setDocId(documento.getDocId());
 			antecedente.setDocumentoSerie(documento.getSerie());
 			antecedente.setDocumentoNumero(documento.getNumero());
 			antecedente.setCantidad(linea.getCantidad());

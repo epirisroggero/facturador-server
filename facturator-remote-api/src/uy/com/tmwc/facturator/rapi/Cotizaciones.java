@@ -39,8 +39,7 @@ public class Cotizaciones implements Serializable {
 	}
 
 	/**
-	 * Se usa String en lugar de BigDecimal para facilitar la conversion de as3
-	 * a java
+	 * Se usa String en lugar de BigDecimal para facilitar la conversion de as3 a java
 	 * 
 	 */
 	public void setMap(HashMap<String, String> map) {

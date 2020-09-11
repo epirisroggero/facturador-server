@@ -4,13 +4,16 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class AgendaTareaDTO implements Serializable {
-	
-	public AgendaTareaDTO(){
-		
+	private static final long serialVersionUID = 1L;
+
+
+	public AgendaTareaDTO() {
+
 	}
-	
-	public AgendaTareaDTO(int ageId, Date fechaHora, String estado, Date fechaInicio, Date fechaFin, String descripcion, String prioridad, String tipo, String ctoId, String ctoNombre, String ctoDireccion, String ctoTelefono, String tarea,
-			String usuSolicitante, short idUsuAsignado, String nroOrden, Object orden) {
+
+	public AgendaTareaDTO(int ageId, Date fechaHora, String estado, Date fechaInicio, Date fechaFin,
+			String descripcion, String prioridad, String tipo, String ctoId, String ctoNombre, String ctoDireccion,
+			String ctoTelefono, String tarea, String usuSolicitante, short idUsuAsignado, String nroOrden, Object orden) {
 		super();
 		this.ageId = ageId;
 		this.fechaHora = fechaHora;
@@ -29,15 +32,13 @@ public class AgendaTareaDTO implements Serializable {
 		this.idUsuAsignado = idUsuAsignado;
 		this.nroOrden = nroOrden;
 		this.orden = orden;
-		
+
 	}
 
-	private static final long serialVersionUID = 1L;
-	
 	private int ageId;
 
 	private Date fechaHora;
-	
+
 	private Date fechaHoraFin;
 
 	private String estado;
@@ -45,15 +46,15 @@ public class AgendaTareaDTO implements Serializable {
 	private Date fechaInicio;
 
 	private String descripcion;
-		
+
 	private String prioridad;
 
 	private String tipo;
 
 	private String ctoNombre;
-	
+
 	private String ctoDireccion;
-	
+
 	private String ctoTelefono;
 
 	private String tarea;
@@ -61,11 +62,11 @@ public class AgendaTareaDTO implements Serializable {
 	private String usuSolicitante;
 
 	private short idUsuAsignado;
-	
+
 	private String nroOrden;
-	
+
 	private Object orden;
-	
+
 	private String ctoId;
 
 	public int getAgeId() {
@@ -203,5 +204,5 @@ public class AgendaTareaDTO implements Serializable {
 	public void setCtoId(String ctoId) {
 		this.ctoId = ctoId;
 	}
-	
+
 }

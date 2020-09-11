@@ -14,6 +14,7 @@ public abstract class DocumentoBase implements Serializable {
 
 	protected transient Date fecha;
 	protected transient Date fecha2;
+	
 	protected String fechaStr;
 	protected String fechaEmisionStr;
 	protected String estado;

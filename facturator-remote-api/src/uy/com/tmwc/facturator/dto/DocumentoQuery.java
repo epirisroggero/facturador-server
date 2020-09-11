@@ -6,6 +6,7 @@ import java.util.Date;
 
 public class DocumentoQuery implements Serializable {
 	private static final long serialVersionUID = 1L;
+
 	private int start;
 	private int limit;
 
@@ -20,29 +21,29 @@ public class DocumentoQuery implements Serializable {
 	private Date fechaHasta;
 
 	private Boolean pendiente = Boolean.FALSE;
-	
+
 	private Boolean tieneSaldo = Boolean.FALSE;
-	
+
 	private Boolean emitido = Boolean.FALSE;
-	
+
 	private String estado;
 
 	private String orden = "DESC";
-	
+
 	private Boolean esSolicitud = Boolean.FALSE;
-	
+
 	private Boolean esRecibo = Boolean.FALSE;
-	
+
 	private Boolean esCheque = Boolean.FALSE;
-	
+
 	private Boolean esGasto = Boolean.FALSE;
-	
+
 	private String comprobantes;
-	
+
 	private String compsExcluidos;
-	
+
 	private String lineaConcepto;
-	
+
 	public DocumentoQuery() {
 	}
 
@@ -234,6 +235,5 @@ public class DocumentoQuery implements Serializable {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
-
 
 }

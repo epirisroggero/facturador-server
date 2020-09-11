@@ -16,7 +16,7 @@ public abstract class CodigoNombreEntity implements Serializable, Cloneable, Com
 		try {
 			obj = (CodigoNombreEntity) super.clone();
 		} catch (CloneNotSupportedException ex) {
-			System.out.println("No se puede duplicar");
+			ex.printStackTrace();
 		}
 		return obj;
 	}

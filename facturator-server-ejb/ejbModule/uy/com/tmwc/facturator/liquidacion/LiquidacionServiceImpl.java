@@ -44,6 +44,7 @@ import uy.com.tmwc.facturator.entity.Moneda;
 import uy.com.tmwc.facturator.entity.ParticipacionVendedor;
 import uy.com.tmwc.facturator.entity.RedistribucionRentaLinea;
 import uy.com.tmwc.facturator.entity.RedistribucionRentasJefaturas;
+import uy.com.tmwc.facturator.entity.ResumenEntrega;
 import uy.com.tmwc.facturator.entity.ResumenEntregas;
 import uy.com.tmwc.facturator.entity.Usuario;
 import uy.com.tmwc.facturator.entity.Vendedor;
@@ -53,7 +54,6 @@ import uy.com.tmwc.facturator.rapi.LiquidacionService;
 import uy.com.tmwc.facturator.rapi.MonedasCotizacionesService;
 import uy.com.tmwc.facturator.rapi.PermisosException;
 import uy.com.tmwc.facturator.rapi.UsuariosService;
-import uy.com.tmwc.facturator.server.util.AgruparVendedores;
 import uy.com.tmwc.facturator.session.RentaCobranza;
 import uy.com.tmwc.facturator.session.RentaContado;
 import uy.com.tmwc.facturator.spi.CatalogDAOService;
@@ -84,6 +84,8 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 	MonedasCotizacionesService tipoCambioService;
 
 	private static final int TEMP_DIR_ATTEMPTS = 10000;
+	
+	private SimpleDateFormat dt1 = new SimpleDateFormat("dd-MM-yyyy");
 
 	private void generarReporteResumenEntregas(Date fechaDesde, Date fechaHasta, BigDecimal gastosPeriodo, File dirBase) {
 		ResumenEntregas resumen = calcularCostosOperativos(fechaDesde, fechaHasta, gastosPeriodo);
@@ -104,8 +106,6 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				w.close();
 			}
 
-			// System.out.println(" filename: " + tmpFilePath);
-
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -118,7 +118,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 	}
 
 	public ResumenEntregas getResumenEntregas(Date fechaDesde, Date fechaHasta, BigDecimal gastosPeriodo) {
-		List resumenEntregaList = this.documentoDAOService.getResumenEntregas(fechaDesde, fechaHasta);
+		List<ResumenEntrega> resumenEntregaList = this.documentoDAOService.getResumenEntregas(fechaDesde, fechaHasta);
 		ResumenEntregas resumenEntregas = new ResumenEntregas(resumenEntregaList, gastosPeriodo);
 		return resumenEntregas;
 	}
@@ -128,7 +128,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 		return null;
 	}
 
-	private LiquidacionVendedor ensureLiquidacionVendedor(HashMap<String, LiquidacionVendedor> mapLiquidaciones,
+	/*private LiquidacionVendedor ensureLiquidacionVendedor(HashMap<String, LiquidacionVendedor> mapLiquidaciones,
 			CodigoNombre vendedor) {
 		String codigoVendedor = vendedor.getCodigo();
 		LiquidacionVendedor lv = (LiquidacionVendedor) mapLiquidaciones.get(codigoVendedor);
@@ -145,7 +145,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 		corteControl.process(mapped);
 		TreeMap grupos = corteControl.getParticipacionesPorVendedor();
 		return grupos;
-	}
+	}*/
 
 	/**
 	 * 
@@ -553,8 +553,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 		CsvWriter w = new CsvWriter(fileName);
 
 		Calendar calendar = Calendar.getInstance();
-		List<CotizacionesMonedas> tiposCambio = tipoCambioService.getCotizacionesMonedas(calendar.getTime());
-		CotizacionesMonedas tipoCambio = tiposCambio.get(0);
+		CotizacionesMonedas tipoCambio = tipoCambioService.getUltimaCotizacion(calendar.getTime());
 
 		// TIPO DE DOCUMENTO FECHA CLIENTE IMPORTE IVA INCLUIDO DESCUENTO ESPERADO DTO OTORGADO RENTA FINANCIERA..
 		try {
@@ -595,10 +594,10 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			w.endRecord();
 
 			w.write("SERIE RECIBO");
-			w.write("NUMERO RECIBO");
+			w.write("NÚMERO RECIBO");
 			w.write("FECHA RECIBO");
 			w.write("SERIE FACTURA");
-			w.write("NUMERO FACTURA");
+			w.write("NÚMERO FACTURA");
 			w.write("CLIENTE");
 			w.write("MONEDA");
 			w.write("FACTURA TOTAL");
@@ -877,29 +876,29 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			}
 		}
 
+		HashMap<String, BigDecimal> cotizaciones = new HashMap<String, BigDecimal>();
+		
+		List<CotizacionesMonedas> tiposCambio =  tipoCambioService.getCotizacionesMonedas(fechaDesde);
+		for (CotizacionesMonedas cotizacionesMonedas : tiposCambio) {
+			cotizaciones.put(dt1.format(cotizacionesMonedas.getDia()), cotizacionesMonedas.getDolarVenta());
+			//System.out.println(dt1.format(cotizacionesMonedas.getDia()) + " :: "  +  cotizacionesMonedas.getDolarVenta());
+		}
+		
 		Iterator<String> iter = partVendedores.keySet().iterator();
 		while (iter.hasNext()) {
 			String vendId = iter.next();
 			printCobranzaVendedor(dirBase, vendId, vendedoresDist.contains(vendId), partVendedores.get(vendId),
-					fechaDesde, fechaHasta);
+					fechaDesde, fechaHasta, cotizaciones);
 		}
 
 	}
 
 	private void printCobranzaVendedor(File dirBase, String vendedorId, boolean vendedorDist,
-			List<ParticipacionEnCobranza> participCobranzas, Date fechaDesde, Date fechaHasta) throws IOException {
+			List<ParticipacionEnCobranza> participCobranzas, Date fechaDesde, Date fechaHasta, HashMap<String, BigDecimal> cotizaciones) throws IOException {
 		String fileName = new File(dirBase, "cobranzas_" + vendedorId + ".csv").getPath();
 		CsvWriter w = new CsvWriter(fileName);
 
 		try {
-			HashMap<String, BigDecimal> cotizaciones = new HashMap<String, BigDecimal>();
-			SimpleDateFormat dt1 = new SimpleDateFormat("dd-MM-yyyy");
-
-			List<CotizacionesMonedas> tiposCambio =  tipoCambioService.getCotizacionesMonedas(fechaDesde);
-			for (CotizacionesMonedas cotizacionesMonedas : tiposCambio) {
-				cotizaciones.put(dt1.format(cotizacionesMonedas.getDia()), cotizacionesMonedas.getDolarVenta());
-			}
-
 			Vendedor vendedor = catalogService.findCatalogEntity("Vendedor", vendedorId);
 
 			w.write(vendedorDist ? "DISTRIBUIDOR:" : "VENDEDOR:");
@@ -919,7 +918,7 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 
 			w.write("FECHA RECIBO");
 			w.write("SERIE");
-			w.write("NUMERO");
+			w.write("NÚMERO");
 			w.write("FECHA VENTA");
 			w.write("CLIENTE");
 			w.write("COMPROBANTE DE VENTA");
@@ -930,13 +929,13 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 			if (vendedorDist) {
 				w.write("RENTA DISTRIBUIDOR");
 			}
-			w.write("PARTICIPACI�N");
+			w.write("PARTICIPACIÓN");
 			w.write(vendedorDist ? "RTA. AL DIST." : "RTA. AL VEND.");
 			w.write("MONTO CANCELADO"); // TODO: Revisar
 			w.write("% COBRADO");
 			w.write("RTA. A COBRAR");
 			w.write("DOLARIZADA");
-			w.write("COTIZACI�N");
+			w.write("COTIZACIÓN");
 
 			w.endRecord();
 
@@ -1028,12 +1027,21 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 
 				String codigoMoneda = factura.getMoneda().getCodigo();
 				BigDecimal rentaDolarizada = BigDecimal.ZERO;
-
-				BigDecimal cotizacionDolar = cotizaciones.get(dt1.format(factura.getFecha())); // TODO: Revisar
-				if (cotizacionDolar == null) {
-					CotizacionesMonedas ultimaCotizacion = tipoCambioService.getUltimaCotizacion(fechaDesde);
-					cotizacionDolar = ultimaCotizacion.getDolarVenta();
-					cotizaciones.put(dt1.format(factura.getFecha()), cotizacionDolar);
+				BigDecimal cotizacionDolar  = BigDecimal.ONE;
+					
+				if (codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS)
+						|| codigoMoneda.equals(Moneda.CODIGO_MONEDA_PESOS_ASTER)) {
+					cotizacionDolar = cotizaciones.get(dt1.format(factura.getFecha())); // TODO: Revisar
+					
+					if (cotizacionDolar == null) {
+						CotizacionesMonedas ultimaCotizacion = tipoCambioService.getUltimaCotizacion(factura.getFecha());
+						cotizacionDolar = ultimaCotizacion.getDolarVenta();
+						if (cotizacionDolar != null) {
+							cotizaciones.put(dt1.format(factura.getFecha()), cotizacionDolar);	
+						} else {
+							cotizacionDolar = BigDecimal.ONE;
+						}						
+					}
 				}
 
 				Boolean esDevolucion = Boolean.FALSE;

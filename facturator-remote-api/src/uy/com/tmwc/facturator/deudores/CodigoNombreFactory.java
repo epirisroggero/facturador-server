@@ -6,9 +6,9 @@ import uy.com.tmwc.facturator.dto.CodigoNombre;
 import uy.com.tmwc.facturator.entity.CodigoNombreEntity;
 
 public class CodigoNombreFactory {
-	
+
 	private IdentityHashMap<CodigoNombreEntity, CodigoNombre> cache = new IdentityHashMap<CodigoNombreEntity, CodigoNombre>();
-	
+
 	public CodigoNombre getFor(CodigoNombreEntity entity) {
 		if (entity == null)
 			return null;

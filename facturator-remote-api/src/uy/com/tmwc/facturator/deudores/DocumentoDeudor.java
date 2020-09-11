@@ -12,7 +12,7 @@ import uy.com.tmwc.facturator.entity.Documento;
 
 @SuppressWarnings("serial")
 public class DocumentoDeudor implements Serializable {
-	
+
 	private String docId;
 	private String fecha;
 	private Date date;
@@ -32,14 +32,13 @@ public class DocumentoDeudor implements Serializable {
 	private BigDecimal descuento;
 	private BigDecimal adeudadoNeto;
 	private boolean tieneCuotaVencida;
-	private int diasRetraso;	
+	private int diasRetraso;
 
 	private Documento documento;
 
-
 	public DocumentoDeudor() {
 	}
-	
+
 	public String getDocId() {
 		return docId;
 	}
@@ -143,7 +142,7 @@ public class DocumentoDeudor implements Serializable {
 	public void setFecha(String fecha) {
 		this.fecha = fecha;
 	}
-	
+
 	public Documento getDocumento() {
 		return documento;
 	}
@@ -159,7 +158,7 @@ public class DocumentoDeudor implements Serializable {
 	public void setTieneCuotaVencida(boolean tieneCuotaVencida) {
 		this.tieneCuotaVencida = tieneCuotaVencida;
 	}
-	
+
 	public int getDiasRetraso() {
 		return diasRetraso;
 	}
@@ -167,7 +166,7 @@ public class DocumentoDeudor implements Serializable {
 	public void setDiasRetraso(int diasRetraso) {
 		this.diasRetraso = diasRetraso;
 	}
-	
+
 	public Date getDate() {
 		return date;
 	}
@@ -175,7 +174,7 @@ public class DocumentoDeudor implements Serializable {
 	public void setDate(Date date) {
 		this.date = date;
 	}
-	
+
 	public String getSerie() {
 		return serie;
 	}
@@ -183,7 +182,7 @@ public class DocumentoDeudor implements Serializable {
 	public void setSerie(String serie) {
 		this.serie = serie;
 	}
-	
+
 	public Date getFechaVencimiento() {
 		return fechaVencimiento;
 	}
@@ -191,7 +190,5 @@ public class DocumentoDeudor implements Serializable {
 	public void setFechaVencimiento(Date fechaVencimiento) {
 		this.fechaVencimiento = fechaVencimiento;
 	}
-
-
 
 }

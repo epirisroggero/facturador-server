@@ -19,6 +19,9 @@ import uy.com.tmwc.facturator.entity.StockActual;
 import uy.com.tmwc.facturator.entity.ValidationException;
 
 public interface DocumentoService {
+	Documento altaDocFP(Documento docFormaPago) throws ValidationException, PermisosException;
+	
+	void modificarFP(Documento docFormaPago) throws ValidationException, PermisosException;
 
 	String alta(Documento paramDocumento, Auditoria auditoria) throws ValidationException, PermisosException;
 

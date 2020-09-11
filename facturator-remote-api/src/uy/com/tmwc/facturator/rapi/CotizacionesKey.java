@@ -6,7 +6,7 @@ public class CotizacionesKey implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private String monedaCotizacion;
 	private String moneda;
-	private boolean esCompra;
+	private boolean esCompra; 
 
 	public CotizacionesKey() {
 	}

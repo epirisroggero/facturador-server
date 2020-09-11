@@ -364,7 +364,11 @@ public class EFacturaServiceImpl implements EFacturaService {
 				String codSeguridadCFE = fields[3];
 
 				current.setSerie(serie);
-				current.setNumero(new Long(nro));
+				if (!modeDevelop) {					
+					current.setNumero(new Long(nro));
+				} else {
+					current.setNumero(new Date().getTime() % 1000);
+				}
 				current.setCodSeguridadCFE(codSeguridadCFE);
 			}
 			if (rows[2].startsWith("3|")) {
@@ -529,7 +533,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 	 * Ejemplo: 1|216025790012|12|2014-02-13
 	 * 
 	 * @param doc
-	 * @return informaci?n del sobre
+	 * @return información del sobre
 	 */
 	private String getSobre(Documento doc) {
 		StringBuffer sobreData = new StringBuffer("1|");
@@ -543,7 +547,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 	/**
 	 * Encabezado
 	 * 
-	 * Esta l?nea es la que contiene los datos b?sicos del comprobante.
+	 * Esta línea es la que contiene los datos b?sicos del comprobante.
 	 * 
 	 * Sintaxis: Tipo|TipoCFE|Serie|Nro|FechaEmision|IndicadorMBruto|FormaPago| FechaVencimiento
 	 * 
@@ -817,7 +821,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 		String serie = doc.getSerieCFERef() != null ? doc.getSerieCFERef() : ""; // Texto; Serie asignada al comprobante de referencia
 		String nroCFERef = doc.getNumCFERef() != null ? String.valueOf(doc.getNumCFERef()) : ""; // Entero; Nro. asignado al comprobante de referencia
 		String razon = indGlobal.equals("1") ? doc.getRazonCFERef() : ""; // Texto; Razón de la referencia
-		String fechaCFEReferencia = ""; // Fecha; Fecha de emisi?n del CFE Referenciado
+		String fechaCFEReferencia = ""; // Fecha; Fecha de emisión del CFE Referenciado
 		if (doc.getFechaCFERef() != null) {
 			fechaCFEReferencia = eFacturaDateFormat.format(doc.getFechaCFERef());
 		}

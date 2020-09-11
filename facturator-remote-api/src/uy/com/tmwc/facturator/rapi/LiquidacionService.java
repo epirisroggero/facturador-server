@@ -12,8 +12,7 @@ import uy.com.tmwc.facturator.entity.ResumenEntregas;
 import uy.com.tmwc.facturator.liquidacion.ParticipacionVendedor;
 
 //@RemoteServiceRelativePath("remote/liquidacionService")
-public abstract interface LiquidacionService /* extends RemoteService */
-{
+public abstract interface LiquidacionService {
 	TreeMap<CodigoNombre, ArrayList<ParticipacionVendedor>> reporteVentasPeriodo(Date paramDate1, Date paramDate2);
 
 	ResumenEntregas getResumenEntregas(Date paramDate1, Date paramDate2, BigDecimal gastosPeriodo);
@@ -21,15 +20,15 @@ public abstract interface LiquidacionService /* extends RemoteService */
 	ResumenEntregas calcularCostosOperativos(Date paramDate1, Date paramDate2, BigDecimal gastosPeriodo);
 
 	List<DocumentoDeudor> getDocumentosDeudores(Date fechaHoy);
-	
+
 	List<DocumentoDeudor> getDocumentosDeudoresSupervisor(Date fechaHoy);
-	
+
 	List<DocumentoDeudor> getDocumentosDeudoresCliente(Date fechaHoy, String clienteId);
 
-	//Calcula los costos operativos del mes, calcula valores nuevos de entrega, liquida.
+	// Calcula los costos operativos del mes, calcula valores nuevos de entrega, liquida.
 	byte[] generarLiquidacion(Date fechaDesde, Date fechaHasta, Date fechaCorte, BigDecimal gastosPeriodo);
-	
+
 	List<DocumentoDeudor> getDocumentosVencidos(Date fechaHoy);
-	
+
 	List<DocumentoDeudor> getDocumentosVencidosSupervisor(Date fechaHoy);
 }

@@ -26,6 +26,7 @@ public class QueueJob implements Job {
 
 	
 	private static Class<?> agendaTareaServiceProxyClass;
+	
 	private static Constructor<?> agendaTareaServiceProxyClassConstructor;
 	static {
 		agendaTareaServiceProxyClass = Proxy.getProxyClass(AgendaTareaService.class.getClassLoader(), new Class[] {AgendaTareaService.class});

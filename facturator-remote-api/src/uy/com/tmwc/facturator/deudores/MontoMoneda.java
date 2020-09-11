@@ -7,6 +7,7 @@ import uy.com.tmwc.facturator.dto.CodigoNombre;
 public class MontoMoneda {
 
 	private CodigoNombre moneda;
+	
 	private BigDecimal monto;
 
 	public CodigoNombre getMoneda() {

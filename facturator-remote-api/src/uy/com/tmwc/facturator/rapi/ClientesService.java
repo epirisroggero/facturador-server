@@ -15,33 +15,33 @@ import uy.com.tmwc.facturator.entity.Proveedor;
 import uy.com.tmwc.facturator.entity.ValidationException;
 
 public abstract interface ClientesService {
-	 
+
 	public abstract String persist(Cliente e, Boolean force);
-	 
+
 	public abstract void merge(Cliente e);
-	 
+
 	public abstract Boolean delete(Cliente e);
-	
+
 	public abstract String verifyContacto(Contacto e);
-	
+
 	public abstract String getLastId();
-	
+
 	List<ClienteDTO> queryClientes(ClienteQuery paramClienteQuery) throws ValidationException;
-	
+
 	List<ContactoDTO> queryContactos(ContactoQuery contactoQuery);
-	
+
 	List<ProveedorDTO> queryProveedores(ProveedoresQuery paramProvQuery);
 
 	public abstract List<Persona> queryPersonas(String codigo);
 
 	public abstract String persist(Persona p);
-	
+
 	public abstract void merge(Persona p);
-	
+
 	public abstract Boolean delete(Persona p);
-	
+
 	public abstract String persist(Proveedor e);
-	 
+
 	public abstract void merge(Proveedor e);
-	 
+
 }

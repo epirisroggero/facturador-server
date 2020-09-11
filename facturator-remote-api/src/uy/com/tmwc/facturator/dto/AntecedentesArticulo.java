@@ -8,8 +8,9 @@ import uy.com.tmwc.facturator.entity.Articulo;
 
 public class AntecedentesArticulo implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private CodigoNombre comprobante;
+	private String docId;
 	private String documentoSerie;
 	private Long documentoNumero;
 	private Date fecha;
@@ -137,5 +138,13 @@ public class AntecedentesArticulo implements Serializable {
 
 	public void setConcepto(String concepto) {
 		this.concepto = concepto;
+	}
+
+	public String getDocId() {
+		return docId;
+	}
+
+	public void setDocId(String docId) {
+		this.docId = docId;
 	}
 }

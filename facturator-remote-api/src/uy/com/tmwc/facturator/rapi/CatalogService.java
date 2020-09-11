@@ -14,27 +14,27 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("remote/catalogService")
-public abstract interface CatalogService extends RemoteService
-{
-  public static final Class<Vendedor> catalogVendedor = Vendedor.class;
-  
-  public static final Class<Documento> catalogDocumento = Documento.class;
+public abstract interface CatalogService extends RemoteService {
+	public static final Class<Vendedor> catalogVendedor = Vendedor.class;
 
-  public abstract <T extends CodigoNombreEntity> List<T> getCatalog(String paramString);
+	public static final Class<Documento> catalogDocumento = Documento.class;
 
-  public abstract <T extends CodigoNombreEntity> List<T> getCatalog(String paramString1, String paramString2);
+	public abstract <T extends CodigoNombreEntity> List<T> getCatalog(String paramString);
 
-  public abstract <T extends CodigoNombreEntity> List<T> getCatalog(String paramString1, String paramString2, int paramInt);
+	public abstract <T extends CodigoNombreEntity> List<T> getCatalog(String paramString1, String paramString2);
 
-  public abstract <T extends CodigoNombreEntity> List<T> queryCatalog(T paramT, int paramInt1, int paramInt2);
+	public abstract <T extends CodigoNombreEntity> List<T> getCatalog(String paramString1, String paramString2,
+			int paramInt);
 
-  public abstract <T extends CodigoNombreEntity> long queryCatalogCount(T paramT);
-  
-  public abstract <D extends CodigoNombreEntity> D findCatalogEntity(String catalog, String codigo);
+	public abstract <T extends CodigoNombreEntity> List<T> queryCatalog(T paramT, int paramInt1, int paramInt2);
 
-  public abstract ArticuloPrecio getPrecioArticulo(String preciosVenta, String articulo);
+	public abstract <T extends CodigoNombreEntity> long queryCatalogCount(T paramT);
 
-  public abstract Collection<Jefatura> getJefaturas();
-  
-  public abstract ParametrosAdministracion getParametrosAdministracion();
+	public abstract <D extends CodigoNombreEntity> D findCatalogEntity(String catalog, String codigo);
+
+	public abstract ArticuloPrecio getPrecioArticulo(String preciosVenta, String articulo);
+
+	public abstract Collection<Jefatura> getJefaturas();
+
+	public abstract ParametrosAdministracion getParametrosAdministracion();
 }

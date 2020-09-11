@@ -79,7 +79,7 @@ public class Documento extends DocumentoBase implements Serializable {
 	private String numCmpId;
 	private String docMensaje;
 
-	// FACTURA ELECTR�NICA
+	// FACTURA ELECTRÓNICA
 
 	private String docCFEetapa;
 	private Integer docCFEId;
@@ -121,11 +121,15 @@ public class Documento extends DocumentoBase implements Serializable {
 	private String titular;
 	private String bancoIdDoc;
 	private String concepto;
+	private Date estadoFecha;
 	
+
 	private String centroCostosId;
 	private String docCenCostosId;
 	private String referencia;
 	private String tarjetaNro;
+	private String autorizacion;
+	private String plan;
 	
 	private String puntoVentaId;
 	
@@ -172,6 +176,8 @@ public class Documento extends DocumentoBase implements Serializable {
 		doc.setFecha2(currentDate);
 		doc.setRegistroFecha(currentDate);
 		doc.setRegistroHora(currentDate);
+		
+		doc.setPermisosDocumentoUsuario(new PermisosDocumentoUsuario());
 
 		return doc;
 	}
@@ -366,13 +372,13 @@ public class Documento extends DocumentoBase implements Serializable {
 	public void validate() throws ValidationException {
 		if (this.comprobante.isCredito()) {
 			if (planPagos == null) {
-				throw new ValidationException("La condici�n (plan de pagos) es obligatoria");
+				throw new ValidationException("La condición (plan de pagos) es obligatoria");
 			}
 			this.cuotasDocumento.validate();
 		}
 		for (LineaDocumento linea : this.lineas.getLineas())
 			if (linea.getArticulo() == null)
-				throw new ValidationException("La l�nea " + linea.getNumeroLinea() + " no especifica art�culo.");
+				throw new ValidationException("La línea " + linea.getNumeroLinea() + " no especifica artículo.");
 
 		if (this.comprobante.isVenta() || this.comprobante.getCodigo().equals(System.getProperty("facturator.comprobantes.ordenVenta"))) {
 			if (entrega == null) {
@@ -1266,5 +1272,29 @@ public class Documento extends DocumentoBase implements Serializable {
 		this.tarjetaNro = tarjetaNro;
 	}
 	
+	public Date getEstadoFecha() {
+		return estadoFecha;
+	}
+
+	public void setEstadoFecha(Date estadoFecha) {
+		this.estadoFecha = estadoFecha;
+	}
+
+	public String getPlan() {
+		return plan;
+	}
+
+	public void setPlan(String plan) {
+		this.plan = plan;
+	}
+
+	public String getAutorizacion() {
+		return autorizacion;
+	}
+
+	public void setAutorizacion(String autorizacion) {
+		this.autorizacion = autorizacion;
+	}
+
 
 }

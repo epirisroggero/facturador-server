@@ -11,7 +11,7 @@ import uy.com.tmwc.facturator.entity.TipoCambio;
 import uy.com.tmwc.facturator.rapi.Cotizaciones;
 
 public class LogicaCotizacion {
-	
+
 	private String codigoPesos;
 	private String codigoExtranjera;
 	private GetTipoCambio getTipoCambioFunction;
@@ -21,19 +21,19 @@ public class LogicaCotizacion {
 		this.codigoExtranjera = codigoExtranjera;
 		this.getTipoCambioFunction = getTipoCambioFunction;
 	}
-	
+
 	public LogicaCotizacion(String codigoPesos, String codigoExtranjera) {
 		this(codigoPesos, codigoExtranjera, null);
 	}
-	
-	public int obtenerUltimoDiaMes (int anio, int mes) {
+
+	public int obtenerUltimoDiaMes(int anio, int mes) {
 		Calendar cal = Calendar.getInstance();
-		cal.set(anio, mes-1, 1);
+		cal.set(anio, mes - 1, 1);
 		return cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 	}
 
-	public BigDecimal getMontoMayorCotizacion(Date fechaPrecio, String monedaPrecio, BigDecimal precio, String monedaFacturacion,
-			Cotizaciones oCotizaciones, Boolean esRemito, GetTipoCambio getTipoCambioFunction) {
+	public BigDecimal getMontoMayorCotizacion(Date fechaPrecio, String monedaPrecio, BigDecimal precio,
+			String monedaFacturacion, Cotizaciones oCotizaciones, Boolean esRemito, GetTipoCambio getTipoCambioFunction) {
 		BigDecimal tempGetMontoMayorCotizacion = null;
 
 		if (precio == null) {
@@ -44,22 +44,26 @@ public class LogicaCotizacion {
 			if (monedaFacturacion.equals(codigoPesos)) {
 				tempGetMontoMayorCotizacion = precio;
 			} else {
-				BigDecimal cotizacionReferencia = oCotizaciones.getCotizacion(codigoPesos, monedaPrecio, false); // obtener la cotización de venta
+				BigDecimal cotizacionReferencia = oCotizaciones.getCotizacion(codigoPesos, monedaPrecio, false); // obtener la cotizaciï¿½n de venta
 				if ((cotizacionReferencia == null) || (cotizacionReferencia.compareTo(BigDecimal.ZERO) == 0)) {
 					return esRemito ? new BigDecimal(precio.doubleValue() / .9) : precio;
 				}
 
 				BigDecimal cotizacionAnterior = null;
-				if (fechaPrecio != null && oCotizaciones.getFecha() != null && fechaPrecio.compareTo(oCotizaciones.getFecha()) < 0) {
-					cotizacionAnterior = getTipoCambio(monedaFacturacion, codigoPesos, fechaPrecio, getTipoCambioFunction);
+				if (fechaPrecio != null && oCotizaciones.getFecha() != null
+						&& fechaPrecio.compareTo(oCotizaciones.getFecha()) < 0) {
+					cotizacionAnterior = getTipoCambio(monedaFacturacion, codigoPesos, fechaPrecio,
+							getTipoCambioFunction);
 				}
-				
-				tempGetMontoMayorCotizacion = (cotizacionAnterior != null && cotizacionReferencia.compareTo(cotizacionAnterior) < 0) ? new BigDecimal(cotizacionAnterior
-						.multiply(precio).doubleValue() / cotizacionReferencia.doubleValue()) : precio;
+
+				tempGetMontoMayorCotizacion = (cotizacionAnterior != null && cotizacionReferencia
+						.compareTo(cotizacionAnterior) < 0) ? new BigDecimal(cotizacionAnterior.multiply(precio)
+						.doubleValue() / cotizacionReferencia.doubleValue()) : precio;
 
 			}
 
-			return esRemito ? new BigDecimal(tempGetMontoMayorCotizacion.doubleValue() / .9) : tempGetMontoMayorCotizacion;
+			return esRemito ? new BigDecimal(tempGetMontoMayorCotizacion.doubleValue() / .9)
+					: tempGetMontoMayorCotizacion;
 		}
 
 		BigDecimal precio1 = oCotizaciones.darPrecio(monedaFacturacion, precio, monedaPrecio);
@@ -67,11 +71,11 @@ public class LogicaCotizacion {
 		BigDecimal tcOld = getTipoCambio(monedaPrecio, monedaFacturacion, fechaPrecio, getTipoCambioFunction);
 		BigDecimal precio2 = tcOld != null ? tcOld.multiply(precio) : BigDecimal.ZERO;
 
-		BigDecimal result = precio1.compareTo(precio2) > 0 ? precio1 : precio2;		
+		BigDecimal result = precio1.compareTo(precio2) > 0 ? precio1 : precio2;
 
 		return esRemito ? new BigDecimal(result.doubleValue() / .9) : result;
 	}
-	
+
 	public BigDecimal cambiar(BigDecimal monto, String monedaOrigen, String monedaDestino, Date fecha) {
 		BigDecimal tc = getTipoCambio(monedaOrigen, monedaDestino, fecha, getTipoCambioFunction, BigDecimal.ZERO);
 		if (tc == null) {
@@ -80,11 +84,13 @@ public class LogicaCotizacion {
 		return tc.multiply(monto);
 	}
 
-	public BigDecimal getTipoCambio(String monedaOrigen, String monedaDestino, Date fecha, GetTipoCambio getTipoCambioFunction) {
+	public BigDecimal getTipoCambio(String monedaOrigen, String monedaDestino, Date fecha,
+			GetTipoCambio getTipoCambioFunction) {
 		return getTipoCambio(monedaOrigen, monedaDestino, fecha, getTipoCambioFunction, BigDecimal.ZERO);
 	}
-	
-	public BigDecimal getTipoCambio(String monedaOrigen, String monedaDestino, Date fecha, GetTipoCambio getTipoCambioFunction, BigDecimal tcd) {
+
+	public BigDecimal getTipoCambio(String monedaOrigen, String monedaDestino, Date fecha,
+			GetTipoCambio getTipoCambioFunction, BigDecimal tcd) {
 		if (monedaOrigen.equals(monedaDestino)) {
 			return BigDecimal.ONE;
 		}
@@ -123,11 +129,11 @@ public class LogicaCotizacion {
 	public interface GetTipoCambio {
 		BigDecimal getTipoCambio(String monedaOrigen, Date fecha);
 	}
-	
+
 	public static class InMemoryGetTipoCambio implements GetTipoCambio {
 
-		private HashMap<String /* moneda */, TreeMap<Date, TipoCambio>>  index = new HashMap<String, TreeMap<Date, TipoCambio>>();
-		
+		private HashMap<String /* moneda */, TreeMap<Date, TipoCambio>> index = new HashMap<String, TreeMap<Date, TipoCambio>>();
+
 		public InMemoryGetTipoCambio(Collection<TipoCambio> tcs) {
 			for (TipoCambio tipoCambio : tcs) {
 				TreeMap<Date, TipoCambio> treeEntry = index.get(tipoCambio.getMoneda().getCodigo());
@@ -138,24 +144,24 @@ public class LogicaCotizacion {
 				treeEntry.put(tipoCambio.getDia(), tipoCambio);
 			}
 		}
-		
+
 		public BigDecimal getTipoCambio(String monedaOrigen, Date fecha) {
 			TreeMap<Date, TipoCambio> treeEntry = index.get(monedaOrigen);
 			if (treeEntry != null) {
 				if (fecha == null) {
 					fecha = new Date();
 				}
-				/*System.out.println("Fecha :: " + fecha);*/
+				/* System.out.println("Fecha :: " + fecha); */
 
 				java.util.Map.Entry<Date, TipoCambio> entry = treeEntry.floorEntry(fecha);
-				if (entry != null) { 
+				if (entry != null) {
 					return entry.getValue().getComercial();
 				}
 			}
 			return BigDecimal.ONE;
 
 		}
-		
+
 	}
 
 }

@@ -29,7 +29,8 @@ public class Proveedor extends PersistentEntity<ProveedorPK> implements Serializ
 
 	public Proveedor(String codigo, String nombre, String telefono, String direccion, String razonSocial, String paisIdCto, String ctoRUT) {
 		setCodigo(codigo);
-		setNombre(nombre);
+
+		this.nombre = nombre;
 		
 		contacto = new Contacto();
 		contacto.setPaisIdCto(paisIdCto);

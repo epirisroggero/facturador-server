@@ -22,7 +22,8 @@ public class ResumenEntregas
   public ResumenEntregas(Collection<ResumenEntrega> resumenEntrega, BigDecimal gasto)
   {
     this.gasto = gasto;
-    this.map = new HashMap();
+    this.map = new HashMap<String, ResumenEntrega>();
+    
     BigDecimal sumaCantidadesConPeso = BigDecimal.ZERO;
     for (ResumenEntrega r : resumenEntrega) {
       this.map.put(r.getEntrega().getCodigo(), r);
@@ -57,7 +58,7 @@ public class ResumenEntregas
   }
 
   public Map<String, BigDecimal> getAsMap() {
-    HashMap costosMap = new HashMap();
+    HashMap<String, BigDecimal> costosMap = new HashMap<String, BigDecimal>();
     for (String codigoEntrega : this.map.keySet()) {
       costosMap.put(codigoEntrega, getCostoOperativo(codigoEntrega));
     }

@@ -56,6 +56,9 @@ public class CuotasDocumento implements Serializable {
 	}
 
 	public List<CuotaDocumento> getCuotas() {
+		if (cuotas == null) {
+			cuotas = new ArrayList<CuotaDocumento>();
+		}
 		return this.cuotas;
 	}
 

@@ -8,10 +8,11 @@ public class ParticipacionVendedorDeuda {
 
 	private CodigoNombre vendedor;
 	private BigDecimal porcentaje;
-	
+
 	public ParticipacionVendedorDeuda() {
 		super();
 	}
+
 	public ParticipacionVendedorDeuda(CodigoNombre vendedor, BigDecimal porcentaje) {
 		super();
 		this.vendedor = vendedor;

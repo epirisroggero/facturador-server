@@ -64,7 +64,7 @@ public class VinculosFP implements Serializable {
 	public void setDocFP2(Documento docFP2) {
 		this.docFP2 = docFP2;
 	}
-	
+		
 	
 
 }

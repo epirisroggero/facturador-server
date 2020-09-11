@@ -1,8 +1,8 @@
 package uy.com.tmwc.facturator.dto;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Map;
-
 
 public class ClienteDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -24,6 +24,11 @@ public class ClienteDTO implements Serializable {
 	private String encargadoCuenta;
 	private String especialista1;
 	private String especialista2;
+	
+	private String categCliId;
+	private String venIdCli;
+	
+	private BigDecimal cliTopeCredito;
 	
 	private Boolean activo;
 	
@@ -69,7 +74,35 @@ public class ClienteDTO implements Serializable {
 		
 		this.activo = activo;
 	}
-
+			
+	public ClienteDTO(
+			Object codigo, 
+			String nombre, 
+			String ctoRSocial, 
+			String ctoRut, 
+			String ctoDireccion, 
+			String ctoTelefono, 
+			String ctoCelular, 
+			BigDecimal cliTopeCredito, 
+			String categCliId, 
+			String venIdCli/*,
+			String encargadoCuenta*/) {
+		
+		this.codigo = codigo.toString();
+		this.nombre = nombre;
+		this.razonSocial = ctoRSocial;
+		this.rut = ctoRut;
+		this.direccion = ctoDireccion;
+		this.telefono = ctoTelefono;
+		this.celular = ctoCelular;
+		this.cliTopeCredito = cliTopeCredito;
+		this.categCliId = categCliId;
+		this.venIdCli = venIdCli;
+		/*this.encargadoCuenta = encargadoCuenta;*/
+		this.activo = true;
+		
+	}
+	
 	public String getCodigo() {
 		return codigo;
 	}
@@ -189,6 +222,32 @@ public class ClienteDTO implements Serializable {
 	public void setRut(String rut) {
 		this.rut = rut;
 	}
+	
+	public BigDecimal getCliTopeCredito() {
+		return cliTopeCredito;
+	}
+
+	public void setCliTopeCredito(BigDecimal cliTopeCredito) {
+		this.cliTopeCredito = cliTopeCredito;
+	}
+
+	public String getCategCliId() {
+		return categCliId;
+	}
+
+	public void setCategCliId(String categCliId) {
+		this.categCliId = categCliId;
+	}
+
+	public String getVenIdCli() {
+		return venIdCli;
+	}
+
+	public void setVenIdCli(String venIdCli) {
+		this.venIdCli = venIdCli;
+	}
+
+
 
 
 }

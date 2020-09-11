@@ -37,10 +37,12 @@ public class Cliente extends PersistentEntity<ClientePK> implements Serializable
 
 	public Cliente(String codigo, String nombre, String rut, String telefono, String direccion, String razonSocial, BigDecimal topeCredito, String ctoCliente, String ctoProveedor, String categCliId, String venId, String ctoNombre, String encCuenta) {
 		setCodigo(codigo);
-		setNombre(nombre);
-		setCliTopeCredito(topeCredito);
-		setCategCliId(categCliId);
-		setVenIdCli(venId);
+		
+		this.nombre = nombre;
+		this.cliTopeCredito =  topeCredito;
+		this.categCliId = categCliId;
+		this.venIdCli =  venId;
+		
 		setEncargadoCuenta(encCuenta);
 		
 		contacto = new Contacto();
