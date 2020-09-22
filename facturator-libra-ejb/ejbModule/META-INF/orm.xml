@@ -1163,7 +1163,7 @@
 			result-class="uy.com.tmwc.facturator.libra.entity.DummyDocumento">
 			<query>
 				select
-					d.empId,
+					d.empId, 
 					d.docId
 				from 
 					Documentos d
@@ -1172,6 +1172,8 @@
 					and d.docTipo in (1,2,3,4)
 					and d.docSerie = :serie
 					and d.docNumero = :numero
+					and d.cmpIdDoc = :cmpid
+					
 				LOCK IN SHARE MODE
 			</query>
 

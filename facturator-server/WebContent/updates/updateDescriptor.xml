@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.7.711</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.711.air
+	<versionNumber>1.7.712</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.712.air
 	</url>
 	<description>
 	    <![CDATA[
+	    # Versión 1.7.713 (22/09/2020)
+	    	1.- No mostrar por duplicado facturas pendintes al obtener los datos del cliente.
+	    	2.- Error el guardar documento de gasto crédito.
+	    	3.- Al guardar factura de venta verificar el tipo no solo por serie y numero sino tambien por id del comprobante. 
+
 	    # Versión 1.7.711 (12/09/2020)
 	    	1.- Mostrar documento desde antecedentes de compra.
 			2.- Actualización de costos.	

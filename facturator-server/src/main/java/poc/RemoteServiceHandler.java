@@ -544,9 +544,168 @@ public class RemoteServiceHandler {
 		return doc;
 	}
 
-	public String alta(Documento documento) throws ValidationException, PermisosException {
+	public String alta(Documento documento) throws RuntimeException /*ValidationException, PermisosException*/ {
 		return alta(documento, null);
 	}
+	
+	public String alta(Documento documento, Auditoria auditoria) throws RuntimeException /*ValidationException, PermisosException*/{
+		
+		documento = ajustarDocumento(documento);
+
+		if (auditoria == null) {
+			String moneda = documento.getMoneda() != null ? documento.getMoneda().getSimbolo() : "";
+			String total = documento.getTotal() != null ? formatter.format(documento.getTotal().doubleValue()) : "0";
+
+			auditoria = new Auditoria();
+			auditoria.setAudFechaHora(new Date());
+			auditoria.setDocId(documento.getDocId());
+			auditoria.setProblemas("Ninguno");
+			auditoria.setNotas(String.format("Comprobante creado por un total de %s %s", moneda, total));
+		}
+
+		if (documento.getComprobante().isGasto()) {
+			if (documento.getDocTCF() == null || documento.getDocTCF().compareTo(BigDecimal.ZERO) <= 0) {
+				String tcFiscal = getTipoCambioFiscal(documento.getMoneda().getCodigo(), documento.getFecha());
+				if (tcFiscal.length() > 0) {
+					documento.setDocTCF(new BigDecimal(tcFiscal));
+				}
+			}
+		} else if (documento.getComprobante().isRecibo()) {
+			documento.setDocTCF(documento.getDocTCC());
+		} else {
+			String tcFiscal = getTipoCambioFiscal(Moneda.CODIGO_MONEDA_DOLAR, documento.getFecha());
+			if (tcFiscal.length() > 0) {
+				documento.setDocTCF(new BigDecimal(tcFiscal));
+			}
+		}
+
+		if (documento.getComprobante().isNotaCreditoFinanciera()) {
+			documento.setSaldo(documento.getTotal());
+		}
+
+		
+		String docId = null;
+		try {
+			docId = getService().alta(documento, auditoria);
+			
+			// Agregar vinculos de nota de credito financiera.
+			if (documento.getComprobante().isNotaCreditoFinanciera()) {
+				Documento doc = getService().findDocumento(docId);
+
+				Set<VinculoDocumentos> vinculos = new HashSet<VinculoDocumentos>();
+
+				// Agregar vínculos
+				List<LineaDocumento> lineas = doc.getLineas().getLineas();
+				for (LineaDocumento lineaDocumento : lineas) {
+					String notas = lineaDocumento.getNotas() != null ? lineaDocumento.getNotas() : null;
+					if (notas == null || notas.length() == 0) {
+						continue;
+					}
+					String[] rows = notas.split("[\\r\\n]+");
+					if (rows.length < 2 || rows[1] == null) {
+						continue;
+					}
+					String datosFactura = rows[1];
+
+					String[] tokens = datosFactura.split("\\|");
+					int docIdVin1 = new Integer(tokens[0]).intValue();
+					int docIdVin2 = new Integer(docId).intValue();
+					BigDecimal monto = lineaDocumento.getPrecio().multiply(new BigDecimal(1.22))
+							.setScale(4, RoundingMode.HALF_EVEN);
+
+					VinculoDocumentos vinculo = new VinculoDocumentos();
+					vinculo.setDocIdVin1(docIdVin1);
+					vinculo.setDocIdVin2(docIdVin2);
+					vinculo.setMonto(monto);
+					vinculo.setDescuentoPorc(BigDecimal.ZERO);
+
+					vinculos.add(vinculo);
+				}
+
+				// Vincular facturas en nota de crédito financiera.
+				doc.setFacturasVinculadas(vinculos);
+
+				HashMap<String, Documento> documentos = new HashMap<String, Documento>();
+				HashMap<String, Auditoria> audits = new HashMap<String, Auditoria>();
+
+				BigDecimal montoTotal = BigDecimal.ZERO;
+
+				// Ajustar saldos una vez guardado los vínculos
+				for (LineaDocumento lineaDocumento : lineas) {
+					String notas = lineaDocumento.getNotas() != null ? lineaDocumento.getNotas() : null;
+					if (notas == null || notas.length() == 0) {
+						continue;
+					}
+					String[] rows = notas.split("[\\r\\n]+");
+					if (rows.length < 2 || rows[1] == null) {
+						continue;
+					}
+					BigDecimal monto = lineaDocumento.getPrecio().multiply(new BigDecimal(1.22));
+					montoTotal = montoTotal.add(monto);
+
+					String datosFactura = rows[1];
+
+					String[] tokens = datosFactura.split("\\|");
+					int docIdVin1 = new Integer(tokens[0]).intValue();
+					String serie = tokens[1];
+					String numero = tokens[2];
+
+					Documento docVin = getService().findDocumento(String.valueOf(docIdVin1));
+					String moneda = docVin.getMoneda().getCodigo();
+					BigDecimal viejoSaldo = docVin.getSaldo();
+					BigDecimal nuevoSaldo = viejoSaldo.subtract(monto).setScale(2, RoundingMode.HALF_EVEN);
+					nuevoSaldo = ajustarSaldo(moneda, nuevoSaldo);
+
+					if (nuevoSaldo.doubleValue() < 0) {
+						throw new RuntimeException("Error: " + docVin.getSerie() + docVin.getNumero() + " saldo inválido ("
+								+ docVin.getSaldo().setScale(2, RoundingMode.HALF_EVEN) + "<"
+								+ monto.setScale(2, RoundingMode.HALF_EVEN) + ").");
+					}
+
+					Auditoria audit = new Auditoria();
+					audit.setAudFechaHora(new Date());
+					audit.setDocId(docVin.getDocId());
+					audit.setNotas("Vinculado por N/C36 PC X DTOS FINANCIEROS [" + serie + numero + "] por un monto de "
+							+ docVin.getMoneda().getSimbolo()
+							+ formatter.format(monto.setScale(4, RoundingMode.HALF_EVEN).doubleValue()));
+					audit.setProblemas("Monto cancelado:\t" + docVin.getMoneda().getSimbolo()
+							+ formatter.format(monto.setScale(4, RoundingMode.HALF_EVEN).doubleValue()) + "\n"
+							+ "Saldo anterior:\t" + docVin.getMoneda().getSimbolo()
+							+ formatter.format(viejoSaldo.doubleValue()) + "\n" + "Saldo actual:\t"
+							+ docVin.getMoneda().getSimbolo() + formatter.format(nuevoSaldo.doubleValue()) + "\n");
+
+					audits.put(docVin.getDocId(), audit);
+					docVin.setSaldo(nuevoSaldo);
+
+					documentos.put(docVin.getDocId(), docVin);
+				}
+
+				// Ajustar saldos una vez guardado los vinculos
+				for (String docVId : documentos.keySet()) {
+					getService().guardar(documentos.get(docVId), audits.get(docVId));
+				}
+
+				// Ajustar el saldo
+				doc.setSaldo(doc.getSaldo().subtract(montoTotal));
+
+				// Guardar el documento con las facturas vinculadas.
+				getService().guardar(doc);
+			}
+
+		} catch (Exception e) {
+			String message = null;
+			if (e.getCause() != null) {
+				message = e.getCause().getMessage();
+			} else {
+				message = e.getMessage();
+			}
+			throw new RuntimeException(message, e.getCause());
+		}
+
+		
+		return docId;
+	}
+
 
 	public boolean actualizarRecibosWithNCF() {
 		DocumentoQuery query = new DocumentoQuery();
@@ -662,148 +821,6 @@ public class RemoteServiceHandler {
 		}
 	}
 
-	public String alta(Documento documento, Auditoria auditoria) throws ValidationException, PermisosException {
-		documento = ajustarDocumento(documento);
-
-		if (auditoria == null) {
-			String moneda = documento.getMoneda() != null ? documento.getMoneda().getSimbolo() : "";
-			String total = documento.getTotal() != null ? formatter.format(documento.getTotal().doubleValue()) : "0";
-
-			auditoria = new Auditoria();
-			auditoria.setAudFechaHora(new Date());
-			auditoria.setDocId(documento.getDocId());
-			auditoria.setProblemas("Ninguno");
-			auditoria.setNotas(String.format("Comprobante creado por un total de %s %s", moneda, total));
-		}
-
-		if (documento.getComprobante().isGasto()) {
-			if (documento.getDocTCF() == null || documento.getDocTCF().compareTo(BigDecimal.ZERO) <= 0) {
-				String tcFiscal = getTipoCambioFiscal(documento.getMoneda().getCodigo(), documento.getFecha());
-				if (tcFiscal.length() > 0) {
-					documento.setDocTCF(new BigDecimal(tcFiscal));
-				}
-			}
-		} else if (documento.getComprobante().isRecibo()) {
-			documento.setDocTCF(documento.getDocTCC());
-		} else {
-			String tcFiscal = getTipoCambioFiscal(Moneda.CODIGO_MONEDA_DOLAR, documento.getFecha());
-			if (tcFiscal.length() > 0) {
-				documento.setDocTCF(new BigDecimal(tcFiscal));
-			}
-		}
-
-		if (documento.getComprobante().isNotaCreditoFinanciera()) {
-			documento.setSaldo(documento.getTotal());
-		}
-
-		String docId = getService().alta(documento, auditoria);
-
-		// Agregar vinculos de nota de credito financiera.
-		if (documento.getComprobante().isNotaCreditoFinanciera()) {
-			Documento doc = getService().findDocumento(docId);
-
-			Set<VinculoDocumentos> vinculos = new HashSet<VinculoDocumentos>();
-
-			// Agregar vínculos
-			List<LineaDocumento> lineas = doc.getLineas().getLineas();
-			for (LineaDocumento lineaDocumento : lineas) {
-				String notas = lineaDocumento.getNotas() != null ? lineaDocumento.getNotas() : null;
-				if (notas == null || notas.length() == 0) {
-					continue;
-				}
-				String[] rows = notas.split("[\\r\\n]+");
-				if (rows.length < 2 || rows[1] == null) {
-					continue;
-				}
-				String datosFactura = rows[1];
-
-				String[] tokens = datosFactura.split("\\|");
-				int docIdVin1 = new Integer(tokens[0]).intValue();
-				int docIdVin2 = new Integer(docId).intValue();
-				BigDecimal monto = lineaDocumento.getPrecio().multiply(new BigDecimal(1.22))
-						.setScale(4, RoundingMode.HALF_EVEN);
-
-				VinculoDocumentos vinculo = new VinculoDocumentos();
-				vinculo.setDocIdVin1(docIdVin1);
-				vinculo.setDocIdVin2(docIdVin2);
-				vinculo.setMonto(monto);
-				vinculo.setDescuentoPorc(BigDecimal.ZERO);
-
-				vinculos.add(vinculo);
-			}
-
-			// Vincular facturas en nota de crédito financiera.
-			doc.setFacturasVinculadas(vinculos);
-
-			HashMap<String, Documento> documentos = new HashMap<String, Documento>();
-			HashMap<String, Auditoria> audits = new HashMap<String, Auditoria>();
-
-			BigDecimal montoTotal = BigDecimal.ZERO;
-
-			// Ajustar saldos una vez guardado los vínculos
-			for (LineaDocumento lineaDocumento : lineas) {
-				String notas = lineaDocumento.getNotas() != null ? lineaDocumento.getNotas() : null;
-				if (notas == null || notas.length() == 0) {
-					continue;
-				}
-				String[] rows = notas.split("[\\r\\n]+");
-				if (rows.length < 2 || rows[1] == null) {
-					continue;
-				}
-				BigDecimal monto = lineaDocumento.getPrecio().multiply(new BigDecimal(1.22));
-				montoTotal = montoTotal.add(monto);
-
-				String datosFactura = rows[1];
-
-				String[] tokens = datosFactura.split("\\|");
-				int docIdVin1 = new Integer(tokens[0]).intValue();
-				String serie = tokens[1];
-				String numero = tokens[2];
-
-				Documento docVin = getService().findDocumento(String.valueOf(docIdVin1));
-				String moneda = docVin.getMoneda().getCodigo();
-				BigDecimal viejoSaldo = docVin.getSaldo();
-				BigDecimal nuevoSaldo = viejoSaldo.subtract(monto).setScale(2, RoundingMode.HALF_EVEN);
-				nuevoSaldo = ajustarSaldo(moneda, nuevoSaldo);
-
-				if (nuevoSaldo.doubleValue() < 0) {
-					throw new RuntimeException("Error: " + docVin.getSerie() + docVin.getNumero() + " saldo inválido ("
-							+ docVin.getSaldo().setScale(2, RoundingMode.HALF_EVEN) + "<"
-							+ monto.setScale(2, RoundingMode.HALF_EVEN) + ").");
-				}
-
-				Auditoria audit = new Auditoria();
-				audit.setAudFechaHora(new Date());
-				audit.setDocId(docVin.getDocId());
-				audit.setNotas("Vinculado por N/C36 PC X DTOS FINANCIEROS [" + serie + numero + "] por un monto de "
-						+ docVin.getMoneda().getSimbolo()
-						+ formatter.format(monto.setScale(4, RoundingMode.HALF_EVEN).doubleValue()));
-				audit.setProblemas("Monto cancelado:\t" + docVin.getMoneda().getSimbolo()
-						+ formatter.format(monto.setScale(4, RoundingMode.HALF_EVEN).doubleValue()) + "\n"
-						+ "Saldo anterior:\t" + docVin.getMoneda().getSimbolo()
-						+ formatter.format(viejoSaldo.doubleValue()) + "\n" + "Saldo actual:\t"
-						+ docVin.getMoneda().getSimbolo() + formatter.format(nuevoSaldo.doubleValue()) + "\n");
-
-				audits.put(docVin.getDocId(), audit);
-				docVin.setSaldo(nuevoSaldo);
-
-				documentos.put(docVin.getDocId(), docVin);
-			}
-
-			// Ajustar saldos una vez guardado los vinculos
-			for (String docVId : documentos.keySet()) {
-				getService().guardar(documentos.get(docVId), audits.get(docVId));
-			}
-
-			// Ajustar el saldo
-			doc.setSaldo(doc.getSaldo().subtract(montoTotal));
-
-			// Guardar el documento con las facturas vinculadas.
-			getService().guardar(doc);
-		}
-
-		return docId;
-	}
 
 	private BigDecimal ajustarSaldo(String moneda, BigDecimal saldo) {
 		double ss = Math.abs(saldo.doubleValue());

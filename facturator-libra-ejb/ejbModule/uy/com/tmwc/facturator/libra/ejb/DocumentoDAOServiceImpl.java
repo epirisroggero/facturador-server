@@ -622,21 +622,31 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 	private void verifyUniqueSerieNumero(uy.com.tmwc.facturator.libra.entity.Documento doc) {
 		String serie = doc.getSerie();
 		BigInteger numero = doc.getNumero();
+		long cmpId = doc.getComprobante().getId().getCmpid();
 
 		if ((numero != null) && (!StringUtils.isEmpty(serie))) {
 			String queryName = "Documento.unique";
 			if (doc.getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_CLIENTE
 					|| doc.getTipo() == Comprobante.MOVIMIENTO_DE_STOCK_DE_CLIENTE) {
-				queryName = "Documento.unique.movimientoStock";
+				queryName = "Documento.unique.movimientoStock"; 
 			} else if (doc.getTipo() == Comprobante.RECIBO_COBRO) {
 				queryName = "Documento.unique.recibo";
 			}
-			List result = this.em.createNamedQuery(queryName).setParameter("empId", getEmpId())
+			
+			
+			List result = null;
+			if (queryName.equals("Documento.unique")) {
+				result = this.em.createNamedQuery(queryName).setParameter("empId", getEmpId())
+					.setParameter("serie", serie).setParameter("numero", numero).setParameter("cmpid", cmpId).getResultList();
+			} else {
+				result = this.em.createNamedQuery(queryName).setParameter("empId", getEmpId()) 
 					.setParameter("serie", serie).setParameter("numero", numero).getResultList();
+			}
+			
 			if ((result.size() > 0)
 					&& ((doc.getId() == null) || (doc.getId().getDocId() != ((DummyDocumento) result.get(0)).getId()
 							.getDocId())))
-				throw new IllegalArgumentException("Serie y número en uso");
+				throw new IllegalArgumentException(String.format("Serie y número en uso (%s%s).", serie, numero));
 		}
 	}
 
