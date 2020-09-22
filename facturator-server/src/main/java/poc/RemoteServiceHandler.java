@@ -603,6 +603,9 @@ public class RemoteServiceHandler {
 				documento.setSerie(sn.getSerie());
 				documento.setNumero(sn.getNumero());
 			}
+			
+			documento.getCuotasDocumento().clear();
+			documento.setPlanPagos(null);
 
 			String moneda = documento.getMoneda() != null ? documento.getMoneda().getSimbolo() : "";
 			String total = documento.getTotal() != null ? formatter.format(documento.getTotal().doubleValue()) : "0";
@@ -2123,13 +2126,7 @@ public class RemoteServiceHandler {
 	 */
 	public BigDecimal convertPrecio(BigDecimal precio, String monedaOrigen, String monedaDestino) {
 		Calendar calendar = Calendar.getInstance();
-		// calendar.add(Calendar.DAY_OF_MONTH, -15);
-		List<CotizacionesMonedas> tiposCambio = getMonedasCotizacionesService().getCotizacionesMonedas(
-				calendar.getTime());
-		if (tiposCambio.size() < 1) {
-			return precio;
-		}
-		CotizacionesMonedas tipoCambio = tiposCambio.get(0);
+		CotizacionesMonedas tipoCambio = getMonedasCotizacionesService().getUltimaCotizacion(calendar.getTime());
 
 		BigDecimal dolarCompra = tipoCambio.getDolarCompra().setScale(4, RoundingMode.HALF_UP);
 		BigDecimal dolarVenta = tipoCambio.getDolarVenta().setScale(4, RoundingMode.HALF_UP);

@@ -216,6 +216,18 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			+ "AND (d.monedaId = :moneda OR :moneda IS NULL) " 
 			+ "AND (d.estado is null OR d.estado != 'A') ";
 
+	private static final String ULTIMOS_RECIBOS_PAGO_SUBQUERY = "FROM Documento d "
+			+ "WHERE d.comprobante.tipo = 25 "
+			+ "AND (d.id.empId = :empId) "
+			+ "AND (d.fecha >= :fechaDesde OR :fechaDesde IS NULL) "
+			+ "AND (d.fecha <= :fechaHasta OR :fechaHasta IS NULL) "
+			+ "AND (d.numero = :numero OR :numero IS NULL) "
+			+ "AND (d.serie = :serie OR :serie IS NULL) "
+			+ "AND (d.proveedorId = :proveedor OR :proveedor IS NULL) "
+			+ "AND (d.emitido = :emitido OR :emitido IS NULL OR (d.emitido is null AND 'N' = :emitido) OR ('N' = :emitido AND d.emitido = '')) "
+			+ "AND (d.monedaId = :moneda OR :moneda IS NULL) " 
+			+ "AND (d.estado is null OR d.estado != 'A') ";
+	
 	private static final String ULTIMOS_CHEQHES_SUBQUERY = "FROM Documento d "
 			+ "WHERE d.comprobante.tipo = 43 " 
 			+ "AND (d.id.empId = :empId) "
@@ -868,7 +880,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		// Filtros de usuario, no aplica en los recibos
 		String filtroUsuario = "";
-		if (!query.getEsRecibo()) {
+		if (!query.getEsRecibo() && !query.getEsReciboPago()) {
 			filtroUsuario = getFiltroUsuario();
 		}
 
@@ -892,7 +904,11 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			sb.append("d.subTotal, d.iva, d.total, d.saldo, d.emitido, d.pendiente, d.comprobante.tipo) ");
 
 		} else {
-			if (query.getEsSolicitud() == null || !query.getEsSolicitud()) {
+			if (query.getEsReciboPago()) {
+				sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, d.serie, d.numero, d.fecha, d.CAEnom, d.proveedorId, d.proveedor.nombre, "
+					    + "d.proveedor.contacto.ctoRSocial, d.monedaId, d.moneda.nombre, d.comprobanteId, d.comprobante.cmpNom, ");
+				
+			} else if (query.getEsSolicitud() == null || !query.getEsSolicitud()) {
 				if (query.getArticulo() == null || query.getArticulo() == "") {
 					sb.append("SELECT new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, d.serie, d.numero, d.fecha, d.CAEnom, d.clienteId, d.cliente.nombre, "
 							+ "d.cliente.contacto.ctoRSocial, d.monedaId, d.moneda.nombre, d.comprobanteId, d.comprobante.cmpNom, ");
@@ -901,8 +917,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 							+ "d.cliente.contacto.ctoRSocial, d.monedaId, d.moneda.nombre, d.comprobanteId, d.comprobante.cmpNom, ");
 				}
 			} else {
-				sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, d.serie, d.numero, d.fecha, d.CAEnom, d.proveedorId, " + 
-						"d.proveedor.nombre, d.proveedor.contacto.ctoRSocial, d.monedaId, d.moneda.nombre, d.comprobanteId, d.comprobante.cmpNom, ");
+				sb.append("SELECT distinct new uy.com.tmwc.facturator.dto.DocumentoDTO(d.id.docId, d.serie, d.numero, d.fecha, d.CAEnom, d.proveedorId, d.proveedor.nombre, "
+						    + "d.proveedor.contacto.ctoRSocial, d.monedaId, d.moneda.nombre, d.comprobanteId, d.comprobante.cmpNom, ");
 			}
 
 			if (esSupervisor) {
@@ -916,6 +932,8 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 					: ULTIMAS_SOLICITUDES_SUBQUERY_CONCEPTO);
 		} else if (query.getEsRecibo()) {
 			sb.append(ULTIMOS_RECIBOS_SUBQUERY);
+		} else if (query.getEsReciboPago()) {
+			sb.append(ULTIMOS_RECIBOS_PAGO_SUBQUERY);
 		} else if (query.getEsGasto()) {
 			sb.append(query.getLineaConcepto() == null ? ULTIMOS_GASTOS_SUBQUERY : ULTIMOS_GASTOS_SUBQUERY_CONCEPTO);
 		} else if (query.getEsCheque()) {
@@ -983,6 +1001,14 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 					.setParameter("numero", numero).setParameter("serie", query.getSerie())
 					.setParameter("tipoComprobante", query.getTipoComprobante())
 					.setParameter("tieneSaldo", query.getTieneSaldo() ? "S" : null);
+
+		} else if (query.getEsReciboPago()) {
+			q.setParameter("empId", getEmpId())
+					.setParameter("proveedor", query.getProveedor())
+					.setParameter("moneda", query.getMoneda() != null ? new Short(query.getMoneda()) : null)
+					.setParameter("fechaDesde", query.getFechaDesde())
+					.setParameter("fechaHasta", query.getFechaHasta()).setParameter("emitido", query.getEstado())
+					.setParameter("numero", numero).setParameter("serie", query.getSerie());
 
 		} else if (query.getEsCheque()) {
 			q.setParameter("empId", getEmpId()).setParameter("cliente", query.getCliente())
@@ -1058,6 +1084,10 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 			sb.append("SELECT COUNT(d.id.docId) ");
 			sb.append(ULTIMOS_RECIBOS_SUBQUERY);
 
+		} else if (query.getEsReciboPago()) {
+			sb.append("SELECT COUNT(d.id.docId) ");
+			sb.append(ULTIMOS_RECIBOS_PAGO_SUBQUERY);
+
 		} else if (query.getEsGasto()) {
 			sb.append("SELECT COUNT(d.id.docId) ");
 			if (query.getLineaConcepto() != null) {
@@ -1092,7 +1122,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		if (comprobantes != null && comprobantes.length() > 0) {
 			sb.append(" AND d.comprobante.id.cmpid IN (").append(comprobantes).append(") ");
 		}
-		if (!query.getEsSolicitud() && !query.getEsRecibo() && !query.getEsGasto()) {
+		if (!query.getEsSolicitud() && !query.getEsRecibo() && !query.getEsReciboPago() && !query.getEsGasto()) {
 			sb.append(getFiltroUsuario());
 		}
 		
@@ -1726,11 +1756,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 		}
 
 		Calendar calendar = Calendar.getInstance();
-		List<CotizacionesMonedas> tiposCambio = tipoCambioService.getCotizacionesMonedas(calendar.getTime());
-		if (tiposCambio.size() < 1) {
-			return precio;
-		}
-		CotizacionesMonedas tipoCambio = tiposCambio.get(0);
+		CotizacionesMonedas tipoCambio = tipoCambioService.getUltimaCotizacion(calendar.getTime());
 
 		BigDecimal dolarCompra = tipoCambio.getDolarCompra().setScale(SCALE, RoundingMode.HALF_UP);
 		BigDecimal dolarVenta = tipoCambio.getDolarVenta().setScale(SCALE, RoundingMode.HALF_UP);
@@ -1836,8 +1862,7 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 				continue;
 			}
 
-			Documento documento = (uy.com.tmwc.facturator.entity.Documento) this.mapService.getDozerBeanMapper().map(
-					libraDoc, uy.com.tmwc.facturator.entity.Documento.class);
+			Documento documento = this.mapService.getDozerBeanMapper().map(libraDoc, Documento.class);
 
 			Boolean hayCambios = false;
 			for (uy.com.tmwc.facturator.entity.LineaDocumento l : documento.getLineas().getLineas()) {
@@ -1887,7 +1912,11 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 			for (uy.com.tmwc.facturator.libra.entity.Linea linea : doc.getLineas()) {
 				uy.com.tmwc.facturator.libra.entity.Articulo articulo = linea.getArticulo();
-
+				
+				if (articulo == null || "articulos varios".equalsIgnoreCase(articulo.getCodigo())) {
+					continue;
+				}
+				
 				BigDecimal descuentoLinea = linea.getDescuento().setScale(SCALE, RoundingMode.HALF_UP);
 				BigDecimal descuentos = descuentoProveedor.add(descuentoLinea).setScale(SCALE, RoundingMode.HALF_UP);
 
@@ -1902,11 +1931,12 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 				ArticuloCompraVentaCosto cvcArticulo = new ArticuloCompraVentaCosto();
 				cvcArticulo.setCodigo(articulo.getCodigo());
 				cvcArticulo.setNombre(articulo.getNombre());
-				cvcArticulo.setFichaMonedaId(
-						articulo.getMonedaCosto() != null ? articulo.getMonedaCosto().getCodigo() : "2");
+				cvcArticulo.setFichaMonedaId(articulo.getMonedaCosto() != null ? articulo.getMonedaCosto().getCodigo() : "2");
+				
 				cvcArticulo.setCosto(articulo.getMonedaCosto() != null ? articulo.getCosto() : BigDecimal.ZERO);
 				cvcArticulo.setDocCompraId(doc.getDocId());
 				cvcArticulo.setCompraMonedaId(doc.getMoneda().getCodigo());
+				
 				cvcArticulo.setCostoCompraDescuento(descuentos);
 				cvcArticulo.setCostoCompraSinDescuentos(linea.getPrecio().setScale(SCALE, RoundingMode.HALF_UP));
 				cvcArticulo.setCostoCompra(costoNeto);
@@ -1989,9 +2019,13 @@ public class DocumentoDAOServiceImpl extends ServiceBase implements DocumentoDAO
 
 		List<LineaDocumento> lineas = doc.getLineas().getLineas();
 		for (LineaDocumento linea : lineas) {
-			ArticuloPK ak = new ArticuloPK();
+			ArticuloPK ak = new ArticuloPK(); 
 			ak.setArtId(linea.getArticulo().getCodigo());
 			ak.setEmpId(getEmpId());
+			
+			if (linea.getArticulo() == null || "articulos varios".equalsIgnoreCase(linea.getArticulo().getCodigo())) {
+				continue;
+			}
 
 			uy.com.tmwc.facturator.libra.entity.Articulo articulo = (uy.com.tmwc.facturator.libra.entity.Articulo) this.em
 					.find(uy.com.tmwc.facturator.libra.entity.Articulo.class, ak);

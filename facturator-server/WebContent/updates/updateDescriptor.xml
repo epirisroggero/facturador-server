@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <update xmlns="http://ns.adobe.com/air/framework/update/description/2.5">
-	<versionNumber>1.7.705</versionNumber>
-	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.705.air
+	<versionNumber>1.7.711</versionNumber>
+	<url>http://apps.fulltime.uy:8180/facturator/updates/Facturador-v1.7.711.air
 	</url>
 	<description>
 	    <![CDATA[
-	    # Versión 1.7.710 (31/08/2020)
-			1.- Recibos - Guardar cheques y valores.	    
+	    # Versión 1.7.711 (12/09/2020)
+	    	1.- Mostrar documento desde antecedentes de compra.
+			2.- Actualización de costos.	
+			3.- Permitir guardar documento de venta desde la ventana usuario supervisor.    
 	    
 	    # Versión 1.7.704 (31/08/2020)
 	     	1.- Recibos - Generar nota de crédito financiera al emitir.

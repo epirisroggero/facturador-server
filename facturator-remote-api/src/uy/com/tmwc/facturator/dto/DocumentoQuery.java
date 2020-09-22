@@ -33,6 +33,8 @@ public class DocumentoQuery implements Serializable {
 	private Boolean esSolicitud = Boolean.FALSE;
 
 	private Boolean esRecibo = Boolean.FALSE;
+	
+	private Boolean esReciboPago = Boolean.FALSE;
 
 	private Boolean esCheque = Boolean.FALSE;
 
@@ -234,6 +236,14 @@ public class DocumentoQuery implements Serializable {
 
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+
+	public Boolean getEsReciboPago() {
+		return esReciboPago;
+	}
+
+	public void setEsReciboPago(Boolean esReciboPago) {
+		this.esReciboPago = esReciboPago;
 	}
 
 }

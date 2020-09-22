@@ -360,7 +360,7 @@ public class Documento extends DocumentoBase implements Serializable {
 			throw new RuntimeException("El comprobante no acepta cuotificacion");
 		}
 
-		// Sacar el chequeo provisoriamente para el comprobantes cotizaci�n que esta mal definido como venta...
+		// Sacar el chequeo provisoriamente para el comprobantes cotización que esta mal definido como venta...
 		if (!this.comprobante.getCodigo().equals("1") && !this.comprobante.isRecibo()) {
 			boolean mueveCaja = this.comprobante.isMueveCaja();
 			boolean tieneFP = (this.pagos != null) && (this.pagos.size() > 0);
@@ -370,11 +370,13 @@ public class Documento extends DocumentoBase implements Serializable {
 	}
 
 	public void validate() throws ValidationException {
-		if (this.comprobante.isCredito()) {
-			if (planPagos == null) {
-				throw new ValidationException("La condición (plan de pagos) es obligatoria");
+		if (!comprobante.isGasto() && !comprobante.isRecibo()) {
+			if (this.comprobante.isCredito()) {
+				if (planPagos == null) {
+					throw new ValidationException("La condición (plan de pagos) es obligatoria");
+				}
+				this.cuotasDocumento.validate();
 			}
-			this.cuotasDocumento.validate();
 		}
 		for (LineaDocumento linea : this.lineas.getLineas())
 			if (linea.getArticulo() == null)
