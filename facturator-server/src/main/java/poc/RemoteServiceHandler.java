@@ -343,15 +343,19 @@ public class RemoteServiceHandler {
 
 	}
 
-	public Documento getDocumento(String id) throws PermisosException {
+	public Documento getDocumento(String id) throws PermisosException, RuntimeException  {
 		DocumentoService service = getService();
-
+		
 		try {
 			if (id == null) {
 				return null;
 			}
 			// long startTime = new Date().getTime();
 			Documento documento = service.findDocumento(id);
+			
+			if (documento == null) {
+				throw new RuntimeException("Error: Ducumento con id :: " + id + " no fué encontrado");
+			}
 
 			Comprobante comprobante = documento.getComprobante();
 			comprobante.setAster(esComprobanteAster(comprobante.getCodigo()));
@@ -785,11 +789,10 @@ public class RemoteServiceHandler {
 
 	}
 
-	public Documento altaDocValores(Documento documento, String reciboId) throws ValidationException, PermisosException {
+	public Documento altaDocValores(Documento documento, Documento recibo) throws ValidationException, PermisosException {
 		try {
-			// obtener recibo
-			Documento recibo = getService().findDocumento(reciboId);
-
+			documento.setDocVinculado("S");
+			
 			// Dar de alta la forma de pago
 			Documento formaPago = getService().altaDocFP(documento);
 
@@ -798,29 +801,36 @@ public class RemoteServiceHandler {
 
 			// Crear nueva forma de pago en caso el alta sea dada de forma correcta.
 			VinculosFP vinculofp = new VinculosFP();
-			vinculofp.setDocIdFP1(Integer.valueOf(reciboId));
+			vinculofp.setDocIdFP1(Integer.valueOf(recibo.getDocId()));
 			vinculofp.setDocIdFP2(Integer.valueOf(formaPago.getDocId()));
 			vinculofp.setVinFPTipo(Short.valueOf(String.valueOf(formaPago.getComprobante().getTipo())));
 			vinculofp.setVinIE("I");
 
 			vinculosFP.add(vinculofp);
+			
+			// Verificar recibo
+			recibo = preSaveRecibo(recibo);
 
 			// Guardar recibo
-			getService().modificar(recibo, null);
+			recibo = modificar(recibo);
+			
+			return recibo;
 
 			// Marcar la forma de pago
-			formaPago.setDocVinculado("S");
+			//formaPago.setDocVinculado("S");
 
 			// Guardar forma pago
-			getService().modificarFP(formaPago);
+			//getService().modificarFP(formaPago);
 
-			return getService().findDocumento(reciboId);
+			//return getService().findDocumento(recibo.getDocId());
 
 		} catch (Exception e) {
+			e.printStackTrace();
+			
 			throw new RuntimeException(e.getMessage(), e);
 		}
 	}
-
+	
 
 	private BigDecimal ajustarSaldo(String moneda, BigDecimal saldo) {
 		double ss = Math.abs(saldo.doubleValue());
@@ -1055,6 +1065,8 @@ public class RemoteServiceHandler {
 			} else {
 				documento.setDocTCF(documento.getDocTCC());
 			}
+			
+			documento = preSaveRecibo(documento);
 		}
 
 		getService().modificar(documento, auditoria);
@@ -1388,6 +1400,34 @@ public class RemoteServiceHandler {
 
 		return null;
 	}
+	
+	public void finalizarDocumentos(ArrayList<String> list) throws RuntimeException {
+		try {
+			for (String docId : list) {
+				Documento documento = getService().findDocumento(docId);
+				if (documento.getComprobante().isMovimientoStock()) {
+					getService().finalizarMovimientoStock(documento);	
+				} else if (documento.getComprobante().isCompra()) {
+					getService().finalizarCompra(documento);	
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("No se pudo finalizar todos los movimientos de stock.", e);
+		}
+	}
+	
+	public void finalizarRecibosList(ArrayList<String> list) throws RuntimeException {
+		try {
+			for (String docId : list) {
+				Documento documento = getService().findDocumento(docId);
+				if (documento.getComprobante().isRecibo()) {
+					getService().finalizarRecibo(documento);	
+				}			
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("No se pudo finalizar todos los recibos.", e);
+		}
+	}
 
 	public Documento finalizarMovimientoStock(Documento documento) throws PermisosException {
 		if (getService().finalizarMovimientoStock(documento)) {
@@ -1578,7 +1618,7 @@ public class RemoteServiceHandler {
 			if (cliente != null && cliente.getVendedor() != null) {
 				notaCredFin.setVendedor(cliente.getVendedor());
 			} else {
-				Vendedor vendedor = findCatalogEntity("Vendedor", "99");
+				Vendedor vendedor = findCatalogEntity("Vendedor", "099");
 				notaCredFin.setVendedor(vendedor);
 			}
 
@@ -2613,9 +2653,16 @@ public class RemoteServiceHandler {
 			Documento documento, Cliente cliente, byte[] attachmentDataPdf) {
 		return this.sendEmail(addresses, subject, body, attachmentData, documento, cliente, attachmentDataPdf, null);
 	}
+	
+	public List<DocumentoDeudor> getFacturasPendientes(String clientId) {
+		List<DocumentoDeudor> pendientes = getLiquidacionService().getFacturasPendientesCliente(new Date(), clientId);
+		
+		return pendientes != null ? pendientes : new ArrayList<DocumentoDeudor>();
+		
+	}
 
 	public String sendEmail(String[] addresses, String subject, String body, byte[] attachmentData,
-			Documento documento, Cliente cliente, byte[] attachmentDataPdf, byte[] attachmentData2) {
+			Documento documento, Cliente cliente, byte[] attachmentDataPdf, byte[] attachmentDataNCF) {
 		NumberFormat numberFormat = NumberFormat.getInstance(new Locale("es", "ES"));
 		numberFormat.setMinimumFractionDigits(2);
 		numberFormat.setMaximumFractionDigits(2);
@@ -2636,7 +2683,7 @@ public class RemoteServiceHandler {
 		eMailSender.setAttachmentDataPdf(attachmentDataPdf);
 		eMailSender.setUsuario(usuario);
 		eMailSender.setSerieNro(documento != null ? documento.getSerie() + documento.getNumero() : "");
-		eMailSender.setNotaCreditoFinanciera(attachmentData2);
+		eMailSender.setNotaCreditoFinanciera(attachmentDataNCF);
 		eMailSender.setImagesPath(imagesPath);
 
 		String htmlText;
@@ -2654,12 +2701,17 @@ public class RemoteServiceHandler {
 		} else if (documento != null && documento.getComprobante().isRecibo()) {
 			eMailSender.setEsCobranza(true);
 			eMailSender.setTipoDocumento("Recibo");
-
+			
+			List<DocumentoDeudor> pendientes = getLiquidacionService().getFacturasPendientesCliente(new Date(), documento.getCliente().getCodigo());
+			
 			root.put("cliente", documento.getCliente().getNombre().toUpperCase());
 			root.put("serieNro", documento.getSerie() + documento.getNumero());
 			root.put("total", numberFormat.format(documento.getTotal()) + " " + documento.getMoneda().getNombre());
 			root.put("usuario", usuario);
-			root.put("tieneNCF", attachmentData2 != null);
+			root.put("tieneNCF", attachmentDataNCF != null);
+			root.put("facturasPendientes", pendientes != null && pendientes.size() > 0);
+			root.put("pendientes", pendientes);
+			
 			htmlText = FreemarkerConfig.loadTemplate("templates/", "email-template-recibo.ftl", root);
 
 		} else if (documento != null) {
@@ -2807,7 +2859,7 @@ public class RemoteServiceHandler {
 
 	}
 
-	public Documento clonarDocumento(Documento doc) {
+	public Documento clonarGasto(Documento doc) {
 		Documento documento = Documento.getNuevoDocumento(doc.getComprobante());
 		documento = doc.copyData(documento);
 
@@ -2917,7 +2969,7 @@ public class RemoteServiceHandler {
 	public List<DocumentoDTO> getDocumentosPendientes(String clienteId) {
 		return getService().pendientesCliente(clienteId);
 	}
-
+	
 	public List<DocumentoDTO> getTrazabilidad(String docId) {
 		return getService().getTrazabilidad(docId);
 	}
@@ -2955,7 +3007,7 @@ public class RemoteServiceHandler {
 		List<DocumentoDeudor> deudores = getLiquidacionService().getDocumentosDeudoresCliente(new Date(), clienteId);
 		return deudores;
 	}
-
+	
 	private LiquidacionService getLiquidacionService() {
 		try {
 			LiquidacionService service;

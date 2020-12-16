@@ -80,8 +80,6 @@ public class DeudoresJob implements Job {
 		}
 	}
 
-
-
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		Date fecha = new Date();
 		
@@ -164,11 +162,11 @@ public class DeudoresJob implements Job {
 		root.put("pendientes", pendientes);		
 
 		Usuario usuario = new Usuario();
-		usuario.setCodigo("20");
+		usuario.setCodigo("27");
+		usuario.setNombre("Norma Martinez");
 		usuario.setUsuCelular("598 99 681 586");
-		usuario.setUsuCargo("COBRANZA");
-		usuario.setUsuEmail("vguevara@fulltimeuy.com");
-		
+		usuario.setUsuCargo("Cobranzas Fulltime");
+		usuario.setUsuEmail("pagos@fulltimeuy.com");
 		
 		root.put("usuario", usuario);		
 

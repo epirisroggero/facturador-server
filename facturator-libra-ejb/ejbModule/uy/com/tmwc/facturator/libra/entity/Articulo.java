@@ -155,7 +155,7 @@ public class Articulo extends PersistentEntity<ArticuloPK> implements
 	@ManyToOne
 	@JoinColumns({
 			@javax.persistence.JoinColumn(name = "CategArtId", referencedColumnName = "CATEGARTID", insertable = false, updatable = false),
-			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
+			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EMPID", insertable = false, updatable = false) })
 	private Categoriasarticulo categArt;
 	
 

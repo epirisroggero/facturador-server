@@ -27,9 +27,16 @@ public class DocumentoFormaPago implements Serializable {
 		this.documento = documento;
 		this.numero = 1;
 		this.formaPago = FormaPago.EFECTIVO;
-		this.importe = documento.getTotal();
-		this.moneda = documento.getMoneda();
-		this.total = this.importe;
+		if (documento.getComprobante().isRecibo()) {
+			this.importe = documento.getDocRecNeto();
+			this.moneda = documento.getDocRecMda();
+			this.total = documento.getTotal();
+		} else {
+			this.importe = documento.getTotal();
+			this.moneda = documento.getMoneda();
+			this.total = documento.getTotal();
+			
+		}
 	}
 
 	public Documento getDocumento() {
@@ -118,4 +125,5 @@ public class DocumentoFormaPago implements Serializable {
 	public void setDocId(int docId) {
 		this.docId = docId;
 	}
+	
 }

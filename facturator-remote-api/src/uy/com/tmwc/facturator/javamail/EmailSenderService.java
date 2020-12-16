@@ -59,7 +59,9 @@ public class EmailSenderService {
 	public void sendEmail() throws MessagingException {
 		String host = "smtp.gmail.com";
 		String from = "fulltimeuruguay@gmail.com";
+		//String from = "epirisroggero@gmail.com";
 		String pass = "F1RN0ND3";
+		//String pass = "Vale5210";
 
 		Properties properties = new Properties();
 

@@ -22,31 +22,32 @@
 	    		margin:0; 
 	    		padding:0; 
 	    		font-size: .9em;
-	    		padding:.2em .1em; 
+	    		padding:.5em .1em; 
 	    	} 
-
+	
 	    	table.featureInfo th { 
-    			padding:.2em .2em; 
-    			text-transform:uppercase; 
-    			font-weight:bold; 
-    			background:#e6e6e8; 
-    		} 
-
-    		table.featureInfo td{ 
-    			background:#fff; 
-    		}
-
-    		table.featureInfo tr.odd td{ 
-    			background:#eee; 
-    		} 
-
-    		table.featureInfo caption{ 
-    			text-align:left; 
-    			font-size:100%; 
-    			font-weight:bold; 
-    			text-transform:uppercase; 
-    			padding:.2em .2em; 
-    		} 
+				padding:.5em .2em; 
+				text-transform:uppercase; 
+				font-weight:bold; 
+				background:#e6e6e8; 
+			} 
+	
+			table.featureInfo td{ 
+				background:#fff; 
+				text-transform:uppercase;
+			}
+	
+			table.featureInfo tr.odd td{ 
+				background:#eee; 
+			} 
+	
+			table.featureInfo caption{ 
+				text-align:left; 
+				font-size:100%; 
+				font-weight:bold; 
+				text-transform:uppercase; 
+				padding:.2em .2em; 
+			} 
 	   	</style>
 	</head>
 	<body style="margin: 0; padding: 0;">
@@ -136,28 +137,30 @@ Por el contrario si desea coordinar el pago le agradecemos comunicarse con la pe
 	            			<td align="left" style="padding: 0px 10px 0px 20px;" bgcolor="#FFFFFF">
 			    				<table width="220px" style="border-left:solid 2px #cfcfcf; padding-left: 10px;" >
 			    					<tr>
-			    						<td style="font-size:1.4em;font-weight:bold; color:#3e85c6;">Victoria Guevara</td>
-			    					</tr>
-			    					<tr>
-			    						<td style="font-size:0.9em;font-weight:normal; color:#000000;">            							
-			    							<span>Fulltime Uruguay</span>
+			    						<td style="font-size:1.4em;font-weight:bold; color:#3e85c6;">
+			    							<span>${usuario.nombre!"Norma Martinez"}</span>
 			    						</td>
 			    					</tr>
 			    					<tr>
 			    						<td style="font-size:0.9em;font-weight:normal; color:#000000;">            							
-			    							<span>Teléfono: 22044772 int 111</span>
+			    							<span>${usuario.usuCargo!"Cobranzas Fulltime"}</span>
+			    						</td>
+			    					</tr>
+			    					<tr>
+			    						<td style="font-size:0.9em;font-weight:normal; color:#000000;">            							
+			    							<span>Teléfono: 22044772</span>
 			    						</td>
 			    					</tr>
 			    					<tr>
 			    						<td style="font-size:0.9em; font-weight:normal; color:#000000;">
-			    							<span>Celular:</span>
-			    							<a href="https://api.whatsapp.com/send?phone=59898159427" target="_blank">+598 98159427</a>
+			    							<span>WhatsApp:</span>
+			    							<a href="https://api.whatsapp.com/send?phone=59899681586" target="_blank">+598 99681586</a>
 			    						</td>
 			    					</tr>
 			    					<tr>
 			    						<td style="font-size:0.9em;font-weight:normal; color:#000000;">
 			    							<span>Correo:</span>
-			    							<a href="mailto:vguevara@fulltimeuy.com">vguevara@fulltimeuy.com</a>
+			    							<a href="mailto:vguevara@fulltimeuy.com">${usuario.usuEmail!"cobranzasfulltimeuru@gmail.com"}</a>
 			    						</td>
 			    					</tr>
 			    					<tr>

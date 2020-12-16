@@ -227,11 +227,11 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	private static final String REGISTRO_HORA_FORMAT = "HH:mm:ss";
 
 	/**
-	 * Este campo N15,2 guarda el Saldo Pendiente de cada factura cr�dito. El
+	 * Este campo N15,2 guarda el Saldo Pendiente de cada factura crédito. El
 	 * sistema trabaja de la siguiente forma: Cuando se ingresa una nueva
-	 * factura cr�dito (venta o compra) en DocTotal y en DocSaldo se graba el
+	 * factura crédito (venta o compra) en DocTotal y en DocSaldo se graba el
 	 * mismo importe, es decir, el importe total de la factura. A medida que se
-	 * van realizando pagos por medio de recibos o notas de cr�dito, el saldo de
+	 * van realizando pagos por medio de recibos o notas de crédito, el saldo de
 	 * la factura va disminuyendo, es decir, el importe grabado en DocSaldo va
 	 * disminuyendo hasta quedar en cero.
 	 */
@@ -375,8 +375,8 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	private Set<Docruc> docruc;
 
 	@OneToMany(cascade = { javax.persistence.CascadeType.ALL }, mappedBy = "docFP1")
-	/* @Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN }) */
-	private Set<Vinculosfp> vinculosfp;
+	@Cascade({ org.hibernate.annotations.CascadeType.DELETE_ORPHAN })
+	private Set<Vinculosfp> vinculosfp; 
 
 	@Column(name = "DocMensaje")
 	private String docMensaje = "";
@@ -675,7 +675,7 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 
 	public void setCentroCostos(Centroscosto centroCostos) {
 		this.centroCostos = centroCostos;
-		this.centroCostosId = (centroCostos == null ? "" : centroCostos.getId().getCenId());
+		//this.centroCostosId = (centroCostos == null ? "" : centroCostos.getId().getCenId());
 	}
 	
 	public String getDocCenCostosId() {
@@ -968,6 +968,9 @@ public class Documento extends PersistentEntity<DocumentoPK> implements Serializ
 	}
 
 	public void setRegistroHora(Date registroHora) {
+		if (registroHora == null) {
+			registroHora = new Date();
+		}
 		this.registroHora = new SimpleDateFormat(REGISTRO_HORA_FORMAT).format(registroHora);
 	}
 

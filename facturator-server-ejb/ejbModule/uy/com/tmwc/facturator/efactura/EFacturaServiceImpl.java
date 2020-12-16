@@ -65,7 +65,7 @@ public class EFacturaServiceImpl implements EFacturaService {
 
 	public static final String DIRECCION_EMISOR = "Gral. LUNA 1388";
 
-	public static final String CIUDAD_EMISOR = "Montevideo";
+	public static final String CIUDAD_EMISOR = "Montevideo"; 
 
 	public static final String DEPTO_EMISOR = "MONTEVIDEO";
 

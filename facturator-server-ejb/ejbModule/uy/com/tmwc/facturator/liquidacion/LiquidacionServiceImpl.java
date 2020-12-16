@@ -396,6 +396,60 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 		}
 		return result;
 	}
+	
+	public List<DocumentoDeudor> getDocumentosVencidosCliente(Date fechaHoy, String clienteId) {
+		SimpleDateFormat dt1 = new SimpleDateFormat("dd-MM-yyyy");
+
+		CodigoNombreFactory dtoCache = new CodigoNombreFactory();
+		List<Documento> documentos = documentoDAOService.getDocumentosDeudoresCliente(clienteId);
+		ArrayList<DocumentoDeudor> result = new ArrayList<DocumentoDeudor>();
+		for (Documento documento : documentos) {
+			if (!documento.isEmitido()) {
+				continue;
+			}
+
+			if (documento.getComprobante().getTipo() != Comprobante.RECIBO_COBRO
+					&& documento.isTieneCuotaVencida(fechaHoy)) {
+				DocumentoDeudor pendiente = new DocumentoDeudor();
+				pendiente.setDocId(documento.getDocId());
+				pendiente.setDeudor(documento.getCliente());
+				pendiente.setFecha(dt1.format(documento.getFecha()));
+				pendiente.setDate(documento.getFecha());
+				pendiente.setMoneda(dtoCache.getFor(documento.getMoneda()));
+				pendiente.setComprobante(documento.getComprobante());
+				pendiente.setSerie(documento.getSerie() != null ? documento.getSerie() : "");
+				pendiente.setNumero(documento.getNumero() != null ? documento.getNumero() : 0);
+
+				int retraso = documento.getDiasRetraso(fechaHoy);
+
+				pendiente.setDiasRetraso(retraso);
+
+				Date fechaVencimiento = org.apache.commons.lang.time.DateUtils.addDays(new Date(), retraso * -1);
+
+				pendiente.setFechaVencimiento(fechaVencimiento);
+				pendiente.setFacturado(documento.getTotal());
+				pendiente.setCancelado(documento.getCancelado());
+				pendiente.setAdeudado(documento.getDeuda());
+				pendiente.setAdeudadoNeto(documento.calcularDeuda(fechaHoy));
+				pendiente.setPlanPago(dtoCache.getFor(documento.getPlanPagos()));
+
+				BigDecimal descuento;
+				if (pendiente.getAdeudado().compareTo(BigDecimal.ZERO) == 0) {
+					descuento = BigDecimal.ZERO;
+				} else {
+					descuento = (pendiente.getAdeudado().subtract(pendiente.getAdeudadoNeto())).multiply(
+							Maths.ONE_HUNDRED).divide(pendiente.getAdeudado(), 2, RoundingMode.HALF_UP);
+				}
+				pendiente.setDescuento(descuento);
+				pendiente.setTieneCuotaVencida(true);
+				pendiente.setDocumento(documento);
+
+				result.add(pendiente);
+			}
+		}
+		return result;
+	}
+
 
 	public List<DocumentoDeudor> getDocumentosDeudoresCliente(Date fechaHoy, String clienteId) {
 		Usuario usuarioLogin = usuariosService.getUsuarioLogin();
@@ -454,6 +508,46 @@ public class LiquidacionServiceImpl implements LiquidacionService {
 				}
 				result.add(pendiente);
 			}
+
+		}
+		return result;
+	}
+	
+	public List<DocumentoDeudor> getFacturasPendientesCliente(Date fechaHoy, String clienteId) {
+		SimpleDateFormat dt1 = new SimpleDateFormat("dd-MM-yyyy");
+
+		CodigoNombreFactory dtoCache = new CodigoNombreFactory();
+		List<Documento> documentos = documentoDAOService.getDocumentosDeudoresCliente(clienteId);
+		ArrayList<DocumentoDeudor> result = new ArrayList<DocumentoDeudor>();
+		for (Documento documento : documentos) {
+			if (documento.getComprobante().getTipo() == Comprobante.RECIBO_COBRO) {
+				continue;
+			}
+			DocumentoDeudor pendiente = new DocumentoDeudor();
+			pendiente.setDocId(documento.getDocId());
+			pendiente.setDeudor(documento.getCliente());
+			pendiente.setFecha(dt1.format(documento.getFecha()));
+			pendiente.setMoneda(dtoCache.getFor(documento.getMoneda()));
+			pendiente.setComprobante(documento.getComprobante());
+			pendiente.setNumero(documento.getNumero() != null ? documento.getNumero() : 0);
+
+			pendiente.setFacturado(documento.getTotal());
+			pendiente.setCancelado(documento.getCancelado());
+			pendiente.setAdeudado(documento.getDeuda());
+			pendiente.setAdeudadoNeto(documento.calcularDeuda(fechaHoy));
+			pendiente.setPlanPago(dtoCache.getFor(documento.getPlanPagos()));
+
+			BigDecimal descuento;
+			if (pendiente.getAdeudado().compareTo(BigDecimal.ZERO) == 0) {
+				descuento = BigDecimal.ZERO;
+			} else {
+				descuento = (pendiente.getAdeudado().subtract(pendiente.getAdeudadoNeto())).multiply(
+						Maths.ONE_HUNDRED).divide(pendiente.getAdeudado(), 2, RoundingMode.HALF_UP);
+			}
+			pendiente.setDescuento(descuento);
+			pendiente.setTieneCuotaVencida(documento.isTieneCuotaVencida(fechaHoy));
+
+			result.add(pendiente);
 
 		}
 		return result;

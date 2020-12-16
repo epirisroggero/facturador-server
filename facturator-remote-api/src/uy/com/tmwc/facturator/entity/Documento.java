@@ -19,7 +19,7 @@ public class Documento extends DocumentoBase implements Serializable {
 
 	private CuotasDocumento cuotasDocumento;
 	
-	private CentrosCosto centroCostos;
+	//private CentrosCosto centroCostos;
 
 	private Short cajaId;
 
@@ -133,6 +133,8 @@ public class Documento extends DocumentoBase implements Serializable {
 	
 	private String puntoVentaId;
 	
+	private Short cuentaId;
+	private Short ivaIdDoc;
 	
 	private Documento notaCreditoFinanciera;
 
@@ -227,7 +229,7 @@ public class Documento extends DocumentoBase implements Serializable {
 
 	private BigDecimal getRedondeo(BigDecimal exacto) {
 		if (this.moneda == null) {
-			return null;
+			return BigDecimal.ZERO;
 		}
 		return exacto.setScale(this.moneda.getRedondeo(), BigDecimal.ROUND_HALF_UP);
 	}
@@ -1226,13 +1228,13 @@ public class Documento extends DocumentoBase implements Serializable {
 		this.centroCostosId = centroCostosId;
 	}
 
-	public CentrosCosto getCentroCostos() {
+	/*public CentrosCosto getCentroCostos() {
 		return centroCostos;
 	}
 
 	public void setCentroCostos(CentrosCosto centroCostos) {
 		this.centroCostos = centroCostos;
-	}
+	}*/
 	
 	public String getReferencia() {
 		return referencia;
@@ -1296,6 +1298,22 @@ public class Documento extends DocumentoBase implements Serializable {
 
 	public void setAutorizacion(String autorizacion) {
 		this.autorizacion = autorizacion;
+	}
+
+	public Short getCuentaId() {
+		return cuentaId;
+	}
+
+	public void setCuentaId(Short cuentaId) {
+		this.cuentaId = cuentaId;
+	}
+
+	public Short getIvaIdDoc() {
+		return ivaIdDoc;
+	}
+
+	public void setIvaIdDoc(Short ivaIdDoc) {
+		this.ivaIdDoc = ivaIdDoc;
 	}
 
 

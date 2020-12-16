@@ -87,10 +87,10 @@ public class Usuario extends PersistentEntity<UsuarioPK> implements Serializable
 	@Column(table = "lfx_usuarios", length = 3)
 	private String venId;
 
-	@Column(table = "lfx_usuarios")
+	@Column(table = "lfx_usuarios", name = "UsuCargo")
 	private String usuCargo;
 
-	@Column(table = "lfx_usuarios")
+	@Column(table = "lfx_usuarios", name = "UsuCelular")
 	private String usuCelular;
 
 	

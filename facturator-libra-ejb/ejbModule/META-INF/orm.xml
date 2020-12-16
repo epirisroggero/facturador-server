@@ -451,9 +451,9 @@
 					cm.id.empId = :empId
 					and (
 						:fromDate is null
-						or id.dia &gt;= :fromDate
+						or cm.id.dia &gt;= :fromDate
 					) 
-				order by id.dia DESC
+				order by cm.id.dia DESC
 			</query>
 		</named-query>
 	</entity>
@@ -1040,7 +1040,7 @@
 					and d.numero = :docNro
 					and c.id.cliId = :clienteId
 				order by
-					d.registroFecha desc
+					d.registroFecha desc, 
 					d.registroHora desc
       		</query>
 		</named-query>
@@ -1080,7 +1080,7 @@
 					and d.emitido &lt;&gt; 'S'
 					and d.pendiente &lt;&gt; 'N'
 				order by
-					d.registroFecha desc
+					d.registroFecha desc, 
 					d.registroHora desc
       		</query>
 		</named-query>
@@ -1106,7 +1106,7 @@
 					(d.id.empId = :empId)
 					and (d.id.docId = :docId or d.processId = :processId) 
 				order by
-					d.registroFecha asc
+					d.registroFecha asc, 
 					d.registroHora asc
       		</query>
 		</named-query>
@@ -1133,7 +1133,7 @@
 					and (cmp.id.cmpid = '124')
 					and (d.processId = :processId) 
 				order by
-					d.registroFecha asc
+					d.registroFecha asc, 
 					d.registroHora asc
       		</query>
 		</named-query>
@@ -1220,6 +1220,7 @@
 	<entity class="uy.com.tmwc.facturator.libra.entity.Familia" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Formaspago" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Banco" />
+	<entity class="uy.com.tmwc.facturator.libra.entity.Cuentasbancaria" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Iva" />
 	<entity class="uy.com.tmwc.facturator.libra.entity.Jefatura">
 		<named-query name="Jefatura.all">

@@ -25,6 +25,7 @@ import uy.com.tmwc.facturator.entity.CodigoNombreEntity;
 import uy.com.tmwc.facturator.entity.Comprobante;
 import uy.com.tmwc.facturator.entity.Concepto;
 import uy.com.tmwc.facturator.entity.Contacto;
+import uy.com.tmwc.facturator.entity.CuentasBancaria;
 import uy.com.tmwc.facturator.entity.Departamento;
 import uy.com.tmwc.facturator.entity.Deposito;
 import uy.com.tmwc.facturator.entity.Entrega;
@@ -99,6 +100,7 @@ public class CatalogServiceImpl implements CatalogService {
 		add(CategoriasArticulos.class);
 		add(Referencia.class);
 		add(UnidadesStock.class);
+		add(CuentasBancaria.class);
 	}
 
 	public <T extends CodigoNombreEntity> List<T> getCatalog(String catalog) {

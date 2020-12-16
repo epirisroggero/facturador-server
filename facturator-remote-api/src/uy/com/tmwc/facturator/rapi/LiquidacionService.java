@@ -29,6 +29,10 @@ public abstract interface LiquidacionService {
 	byte[] generarLiquidacion(Date fechaDesde, Date fechaHasta, Date fechaCorte, BigDecimal gastosPeriodo);
 
 	List<DocumentoDeudor> getDocumentosVencidos(Date fechaHoy);
+	
+	List<DocumentoDeudor> getDocumentosVencidosCliente(Date fechaHoy, String clienteId);
 
 	List<DocumentoDeudor> getDocumentosVencidosSupervisor(Date fechaHoy);
+	
+	List<DocumentoDeudor> getFacturasPendientesCliente(Date fechaHoy, String clienteId); 
 }

@@ -103,12 +103,11 @@ public class DocumentoServiceImpl implements DocumentoService {
 		}
 		documento.setUsuarioId(usuarioId);
 		documento.setPendiente("");
-		documento.setDocCFEetapa("");
-		documento.setDocMensaje("");
-		documento.setDocVinculado("");
-		documento.setDocTCF(BigDecimal.ZERO);
-		documento.setCentroCostosId("");
-		documento.setReferencia("");
+		documento.setDocCFEetapa("");		
+		if (documento.getDocMensaje() == null) {
+			documento.setDocMensaje("");
+		}
+
 		documento.setDocBlob(new byte[0]);
 		
 		String docId = this.documentoDAOService.persist(documento);

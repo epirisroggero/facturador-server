@@ -14,6 +14,39 @@
             font-family: 'Roboto', sans-serif;
             font-size: 1.1em;
         }
+            
+    	table.featureInfo, table.featureInfo td, table.featureInfo th { 
+    		border:1px solid #ddd; 
+    		border-collapse:collapse; 
+    		margin:0; 
+    		padding:0; 
+    		font-size: .9em;
+    		padding:.5em .1em; 
+    	} 
+
+    	table.featureInfo th { 
+			padding:.5em .2em; 
+			text-transform:uppercase; 
+			font-weight:bold; 
+			background:#e6e6e8; 
+		} 
+
+		table.featureInfo td{ 
+			background:#fff; 
+			text-transform:uppercase;
+		}
+
+		table.featureInfo tr.odd td{ 
+			background:#eee; 
+		} 
+
+		table.featureInfo caption{ 
+			text-align:left; 
+			font-size:100%; 
+			font-weight:bold; 
+			text-transform:uppercase; 
+			padding:.2em .2em; 
+		} 
 	
     </style>
 </head>
@@ -51,6 +84,52 @@
 				</td>
 			</tr>	      
 		</#if>  
+		
+		<#if facturasPendientes??>
+		<tr>
+			<td bgcolor="#efefef" style="padding: 10px 30px 10px 30px; border:solid 1px #cfcfcf; border-top:none; border-bottom:none;">
+				<p style="margin-top: 30px; font-weight: bold;">FACTURAS PENDIENTES</p>
+				<table class="featureInfo" align="left" width="100%" style="margin: 10px 0 30px 0; border-spacing: 0px; background-color:#FFFFFF;">
+			      <tr>
+			      	<th style="text-align: left;">Fecha</th>
+			        <th style="text-align: left;">Comprobante</th>
+			        <th style="text-align: left;">Nro.</th>
+			        <th style="text-align: left;">Moneda</th>
+			        <th style="text-align: left;">F.Pago</th>
+			        <th style="text-align: right;">Facturado</th>
+			        <th style="text-align: right;">Cancelado</th>
+			        <th style="text-align: right;">Adeudado</th>
+			        <th style="text-align: right;">Dcto(%)</th>
+			        <th style="text-align: right;">A.Neto</th>
+			       <tr>
+				   <#list pendientes as item>
+				   	  <#if item.tieneCuotaVencida>
+				   	  	<#assign cuotaVencida = "color:#ae1313;font-weight:bold;">
+				   	  <#else>
+				   	  	<#assign cuotaVencida = "color:#333333;font-weight:normal;">
+				   	  </#if>
+				      <tr style="${cuotaVencida}">
+				      	<td>${item.fecha}</td>
+				        <td>${item.comprobante.nombre}</td>
+				        <td>${item.numero?string}</td>
+				        <td>${item.moneda.nombre}</td>
+				        <td>
+				        <#if item.planPago??>
+				        	${item.planPago.nombre}
+				        </#if>
+				        </td>
+				        <td style="text-align: right;">${item.facturado?string["0.##"]}</td>
+				        <td style="text-align: right;">${item.cancelado?string["0.##"]}</td>
+				        <td style="text-align: right;">${item.adeudado?string["0.##"]}</td>
+				        <td style="text-align: right;">${item.descuento?string["0"]}%</td>
+				        <td style="text-align: right;">${item.adeudadoNeto?string["0.##"]}</td>
+				       <tr>
+				   </#list>			   
+			     
+				</table>
+			</td>
+		<tr>
+		</#if> 
 
         <tr bgcolor="#fdfdfd">
             <td bgcolor="#fdfdfd" align="right" style="padding: 10px 0px 10px 0px; border:solid 1px #cfcfcf; border-top:none;">
@@ -62,10 +141,14 @@
             			<td align="left" style="padding: 0px 10px 0px 20px;" bgcolor="#FFFFFF">
             				<table width="220px" style="border-left:solid 2px #cfcfcf; padding-left: 10px;" >
             					<tr>
-            						<td style="font-size:1.3em;font-weight:bold; color:blue;" >${usuario.nombre!""}</td>
+            						<td style="font-size:1.3em;font-weight:bold; color:blue;" >
+            							<span>${usuario.nombre!""}</span>
+            						</td>
             					</tr>
             					<tr>
-            						<td style="font-size:1.1em;font-weight:bold; color:#666666;" >Cobranzas Fulltime</td>
+            						<td style="font-size:1.1em;font-weight:bold; color:#666666;" >
+            							<span>${usuario.usuCargo!""}</span>
+            						</td>
             					</tr>
             					<tr>
             						<td style="font-size:1.0em;font-weight:normal; color:#000000;">            							

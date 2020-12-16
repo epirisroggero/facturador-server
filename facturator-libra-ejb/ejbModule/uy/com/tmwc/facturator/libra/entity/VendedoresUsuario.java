@@ -17,24 +17,24 @@ public class VendedoresUsuario extends PersistentEntity<VendedoresUsuarioPK>  im
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private VendedoresUsuarioPK id;
+	private VendedoresUsuarioPK id; 
 
-    public VendedoresUsuario() {
-    }
-    
 	@NotFound(action = NotFoundAction.IGNORE)
-	@OneToOne
+	@ManyToOne(optional=false)
 	@JoinColumns({
 			@javax.persistence.JoinColumn(name = "vendedorId", referencedColumnName = "VenId", insertable = false, updatable = false),
-			@javax.persistence.JoinColumn(name = "empId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
+			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Vendedore vendedor;
 
 	@NotFound(action = NotFoundAction.IGNORE)
 	@ManyToOne(optional=false)
 	@JoinColumns({
 			@javax.persistence.JoinColumn(name = "usuarioId", referencedColumnName = "UsuId", insertable = false, updatable = false),
-			@javax.persistence.JoinColumn(name = "empId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
+			@javax.persistence.JoinColumn(name = "EmpId", referencedColumnName = "EmpId", insertable = false, updatable = false) })
 	private Usuario usuario;
+
+    public VendedoresUsuario() {
+    }
 
 	public VendedoresUsuarioPK getId() {
 		return this.id;
@@ -43,7 +43,7 @@ public class VendedoresUsuario extends PersistentEntity<VendedoresUsuarioPK>  im
 	public void setId(VendedoresUsuarioPK id) {
 		this.id = id;
 	}
-
+	
 	public Vendedore getVendedor() {
 		return vendedor;
 	}
@@ -59,6 +59,7 @@ public class VendedoresUsuario extends PersistentEntity<VendedoresUsuarioPK>  im
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
+	
 
 	
 }

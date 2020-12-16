@@ -48,11 +48,7 @@ public class Vendedore extends PersistentEntity<VendedorePK> implements Serializ
 		if (vu == null) {
 			return null;
 		}
-		Usuario u = vu.getUsuario();
-		if (u == null) {
-			return null;
-		}
-		return u.getId().getUsuId();
+		return vu.getId().getUsuarioId();
 	}
 
 	public VendedorePK getId() {

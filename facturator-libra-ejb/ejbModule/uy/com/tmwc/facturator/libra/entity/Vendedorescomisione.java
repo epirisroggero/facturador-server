@@ -182,4 +182,12 @@ public class Vendedorescomisione implements Serializable {
 	public void setPorcentajeComision(BigDecimal porcentajeComision) {
 		this.porcentajeComision = porcentajeComision;
 	}
+
+	public Vendedore getVendedor() {
+		return vendedor;
+	}
+
+	public void setVendedor(Vendedore vendedor) {
+		this.vendedor = vendedor;
+	}
 }

@@ -128,6 +128,15 @@
   		<b>codigo</b>
   	</field>
   </mapping>
+
+  <mapping>
+  	<class-a>uy.com.tmwc.facturator.libra.entity.Cuentasbancaria</class-a>
+  	<class-b>uy.com.tmwc.facturator.entity.CuentasBancaria</class-b>
+  	<field>
+  		<a>id.cuentaId</a>
+  		<b>codigo</b>
+  	</field>
+  </mapping>
     
   <mapping> 
     <class-a>uy.com.tmwc.facturator.libra.entity.Iva</class-a>   

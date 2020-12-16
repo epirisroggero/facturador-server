@@ -114,6 +114,11 @@ public class Comprobante extends CodigoNombreEntity {
 		return (this.tipo == DEVOLUCION_CONTADO) || (this.tipo == NOTA_CREDITO);
 	}
 
+	public boolean isMovimientoStock() {
+		return (this.tipo == MOVIMIENTO_DE_STOCK_DE_CLIENTE || this.tipo == MOVIMIENTO_DE_STOCK_DE_PROVEEDORES);
+	}
+
+	
 	public boolean isContingencia() {
 		return getCodigo().equals("300") || getCodigo().equals("301") || getCodigo().equals("302")
 				|| getCodigo().equals("303") || getCodigo().equals("304") || getCodigo().equals("305")

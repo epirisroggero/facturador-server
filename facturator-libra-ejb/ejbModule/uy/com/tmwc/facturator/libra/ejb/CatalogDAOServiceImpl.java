@@ -54,47 +54,56 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 				uy.com.tmwc.facturator.libra.entity.Articulo.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.ArticuloPartida.class,
 				uy.com.tmwc.facturator.libra.entity.ArticuloPartida.class);
-		classMapping
-				.put(uy.com.tmwc.facturator.entity.Cliente.class, uy.com.tmwc.facturator.libra.entity.Cliente.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Cliente.class, 
+				uy.com.tmwc.facturator.libra.entity.Cliente.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Contacto.class,
 				uy.com.tmwc.facturator.libra.entity.Contacto.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Comprobante.class,
 				uy.com.tmwc.facturator.libra.entity.Comprobante.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Deposito.class,
 				uy.com.tmwc.facturator.libra.entity.Deposito.class);
-		classMapping
-				.put(uy.com.tmwc.facturator.entity.Entrega.class, uy.com.tmwc.facturator.libra.entity.Entrega.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Entrega.class, 
+				uy.com.tmwc.facturator.libra.entity.Entrega.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.FormaPago.class,
 				uy.com.tmwc.facturator.libra.entity.Formaspago.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Banco.class, uy.com.tmwc.facturator.libra.entity.Banco.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Banco.class, 
+				uy.com.tmwc.facturator.libra.entity.Banco.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.GrupoContacto.class,
 				uy.com.tmwc.facturator.libra.entity.Gruposcontacto.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Iva.class, uy.com.tmwc.facturator.libra.entity.Iva.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Moneda.class, uy.com.tmwc.facturator.libra.entity.Moneda.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Iva.class, 
+				uy.com.tmwc.facturator.libra.entity.Iva.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Moneda.class, 
+				uy.com.tmwc.facturator.libra.entity.Moneda.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.PlanPagos.class,
 				uy.com.tmwc.facturator.libra.entity.Planpago.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.PreciosVenta.class,
 				uy.com.tmwc.facturator.libra.entity.Preciosventa.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Vendedor.class,
 				uy.com.tmwc.facturator.libra.entity.Vendedore.class);
-		classMapping
-				.put(uy.com.tmwc.facturator.entity.Usuario.class, uy.com.tmwc.facturator.libra.entity.Usuario.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Tarea.class, uy.com.tmwc.facturator.libra.entity.Tarea.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Usuario.class, 
+				uy.com.tmwc.facturator.libra.entity.Usuario.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Tarea.class, 
+				uy.com.tmwc.facturator.libra.entity.Tarea.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Proveedor.class,
 				uy.com.tmwc.facturator.libra.entity.Proveedor.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Numerador.class,
 				uy.com.tmwc.facturator.libra.entity.Numerador.class);
 
-		classMapping.put(uy.com.tmwc.facturator.entity.Zona.class, uy.com.tmwc.facturator.libra.entity.Zona.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Iva.class, uy.com.tmwc.facturator.libra.entity.Iva.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Pais.class, uy.com.tmwc.facturator.libra.entity.Pais.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Caja.class, uy.com.tmwc.facturator.libra.entity.Caja.class);
-		classMapping
-				.put(uy.com.tmwc.facturator.entity.Fanfold.class, uy.com.tmwc.facturator.libra.entity.Fanfold.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Zona.class, 
+				uy.com.tmwc.facturator.libra.entity.Zona.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Iva.class, 
+				uy.com.tmwc.facturator.libra.entity.Iva.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Pais.class, 
+				uy.com.tmwc.facturator.libra.entity.Pais.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Caja.class, 
+				uy.com.tmwc.facturator.libra.entity.Caja.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Fanfold.class, 
+				uy.com.tmwc.facturator.libra.entity.Fanfold.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Localescomerciale.class,
 				uy.com.tmwc.facturator.libra.entity.Localescomerciale.class);
 
-		classMapping.put(uy.com.tmwc.facturator.entity.Giro.class, uy.com.tmwc.facturator.libra.entity.Giro.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Giro.class, 
+				uy.com.tmwc.facturator.libra.entity.Giro.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Departamento.class,
 				uy.com.tmwc.facturator.libra.entity.Departamento.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.CategoriasClientes.class,
@@ -105,20 +114,25 @@ public class CatalogDAOServiceImpl extends ServiceBase implements CatalogDAOServ
 				uy.com.tmwc.facturator.libra.entity.Familia.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.ParametrosAdministracion.class,
 				uy.com.tmwc.facturator.libra.entity.Parametrosadministracion.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Rubro.class, uy.com.tmwc.facturator.libra.entity.Rubro.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Rubro.class, 
+				uy.com.tmwc.facturator.libra.entity.Rubro.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.CentrosCosto.class,
 				uy.com.tmwc.facturator.libra.entity.Centroscosto.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Concepto.class,
 				uy.com.tmwc.facturator.libra.entity.Concepto.class);
-		classMapping.put(uy.com.tmwc.facturator.entity.Marca.class, uy.com.tmwc.facturator.libra.entity.Marca.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.Marca.class, 
+				uy.com.tmwc.facturator.libra.entity.Marca.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.CategoriasArticulos.class,
 				uy.com.tmwc.facturator.libra.entity.Categoriasarticulo.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.Referencia.class,
 				uy.com.tmwc.facturator.libra.entity.Referencia.class);
 		classMapping.put(uy.com.tmwc.facturator.entity.UnidadesStock.class,
 				uy.com.tmwc.facturator.libra.entity.Unidadesstock.class);
+		classMapping.put(uy.com.tmwc.facturator.entity.CuentasBancaria.class,
+				uy.com.tmwc.facturator.libra.entity.Cuentasbancaria.class);
 
 		jefaturasClassMapper = new SimpleClassMapper();
+		
 		jefaturasClassMapper.add(uy.com.tmwc.facturator.libra.entity.JefaturaArticulo.class,
 				uy.com.tmwc.facturator.entity.JefaturaArticulo.class);
 		jefaturasClassMapper.add(uy.com.tmwc.facturator.libra.entity.JefaturaFamiliaArticulos.class,
